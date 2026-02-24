@@ -45,7 +45,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 /* CONTROLS */
 #controls{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:flex-end;align-items:flex-end;padding:10px 24px calc(env(safe-area-inset-bottom,0px) + 80px);pointer-events:none}
-#drag-zone{position:fixed;bottom:0;left:0;width:100%;height:calc(env(safe-area-inset-bottom,0px) + 260px);pointer-events:auto;z-index:10}
+#drag-zone{position:fixed;bottom:0;left:0;width:65%;height:calc(env(safe-area-inset-bottom,0px) + 260px);pointer-events:auto;z-index:10}
 #drag-indicator{position:fixed;left:0;width:65%;height:2px;background:linear-gradient(to right,transparent,rgba(0,245,255,0.15),rgba(0,245,255,0.3),rgba(0,245,255,0.15),transparent);pointer-events:none;z-index:9;display:none}
 .r-btns{display:flex;flex-direction:column;gap:12px;align-items:flex-end;pointer-events:auto}
 .ctrl-btn{width:70px;height:70px;border-radius:50%;border:2.5px solid;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;transition:transform .08s,box-shadow .08s;backdrop-filter:blur(10px);flex-shrink:0;-webkit-tap-highlight-color:transparent}
