@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.9.1</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.9.2</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -326,7 +326,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
     <div class="pack-grid" id="pack-grid"></div>
-    <div style="padding:10px 0 calc(env(safe-area-inset-bottom,0px)+20px);display:flex;gap:8px;justify-content:center;width:100%;margin-top:8px">
+    <div style="padding:10px 0 180px;display:flex;gap:8px;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-g btn-sm" onclick="openCardsFromPacks()">🃏 COLLECTION</button>
       <button class="btn-main b-c btn-sm" onclick="packsBack()">← BACK</button>
     </div>
@@ -1428,7 +1428,7 @@ function startGlitch() {
 // ═══════════════════════════════════════════════════
 //  SAVE STATE
 // ═══════════════════════════════════════════════════
-const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,bombs:3,damage:0,speed:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{} };
+const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,bombs:3,damage:0,speed:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'' };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -1604,6 +1604,39 @@ function devLaunch() {
   doSave();
   closeDevModal();
   startGame();
+}
+
+const CURRENT_VERSION = '1.1.9.2';
+
+const VERSION_NOTES = {
+  '1.1.9.2': [
+    '🎮 Improved shop & card pack scrolling on all screen sizes',
+    '💀 Game over now resets full progress — roguelite style!',
+    '📤 Share your score with enemies killed stat',
+    '🔔 Trophy notifications now clear after claiming',
+    '🎵 Music resumes from exact position after shop',
+    '🔴 Hit flash improved — no more red status bar',
+    '📖 How To Play accessible from main menu',
+    '🐛 Fixed game over screen not showing',
+    '🐛 Fixed reset button appearing during waves',
+  ]
+};
+
+function checkWhatsNew() {
+  if(SAVE.lastSeenVersion !== CURRENT_VERSION) {
+    const notes = VERSION_NOTES[CURRENT_VERSION] || ['✦ Various improvements and bug fixes'];
+    document.getElementById('whatsnew-version').textContent = 'VERSION ' + CURRENT_VERSION;
+    document.getElementById('whatsnew-content').innerHTML = notes.join('<br>');
+    const m = document.getElementById('whatsnew-modal');
+    document.body.appendChild(m);
+    m.style.display = 'flex';
+  }
+}
+
+function closeWhatsNew() {
+  SAVE.lastSeenVersion = CURRENT_VERSION;
+  doSave();
+  document.getElementById('whatsnew-modal').style.display = 'none';
 }
 
 function openChangelog() {
@@ -3055,6 +3088,7 @@ if(lb) lb.textContent=sw>1?`▶ CONTINUE WAVE ${sw}`:'▶ LAUNCH MISSION';
 showScreen('screen-menu');
 startMenuAnim();
 setTrack('menu');
+checkWhatsNew();
 
 </script>
 
@@ -3072,6 +3106,17 @@ setTrack('menu');
       <div id="howto-lines" style="font-size:clamp(10px,3vw,13px);color:#aaa;line-height:1.8;text-align:center;margin-bottom:20px"></div>
       <button class="btn-main b-gr" onclick="closeSplash()" style="width:100%">▶ LET'S GO!</button>
     </div>
+  </div>
+</div>
+
+<!-- WHAT'S NEW MODAL -->
+<div id="whatsnew-modal" style="display:none;position:fixed;inset:0;z-index:99997;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#050d1f;border:1px solid #00ff88;border-radius:10px;padding:24px 20px;max-width:360px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px rgba(0,255,136,0.2)">
+    <div style="font-size:32px;text-align:center;margin-bottom:8px">🚀</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00ff88;letter-spacing:2px;margin-bottom:4px;text-align:center">WHAT'S NEW</div>
+    <div id="whatsnew-version" style="font-size:10px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px"></div>
+    <div id="whatsnew-content" style="font-size:13px;color:#aaa;line-height:2;margin-bottom:24px"></div>
+    <button onclick="closeWhatsNew()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer;width:100%">▶ LET'S PLAY!</button>
   </div>
 </div>
 
