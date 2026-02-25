@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.6 alpha</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.7 alpha</div>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -297,7 +297,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
   <div style="height:calc(100vh - 180px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div class="shop-grid" id="shop-grid"></div>
-    <div style="padding:10px 0 calc(env(safe-area-inset-bottom,0px)+20px);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
+    <div style="padding:10px 0 calc(env(safe-area-inset-bottom,0px)+60px);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
       <button class="btn-main b-g btn-sm" onclick="openCardsFromShop()">🃏 COLLECTION</button>
       <button class="btn-main btn-sm" onclick="openTrophies('screen-shop')" style="border-color:var(--g);color:var(--g)">🏆 TROPHIES</button>
@@ -415,6 +415,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <button class="btn-main b-c" onclick="startGame()">↺ TRY AGAIN</button>
   <button class="btn-main b-m" onclick="showShopFromGameover()">🛒 SPEND COINS</button>
   <button class="btn-main b-g" onclick="showScreen('screen-menu')">⌂ MAIN MENU</button>
+  <button class="btn-main" onclick="shareScore()" style="border-color:#00f5ff;color:#00f5ff;margin-top:4px">📤 SHARE SCORE</button>
   <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
 </div>
 
@@ -457,7 +458,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 /* Rift indicator */
 #rift-indicator{position:absolute;inset:0;border:3px solid #cc44ff;pointer-events:none;border-radius:0;opacity:0;transition:opacity .3s;box-shadow:inset 0 0 30px rgba(200,68,255,0.3)}
 #rift-indicator.active{opacity:1}
-#hit-flash{position:fixed;inset:0;background:rgba(255,50,50,0.35);pointer-events:none;z-index:100;opacity:0;transition:opacity .15s ease-out}
+#hit-flash{position:fixed;top:env(safe-area-inset-top,50px);left:0;right:0;bottom:0;background:rgba(255,50,50,0.35);pointer-events:none;z-index:100;opacity:0;transition:opacity .15s ease-out}
 #hit-flash.active{opacity:1}
 /* Collection screen sticky layout */
 .screen-cards-layout{flex-direction:column!important;justify-content:flex-start!important;padding:0!important;align-items:center!important}
@@ -2408,7 +2409,11 @@ function endGame() {
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
   document.getElementById('canvas').style.display = 'none';
-  SAVE.savedWave=1; doSave();
+  const hiScore = Math.max(score, SAVE.hiScore);
+  SAVE = {...DEFAULT_SAVE};
+  SAVE.hiScore = hiScore;
+  SAVE.savedWave = 1;
+  doSave();
   gState='gameover';
   if(rafId) cancelAnimationFrame(rafId);
   SAVE.coins+=sessionCoins;
@@ -2424,6 +2429,7 @@ function endGame() {
 }
 
 function nextWave() {
+  document.getElementById('reset-btn').style.display = 'none';
   useAltBattle=!useAltBattle;
   wave++;
   sessionCoins=0;
@@ -2548,8 +2554,35 @@ function claimTrophy(trophyId) {
     updateHUD();
     showToast(`🎁 +${t.val} Life!`);
   } else if(t.type === 'pack') {
-    for(let i=0;i<t.val;i++) awardRandomCards(3);
-    showToast(`🎁 Free Pack${t.val>1?'s':''}!`);
+    const freePack = PACKS[Math.floor(Math.random() * (PACKS.length - 1)) + 1]; // skip basic
+    const pulled = [];
+    for(let i = 0; i < 3 * t.val; i++) {
+      const pool = ALL_CARDS.filter(c => c.setKey === freePack.id || Math.random() < 0.25);
+      pulled.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    pulled.forEach(c => { SAVE.cards[c.id] = (SAVE.cards[c.id] || 0) + 1; });
+    const newSets = [];
+    Object.entries(SETS).forEach(([k, s]) => {
+      if(SAVE.setsComplete[k]) return;
+      if(s.cards.every(c => (SAVE.cards[c.id] || 0) > 0)) { SAVE.setsComplete[k] = true; newSets.push(s.name); }
+    });
+    sfx('cardGet');
+    if(newSets.length) setTimeout(() => sfx('setComplete'), 300);
+    const res = document.getElementById('pull-results');
+    res.innerHTML = '';
+    pulled.forEach((card, i) => {
+      const s = SETS[card.setKey];
+      const el = document.createElement('div');
+      el.className = 'pull-c';
+      el.style.borderColor = s.color; el.style.background = s.bg;
+      el.innerHTML = `<div class="pull-c-i">${card.icon}</div><div class="pull-c-n" style="color:${s.color}">${card.name}</div><div class="pull-c-s">${s.name}</div><div class="pull-c-b">${card.bonus}</div>`;
+      res.appendChild(el);
+      setTimeout(() => el.classList.add('revealed'), i * 120 + 50);
+    });
+    const note = document.getElementById('pull-set-note');
+    note.style.display = newSets.length ? 'block' : 'none';
+    if(newSets.length) note.textContent = `🏆 ${newSets.join(' & ')} COMPLETE!`;
+    showScreen('screen-pull');
   } else if(t.type === 'mega') {
     sessionBombs = Math.min(sessionBombs + t.val, 20);
     SAVE.coins += 500;
@@ -2638,6 +2671,12 @@ function doReset() {
   localStorage.removeItem('vi2_save');
   SAVE = {...DEFAULT_SAVE};
   closeResetModal();
+  if(rafId) cancelAnimationFrame(rafId);
+  gState = 'menu';
+  document.getElementById('canvas').style.display = 'none';
+  showScreen('screen-menu');
+  startMenuAnim();
+  setTrack('menu');
   updateMenuCoins();
   showToast('Progress reset!');
 }
@@ -2691,6 +2730,7 @@ function showShopFromGameover(){ openShop('screen-gameover'); }
 function showPacksFromWave(){ packsPrevScreen='screen-summary'; showScreen('screen-packs'); }
 function showPacksFromShop(){ packsPrevScreen='screen-shop'; showScreen('screen-packs'); }
 function shopBack(){
+  document.getElementById('reset-btn').style.display = 'none';
   if(shopPrevScreen==='game'){
     gState='playing'; sessionCoins=0; showScreen('__game__'); lastTime=0; rafId=requestAnimationFrame(gameLoop);
     const savedBattleOffset = battleOffset;
@@ -2975,7 +3015,19 @@ function showHowToPlay() {
     </div>
   `;
 }
-
+function shareScore() {
+  const txt = `👾 VOID INVADERS\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
+  if(navigator.share) {
+    navigator.share({ title:'Void Invaders', text:txt })
+      .catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(txt).then(()=>{
+      showToast('📋 SCORE COPIED TO CLIPBOARD!');
+    }).catch(()=>{
+      showToast('SCORE: ' + score + ' | WAVE: ' + wave);
+    });
+  }
+}
 function closeSplash() {
   SAVE.firstTime = false;
   doSave();
