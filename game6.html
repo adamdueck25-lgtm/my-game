@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.5 alpha</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.6 alpha</div>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -295,7 +295,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="shop-ticker"><span class="shop-ticker-inner">★ NEW WEAPONS AVAILABLE ★ SPEND YOUR COINS ★ UPGRADE YOUR SHIP ★ COLLECT ALL CARDS ★ COMPLETE SETS FOR POWERS ★ BOSS EVERY 5 WAVES ★</span></div>
     <div class="shop-coins-display" id="shop-coins-display">💰 <span id="shop-coins">0</span></div>
   </div>
-  <div style="flex:1 1 auto;min-height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+  <div style="height:calc(100vh - 180px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div class="shop-grid" id="shop-grid"></div>
     <div style="padding:10px 0 calc(env(safe-area-inset-bottom,0px)+20px);display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
@@ -313,7 +313,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="screen-title" style="color:var(--m)">📦 CARD PACKS</div>
     <div class="shop-coins-display" id="packs-coins-display">💰 <span id="packs-coins">0</span></div>
   </div>
-  <div style="flex:1 1 auto;min-height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+  <div style="height:calc(100vh - 140px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div style="width:100%;max-width:600px;margin-bottom:8px;padding:8px 12px;border-radius:8px;background:rgba(0,15,35,0.8);border:1px solid #1a2540">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:var(--c);letter-spacing:2px;margin-bottom:4px">HOW CARD PACKS WORK</div>
       <div style="font-size:10px;color:#aaa;line-height:1.5">
