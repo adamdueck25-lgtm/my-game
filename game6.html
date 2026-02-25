@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.2 alpha</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.3 alpha</div>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -289,7 +289,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 </div>
 
 <div id="screen-shop" class="screen screen-bg hidden screen-cards-layout">
-  <canvas id="shop-bg-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
+  <canvas id="shop-bg-canvas" style="position:absolute;inset:0;z-index:0;pointer-events:none"></canvas>
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div class="screen-title" style="color:var(--c)">⚡ UPGRADES</div>
     <div class="shop-ticker"><span class="shop-ticker-inner">★ NEW WEAPONS AVAILABLE ★ SPEND YOUR COINS ★ UPGRADE YOUR SHIP ★ COLLECT ALL CARDS ★ COMPLETE SETS FOR POWERS ★ BOSS EVERY 5 WAVES ★</span></div>
@@ -308,7 +308,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <!-- PACKS -->
 <div id="screen-packs" class="screen screen-bg hidden screen-cards-layout">
-  <canvas id="packs-bg-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
+  <canvas id="packs-bg-canvas" style="position:absolute;inset:0;z-index:0;pointer-events:none"></canvas>
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div class="screen-title" style="color:var(--m)">📦 CARD PACKS</div>
     <div class="shop-coins-display" id="packs-coins-display">💰 <span id="packs-coins">0</span></div>
