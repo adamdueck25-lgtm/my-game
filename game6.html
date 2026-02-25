@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.9.4</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.0.4</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -1290,6 +1290,9 @@ function sfx(type) {
     case 'coin':
       osc(880,'sine',0.06,0.4); osc(1320,'sine',0.08,0.3,0.03);
       break;
+    case 'coinGet':
+      osc(1200,'sine',0.05,0.5); osc(1600,'sine',0.07,0.4,0.03); osc(2000,'sine',0.05,0.3,0.06);
+      break;
     case 'purchase':
       osc(440,'sine',0.08,0.5); osc(660,'sine',0.1,0.4,0.06); osc(880,'sine',0.12,0.3,0.1);
       break;
@@ -1428,7 +1431,7 @@ function startGlitch() {
 // ═══════════════════════════════════════════════════
 //  SAVE STATE
 // ═══════════════════════════════════════════════════
-const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,bombs:3,damage:0,speed:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'' };
+const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'' };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -1451,6 +1454,7 @@ const TROPHIES = [
   { id:'t18', pts:550000,    icon:'💰', name:'VAULT BREAKER',   reward:'+600 Coins',          type:'coins', val:600 },
   { id:'t19', pts:720000,    icon:'❤️', name:'UNDYING',         reward:'+3 Lives',            type:'life',  val:3   },
   { id:'t20', pts:950000,    icon:'📦', name:'HOARDER',         reward:'3 Free Packs',        type:'pack',  val:3   },
+  { id:'t20b', pts:1000000,  icon:'🌩️', name:"CONTIGO'S FIFTH STORM SERIES THEORY", reward:'+69 Coins', type:'coins', val:500 },
   { id:'t21', pts:1250000,   icon:'💣', name:'EXTINCTION EVENT',reward:'+5 Bombs',            type:'bomb',  val:5   },
   { id:'t22', pts:1600000,   icon:'💰', name:'GALACTIC BANKER', reward:'+800 Coins',          type:'coins', val:800 },
   { id:'t23', pts:2000000,   icon:'❤️', name:'ETERNAL',         reward:'+4 Lives',            type:'life',  val:4   },
@@ -1464,7 +1468,10 @@ const TROPHIES = [
 ];
 
 function loadSave(){ try{ return Object.assign({},DEFAULT_SAVE,JSON.parse(localStorage.getItem('vi2_save')||'{}')); }catch(e){ return {...DEFAULT_SAVE}; } }
-function doSave(){ localStorage.setItem('vi2_save',JSON.stringify(SAVE)); }
+function doSave(){ 
+  if(gState==='gameover') return;
+  localStorage.setItem('vi2_save',JSON.stringify(SAVE)); 
+}
 let SAVE = loadSave();
 ['upgrades','cards','setsComplete'].forEach(k=>{ if(!SAVE[k]) SAVE[k]={...DEFAULT_SAVE[k]}; });
 
@@ -1535,12 +1542,10 @@ const UPGRADES = [
   {key:'multishot',name:'MULTI-SHOT',desc:'Fire spread',max:2,costs:[300,500],icon:'💥'},
   {key:'damage',name:'DAMAGE',desc:'More power',max:5,costs:[120,180,260,360,480],icon:'🔥'},
   {key:'speed',name:'MOVE SPEED',desc:'Move faster',max:5,costs:[80,120,160,220,300],icon:'💨'},
-  {key:'bombs',name:'BOMBS',desc:'Refill bombs',max:5,costs:[150,150,150,150,150],icon:'💣'},
-  {key:'shield',name:'SHIELD',desc:'Extra lives',max:3,costs:[200,350,500],icon:'🛡️'},
+  {key:'health',name:'HEALTH',desc:'Extra life · max 5 total',max:2,costs:[200,200],icon:'❤️'},
 ];
   // ── DEV MODE ─────────────────────────────────────────
 let devTapCount = 0, devTapTimer = null, devPinEntry = '', devWaveTarget = 1;
-
 function devTap() {
   devTapCount++;
   clearTimeout(devTapTimer);
@@ -1606,10 +1611,10 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '1.1.9.4';
+const CURRENT_VERSION = '2.0.4';
 
 const VERSION_NOTES = {
-  '1.1.9.4': [
+  '2.0.4': [
     '🎮 Improved shop & card pack scrolling on all screen sizes',
     '💀 Game over now resets full progress — roguelite style!',
     '📤 Share your score with enemies killed stat',
@@ -1673,10 +1678,11 @@ function computeStats() {
     multishot:    up.multishot||0,
     damage:       1+(up.damage||0)*.3+dmg,
     speed:        3.5+(up.speed||0)*.5+spd*3.5,
-    maxLives:     3+lives+(up.shield||0),
+    maxLives:     Math.min(5, 3+lives+(up.health||0)),
     reduction:    Math.min(.6,red),
     enemySlowBonus: eSlow,
-    bombs:        up.bombs||3,
+    bombs:        3 + (SAVE.upgrades.extraBombs||0),
+    extraLives:   up.health||0,
     // set bonuses
     freeTriple:    !!SAVE.setsComplete.nebula  && !SAVE.disabledSets.nebula,
     piercingShots: !!SAVE.setsComplete.void    && !SAVE.disabledSets.void,
@@ -2074,7 +2080,19 @@ let moveDx = 0;
   eBullets=eBullets.filter(b=>{ b.x+=b.vx; b.y+=b.vy; return b.y<H+20&&b.x>-20&&b.x<W+20; });
 
   // ── COIN DROPS ──────────────────────────────────
-  coinDrops=coinDrops.filter(c=>{ c.y+=0.7; return c.y<H+30; });
+  coinDrops=coinDrops.filter(c=>{
+    c.y+=2.3;
+    if(player&&Math.abs(c.x-player.x)<35&&Math.abs(c.y-player.y)<35){
+      sessionCoins+=5;
+      score+=5;
+      console.log('coin pickup! sessionCoins now:', sessionCoins);
+      spawnExplosion(c.x,c.y,'#ffd700',2);
+      sfx('coinGet');
+      updateHUD();
+      return false;
+    }
+    return c.y<H+30;
+  });
 
   // ── PARTICLES ───────────────────────────────────
   particles=particles.filter(p=>{
@@ -2111,7 +2129,7 @@ let moveDx = 0;
             if(stats.chainKill){
               const near=enemies.filter(en=>en.alive&&en!==e)
                 .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y))[0];
-              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; } }
+              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; } }
             }
           }
         }
@@ -2451,20 +2469,24 @@ function endGame() {
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
   document.getElementById('canvas').style.display = 'none';
-  const hiScore = Math.max(score, SAVE.hiScore);
-  SAVE = {...DEFAULT_SAVE};
-  SAVE.hiScore = hiScore;
-  SAVE.savedWave = 1;
-  doSave();
   gState='gameover';
   if(rafId) cancelAnimationFrame(rafId);
-  SAVE.coins+=sessionCoins;
-  if(score>SAVE.hiScore) SAVE.hiScore=score;
-  doSave();
+  const finalScore = score;
+  const finalWave = wave;
+  const finalCoins = sessionCoins;
+  const finalKills = killCount;
+  const hiScore = Math.max(finalScore, SAVE.hiScore);
+  const earnedLegendary = finalScore >= 1000000;
+  SAVE = {...DEFAULT_SAVE};
+  SAVE.hiScore = hiScore;
+  SAVE.lastSeenVersion = CURRENT_VERSION;
+  localStorage.setItem('vi2_save',JSON.stringify(SAVE));
   setTrack('menu');
-  document.getElementById('go-final').textContent=score;
-  document.getElementById('go-wave').textContent=wave;
-  document.getElementById('go-coins').textContent=sessionCoins;
+  document.getElementById('go-final').textContent = finalScore;
+  document.getElementById('go-wave').textContent = finalWave;
+  document.getElementById('go-coins').textContent = finalCoins;
+  window._finalKills = finalKills;
+  window._earnedLegendary = earnedLegendary;
   const goScreen = document.getElementById('screen-gameover');
   document.body.appendChild(goScreen);
   showScreen('screen-gameover');
@@ -2584,15 +2606,16 @@ function claimTrophy(trophyId) {
   SAVE.claimedTrophies.push(t.id);
   // Apply reward
   if(t.type === 'bomb') {
+    SAVE.upgrades.extraBombs = (SAVE.upgrades.extraBombs||0) + t.val;
     sessionBombs = Math.min(sessionBombs + t.val, 20);
-    SAVE.upgrades.bombs = Math.max(SAVE.upgrades.bombs || 0, sessionBombs);
+    doSave();
     updateHUD();
     showToast(`🎁 +${t.val} Bomb${t.val>1?'s':''}!`);
   } else if(t.type === 'coins') {
     SAVE.coins += t.val;
     showToast(`🎁 +${t.val} Coins!`);
   } else if(t.type === 'life') {
-    player.lives = Math.min((player.lives||0) + t.val, 10);
+    player.lives = Math.min((player.lives||0) + t.val, 5);
     updateHUD();
     showToast(`🎁 +${t.val} Life!`);
   } else if(t.type === 'pack') {
@@ -2717,7 +2740,11 @@ function closeResetModal() {
 function doReset() {
   localStorage.removeItem('vi2_save');
   SAVE = {...DEFAULT_SAVE};
+  SAVE.lastSeenVersion = CURRENT_VERSION;
+  doSave();
   closeResetModal();
+  const lb=document.getElementById('btn-launch');
+  if(lb) lb.textContent='▶ LAUNCH MISSION';
   if(rafId) cancelAnimationFrame(rafId);
   gState = 'menu';
   document.getElementById('canvas').style.display = 'none';
@@ -2870,26 +2897,38 @@ function buildShop(){
   grid.innerHTML='';
   UPGRADES.forEach((u,idx)=>{
     const lv=SAVE.upgrades[u.key]||0, maxed=lv>=u.max;
-    const cost=maxed?null:u.costs[lv];
-    const can=!maxed&&SAVE.coins>=cost;
+    const cost=(maxed&&u.key!=='health')?null:(u.costs[Math.min(lv,u.max-1)]);
+    const currentLives = u.key==='health' ? (player ? player.lives : Math.min(5, 3+(SAVE.upgrades.health||0))) : null;
+    const healthMaxed = u.key==='health' && currentLives>=5;
+    const can=(u.key==='health' ? !healthMaxed : !maxed)&&SAVE.coins>=cost;
     const el=document.createElement('div');
-    el.className='si'+(maxed?' maxed':can?' aff':'');
+    el.className='si'+((maxed&&u.key!=='health')||healthMaxed?' maxed':can?' aff':'');
+    el.style.animationDelay=`${idx*0.05}s`;
+    el.style.animation=`screenSlideIn .3s ease ${idx*0.04}s both`;
+    el.className='si'+((maxed&&u.key!=='health')||healthMaxed?' maxed':can?' aff':'');
     el.style.animationDelay=`${idx*0.05}s`;
     el.style.animation=`screenSlideIn .3s ease ${idx*0.04}s both`;
     el.innerHTML=`
       <div class="si-n">${u.icon} ${u.name}</div>
-      <div class="si-d">${u.desc}</div>
+      <div class="si-d">${u.key==='health' ? `Extra life · ${currentLives}/5 lives` : u.desc}</div>
       <div class="si-l">
   <div style="display:flex;gap:3px;align-items:center;margin-bottom:3px">
-    ${Array(u.max).fill(0).map((_,i)=>`<div style="height:6px;flex:1;border-radius:3px;background:${i<lv?'var(--c)':'#1a2540'};box-shadow:${i<lv?'0 0 6px var(--c)':''};transition:all .2s"></div>`).join('')}
+    ${u.key==='health'
+  ? Array(5).fill(0).map((_,i)=>`<div style="height:6px;flex:1;border-radius:3px;background:${i<currentLives?'#ff4455':'#1a2540'};box-shadow:${i<currentLives?'0 0 6px #ff4455':''};transition:all .2s"></div>`).join('')
+  : Array(u.max).fill(0).map((_,i)=>`<div style="height:6px;flex:1;border-radius:3px;background:${i<lv?'var(--c)':'#1a2540'};box-shadow:${i<lv?'0 0 6px var(--c)':''};transition:all .2s"></div>`).join('')}
   </div>
-  <span style="font-size:10px;color:${maxed?'var(--gr)':'#778'};letter-spacing:1px">${maxed?'✦ MAXED':lv+' / '+u.max}</span>
+  <span style="font-size:10px;color:${(maxed&&u.key!=='health')?'var(--gr)':'#778'};letter-spacing:1px">${u.key==='health'?(currentLives+' / 5 LIVES'):(maxed?'✦ MAXED':lv+' / '+u.max)}</span>
 </div>
-      <div class="si-c">${maxed?'✓ MAXED':'💰 '+cost}</div>
+      <div class="si-c">${(maxed&&u.key!=='health')?'✓ MAXED':'💰 '+cost}</div>
     `;
-    if(can&&!maxed) el.onclick=()=>{
+    if(can&&(!maxed||u.key==='health')&&!healthMaxed) el.onclick=()=>{
       SAVE.coins-=cost;
       SAVE.upgrades[u.key]=(SAVE.upgrades[u.key]||0)+1;
+      if(u.key==='health' && player) {
+        player.lives = Math.min(5, player.lives+1);
+        player.maxLives = Math.min(5, player.maxLives+1);
+        updateHUD();
+      }
       doSave(); sfx('purchase');
       spawnCoinPop(el, cost);
       el.classList.add('bought');
@@ -3063,7 +3102,8 @@ function showHowToPlay() {
   `;
 }
 function shareScore() {
-  const txt = `👾 VOID INVADERS v${CURRENT_VERSION}\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave} REACHED\n💀 ENEMIES KILLED: ${killCount}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
+  const legendary = window._earnedLegendary ? `\n🌩️ CONTIGO'S FIFTH STORM SERIES THEORY ACHIEVED` : '';
+  const txt = `👾 VOID INVADERS v${CURRENT_VERSION}\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave} REACHED\n💀 ENEMIES KILLED: ${window._finalKills||killCount}${legendary}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
   if(navigator.share) {
     navigator.share({ title:'Void Invaders', text:txt })
       .catch(()=>{});
