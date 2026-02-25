@@ -209,7 +209,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK V1.1.7 alpha</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.8</div>
+<button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -413,10 +414,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="color:#556;font-size:12px;margin:4px 0">WAVE <span id="go-wave" style="color:var(--m)">0</span> REACHED</div>
   <div style="color:var(--g);font-size:15px;margin-bottom:24px">+<span id="go-coins">0</span> COINS EARNED</div>
   <button class="btn-main b-c" onclick="startGame()">↺ TRY AGAIN</button>
-  <button class="btn-main b-m" onclick="showShopFromGameover()">🛒 SPEND COINS</button>
   <button class="btn-main b-g" onclick="showScreen('screen-menu')">⌂ MAIN MENU</button>
   <button class="btn-main" onclick="shareScore()" style="border-color:#00f5ff;color:#00f5ff;margin-top:4px">📤 SHARE SCORE</button>
-  <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
 </div>
 
 <style>
@@ -458,7 +457,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 /* Rift indicator */
 #rift-indicator{position:absolute;inset:0;border:3px solid #cc44ff;pointer-events:none;border-radius:0;opacity:0;transition:opacity .3s;box-shadow:inset 0 0 30px rgba(200,68,255,0.3)}
 #rift-indicator.active{opacity:1}
-#hit-flash{position:fixed;top:env(safe-area-inset-top,50px);left:0;right:0;bottom:0;background:rgba(255,50,50,0.35);pointer-events:none;z-index:100;opacity:0;transition:opacity .15s ease-out}
+#hit-flash{position:fixed;top:env(safe-area-inset-top,50px);left:0;right:0;bottom:0;background:transparent;border:4px solid rgba(255,50,50,0);box-shadow:inset 0 0 60px rgba(255,50,50,0.7);pointer-events:none;z-index:100;opacity:0;transition:opacity .15s ease-out}
 #hit-flash.active{opacity:1}
 /* Collection screen sticky layout */
 .screen-cards-layout{flex-direction:column!important;justify-content:flex-start!important;padding:0!important;align-items:center!important}
@@ -1607,6 +1606,16 @@ function devLaunch() {
   startGame();
 }
 
+function openChangelog() {
+  const m = document.getElementById('changelog-modal');
+  document.body.appendChild(m);
+  m.style.display = 'flex';
+}
+
+function closeChangelog() {
+  document.getElementById('changelog-modal').style.display = 'none';
+}
+
 function closeDevModal() {
   document.getElementById('dev-modal').style.display = 'none';
   devPinEntry = '';
@@ -2654,6 +2663,11 @@ function buildTrophies() {
 
 function openTrophies(from) {
   trophyPrevScreen = from || 'screen-shop';
+  if(from === 'screen-summary') {
+    const notif = document.getElementById('sum-trophy-notif');
+    if(notif) { notif.innerHTML = ''; notif.style.display = 'none'; }
+  }
+  buildTrophies();
   showScreen('screen-trophies');
 }
 
@@ -3016,7 +3030,7 @@ function showHowToPlay() {
   `;
 }
 function shareScore() {
-  const txt = `👾 VOID INVADERS\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
+  const txt = `👾 VOID INVADERS\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave} REACHED\n💀 ENEMIES KILLED: ${killCount}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
   if(navigator.share) {
     navigator.share({ title:'Void Invaders', text:txt })
       .catch(()=>{});
@@ -3058,6 +3072,43 @@ setTrack('menu');
       <div id="howto-lines" style="font-size:clamp(10px,3vw,13px);color:#aaa;line-height:1.8;text-align:center;margin-bottom:20px"></div>
       <button class="btn-main b-gr" onclick="closeSplash()" style="width:100%">▶ LET'S GO!</button>
     </div>
+  </div>
+</div>
+
+<!-- CHANGELOG MODAL -->
+<div id="changelog-modal" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#050d1f;border:1px solid #00f5ff;border-radius:10px;padding:24px 20px;max-width:360px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px rgba(0,245,255,0.2)">
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00f5ff;letter-spacing:2px;margin-bottom:4px;text-align:center">📡 VOID INVADERS</div>
+    <div style="font-size:10px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px">UPDATES & ROADMAP</div>
+
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
+    <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
+      🚀 New enemy types on later waves<br>
+      🎨 Ship skin customization<br>
+      🌌 New card sets with unique powers<br>
+      🏆 More trophy milestones<br>
+      📱 Improved mobile controls<br>
+      🔊 New music tracks per wave tier which will include full length versions
+    </div>
+
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ RECENT UPDATES</div>
+    <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
+      ✅ Wave progress now saves between sessions<br>
+      ✅ Enemy difficulty scales with wave<br>
+      ✅ Hit flash & sound on player impact<br>
+      ✅ Music pauses and resumes from shop<br>
+      ✅ How To Play guide added<br>
+      ✅ Score sharing added
+    </div>
+
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff4455;letter-spacing:2px;margin-bottom:8px">✦ KNOWN BUGS</div>
+    <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
+      🔧 Minor audio glitches on some devices<br>
+      🔧 Shop scroll on older iPhones<br>
+      🔧 Better Optimization for Android Phones and Smaller Displays
+    </div>
+
+    <button onclick="closeChangelog()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;width:100%">✕ CLOSE</button>
   </div>
 </div>
 
