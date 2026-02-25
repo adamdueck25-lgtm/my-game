@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.9.3</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 1.1.9.4</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -1606,10 +1606,10 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '1.1.9.3';
+const CURRENT_VERSION = '1.1.9.4';
 
 const VERSION_NOTES = {
-  '1.1.9.3': [
+  '1.1.9.4': [
     '🎮 Improved shop & card pack scrolling on all screen sizes',
     '💀 Game over now resets full progress — roguelite style!',
     '📤 Share your score with enemies killed stat',
@@ -3063,7 +3063,7 @@ function showHowToPlay() {
   `;
 }
 function shareScore() {
-  const txt = `👾 VOID INVADERS\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave} REACHED\n💀 ENEMIES KILLED: ${killCount}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
+  const txt = `👾 VOID INVADERS v${CURRENT_VERSION}\n⭐ SCORE: ${score}\n🌊 WAVE: ${wave} REACHED\n💀 ENEMIES KILLED: ${killCount}\n🏆 BEST: ${SAVE.hiScore}\n\nCan you beat me?`;
   if(navigator.share) {
     navigator.share({ title:'Void Invaders', text:txt })
       .catch(()=>{});
@@ -3088,7 +3088,7 @@ if(lb) lb.textContent=sw>1?`▶ CONTINUE WAVE ${sw}`:'▶ LAUNCH MISSION';
 showScreen('screen-menu');
 startMenuAnim();
 setTrack('menu');
-checkWhatsNew();
+setTimeout(checkWhatsNew, 100);
 
 </script>
 
@@ -3114,7 +3114,7 @@ checkWhatsNew();
   <div style="background:#050d1f;border:1px solid #00ff88;border-radius:10px;padding:24px 20px;max-width:360px;width:100%;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px rgba(0,255,136,0.2)">
     <div style="font-size:32px;text-align:center;margin-bottom:8px">🚀</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00ff88;letter-spacing:2px;margin-bottom:4px;text-align:center">WHAT'S NEW</div>
-    <div id="whatsnew-version" style="font-size:10px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px"></div>
+    <div id="whatsnew-version" style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#00ff88;letter-spacing:4px;text-align:center;margin-bottom:20px;text-shadow:0 0 10px rgba(0,255,136,0.5)"></div>
     <div id="whatsnew-content" style="font-size:13px;color:#aaa;line-height:2;margin-bottom:24px"></div>
     <button onclick="closeWhatsNew()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer;width:100%">▶ LET'S PLAY!</button>
   </div>
