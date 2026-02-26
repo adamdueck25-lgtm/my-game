@@ -41,7 +41,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #wa-inner{font-family:'Orbitron',sans-serif;font-weight:900;text-align:center;opacity:0}
 
 /* BOMB COUNTER */
-#bomb-counter{position:absolute;right:14px;bottom:220px;font-family:'Orbitron',sans-serif;font-size:11px;color:#ff6600;text-shadow:0 0 8px #ff6600;text-align:center}
+#bomb-counter{position:fixed;font-family:'Orbitron',sans-serif;font-size:13px;color:#fff;font-weight:900;pointer-events:none;z-index:15;background:#ff6600;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px #ff6600}
 
 /* CONTROLS */
 #controls{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:flex-end;align-items:flex-end;padding:10px 24px calc(env(safe-area-inset-bottom,0px) + 80px);pointer-events:none}
@@ -209,7 +209,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:var(--g);color:var(--g);margin-top:0">🏆 TROPHIES</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.0.4</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.0.5</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -1470,6 +1470,7 @@ const TROPHIES = [
 function loadSave(){ try{ return Object.assign({},DEFAULT_SAVE,JSON.parse(localStorage.getItem('vi2_save')||'{}')); }catch(e){ return {...DEFAULT_SAVE}; } }
 function doSave(){ 
   if(gState==='gameover') return;
+    console.trace('doSave called with upgrades:', JSON.stringify(SAVE.upgrades));
   localStorage.setItem('vi2_save',JSON.stringify(SAVE)); 
 }
 let SAVE = loadSave();
@@ -1611,10 +1612,10 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.0.4';
+const CURRENT_VERSION = '2.0.5';
 
 const VERSION_NOTES = {
-  '2.0.4': [
+  '2.0.5': [
     '🎮 Improved shop & card pack scrolling on all screen sizes',
     '💀 Game over now resets full progress — roguelite style!',
     '📤 Share your score with enemies killed stat',
@@ -1875,8 +1876,8 @@ function initGame() {
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
   bossFight=false; boss=null;
-  updateBombDisplay();
   spawnWave();
+  setTimeout(()=>updateBombDisplay(), 50);
 }
 
 function spawnWave() {
@@ -2477,7 +2478,7 @@ function endGame() {
   const finalKills = killCount;
   const hiScore = Math.max(finalScore, SAVE.hiScore);
   const earnedLegendary = finalScore >= 1000000;
-  SAVE = {...DEFAULT_SAVE};
+  SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = hiScore;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -2528,9 +2529,9 @@ function updateHUD() {
 
 function updateBombDisplay() {
   const el=document.getElementById('bomb-counter');
-  el.style.display='block';
-  el.textContent=`💥 ×${sessionBombs}`;
-  document.getElementById('btn-bomb').textContent=`💥${sessionBombs}`;
+  el.style.display='flex';
+  el.textContent=`${sessionBombs}`;
+  document.getElementById('btn-bomb').textContent=`💥`;
 }
 
 function updateCombo() {
@@ -2610,13 +2611,17 @@ function claimTrophy(trophyId) {
     sessionBombs = Math.min(sessionBombs + t.val, 20);
     doSave();
     updateHUD();
+    updateBombDisplay();
     showToast(`🎁 +${t.val} Bomb${t.val>1?'s':''}!`);
   } else if(t.type === 'coins') {
     SAVE.coins += t.val;
     showToast(`🎁 +${t.val} Coins!`);
   } else if(t.type === 'life') {
-    player.lives = Math.min((player.lives||0) + t.val, 5);
-    updateHUD();
+    if(player) {
+      player.lives = Math.min((player.lives||0) + t.val, 5);
+      player.maxLives = Math.min((player.maxLives||0) + t.val, 5);
+      updateHUD();
+    }
     showToast(`🎁 +${t.val} Life!`);
   } else if(t.type === 'pack') {
     const freePack = PACKS[Math.floor(Math.random() * (PACKS.length - 1)) + 1]; // skip basic
@@ -2739,7 +2744,7 @@ function closeResetModal() {
 }
 function doReset() {
   localStorage.removeItem('vi2_save');
-  SAVE = {...DEFAULT_SAVE};
+  SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -2807,6 +2812,7 @@ function shopBack(){
   document.getElementById('reset-btn').style.display = 'none';
   if(shopPrevScreen==='game'){
     gState='playing'; sessionCoins=0; showScreen('__game__'); lastTime=0; rafId=requestAnimationFrame(gameLoop);
+    updateBombDisplay();
     const savedBattleOffset = battleOffset;
     const savedBossOffset = bossThemeOffset;
     stopShopMusic(false);
