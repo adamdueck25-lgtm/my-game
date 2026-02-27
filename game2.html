@@ -1,0 +1,22 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"><style>
+body{background:#000;color:#fff;font-family:system-ui;text-align:center;margin:0;padding:20px;touch-action:manipulation;user-select:none}
+.g{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:400px;margin:20px auto}
+button{aspect-ratio:1;border:none;border-radius:12px;background:#222;color:#fff;font-weight:bold;transition:background 0.1s}
+button:active{background:#00d4ff;color:#000}
+.h{font-size:10px;opacity:0.5;margin-bottom:2px}
+</style></head><body>
+<h3>Doh-Rea-Me-Fa</h3><p>Key 1 (High) &rarr; Key 25 (Low)</p><div class="g" id="p"></div>
+<script>
+const ctx=new(window.AudioContext||window.webkitAudioContext)(),
+s=[0,2,4,5],n=["Doh","Rea","Me","Fa"],p=document.getElementById('p');
+for(let i=1;i<=25;i++){
+const b=document.createElement('button'),r=25-i,idx=r%4,oct=Math.floor(r/4)+2;
+const freq=130.81*Math.pow(2,(s[idx]+(oct-2)*12)/12);
+b.innerHTML=`<div class="h">${i}</div>${n[idx]}`;
+const play=(e)=>{e.preventDefault();if(ctx.state==='suspended')ctx.resume();
+const o=ctx.createOscillator(),g=ctx.createGain();
+o.type='triangle';o.frequency.setValueAtTime(freq,ctx.currentTime);
+g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);
+o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+0.6)};
+b.ontouchstart=play;b.onmousedown=play;p.appendChild(b)}
+</script></body></html>
