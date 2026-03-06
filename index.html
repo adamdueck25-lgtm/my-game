@@ -266,7 +266,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openLeaderboard()" style="margin-top:0;border-color:#00f5ff;color:#00f5ff;box-shadow:0 0 10px rgba(0,245,255,0.15)">🏆 LEADERBOARD</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.1</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.5</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -1201,6 +1201,7 @@ loadAudioFile('alt-battle.mp3').then(buf=>{ altBattleBuffer=buf; });
 loadAudioFile('alt-battle2.mp3').then(buf=>{ altBattle2Buffer=buf; });
 loadAudioFile('alt-battle3.mp3').then(buf=>{ altBattle3Buffer=buf; });
 loadAudioFile('boss-theme.mp3').then(buf=>{ bossThemeBuffer=buf; });
+loadAudioFile('alt-boss-theme.mp3').then(buf=>{ altBossThemeBuffer=buf; });
 
 function playMenuNow(fromStart=true) {
   if(!menuBuffer || !musicOn) return;
@@ -1244,6 +1245,10 @@ let altBattle2Offset = 0;
 let altBattle3Buffer = null;
 let altBattle3Source = null;
 let altBattle3Offset = 0;
+let altBossThemeBuffer = null;
+let altBossThemeSource = null;
+let altBossThemeOffset = 0;
+let altBossThemeStartedAt = 0;
 let useAltBattle = false;
 let battleCycle = 0; // 0-3 cycles through all 4 tracks
 
@@ -1258,29 +1263,37 @@ let bossThemeOffset = 0;
 
 
 function stopBossTheme(saveOffset=false) {
-  if(!bossThemeSource) return;
-  if(saveOffset && bossThemeBuffer) {
-    bossThemeOffset = (AC.currentTime - bossThemeStartedAt) % bossThemeBuffer.duration;
-  } else {
-    bossThemeOffset = 0;
+  if(bossThemeSource){
+    if(saveOffset && bossThemeBuffer) bossThemeOffset=(AC.currentTime-bossThemeStartedAt)%bossThemeBuffer.duration;
+    else bossThemeOffset=0;
+    try{ bossThemeSource.stop(); }catch(e){}
+    bossThemeSource.disconnect();
+    bossThemeSource=null;
   }
-  try{ bossThemeSource.stop(); }catch(e){}
-  bossThemeSource.disconnect();
-  bossThemeSource = null;
+  if(altBossThemeSource){
+    if(saveOffset && altBossThemeBuffer) altBossThemeOffset=(AC.currentTime-altBossThemeStartedAt)%altBossThemeBuffer.duration;
+    else altBossThemeOffset=0;
+    try{ altBossThemeSource.stop(); }catch(e){}
+    altBossThemeSource.disconnect();
+    altBossThemeSource=null;
+  }
 }
 
 function playBossThemeNow(fromStart=false, forceOffset=null) {
-  if(!bossThemeBuffer || !musicOn) return;
+  if(!musicOn) return;
   resumeAC();
   stopBossTheme(false);
-  if(forceOffset !== null) bossThemeOffset = forceOffset;
-  if(fromStart) bossThemeOffset = 0;
-  bossThemeSource = AC.createBufferSource();
-  bossThemeSource.buffer = bossThemeBuffer;
-  bossThemeSource.loop = true;
-  bossThemeSource.connect(masterGain);
-  bossThemeSource.start(0, bossThemeOffset % bossThemeBuffer.duration);
-  bossThemeStartedAt = AC.currentTime - (bossThemeOffset % bossThemeBuffer.duration);
+  const useAlt = currentTrackName==='altboss' && altBossThemeBuffer;
+  const buf = useAlt ? altBossThemeBuffer : bossThemeBuffer;
+  if(!buf) return;
+  if(forceOffset!==null){ bossThemeOffset=forceOffset; altBossThemeOffset=forceOffset; }
+  if(fromStart){ bossThemeOffset=0; altBossThemeOffset=0; }
+  const offset = useAlt ? altBossThemeOffset : bossThemeOffset;
+  const src = AC.createBufferSource();
+  src.buffer=buf; src.loop=true; src.connect(masterGain);
+  src.start(0, offset%buf.duration);
+  if(useAlt){ altBossThemeSource=src; altBossThemeStartedAt=AC.currentTime-(offset%buf.duration); }
+  else { bossThemeSource=src; bossThemeStartedAt=AC.currentTime-(offset%buf.duration); }
 }
 
 function stopAltBattle(saveOffset=false) {
@@ -1372,7 +1385,7 @@ function playBattleNow(fromStart=false, forceOffset=null) {
   }
 }
 
-const BOSS_TRACKS = new Set(['boss','finalboss']);
+const BOSS_TRACKS = new Set(['boss','finalboss','altboss']);
 
 function setTrack(name) {
   const wasBattle = BATTLE_TRACKS.has(currentTrackName) && !BOSS_TRACKS.has(currentTrackName);
@@ -1412,8 +1425,8 @@ function setTrack(name) {
 }
 
 function getWaveTrack() {
-  if(bossFight && wave>=15) return 'finalboss';
-  if(bossFight) return 'boss';
+  if(bossFight && wave>=15) return wave%10===0?'altboss':'finalboss';
+  if(bossFight) return wave%10===0?'altboss':'boss';
   if(wave>=15) return 'deepspace';
   if(wave>=10) return 'battle3';
   if(wave>=7)  return 'encounter';
@@ -2045,15 +2058,15 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.4.1';
+const CURRENT_VERSION = '2.4.5';
 
 const VERSION_NOTES = {
-'2.4.1': [
+'2.4.5': [
+    '🐛 Bug fixes and Optimizations, MAJOR performance improvements & NEW MUSIC',
     '🌟 Powerups — random drops from enemies with 10s timed effects',
     '⚡ 11 powerup types including Rapid Fire, Homing Shots, Ghost Mode, Time Freeze, Missile Storm & more',
     '🎨 How To Play redesigned as animated splash screens with step-by-step guide',
     '🆕 New game popup asks if you want the tutorial on first launch per version',
-    '🐛 Bug fixes, performance improvements & UI polish',
   ]
 };
 
