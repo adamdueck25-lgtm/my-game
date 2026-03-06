@@ -1284,15 +1284,25 @@ function playBossThemeNow(fromStart=false, forceOffset=null) {
 }
 
 function stopAltBattle(saveOffset=false) {
-  if(!altBattleSource) return;
-  if(saveOffset && altBattleBuffer) {
-    altBattleOffset = (AC.currentTime - altBattleStartedAt) % altBattleBuffer.duration;
-  } else {
-    altBattleOffset = 0;
+  if(altBattleSource){
+    if(saveOffset && altBattleBuffer) altBattleOffset=(AC.currentTime-altBattleStartedAt)%altBattleBuffer.duration;
+    else altBattleOffset=0;
+    try{ altBattleSource.stop(); }catch(e){}
+    altBattleSource.disconnect();
+    altBattleSource=null;
   }
-  try{ altBattleSource.stop(); }catch(e){}
-  altBattleSource.disconnect();
-  altBattleSource = null;
+  if(altBattle2Source){
+    try{ altBattle2Source.stop(); }catch(e){}
+    altBattle2Source.disconnect();
+    altBattle2Source=null;
+    altBattle2Offset=0;
+  }
+  if(altBattle3Source){
+    try{ altBattle3Source.stop(); }catch(e){}
+    altBattle3Source.disconnect();
+    altBattle3Source=null;
+    altBattle3Offset=0;
+  }
 }
 
 function stopShopMusic(saveOffset=false) {
