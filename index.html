@@ -266,7 +266,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openLeaderboard()" style="margin-top:0;border-color:#00f5ff;color:#00f5ff;box-shadow:0 0 10px rgba(0,245,255,0.15)">🏆 LEADERBOARD</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.7</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.5.0</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -1811,7 +1811,7 @@ try {
   }
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
-const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{} };
+const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2085,9 +2085,19 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.4.7';
+const CURRENT_VERSION = '2.5.0';
 
 const VERSION_NOTES = {
+'2.5.0': [
+    '🃏 Wild Perk Slot — unlocks after beating Wave 30 boss, no category restrictions',
+    '☠️ Super Bosses on every 10th wave with 3 phases, special attacks & victory screen',
+    '💊 Bosses drop powerups at 75%, 50% & 25% HP from wave 15+',
+    '⏸ Time Freeze now stops boss movement and projectiles',
+    '⚡ Quad Shot powerup replaces Triple Shot',
+    '🔰 Bulwark shields no longer stack if used during a wave',
+    '📉 Enemy & boss HP scaling reduced past wave 30 for better late game balance',
+    '🐛 Various bug fixes and stability improvements',
+  ],
 '2.4.7': [
     '🐛 Bug fixes and Optimizations, MAJOR performance improvements & NEW MUSIC',
     '🌟 Powerups — random drops from enemies with 10s timed effects',
@@ -2219,6 +2229,7 @@ let retributionTimer = 0;
 let lastStandTriggered = false;
 let lastStandCooldown = 0;
 let bulwarkShields = 0;
+let bulwarkUsedThisWave = false;
 let waveDamageTaken = false;
 let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
@@ -2227,7 +2238,7 @@ let activePowerups = {};
 const POWERUP_DEFS = {
   rapidFire:    { icon:'⚡', color:'#ffff00', label:'RAPID FIRE',    desc:'2× Fire Rate' },
   doubleDamage: { icon:'💥', color:'#ff4400', label:'DOUBLE DAMAGE', desc:'2× Damage' },
-  tripleShot:   { icon:'🔱', color:'#cc44ff', label:'TRIPLE SHOT',   desc:'3-Way Spread' },
+  tripleShot:   { icon:'🔱', color:'#cc44ff', label:'QUAD SHOT',     desc:'4-Way Spread' },
   homingShots:  { icon:'🎯', color:'#00ff88', label:'HOMING SHOTS',  desc:'Bullets Track Enemies' },
   nuke:          { icon:'☢️', color:'#ff8800', label:'NUKE',           desc:'Triggers a Bomb', instant:true },
   timeFreeze:    { icon:'⏸', color:'#88ddff', label:'TIME FREEZE',    desc:'Enemies Frozen' },
@@ -2437,13 +2448,26 @@ function spawnWave() {
 
   if(bossFight) {
     // BOSS
+    const isSuperBoss = wave%10===0;
+    const baseHp = wave>=35?Math.floor((120+wave*20)*Math.pow(1.08,wave-35)*Math.pow(1.2,20)):
+                   wave>=30?Math.floor((120+wave*20)*Math.pow(1.12,wave-30)*Math.pow(1.2,15)):
+                   wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):
+                   wave>=10?(140+wave*18):(80+wave*10);
+    const superHp = wave===10 ? Math.floor(baseHp*1.6) : Math.floor(baseHp*1.5);
+    const bossHp = isSuperBoss ? superHp : baseHp;
     boss = {
-      x:W/2, y:-80, targetY:90, // entrance anim
-      w:60, h:40, hp:wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10), maxHp:wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10),
+      x:W/2, y:-80, targetY:90,
+      w:isSuperBoss?80:60, h:isSuperBoss?55:40,
+      hp:bossHp, maxHp:bossHp,
       type:2, alive:true, phase:0,
       moveAngle:0, fireAngle:0,
       entering:true, anim:0,
-      shotCooldown:0, swoopTimer:0
+      shotCooldown:0, swoopTimer:0,
+      super:isSuperBoss,
+      dashTimer:0, dashing:false, dashVx:0,
+      ringCooldown:2, phasePrev:0,
+      phaseFlash:0,
+      droppedThresholds:[]
     };
     bossEntrance=true;
   } else {
@@ -2455,7 +2479,9 @@ function spawnWave() {
     for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) {
       const type=r===0?2:r<=2?1:0;
       const hpBase=1+(type===2?3:type===1?2:1)+Math.floor(wave/2);
-      const hpScaled = wave>=25 ? Math.floor(hpBase*Math.pow(1.18,wave-25)+hpBase) :
+      const hpScaled = wave>=35 ? Math.floor(hpBase*Math.pow(1.06,wave-35)*Math.pow(1.18,10)+(hpBase*0.8)) :
+                       wave>=30 ? Math.floor(hpBase*Math.pow(1.10,wave-30)*Math.pow(1.18,5)+(hpBase*0.6)) :
+                       wave>=25 ? Math.floor(hpBase*Math.pow(1.18,wave-25)+hpBase) :
                        wave>=10 ? Math.floor(hpBase*(1+(wave-10)*0.18)) : hpBase;
       const hp=hasRelic('voidCurse') ? hpScaled*2 : hpScaled;
       const shieldHp = (wave>=6 && type===2) ? (wave>=15?3:wave>=10?2:1) : 0;
@@ -2464,7 +2490,7 @@ function spawnWave() {
       const diver = wave>=12 && type===2 && Math.random()<0.35;
       const armored = wave>=15 && type===1 && !heavyShooter && Math.random()<0.3;
       const regen = wave>=20 && type===0 && !splitter && Math.random()<0.3;
-      const specialMult = wave>=25 ? 1.4 : wave>=10 ? 1.2 : 1.0;
+      const specialMult = wave>=35 ? 1.5 : wave>=30 ? 1.45 : wave>=25 ? 1.4 : wave>=10 ? 1.2 : 1.0;
       const finalHp = diver ? Math.floor((hp*3+8)*specialMult*1.1) :
                       armored ? Math.floor((hp+2)*specialMult*1.6) :
                       regen ? Math.floor(hp*specialMult*1.5) :
@@ -2491,8 +2517,11 @@ function announceWave() {
   const el=document.getElementById('wa-inner');
   el.style.opacity='0';
   el.style.transform='scale(0.5)';
+  const isSuperAnnounce = bossFight && wave%10===0;
   el.innerHTML=bossFight?
-    `<div style="font-size:28px;font-weight:900;color:#ff4455;text-shadow:0 0 30px #ff4455;letter-spacing:4px">⚠ BOSS WAVE ⚠</div><div style="font-size:14px;color:#ff8888;letter-spacing:2px;margin-top:4px">WAVE ${wave}</div>`:
+    isSuperAnnounce?
+      `<div style="font-size:24px;font-weight:900;color:#ff8800;text-shadow:0 0 30px #ff8800,0 0 60px #ff440088;letter-spacing:3px">☠ SUPER BOSS ☠</div><div style="font-size:13px;color:#ffaa44;letter-spacing:3px;margin-top:6px">INCOMING — WAVE ${wave}</div>`:
+      `<div style="font-size:28px;font-weight:900;color:#ff4455;text-shadow:0 0 30px #ff4455;letter-spacing:4px">⚠ BOSS WAVE ⚠</div><div style="font-size:14px;color:#ff8888;letter-spacing:2px;margin-top:4px">WAVE ${wave}</div>`:
     `<div style="font-size:20px;font-weight:900;color:var(--m);text-shadow:0 0 20px var(--m);letter-spacing:4px">WAVE ${wave}</div>`;
   el.style.transition='all .3s cubic-bezier(.17,.67,.35,1.4)';
   setTimeout(()=>{ el.style.opacity='1'; el.style.transform='scale(1)'; },50);
@@ -2676,31 +2705,127 @@ let moveDx = 0;
 
   // BOSS movement
   if(boss&&boss.alive&&!boss.entering) {
+    if(timeFrozen){ /* boss frozen */ }
+    else {
     boss.anim+=dt;
-    boss.moveAngle+=dt*0.8;
-    boss.x=W/2+Math.sin(boss.moveAngle)*120;
-    boss.swoopTimer-=dt;
-    if(boss.swoopTimer<0) { boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30; }
-    // phase change
-    boss.phase = boss.hp < boss.maxHp*0.5 ? 1 : 0;
-    boss.shotCooldown-=dt;
-    if(boss.shotCooldown<=0) {
-      const isLate = wave>=10;
-      const cooldownBase = boss.phase===1 ? (isLate?0.3:0.6) : (isLate?0.5:1.0);
-      boss.shotCooldown = cooldownBase + (isLate ? (Math.random()*0.3) : 0);
-      const angles = boss.phase===1
-        ? (isLate ? [-40,-20,-5,0,5,20,40] : [-30,-15,0,15,30])
-        : (isLate ? [-25,-10,0,10,25] : [-20,0,20]);
-      angles.forEach(a=>{
-        const spread = isLate ? (Math.random()-0.5)*12 : 0;
-        const rad=(a+spread)*Math.PI/180+Math.PI/2;
-        const spd = isLate ? 2.5+Math.random()*2.5 : 3;
-        const plasma = wave>=20;
-        eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
+    boss.phaseFlash=Math.max(0,boss.phaseFlash-dt*3);
+
+    // Phase detection
+    const newPhase = boss.super
+      ? (boss.hp<boss.maxHp*0.33?2:boss.hp<boss.maxHp*0.66?1:0)
+      : (boss.hp<boss.maxHp*0.5?1:0);
+    if(newPhase!==boss.phasePrev){
+      boss.phaseFlash=1; sfx('relicActivate');
+      shake(12,0.5);
+      // flash screen
+      ctx.save(); ctx.fillStyle=['rgba(0,245,255,0.15)','rgba(255,140,0,0.15)','rgba(255,0,0,0.2)'][newPhase]; ctx.fillRect(0,0,W,H); ctx.restore();
+      boss.phasePrev=newPhase;
+    }
+    boss.phase=newPhase;
+    // Drop powerups at 75%, 50%, 25% HP for wave 10+ bosses
+    if(wave>=15){
+      [0.75,0.5,0.25].forEach(thresh=>{
+        const key=Math.round(thresh*100);
+        if(!boss.droppedThresholds.includes(key) && boss.hp<=boss.maxHp*thresh){
+          boss.droppedThresholds.push(key);
+          const keys=['rapidFire','doubleDamage','tripleShot','homingShots','ghostMode','timeFreeze','fullHealth'];
+          const pid=keys[Math.floor(Math.random()*keys.length)];
+          powerupDrops.push({x:boss.x+(Math.random()-0.5)*60, y:boss.y+30, id:pid, pulse:0});
+          spawnExplosion(boss.x,boss.y,'#ffd700',8,false);
+        }
       });
+    }
+
+    // Movement by phase
+    if(boss.super){
+      if(boss.phase===0){
+        // Normal sine
+        boss.moveAngle+=dt*0.8;
+        boss.x=W/2+Math.sin(boss.moveAngle)*120;
+        boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30;
+      } else if(boss.phase===1){
+        // Figure-8
+        boss.moveAngle+=dt*1.1;
+        boss.x=W/2+Math.sin(boss.moveAngle)*140;
+        boss.y=boss.targetY+Math.sin(boss.moveAngle*2)*40;
+      } else {
+        // Phase 3 — random dashes
+        boss.dashTimer-=dt;
+        if(!boss.dashing && boss.dashTimer<=0){
+          boss.dashing=true;
+          boss.dashVx=(Math.random()-0.5)*800;
+          boss.dashTimer=0.15;
+        }
+        if(boss.dashing){
+          boss.x+=boss.dashVx*dt;
+          boss.x=Math.max(50,Math.min(W-50,boss.x));
+          if(boss.dashTimer<=0){ boss.dashing=false; boss.dashTimer=0.4+Math.random()*0.4; }
+        }
+        boss.y=boss.targetY+Math.sin(boss.anim*1.5)*20;
+        // Red tint while in phase 3
+        ctx.save(); ctx.fillStyle='rgba(255,0,0,0.04)'; ctx.fillRect(0,0,W,H); ctx.restore();
+      }
+    } else {
+      boss.moveAngle+=dt*0.8;
+      boss.x=W/2+Math.sin(boss.moveAngle)*120;
+      boss.swoopTimer-=dt;
+      if(boss.swoopTimer<0) boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30;
+    }
+
+    // Shooting
+    boss.shotCooldown-=dt;
+    if(boss.shotCooldown<=0){
+      const isLate=wave>=10;
+      const plasma=wave>=20;
+      const spd=isLate?2.5+Math.random()*2.5:3;
+
+      if(boss.super && boss.phase===2){
+        // Phase 3: aimed burst + spread simultaneously
+        const dx=player?player.x-boss.x:0, dy=player?player.y-boss.y:1;
+        const dist=Math.sqrt(dx*dx+dy*dy)||1;
+        // Aimed shots — reduced spread count and slower
+        [-12,0,12].forEach(a=>{
+          const rad=Math.atan2(dy,dx)+(a*Math.PI/180);
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*(spd*0.8),vy:Math.sin(rad)*(spd*0.8),big:true,boss:true,damage:2});
+        });
+        // Spread ring — fewer bullets, slower
+        for(let i=0;i<6;i++){
+          const rad=(i/6)*Math.PI*2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*1.8,vy:Math.sin(rad)*1.8,big:false,boss:true,damage:1});
+        }
+        boss.shotCooldown=0.5+Math.random()*0.3;
+      } else if(boss.super && boss.phase===1){
+        // Phase 2: ring burst every 2s + normal spread
+        boss.ringCooldown-=dt;
+        if(boss.ringCooldown<=0){
+          for(let i=0;i<12;i++){
+            const rad=(i/12)*Math.PI*2;
+            eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*3,vy:Math.sin(rad)*3,big:false,boss:true,damage:1});
+          }
+          boss.ringCooldown=2.5;
+        }
+        [-30,-15,0,15,30].forEach(a=>{
+          const rad=(a*Math.PI/180)+Math.PI/2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
+        });
+        boss.shotCooldown=0.5+Math.random()*0.2;
+      } else {
+        // Normal / phase 1
+        const cooldownBase=boss.phase===1?(isLate?0.3:0.6):(isLate?0.5:1.0);
+        boss.shotCooldown=cooldownBase+(isLate?Math.random()*0.3:0);
+        const angles=boss.phase===1
+          ?(isLate?[-40,-20,-5,0,5,20,40]:[-30,-15,0,15,30])
+          :(isLate?[-25,-10,0,10,25]:[-20,0,20]);
+        angles.forEach(a=>{
+          const spread=isLate?(Math.random()-0.5)*12:0;
+          const rad=(a+spread)*Math.PI/180+Math.PI/2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
+        });
+      }
       sfx('bossHit');
     }
     boss.fireAngle+=dt;
+    } // end !timeFrozen
   }
 
   // ── ENEMY FIRE ──────────────────────────────────
@@ -2985,7 +3110,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         if(stats.reduction>0&&Math.random()<stats.reduction) return; // reduced hit
         const invDur = hasPerk('ghostProtocol') ? [3,4,5,6][perkLevel('ghostProtocol')-1]||3 : 1.8;
         // Bulwark shield absorbs hit before any damage
-        if(bulwarkShields>0){ bulwarkShields--; player.inv=invDur; player.shieldFlash=0.8; sfx('shieldBreak'); showToast(`🔰 Bulwark absorbed! ${bulwarkShields} left`); return; }
+        if(bulwarkShields>0){ bulwarkShields--; bulwarkUsedThisWave=true; player.inv=invDur; player.shieldFlash=0.8; sfx('shieldBreak'); showToast(`🔰 Bulwark absorbed! ${bulwarkShields} left`); return; }
         const dmg = b.big ? 2 : 1;
         const wouldDie = player.lives - dmg <= 0;
         const lastStandSave = hasPerk('lastStand') && !lastStandTriggered && player.lives - dmg <= 1 && player.lives > 0;
@@ -3073,7 +3198,29 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       }
     }
   });
-  enemies.forEach(e=>{ if(e.alive&&!e.entering&&!e.mini&&e.diver&&e.y>H-playerYOffset){ player.lives=0; endGame(); } });
+  enemies.forEach(e=>{
+    if(e.alive&&!e.entering&&!e.mini&&e.diver&&e.diving&&e.y>H-playerYOffset){
+      // Deal 2 damage instead of killing player instantly
+      if(!e.diveDamageDealt){
+        e.diveDamageDealt=true;
+        player.lives=Math.max(0,player.lives-1);
+        sfx('playerHit'); shake(8,0.4);
+        document.getElementById('hit-flash').classList.add('active');
+        setTimeout(()=>document.getElementById('hit-flash').classList.remove('active'),300);
+        player.inv=2.0;
+        updateHUD();
+        if(player.lives<=0){ endGame(); return; }
+      }
+      // Send diver back up to home position
+      e.diving=false;
+      e.diveDamageDealt=false;
+      e.diveTimer=3+Math.random()*3;
+      e.x=e.homeX;
+      e.y=Math.min(e.homeY, 80 + Math.random()*40);
+      e.targetY=e.y;
+      e.homeY=e.y;
+    }
+  });
 
   // ── COIN PICKUP ──────────────────────────────────
   coinDrops.forEach((c,i)=>{
@@ -3488,11 +3635,12 @@ function waveCleared() {
     const rate=[0.02,0.04,0.06,0.08][perkLevel('warProfiteer')];
     warProfiteerMult=Math.min(warProfiteerMult+rate, 5.0);
   }
-  if(hasPerk('bulwark') && !waveDamageTaken){
-    const grant=[1,2,3,4][perkLevel('bulwark')];
+  if(hasPerk('bulwark') && !waveDamageTaken && !bulwarkUsedThisWave){
+    const grant=[1,2,3,4][perkLevel('bulwark')-1]||1;
     bulwarkShields+=grant;
     showToast(`🔰 +${grant} Bulwark shields! (${bulwarkShields} total)`);
   }
+  bulwarkUsedThisWave=false;
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
   SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; doSave();
@@ -3516,7 +3664,18 @@ function waveCleared() {
   document.getElementById('controls').style.display='none';
   document.getElementById('bomb-counter').style.display='none';
   if(bossFight){
-    showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies);
+    if(wave%10===0){
+      showSuperBossVictory(()=>{
+        if(wave>=30 && !SAVE.wildSlotUnlocked){
+          SAVE.wildSlotUnlocked=true; doSave();
+          showWildSlotIntro(()=>showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies));
+        } else {
+          showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies);
+        }
+      });
+    } else {
+      showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies);
+    }
   } else {
     document.getElementById('screen-summary').classList.remove('hidden');
     runSummarySequence(killCount, preBonus, wave, sessionCoins, newTrophies);
@@ -3951,11 +4110,15 @@ function buildPerks() {
 
   // Slots display
   const slotsEl = document.getElementById('perks-slots');
-  slotsEl.innerHTML = [0,1,2].map(i=>`
-    <div style="padding:4px 10px;border-radius:4px;border:1px solid ${active[i]?'#00ccff':'#1a2540'};background:${active[i]?'rgba(0,204,255,0.08)':'transparent'};font-family:'Orbitron',sans-serif;font-size:9px;color:${active[i]?'#00ccff':'#334'};letter-spacing:1px;min-width:60px;text-align:center">
-      ${active[i] ? (PERKS.find(p=>p.id===active[i])?.icon+' '+PERKS.find(p=>p.id===active[i])?.name.split(' ')[0]) : 'EMPTY'}
-    </div>
-  `).join('');
+  const slotCount = SAVE.wildSlotUnlocked ? 4 : 3;
+  slotsEl.innerHTML = Array(slotCount).fill(0).map((_, i)=>{
+    const isWild = i===3;
+    const color = isWild ? '#cc44ff' : '#00ccff';
+    const bg = isWild ? 'rgba(204,68,255,0.08)' : 'rgba(0,204,255,0.08)';
+    return `<div style="padding:4px 10px;border-radius:4px;border:1px solid ${active[i]?color:'#1a2540'};background:${active[i]?bg:'transparent'};font-family:'Orbitron',sans-serif;font-size:9px;color:${active[i]?color:'#334'};letter-spacing:1px;min-width:60px;text-align:center">
+      ${active[i] ? (PERKS.find(p=>p.id===active[i])?.icon+' '+PERKS.find(p=>p.id===active[i])?.name.split(' ')[0]) : (isWild?'🃏 WILD':'EMPTY')}
+    </div>`;
+  }).join('');
 
   const content = document.getElementById('perks-content');
   content.innerHTML = '';
@@ -4022,7 +4185,9 @@ function buildPerks() {
             ? `<button onclick="unequipPerk('${p.id}')" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid #ff4455;background:rgba(255,40,60,0.12);color:#ff4455;border-radius:3px;cursor:pointer;letter-spacing:1px">✕ UNEQUIP</button>`
             : canEquip
               ? `<button onclick="equipPerk('${p.id}')" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid ${meta.color};background:${meta.bg};color:${meta.color};border-radius:3px;cursor:pointer;letter-spacing:1px">⚡ EQUIP FREE</button>`
-              : `<button disabled style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid #1a2540;background:transparent;color:#334;border-radius:3px;letter-spacing:1px">${active.length>=3&&!isActive?'SLOTS FULL':catEquipped?'CAT TAKEN':'EQUIP'}</button>`
+              : SAVE.wildSlotUnlocked && active.length>=3 && !isActive && active.length<4
+                ? `<button onclick="equipPerk('${p.id}',true)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid #cc44ff;background:rgba(204,68,255,0.08);color:#cc44ff;border-radius:3px;cursor:pointer;letter-spacing:1px">🃏 WILD SLOT</button>`
+                : `<button disabled style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid #1a2540;background:transparent;color:#334;border-radius:3px;letter-spacing:1px">${active.length>=4&&!isActive?'SLOTS FULL':catEquipped?'CAT TAKEN':'EQUIP'}</button>`
           }
           ${lv>0&&!maxed
             ? `<button onclick="upgradePerk('${p.id}')" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 10px;border:1px solid ${canAfford?'#ffd700':'#1a2540'};background:${canAfford?'rgba(255,215,0,0.08)':'transparent'};color:${canAfford?'#ffd700':'#334'};border-radius:3px;cursor:pointer;letter-spacing:1px">UPGRADE LV${lv+1} 💰${upgradeCost}</button>`
@@ -4037,13 +4202,23 @@ function buildPerks() {
   });
 }
 
-function equipPerk(id) {
+function equipPerk(id, wild=false) {
   if(!SAVE.activePerks) SAVE.activePerks=[];
   const p = PERKS.find(x=>x.id===id);
   if(!p) return;
-  const catTaken = SAVE.activePerks.find(aid=>PERKS.find(x=>x.id===aid)?.cat===p.cat);
-  if(catTaken){ showToast('Already have a '+p.cat+' perk equipped!'); return; }
-  if(SAVE.activePerks.length>=3){ showToast('Max 3 perks equipped!'); return; }
+  const maxSlots = SAVE.wildSlotUnlocked ? 4 : 3;
+  if(!wild){
+    const catTaken = SAVE.activePerks.slice(0,3).find(aid=>PERKS.find(x=>x.id===aid)?.cat===p.cat);
+    if(catTaken){ showToast('Already have a '+p.cat+' perk equipped!'); return; }
+    if(SAVE.activePerks.length>=maxSlots){ showToast('All slots full!'); return; }
+    if(SAVE.activePerks.length>=3 && SAVE.wildSlotUnlocked){ showToast('Use the 🃏 Wild slot for a 4th perk!'); return; }
+  } else {
+    // Wild slot — replace slot 3 only, no category restriction
+    if(SAVE.activePerks.length<3){ showToast('Fill your first 3 slots first!'); return; }
+    SAVE.activePerks[3]=id;
+    if(!SAVE.perkLevels) SAVE.perkLevels={};
+    doSave(); sfx('relicActivate'); buildPerks(); return;
+  }
   SAVE.activePerks.push(id);
   if(!SAVE.perkLevels) SAVE.perkLevels={};
   doSave(); sfx('relicActivate'); buildPerks();
@@ -4747,6 +4922,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.5.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Wild Perk Slot — unlocks after Wave 30 boss, no category restrictions<br>✅ Super Bosses on every 10th wave with 3 phases, special attacks & victory screen<br>✅ Bosses drop powerups at 75%, 50% & 25% HP from wave 15+<br>✅ Time Freeze now stops boss movement and projectiles<br>✅ Quad Shot powerup replaces Triple Shot<br>✅ Bulwark shields no longer stack if used during a wave<br>✅ Enemy & boss HP scaling reduced past wave 30<br>✅ Various bug fixes and stability improvements</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.7</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ 3 new battle tracks — more variety across waves<br>✅ Alt boss theme on milestone boss waves (10, 20, 30...)<br>✅ Music resumes from exact position when returning from shop<br>✅ Time Freeze now stops dive bombers and freezes enemy bullets<br>✅ Nuke powerup works during relic runs<br>✅ Changelog and Powerup List now proper scrollable screens<br>✅ Powerup List accessible from Upgrades shop<br>✅ Various bug fixes and stability improvements</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.0</div>
@@ -5257,6 +5434,59 @@ function spinnerContinue() {
       runSummarySequence(kills,preBonus,waveNum,coins,newTrophies);
     });
   }
+}
+
+function showWildSlotIntro(onDone){
+  const el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px';
+  el.innerHTML=`
+    <div id="wsi-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">🃏</div>
+    <div id="wsi-title" style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#cc44ff;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #cc44ff">WILD PERK SLOT UNLOCKED</div>
+    <div id="wsi-sub" style="font-family:'Orbitron',sans-serif;font-size:10px;color:#cc44ff88;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">4TH PERK SLOT — NO CATEGORY RULES</div>
+    <div id="wsi-steps" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transition:all 0.5s ease 0.7s">
+      <div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(204,68,255,0.06);border:1px solid #cc44ff33;font-size:12px;color:#ccc;text-align:left">🃏 Equip any perk in the 4th slot — even a duplicate category</div>
+      <div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(204,68,255,0.06);border:1px solid #cc44ff33;font-size:12px;color:#ccc;text-align:left">⚡ Stack two combat perks, two defense perks — your choice</div>
+      <div style="padding:10px 14px;border-radius:8px;background:rgba(204,68,255,0.06);border:1px solid #cc44ff33;font-size:12px;color:#ccc;text-align:left">⚠️ Perk progress still resets on death</div>
+    </div>
+    <button id="wsi-btn" onclick="this.disabled=true" style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(204,68,255,0.1);border:2px solid #cc44ff;color:#cc44ff;border-radius:4px;cursor:pointer;margin-top:28px;opacity:0;transition:all 0.5s ease 1.1s">🃏 GOT IT</button>
+  `;
+  document.body.appendChild(el);
+  sfx('setComplete');
+  setTimeout(()=>{ document.getElementById('wsi-icon').style.opacity='1'; document.getElementById('wsi-icon').style.transform='scale(1)'; },50);
+  setTimeout(()=>{ document.getElementById('wsi-title').style.opacity='1'; document.getElementById('wsi-title').style.transform='translateY(0)'; },300);
+  setTimeout(()=>{ document.getElementById('wsi-sub').style.opacity='1'; },500);
+  setTimeout(()=>{ document.getElementById('wsi-steps').style.opacity='1'; },700);
+  setTimeout(()=>{ const btn=document.getElementById('wsi-btn'); btn.style.opacity='1'; btn.onclick=()=>{ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(()=>{ document.body.removeChild(el); onDone(); },400); }; },1100);
+}
+
+function showSuperBossVictory(onDone){
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px';
+  el.innerHTML = `
+    <div id="sbv-icon" style="font-size:64px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">☠️</div>
+    <div id="sbv-title" style="font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:#ff8800;letter-spacing:4px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #ff8800">SUPER BOSS DEFEATED</div>
+    <div id="sbv-wave" style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff4455;letter-spacing:4px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">WAVE ${wave} COMPLETE</div>
+    <div id="sbv-stars" style="font-size:28px;margin-top:20px;opacity:0;transition:all 0.5s ease 0.7s;letter-spacing:8px">⭐⭐⭐</div>
+    <div id="sbv-sub" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:3px;margin-top:24px;opacity:0;transition:all 0.5s ease 1.1s">COLLECTING YOUR REWARDS...</div>
+  `;
+  document.body.appendChild(el);
+  sfx('trophyClaim');
+  setTimeout(()=>{
+    document.getElementById('sbv-icon').style.opacity='1';
+    document.getElementById('sbv-icon').style.transform='scale(1)';
+  },50);
+  setTimeout(()=>{
+    document.getElementById('sbv-title').style.opacity='1';
+    document.getElementById('sbv-title').style.transform='translateY(0)';
+  },300);
+  setTimeout(()=>{ document.getElementById('sbv-wave').style.opacity='1'; },500);
+  setTimeout(()=>{ document.getElementById('sbv-stars').style.opacity='1'; },700);
+  setTimeout(()=>{ document.getElementById('sbv-sub').style.opacity='1'; },1100);
+  setTimeout(()=>{
+    el.style.transition='opacity 0.4s ease';
+    el.style.opacity='0';
+    setTimeout(()=>{ document.body.removeChild(el); onDone(); },400);
+  },2800);
 }
 
 function showBossSpinner(kills,preBonus,waveNum,coins,newTrophies) {
