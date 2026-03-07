@@ -259,7 +259,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
     <div class="menu-sub">★ GALACTIC EDITION ★</div>
     <div class="menu-score" id="menu-hiscore"></div>
-   <button class="btn-main b-c" onclick="startGame()" style="margin-top:4px" id="btn-launch">▶ LAUNCH MISSION</button>
+   <button class="btn-main b-c" onclick="startGame()" style="margin-top:4px;animation:launchPulse 1.8s ease-in-out infinite;position:relative;overflow:hidden" id="btn-launch">▶ LAUNCH MISSION</button>
     <button class="btn-main" id="btn-relics" onclick="openRelics()" style="margin-top:0;border-color:#ff4455;color:#ff4455">⚠ RELICS</button>
     <button class="btn-main b-g" onclick="openShop('screen-menu')">🛒 SHOP</button>
     <button class="btn-main" onclick="openTrophies('screen-menu')" style="border-color:#ffaa00;color:#ffaa00;margin-top:0;box-shadow:0 0 10px rgba(255,170,0,0.2)">🏆 TROPHIES</button>
@@ -633,6 +633,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .shop-ticker{font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:3px;overflow:hidden;white-space:nowrap;width:100%;max-width:380px;margin-bottom:10px}
 .shop-ticker-inner{display:inline-block;animation:tickerScroll 18s linear infinite}
 @keyframes tickerScroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes launchPulse{
+  0%{box-shadow:0 0 8px rgba(0,245,255,0.4),0 0 16px rgba(0,245,255,0.2);border-color:#00f5ff}
+  50%{box-shadow:0 0 20px rgba(0,245,255,0.9),0 0 40px rgba(0,245,255,0.4),0 0 60px rgba(0,245,255,0.15);border-color:#88ffff}
+  100%{box-shadow:0 0 8px rgba(0,245,255,0.4),0 0 16px rgba(0,245,255,0.2);border-color:#00f5ff}
+}
 .si{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .2s}
 .si::after{content:'';position:absolute;top:-50%;left:-60%;width:30%;height:200%;background:rgba(255,255,255,0.06);transform:skewX(-20deg);transition:left .4s}
 .si.aff:hover::after{left:130%}
