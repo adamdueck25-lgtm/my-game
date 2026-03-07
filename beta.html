@@ -266,7 +266,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openLeaderboard()" style="margin-top:0;border-color:#00f5ff;color:#00f5ff;box-shadow:0 0 10px rgba(0,245,255,0.15)">🏆 LEADERBOARD</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.5</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.7</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -2085,10 +2085,10 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.4.5';
+const CURRENT_VERSION = '2.4.8';
 
 const VERSION_NOTES = {
-'2.4.5': [
+'2.4.8': [
     '🐛 Bug fixes and Optimizations, MAJOR performance improvements & NEW MUSIC',
     '🌟 Powerups — random drops from enemies with 10s timed effects',
     '⚡ 11 powerup types including Rapid Fire, Homing Shots, Ghost Mode, Time Freeze, Missile Storm & more',
@@ -3073,7 +3073,27 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       }
     }
   });
-  enemies.forEach(e=>{ if(e.alive&&!e.entering&&!e.mini&&e.diver&&e.y>H-playerYOffset){ player.lives=0; endGame(); } });
+  enemies.forEach(e=>{
+    if(e.alive&&!e.entering&&!e.mini&&e.diver&&e.diving&&e.y>H-playerYOffset){
+      // Deal 2 damage instead of killing player instantly
+      if(!e.diveDamageDealt){
+        e.diveDamageDealt=true;
+        player.lives=Math.max(0,player.lives-2);
+        sfx('playerHit'); shake(8,0.4);
+        document.getElementById('hit-flash').classList.add('active');
+        setTimeout(()=>document.getElementById('hit-flash').classList.remove('active'),300);
+        player.inv=2.0;
+        updateHUD();
+        if(player.lives<=0){ endGame(); return; }
+      }
+      // Send diver back up to home position
+      e.diving=false;
+      e.diveDamageDealt=false;
+      e.diveTimer=3+Math.random()*3;
+      e.x=e.homeX; e.y=e.homeY;
+      e.targetY=e.homeY;
+    }
+  });
 
   // ── COIN PICKUP ──────────────────────────────────
   coinDrops.forEach((c,i)=>{
@@ -4747,6 +4767,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.7</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ 3 new battle tracks — more variety across waves<br>✅ Alt boss theme on milestone boss waves (10, 20, 30...)<br>✅ Music resumes from exact position when returning from shop<br>✅ Time Freeze now stops dive bombers and freezes enemy bullets<br>✅ Nuke powerup works during relic runs<br>✅ Changelog and Powerup List now proper scrollable screens<br>✅ Powerup List accessible from Upgrades shop<br>✅ Various bug fixes and stability improvements</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.0</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Powerups — random drops from enemies with 10s timed effects<br>✅ 11 powerup types: Rapid Fire, Double Damage, Triple Shot, Homing, Ghost Mode, Time Freeze, Coin Magnet, Gold Rush, Missile Storm, Chain Lightning, Full Health & Nuke<br>✅ Powerup timer bar displayed above health during active effects<br>✅ How To Play redesigned as animated splash screens<br>✅ New game popup asks if you want the tutorial on first launch per version</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.3.5</div>
