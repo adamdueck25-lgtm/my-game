@@ -266,7 +266,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button class="btn-main" onclick="openLeaderboard()" style="margin-top:0;border-color:#00f5ff;color:#00f5ff;box-shadow:0 0 10px rgba(0,245,255,0.15)">🏆 LEADERBOARD</button>
     <button class="btn-main" onclick="showHowToPlay()" style="margin-top:6px;border-color:#556;color:#556">❓ HOW TO PLAY</button>
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
-    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.1</div>
+    <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.4.5</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
@@ -408,7 +408,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <div id="screen-shop" class="screen screen-bg hidden screen-cards-layout">
   <canvas id="shop-bg-canvas" style="position:absolute;inset:0;z-index:0;pointer-events:none"></canvas>
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
-    <div class="screen-title" style="color:var(--c)">⚡ UPGRADES</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+      <div class="screen-title" style="color:var(--c)">⚡ UPGRADES</div>
+      <button onclick="showPowerupGuide()" style="font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid #00f5ff55;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer;letter-spacing:1px">🌟 POWERUP LIST</button>
+    </div>
     <div class="shop-ticker"><span class="shop-ticker-inner">★ NEW WEAPONS AVAILABLE ★ SPEND YOUR COINS ★ UPGRADE YOUR SHIP ★ COLLECT ALL CARDS ★ COMPLETE SETS FOR POWERS ★ BOSS EVERY 5 WAVES ★</span></div>
     <div class="shop-coins-display" id="shop-coins-display">💰 <span id="shop-coins">0</span></div>
   </div>
@@ -1450,7 +1453,7 @@ function toggleMusic() {
   } else {
     stopMusic();
     stopBattleAudio(true);
-    stopBossTheme(false);
+    stopBossTheme(true);
     stopShopMusic(true);
   }
 }
@@ -2058,15 +2061,15 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.4.1';
+const CURRENT_VERSION = '2.4.5';
 
 const VERSION_NOTES = {
-'2.4.1': [
+'2.4.5': [
+    '🐛 Bug fixes and Optimizations, MAJOR performance improvements & NEW MUSIC',
     '🌟 Powerups — random drops from enemies with 10s timed effects',
     '⚡ 11 powerup types including Rapid Fire, Homing Shots, Ghost Mode, Time Freeze, Missile Storm & more',
     '🎨 How To Play redesigned as animated splash screens with step-by-step guide',
     '🆕 New game popup asks if you want the tutorial on first launch per version',
-    '🐛 Bug fixes, performance improvements & UI polish',
   ]
 };
 
@@ -2748,8 +2751,23 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
           updateHUD();
           showToast('❤️ FULL HEALTH RESTORED!');
         } else if(p.id==='nuke'){
-          document.getElementById('btn-bomb').click();
+          // Nuke works even during relic runs — bypasses bomb restrictions
+          sfx('bomb'); shake(12,0.5);
+          if(wave>=20){
+            enemies.forEach(e=>{
+              if(!e.alive) return;
+              const halfHp=e.maxHp*0.5;
+              if(e.hp<=halfHp){ e.alive=false; spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],15,true); sessionCoins+=e.coinVal; score+=e.scoreVal*wave; coinDrops.push({x:e.x,y:e.y,val:e.coinVal}); }
+              else { e.hp=Math.ceil(e.hp*0.5); e.hitFlash=1; spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],6,false); }
+            });
+            if(boss&&boss.alive){ boss.hp=Math.max(1,boss.hp-Math.floor(boss.maxHp*0.15)); boss.hitFlash=2; spawnExplosion(boss.x,boss.y,'#ff6600',12,false); }
+          } else {
+            enemies.forEach(e=>{ if(!e.alive) return; spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],15,true); sessionCoins+=e.coinVal; score+=e.scoreVal*wave; e.alive=false; });
+            if(boss&&boss.alive){ boss.hp-=boss.maxHp*0.3; spawnExplosion(boss.x,boss.y,'#ff6600',25,true); }
+          }
+          ctx.save(); ctx.fillStyle='rgba(255,255,255,0.25)'; ctx.fillRect(0,0,W,H); ctx.restore();
           showToast('☢️ NUKE!');
+          updateHUD();
         }
       } else {
         activePowerups[p.id]=POWERUP_DURATION;
@@ -2774,7 +2792,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     const hud=document.getElementById('powerup-hud');
     if(hud) hud.style.display='none';
   }
-  eBullets.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; });
+  if(!timeFrozen) eBullets.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; });
   eBullets = eBullets.filter(b=>b.y<H+10&&b.y>-10&&b.x>-10&&b.x<W+10);
   if(eBullets.length>80) eBullets.splice(0, eBullets.length-80);
 
@@ -3014,7 +3032,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       return;
     }
     // Diver movement
-    if(e.diver){
+    if(e.diver && !timeFrozen){
       e.diveTimer-=dt;
       if(!e.diving && e.diveTimer<=0){
         e.diving=true; e.homeX=e.x; e.homeY=e.y;
@@ -4674,6 +4692,22 @@ function howtoNav(dir) {
   renderHowtoPage();
 }
 
+function showPowerupGuide(){
+  const list=document.getElementById('powerup-guide-list');
+  list.innerHTML=Object.entries(POWERUP_DEFS).map(([id,def])=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid ${def.color}33">
+      <div style="font-size:22px;width:32px;text-align:center;flex-shrink:0">${def.icon}</div>
+      <div style="flex:1">
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:${def.color};letter-spacing:1px;margin-bottom:2px">${def.label}</div>
+        <div style="font-size:11px;color:#aaa">${def.desc}${def.instant?' <span style="color:#ffd700;font-size:9px">(INSTANT)</span>':' <span style="color:#446;font-size:9px">(10s)</span>'}</div>
+      </div>
+    </div>
+  `).join('');
+  const overlay=document.getElementById('powerup-guide-overlay');
+  document.body.appendChild(overlay);
+  overlay.style.display='flex';
+}
+
 function closeHowToPlay() {
   document.getElementById('howto-overlay').style.display = 'none';
   if(window._howtoOnClose){ window._howtoOnClose(); }
@@ -5206,6 +5240,18 @@ setTrack('menu');
   <button onclick="document.getElementById('newgame-popup').style.display='none'" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 24px;border-radius:4px;border:2px solid #334;background:transparent;color:#556;cursor:pointer;width:100%;max-width:300px;margin-top:4px">✕ NO THANKS</button>
 </div>
 
+<!-- POWERUP GUIDE OVERLAY -->
+<div id="powerup-guide-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.95);">
+  <div style="position:absolute;top:0;left:0;right:0;bottom:60px;overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px">
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00f5ff;letter-spacing:3px;text-align:center;margin-bottom:4px">🌟 POWERUPS</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px">DROP FROM DEFEATED ENEMIES</div>
+    <div id="powerup-guide-list" style="max-width:340px;margin:0 auto"></div>
+  </div>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:60px;padding:10px 20px;background:rgba(0,0,0,0.95);border-top:1px solid #1a2540;box-sizing:border-box">
+    <button onclick="document.getElementById('powerup-guide-overlay').style.display='none'" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:8px 20px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;width:100%;max-width:360px;display:block;margin:0 auto">✕ CLOSE</button>
+  </div>
+</div>
+
 <!-- HOW TO PLAY OVERLAY -->
 <div id="howto-overlay" style="display:none;position:fixed;inset:0;z-index:99997;background:rgba(0,0,0,0.95);flex-direction:column;align-items:center;justify-content:center;padding:24px 20px">
   <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:4px;margin-bottom:20px" id="howto-page-label">HOW TO PLAY · PAGE 1 OF 7</div>
@@ -5234,8 +5280,8 @@ setTrack('menu');
 </div>
 
 <!-- CHANGELOG MODAL -->
-<div id="changelog-modal" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.92);flex-direction:column;overflow:hidden">
-  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px">
+<div id="changelog-modal" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,0.92);">
+  <div style="position:absolute;top:0;left:0;right:0;bottom:60px;overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px">
   <div style="background:#050d1f;border:1px solid #00f5ff;border-radius:10px;padding:24px 20px;max-width:360px;width:100%;box-shadow:0 0 40px rgba(0,245,255,0.2);margin:0 auto 20px auto">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00f5ff;letter-spacing:2px;margin-bottom:4px;text-align:center">📡 VOID INVADERS</div>
     <div style="font-size:10px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px">UPDATES & ROADMAP</div>
@@ -5308,8 +5354,8 @@ setTrack('menu');
 
     </div>
   </div>
-  <div style="flex-shrink:0;padding:12px 20px;background:rgba(0,0,0,0.95);border-top:1px solid #1a2540">
-    <button onclick="closeChangelog()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;width:100%;max-width:360px;display:block;margin:0 auto">✕ CLOSE</button>
+  <div style="position:absolute;bottom:0;left:0;right:0;height:60px;padding:10px 20px;background:rgba(0,0,0,0.95);border-top:1px solid #1a2540;box-sizing:border-box">
+    <button onclick="closeChangelog()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:8px 20px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;width:100%;max-width:360px;display:block;margin:0 auto">✕ CLOSE</button>
   </div>
 </div>
 
