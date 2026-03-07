@@ -2094,6 +2094,7 @@ function openChangelog() {
   const m = document.getElementById('changelog-modal');
   document.body.appendChild(m);
   m.style.display = 'flex';
+  makeScrollable(m.querySelector('[style*="overflow-y"]'));
 }
 
 function closeChangelog() {
@@ -4712,20 +4713,27 @@ function howtoNav(dir) {
   renderHowtoPage();
 }
 
+function makeScrollable(el){
+  el.addEventListener('touchstart', e=>e.stopPropagation(), {passive:true});
+  el.addEventListener('touchmove', e=>e.stopPropagation(), {passive:true});
+}
+
 function showPowerupGuide(){
   const list=document.getElementById('powerup-guide-list');
   list.innerHTML=Object.entries(POWERUP_DEFS).map(([id,def])=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid ${def.color}33">
-      <div style="font-size:22px;width:32px;text-align:center;flex-shrink:0">${def.icon}</div>
+    <div style="display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:2px solid ${def.color}44;box-shadow:0 0 12px ${def.color}11">
+      <div style="font-size:36px;width:48px;text-align:center;flex-shrink:0;filter:drop-shadow(0 0 8px ${def.color})">${def.icon}</div>
       <div style="flex:1">
-        <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:${def.color};letter-spacing:1px;margin-bottom:2px">${def.label}</div>
-        <div style="font-size:11px;color:#aaa">${def.desc}${def.instant?' <span style="color:#ffd700;font-size:9px">(INSTANT)</span>':' <span style="color:#446;font-size:9px">(10s)</span>'}</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:${def.color};letter-spacing:2px;margin-bottom:6px;text-shadow:0 0 10px ${def.color}88">${def.label}</div>
+        <div style="font-size:13px;color:#ccc;line-height:1.5;margin-bottom:6px">${def.desc}</div>
+        <div style="display:inline-block;font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 8px;border-radius:10px;background:${def.instant?'rgba(255,215,0,0.15)':'rgba(0,245,255,0.1)'};color:${def.instant?'#ffd700':'#00f5ff'};border:1px solid ${def.instant?'#ffd70044':'#00f5ff44'};letter-spacing:1px">${def.instant?'⚡ INSTANT':'⏱ 10 SECONDS'}</div>
       </div>
     </div>
   `).join('');
   const overlay=document.getElementById('powerup-guide-overlay');
   document.body.appendChild(overlay);
   overlay.style.display='flex';
+  makeScrollable(document.getElementById('powerup-guide-list'));
 }
 
 function closeHowToPlay() {
