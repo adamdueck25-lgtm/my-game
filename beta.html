@@ -2439,7 +2439,7 @@ function spawnWave() {
     // BOSS
     const isSuperBoss = wave%10===0;
     const baseHp = wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10);
-    const superHp = wave===10 ? Math.floor(baseHp*2.5) : Math.floor(baseHp*1.5);
+    const superHp = wave===10 ? Math.floor(baseHp*1.6) : Math.floor(baseHp*1.5);
     const bossHp = isSuperBoss ? superHp : baseHp;
     boss = {
       x:W/2, y:-80, targetY:90,
@@ -2452,7 +2452,8 @@ function spawnWave() {
       super:isSuperBoss,
       dashTimer:0, dashing:false, dashVx:0,
       ringCooldown:2, phasePrev:0,
-      phaseFlash:0
+      phaseFlash:0,
+      droppedThresholds:[]
     };
     bossEntrance=true;
   } else {
@@ -2500,8 +2501,11 @@ function announceWave() {
   const el=document.getElementById('wa-inner');
   el.style.opacity='0';
   el.style.transform='scale(0.5)';
+  const isSuperAnnounce = bossFight && wave%10===0;
   el.innerHTML=bossFight?
-    `<div style="font-size:28px;font-weight:900;color:#ff4455;text-shadow:0 0 30px #ff4455;letter-spacing:4px">⚠ BOSS WAVE ⚠</div><div style="font-size:14px;color:#ff8888;letter-spacing:2px;margin-top:4px">WAVE ${wave}</div>`:
+    isSuperAnnounce?
+      `<div style="font-size:24px;font-weight:900;color:#ff8800;text-shadow:0 0 30px #ff8800,0 0 60px #ff440088;letter-spacing:3px">☠ SUPER BOSS ☠</div><div style="font-size:13px;color:#ffaa44;letter-spacing:3px;margin-top:6px">INCOMING — WAVE ${wave}</div>`:
+      `<div style="font-size:28px;font-weight:900;color:#ff4455;text-shadow:0 0 30px #ff4455;letter-spacing:4px">⚠ BOSS WAVE ⚠</div><div style="font-size:14px;color:#ff8888;letter-spacing:2px;margin-top:4px">WAVE ${wave}</div>`:
     `<div style="font-size:20px;font-weight:900;color:var(--m);text-shadow:0 0 20px var(--m);letter-spacing:4px">WAVE ${wave}</div>`;
   el.style.transition='all .3s cubic-bezier(.17,.67,.35,1.4)';
   setTimeout(()=>{ el.style.opacity='1'; el.style.transform='scale(1)'; },50);
@@ -2700,6 +2704,20 @@ let moveDx = 0;
       boss.phasePrev=newPhase;
     }
     boss.phase=newPhase;
+    // Drop powerups at 75%, 50%, 25% HP for wave 10+ bosses
+    if(wave>=10){
+      [0.75,0.5,0.25].forEach(thresh=>{
+        const key=Math.round(thresh*100);
+        if(!boss.droppedThresholds.includes(key) && boss.hp<=boss.maxHp*thresh){
+          boss.droppedThresholds.push(key);
+          const keys=POWERUP_KEYS.filter(k=>!POWERUP_DEFS[k].instant);
+          const pid=keys[Math.floor(Math.random()*keys.length)];
+          powerupDrops.push({x:boss.x+(Math.random()-0.5)*60, y:boss.y+30, id:pid, pulse:0});
+          spawnExplosion(boss.x,boss.y,'#ffd700',8,false);
+          showToast('💊 BOSS DROPPED A POWERUP!');
+        }
+      });
+    }
 
     // Movement by phase
     if(boss.super){
@@ -2748,17 +2766,17 @@ let moveDx = 0;
         // Phase 3: aimed burst + spread simultaneously
         const dx=player?player.x-boss.x:0, dy=player?player.y-boss.y:1;
         const dist=Math.sqrt(dx*dx+dy*dy)||1;
-        // Aimed shots
-        [-15,-7,0,7,15].forEach(a=>{
+        // Aimed shots — reduced spread count and slower
+        [-12,0,12].forEach(a=>{
           const rad=Math.atan2(dy,dx)+(a*Math.PI/180);
-          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*(spd+1),vy:Math.sin(rad)*(spd+1),big:true,boss:true,damage:2});
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*(spd*0.8),vy:Math.sin(rad)*(spd*0.8),big:true,boss:true,damage:2});
         });
-        // Spread ring
-        for(let i=0;i<8;i++){
-          const rad=(i/8)*Math.PI*2;
-          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*2.5,vy:Math.sin(rad)*2.5,big:false,boss:true,damage:1});
+        // Spread ring — fewer bullets, slower
+        for(let i=0;i<6;i++){
+          const rad=(i/6)*Math.PI*2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*1.8,vy:Math.sin(rad)*1.8,big:false,boss:true,damage:1});
         }
-        boss.shotCooldown=0.25+Math.random()*0.2;
+        boss.shotCooldown=0.5+Math.random()*0.3;
       } else if(boss.super && boss.phase===1){
         // Phase 2: ring burst every 2s + normal spread
         boss.ringCooldown-=dt;
