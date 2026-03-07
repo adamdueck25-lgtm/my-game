@@ -392,6 +392,30 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <!-- SHOP -->
 
+<!-- CHANGELOG SCREEN -->
+<div id="screen-changelog" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
+    <div class="screen-title" style="color:#00f5ff">📡 VOID INVADERS</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">UPDATES & ROADMAP</div>
+  </div>
+  <div id="changelog-content" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="closeChangelog()">← BACK</button>
+  </div>
+</div>
+
+<!-- POWERUP GUIDE SCREEN -->
+<div id="screen-powerup-guide" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
+    <div class="screen-title" style="color:#00f5ff">🌟 POWERUPS</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">DROP RANDOMLY FROM DEFEATED ENEMIES</div>
+  </div>
+  <div id="powerup-guide-list" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen(window._powerupGuidePrev||'screen-shop')">← BACK</button>
+  </div>
+</div>
+
 <!-- TROPHIES SCREEN -->
 <div id="screen-trophies" class="screen screen-bg hidden screen-cards-layout">
   <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
@@ -410,7 +434,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div style="display:flex;align-items:center;justify-content:center;gap:8px">
       <div class="screen-title" style="color:var(--c)">⚡ UPGRADES</div>
-      <button onclick="showPowerupGuide()" style="font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid #00f5ff55;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer;letter-spacing:1px">🌟 POWERUP LIST</button>
+      <button onclick="window._powerupGuidePrev='screen-shop';showScreen('screen-powerup-guide');" style="font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid #00f5ff55;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer;letter-spacing:1px">🌟 POWERUP LIST</button>
     </div>
     <div class="shop-ticker"><span class="shop-ticker-inner">★ NEW WEAPONS AVAILABLE ★ SPEND YOUR COINS ★ UPGRADE YOUR SHIP ★ COLLECT ALL CARDS ★ COMPLETE SETS FOR POWERS ★ BOSS EVERY 5 WAVES ★</span></div>
     <div class="shop-coins-display" id="shop-coins-display">💰 <span id="shop-coins">0</span></div>
@@ -2091,14 +2115,12 @@ function closeWhatsNew() {
 }
 
 function openChangelog() {
-  const m = document.getElementById('changelog-modal');
-  document.body.appendChild(m);
-  m.style.display = 'flex';
-  makeScrollable(m.querySelector('[style*="overflow-y"]'));
+  document.getElementById('changelog-content').innerHTML = document.getElementById('changelog-modal') ? document.getElementById('changelog-modal').querySelector('[style*="max-width:500px"]').innerHTML : '';
+  showScreen('screen-changelog');
 }
 
 function closeChangelog() {
-  document.getElementById('changelog-modal').style.display = 'none';
+  showScreen('screen-menu');
 }
 
 function closeDevModal() {
@@ -4176,6 +4198,8 @@ else if(id==='screen-splash'){ setTrack('menu'); }
   if(id==='screen-packs') buildPacks();
   if(id==='screen-cards') buildCards();
   if(id==='screen-trophies') buildTrophies();
+  if(id==='screen-powerup-guide' && !document.getElementById('powerup-guide-list').hasChildNodes()) buildPowerupGuide();
+  if(id==='screen-changelog') buildChangelog();
 }
 
 function startGame() {
@@ -4718,7 +4742,27 @@ function makeScrollable(el){
   el.addEventListener('touchmove', e=>e.stopPropagation(), {passive:true});
 }
 
-function showPowerupGuide(){
+function buildChangelog(){
+  document.getElementById('changelog-content').innerHTML = `
+    <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Powerups — random drops from enemies with 10s timed effects<br>✅ 11 powerup types: Rapid Fire, Double Damage, Triple Shot, Homing, Ghost Mode, Time Freeze, Coin Magnet, Gold Rush, Missile Storm, Chain Lightning, Full Health & Nuke<br>✅ Powerup timer bar displayed above health during active effects<br>✅ How To Play redesigned as animated splash screens<br>✅ New game popup asks if you want the tutorial on first launch per version</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.3.5</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Bug fixes & performance improvements<br>✅ UI improvements across perk, pack & summary screens<br>✅ Bombs capped at 5 max — excess converts to coins<br>✅ Bombs past wave 20 deal 50% damage only</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.3.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Perks system — unlock at Wave 20, equip up to 3<br>✅ 4 perk categories with 4 upgrade levels each<br>✅ Boss reward spinner — spin for coins, lives or packs<br>✅ 6 new enemy types across waves 6–21<br>✅ Enemy intro splash screens on first encounter<br>✅ Leaderboard tracks relic usage per score<br>✅ New SFX for enemy shooting, shields & dive bombers<br>✅ Save corruption fixes & stability improvements</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.2.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Leaderboards added — compete globally<br>✅ Fire button removed — touch screen to shoot<br>✅ Animated splash screen on launch<br>✅ Relics system — risk vs reward modifiers<br>✅ Full-length MP3 battle music<br>✅ Save & resume mid-wave sessions<br>✅ 30 trophy milestones added</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.0.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Card packs & collection system<br>✅ 6 card sets with unique set bonuses<br>✅ Wave bonus scoring & trophy rewards<br>✅ Score saves between sessions<br>✅ Boss every 5th wave<br>✅ Score sharing with game link</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff4455;letter-spacing:2px;margin-bottom:8px">✦ KNOWN ISSUES</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🔧 Minor audio glitches on some devices<br>🔧 Browser mode ship position differs from home screen mode</div>
+    </div>`;
+}
+
+function buildPowerupGuide(){
   const list=document.getElementById('powerup-guide-list');
   list.innerHTML=Object.entries(POWERUP_DEFS).map(([id,def])=>`
     <div style="display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:2px solid ${def.color}44;box-shadow:0 0 12px ${def.color}11">
@@ -4730,10 +4774,8 @@ function showPowerupGuide(){
       </div>
     </div>
   `).join('');
-  const overlay=document.getElementById('powerup-guide-overlay');
-  document.body.appendChild(overlay);
-  overlay.style.display='flex';
-  makeScrollable(document.getElementById('powerup-guide-list'));
+  window._powerupGuidePrev = 'screen-shop';
+  showScreen('screen-powerup-guide');
 }
 
 function closeHowToPlay() {
@@ -5268,15 +5310,15 @@ setTrack('menu');
   <button onclick="document.getElementById('newgame-popup').style.display='none'" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 24px;border-radius:4px;border:2px solid #334;background:transparent;color:#556;cursor:pointer;width:100%;max-width:300px;margin-top:4px">✕ NO THANKS</button>
 </div>
 
-<!-- POWERUP GUIDE OVERLAY -->
-<div id="powerup-guide-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:#050d1f;flex-direction:column;align-items:stretch;">
+<!-- POWERUP GUIDE SCREEN -->
+<div id="screen-powerup-guide" class="screen screen-bg hidden screen-cards-layout">
   <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
     <div class="screen-title" style="color:#00f5ff">🌟 POWERUPS</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">DROP RANDOMLY FROM DEFEATED ENEMIES</div>
   </div>
-  <div id="powerup-guide-list" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div id="powerup-guide-list" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
-    <button class="btn-main b-c btn-sm" onclick="document.getElementById('powerup-guide-overlay').style.display='none'">← BACK</button>
+    <button class="btn-main b-c btn-sm" onclick="showScreen(window._powerupGuidePrev||'screen-shop')">← BACK</button>
   </div>
 </div>
 
@@ -5307,13 +5349,13 @@ setTrack('menu');
   </div>
 </div>
 
-<!-- CHANGELOG MODAL -->
-<div id="changelog-modal" style="display:none;position:fixed;inset:0;z-index:99998;background:#050d1f;flex-direction:column;align-items:stretch;">
+<!-- CHANGELOG SCREEN -->
+<div id="screen-changelog" class="screen screen-bg hidden screen-cards-layout">
   <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
     <div class="screen-title" style="color:#00f5ff">📡 VOID INVADERS</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">UPDATES & ROADMAP</div>
   </div>
-  <div style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;">
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;">
   <div style="max-width:500px;margin:0 auto;">
 
 
