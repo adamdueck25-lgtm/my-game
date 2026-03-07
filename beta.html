@@ -2085,10 +2085,10 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.4.8';
+const CURRENT_VERSION = '2.4.8.5';
 
 const VERSION_NOTES = {
-'2.4.8': [
+'2.4.8.5': [
     '🐛 Bug fixes and Optimizations, MAJOR performance improvements & NEW MUSIC',
     '🌟 Powerups — random drops from enemies with 10s timed effects',
     '⚡ 11 powerup types including Rapid Fire, Homing Shots, Ghost Mode, Time Freeze, Missile Storm & more',
@@ -2437,13 +2437,22 @@ function spawnWave() {
 
   if(bossFight) {
     // BOSS
+    const isSuperBoss = wave%10===0;
+    const baseHp = wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10);
+    const superHp = wave===10 ? Math.floor(baseHp*2.5) : Math.floor(baseHp*1.5);
+    const bossHp = isSuperBoss ? superHp : baseHp;
     boss = {
-      x:W/2, y:-80, targetY:90, // entrance anim
-      w:60, h:40, hp:wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10), maxHp:wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):wave>=10?(140+wave*18):(80+wave*10),
+      x:W/2, y:-80, targetY:90,
+      w:isSuperBoss?80:60, h:isSuperBoss?55:40,
+      hp:bossHp, maxHp:bossHp,
       type:2, alive:true, phase:0,
       moveAngle:0, fireAngle:0,
       entering:true, anim:0,
-      shotCooldown:0, swoopTimer:0
+      shotCooldown:0, swoopTimer:0,
+      super:isSuperBoss,
+      dashTimer:0, dashing:false, dashVx:0,
+      ringCooldown:2, phasePrev:0,
+      phaseFlash:0
     };
     bossEntrance=true;
   } else {
@@ -2677,27 +2686,107 @@ let moveDx = 0;
   // BOSS movement
   if(boss&&boss.alive&&!boss.entering) {
     boss.anim+=dt;
-    boss.moveAngle+=dt*0.8;
-    boss.x=W/2+Math.sin(boss.moveAngle)*120;
-    boss.swoopTimer-=dt;
-    if(boss.swoopTimer<0) { boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30; }
-    // phase change
-    boss.phase = boss.hp < boss.maxHp*0.5 ? 1 : 0;
+    boss.phaseFlash=Math.max(0,boss.phaseFlash-dt*3);
+
+    // Phase detection
+    const newPhase = boss.super
+      ? (boss.hp<boss.maxHp*0.33?2:boss.hp<boss.maxHp*0.66?1:0)
+      : (boss.hp<boss.maxHp*0.5?1:0);
+    if(newPhase!==boss.phasePrev){
+      boss.phaseFlash=1; sfx('relicActivate');
+      shake(12,0.5);
+      // flash screen
+      ctx.save(); ctx.fillStyle=['rgba(0,245,255,0.15)','rgba(255,140,0,0.15)','rgba(255,0,0,0.2)'][newPhase]; ctx.fillRect(0,0,W,H); ctx.restore();
+      boss.phasePrev=newPhase;
+    }
+    boss.phase=newPhase;
+
+    // Movement by phase
+    if(boss.super){
+      if(boss.phase===0){
+        // Normal sine
+        boss.moveAngle+=dt*0.8;
+        boss.x=W/2+Math.sin(boss.moveAngle)*120;
+        boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30;
+      } else if(boss.phase===1){
+        // Figure-8
+        boss.moveAngle+=dt*1.1;
+        boss.x=W/2+Math.sin(boss.moveAngle)*140;
+        boss.y=boss.targetY+Math.sin(boss.moveAngle*2)*40;
+      } else {
+        // Phase 3 — random dashes
+        boss.dashTimer-=dt;
+        if(!boss.dashing && boss.dashTimer<=0){
+          boss.dashing=true;
+          boss.dashVx=(Math.random()-0.5)*800;
+          boss.dashTimer=0.15;
+        }
+        if(boss.dashing){
+          boss.x+=boss.dashVx*dt;
+          boss.x=Math.max(50,Math.min(W-50,boss.x));
+          if(boss.dashTimer<=0){ boss.dashing=false; boss.dashTimer=0.4+Math.random()*0.4; }
+        }
+        boss.y=boss.targetY+Math.sin(boss.anim*1.5)*20;
+        // Red tint while in phase 3
+        ctx.save(); ctx.fillStyle='rgba(255,0,0,0.04)'; ctx.fillRect(0,0,W,H); ctx.restore();
+      }
+    } else {
+      boss.moveAngle+=dt*0.8;
+      boss.x=W/2+Math.sin(boss.moveAngle)*120;
+      boss.swoopTimer-=dt;
+      if(boss.swoopTimer<0) boss.y=boss.targetY+Math.sin(boss.anim*0.5)*30;
+    }
+
+    // Shooting
     boss.shotCooldown-=dt;
-    if(boss.shotCooldown<=0) {
-      const isLate = wave>=10;
-      const cooldownBase = boss.phase===1 ? (isLate?0.3:0.6) : (isLate?0.5:1.0);
-      boss.shotCooldown = cooldownBase + (isLate ? (Math.random()*0.3) : 0);
-      const angles = boss.phase===1
-        ? (isLate ? [-40,-20,-5,0,5,20,40] : [-30,-15,0,15,30])
-        : (isLate ? [-25,-10,0,10,25] : [-20,0,20]);
-      angles.forEach(a=>{
-        const spread = isLate ? (Math.random()-0.5)*12 : 0;
-        const rad=(a+spread)*Math.PI/180+Math.PI/2;
-        const spd = isLate ? 2.5+Math.random()*2.5 : 3;
-        const plasma = wave>=20;
-        eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
-      });
+    if(boss.shotCooldown<=0){
+      const isLate=wave>=10;
+      const plasma=wave>=20;
+      const spd=isLate?2.5+Math.random()*2.5:3;
+
+      if(boss.super && boss.phase===2){
+        // Phase 3: aimed burst + spread simultaneously
+        const dx=player?player.x-boss.x:0, dy=player?player.y-boss.y:1;
+        const dist=Math.sqrt(dx*dx+dy*dy)||1;
+        // Aimed shots
+        [-15,-7,0,7,15].forEach(a=>{
+          const rad=Math.atan2(dy,dx)+(a*Math.PI/180);
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*(spd+1),vy:Math.sin(rad)*(spd+1),big:true,boss:true,damage:2});
+        });
+        // Spread ring
+        for(let i=0;i<8;i++){
+          const rad=(i/8)*Math.PI*2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*2.5,vy:Math.sin(rad)*2.5,big:false,boss:true,damage:1});
+        }
+        boss.shotCooldown=0.25+Math.random()*0.2;
+      } else if(boss.super && boss.phase===1){
+        // Phase 2: ring burst every 2s + normal spread
+        boss.ringCooldown-=dt;
+        if(boss.ringCooldown<=0){
+          for(let i=0;i<12;i++){
+            const rad=(i/12)*Math.PI*2;
+            eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*3,vy:Math.sin(rad)*3,big:false,boss:true,damage:1});
+          }
+          boss.ringCooldown=2.5;
+        }
+        [-30,-15,0,15,30].forEach(a=>{
+          const rad=(a*Math.PI/180)+Math.PI/2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
+        });
+        boss.shotCooldown=0.5+Math.random()*0.2;
+      } else {
+        // Normal / phase 1
+        const cooldownBase=boss.phase===1?(isLate?0.3:0.6):(isLate?0.5:1.0);
+        boss.shotCooldown=cooldownBase+(isLate?Math.random()*0.3:0);
+        const angles=boss.phase===1
+          ?(isLate?[-40,-20,-5,0,5,20,40]:[-30,-15,0,15,30])
+          :(isLate?[-25,-10,0,10,25]:[-20,0,20]);
+        angles.forEach(a=>{
+          const spread=isLate?(Math.random()-0.5)*12:0;
+          const rad=(a+spread)*Math.PI/180+Math.PI/2;
+          eBullets.push({x:boss.x,y:boss.y+20,vx:Math.cos(rad)*spd,vy:Math.sin(rad)*spd,big:plasma,boss:true,damage:plasma?2:1});
+        });
+      }
       sfx('bossHit');
     }
     boss.fireAngle+=dt;
@@ -3078,7 +3167,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       // Deal 2 damage instead of killing player instantly
       if(!e.diveDamageDealt){
         e.diveDamageDealt=true;
-        player.lives=Math.max(0,player.lives-2);
+        player.lives=Math.max(0,player.lives-1);
         sfx('playerHit'); shake(8,0.4);
         document.getElementById('hit-flash').classList.add('active');
         setTimeout(()=>document.getElementById('hit-flash').classList.remove('active'),300);
@@ -3090,8 +3179,10 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       e.diving=false;
       e.diveDamageDealt=false;
       e.diveTimer=3+Math.random()*3;
-      e.x=e.homeX; e.y=e.homeY;
-      e.targetY=e.homeY;
+      e.x=e.homeX;
+      e.y=Math.min(e.homeY, 80 + Math.random()*40);
+      e.targetY=e.y;
+      e.homeY=e.y;
     }
   });
 
