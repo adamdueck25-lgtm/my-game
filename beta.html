@@ -1992,7 +1992,7 @@ function devTap() {
     document.getElementById('dev-wave-val').textContent = devWaveTarget;
     const m = document.getElementById('dev-modal');
     document.body.appendChild(m);
-    m.style.display = 'block';
+    m.style.display = 'flex';
     m.style.zIndex = '99999';
   }
 }
@@ -4215,7 +4215,22 @@ function _startGameActual() {
   rafId=requestAnimationFrame(gameLoop);
 }
 
-function openShop(from){ shopPrevScreen=from; if(currentTrackName !== 'menu') setTrack('shop'); showScreen('screen-shop'); }
+function openShop(from){
+  shopPrevScreen=from;
+  if(currentTrackName !== 'menu'){
+    // Capture all offsets before music stops
+    window._savedShopBattleCycle = battleCycle;
+    window._savedShopBattleOffset = battleSource ? (AC.currentTime - battleStartedAt) % (battleBuffer?.duration||1) : battleOffset;
+    window._savedShopAlt1Offset = altBattleSource ? (AC.currentTime - altBattleStartedAt) % (altBattleBuffer?.duration||1) : altBattleOffset;
+    window._savedShopAlt2Offset = altBattle2Source ? (AC.currentTime - (altBattle2Source._startedAt||0)) % (altBattle2Buffer?.duration||1) : altBattle2Offset;
+    window._savedShopAlt3Offset = altBattle3Source ? (AC.currentTime - (altBattle3Source._startedAt||0)) % (altBattle3Buffer?.duration||1) : altBattle3Offset;
+    window._savedShopBossOffset = bossThemeSource ? (AC.currentTime - bossThemeStartedAt) % (bossThemeBuffer?.duration||1) : bossThemeOffset;
+    window._savedShopAltBossOffset = altBossThemeSource ? (AC.currentTime - altBossThemeStartedAt) % (altBossThemeBuffer?.duration||1) : altBossThemeOffset;
+    window._savedShopTrack = currentTrackName;
+    setTrack('shop');
+  }
+  showScreen('screen-shop');
+}
 function showShopFromWave(){
   stopBattleAudio(true);
   if(bossThemeSource && bossThemeBuffer) {
@@ -4252,25 +4267,19 @@ function shopBack(){
   if(shopPrevScreen==='game') document.getElementById('reset-btn').style.display = 'none';
   if(shopPrevScreen==='game'){
     sessionCoins=0; showScreen('__game__'); updateBombDisplay();
-    const savedBattleOffset = battleOffset;
-    const savedBossOffset = bossThemeOffset;
-    const savedAltBossOffset = altBossThemeOffset;
-    const savedAlt1Offset = altBattleOffset;
-    const savedAlt2Offset = altBattle2Offset;
-    const savedAlt3Offset = altBattle3Offset;
-    const savedCycle = battleCycle;
     stopShopMusic(false); stopMusic();
     startCountdown(()=>{
       gState='playing'; lastTime=0; rafId=requestAnimationFrame(gameLoop);
-      battleCycle = savedCycle;
-      altBattleOffset = savedAlt1Offset;
-      altBattle2Offset = savedAlt2Offset;
-      altBattle3Offset = savedAlt3Offset;
-      altBossThemeOffset = savedAltBossOffset;
-      if(bossFight) {
-        playBossThemeNow(false, savedBossOffset);
+      battleCycle = window._savedShopBattleCycle ?? battleCycle;
+      altBattleOffset = window._savedShopAlt1Offset ?? 0;
+      altBattle2Offset = window._savedShopAlt2Offset ?? 0;
+      altBattle3Offset = window._savedShopAlt3Offset ?? 0;
+      altBossThemeOffset = window._savedShopAltBossOffset ?? 0;
+      if(bossFight){
+        currentTrackName = window._savedShopTrack ?? currentTrackName;
+        playBossThemeNow(false, window._savedShopBossOffset ?? 0);
       } else {
-        playBattleNow(false, savedBattleOffset);
+        playBattleNow(false, window._savedShopBattleOffset ?? 0);
       }
     });
 } else {
@@ -5252,7 +5261,7 @@ setTrack('menu');
 
 <!-- POWERUP GUIDE OVERLAY -->
 <div id="powerup-guide-overlay" style="display:none;position:fixed;inset:0;z-index:99998;background:#000;">
-  <div style="position:absolute;top:0;left:0;right:0;bottom:60px;overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px">
+  <div style="height:calc(100vh - 60px);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px;box-sizing:border-box;">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00f5ff;letter-spacing:3px;text-align:center;margin-bottom:4px">🌟 POWERUPS</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px">DROP FROM DEFEATED ENEMIES</div>
     <div id="powerup-guide-list" style="max-width:340px;margin:0 auto"></div>
@@ -5263,7 +5272,7 @@ setTrack('menu');
 </div>
 
 <!-- HOW TO PLAY OVERLAY -->
-<div id="howto-overlay" style="display:none;position:fixed;inset:0;z-index:99997;background:rgba(0,0,0,0.95);flex-direction:column;align-items:center;justify-content:center;padding:24px 20px">
+<div id="howto-overlay" style="display:none;position:fixed;inset:0;z-index:99997;background:#000;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px">
   <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:4px;margin-bottom:20px" id="howto-page-label">HOW TO PLAY · PAGE 1 OF 7</div>
   <div style="font-size:44px;margin-bottom:12px" id="howto-icon"></div>
   <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#00f5ff;letter-spacing:3px;margin-bottom:20px;text-align:center;text-shadow:0 0 16px #00f5ff88" id="howto-title"></div>
@@ -5291,7 +5300,7 @@ setTrack('menu');
 
 <!-- CHANGELOG MODAL -->
 <div id="changelog-modal" style="display:none;position:fixed;inset:0;z-index:99998;background:#000;">
-  <div style="position:absolute;top:0;left:0;right:0;bottom:60px;overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px">
+  <div style="height:calc(100vh - 60px);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:20px;box-sizing:border-box;">
   <div style="background:#050d1f;border:1px solid #00f5ff;border-radius:10px;padding:24px 20px;max-width:360px;width:100%;box-shadow:0 0 40px rgba(0,245,255,0.2);margin:0 auto 20px auto">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#00f5ff;letter-spacing:2px;margin-bottom:4px;text-align:center">📡 VOID INVADERS</div>
     <div style="font-size:10px;color:#446;letter-spacing:3px;text-align:center;margin-bottom:20px">UPDATES & ROADMAP</div>
