@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/my-game/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+<meta name="apple-mobile-web-app-title" content="Void Invaders">
+<meta name="theme-color" content="#00f5ff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
@@ -771,6 +776,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <script>
 'use strict';
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/my-game/sw.js').catch(()=>{});
+}
 ;
 
 // ═══════════════════════════════════════════════════
