@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+<meta name="apple-mobile-web-app-title" content="Void Invaders">
+<meta name="theme-color" content="#00f5ff">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>VOID INVADERS v6</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
@@ -268,6 +274,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
     <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.5.0</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
+<button onclick="showScreen('screen-customize')" style="margin-top:6px;font-family:'Orbitron',sans-serif;font-size:9px;color:#cc44ff;background:transparent;border:1px solid #cc44ff44;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">🚀 CUSTOMIZE SHIP</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -504,6 +511,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div id="cards-content" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
   <button class="btn-main b-c btn-sm" onclick="cardsBack()">← BACK</button>
+  </div>
 </div>
 
 <!-- DEV MODE MODAL -->
@@ -1816,7 +1824,8 @@ try {
   }
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
-const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false };
+const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false,
+  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' } };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2240,6 +2249,45 @@ let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
 let powerupDrops = [];
 let activePowerups = {};
+const SHIP_SHAPES=[
+  {id:'classic',label:'CLASSIC',icon:'△'},
+  {id:'arrow',label:'ARROW',icon:'▲'},
+  {id:'delta',label:'DELTA',icon:'⬡'},
+  {id:'dualfin',label:'DUAL FIN',icon:'✦'},
+  {id:'pod',label:'POD',icon:'⬬'},
+];
+const HULL_COLORS=[
+  {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
+  {id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},{id:'#ffffff',label:'WHITE'},
+];
+const COCKPIT_COLORS=[
+  {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
+  {id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},
+];
+const THRUSTER_COLORS=[
+  {id:'#00f5ff',label:'CYAN'},{id:'#ff8800',label:'ORANGE'},{id:'#4488ff',label:'BLUE'},
+  {id:'#ffffff',label:'WHITE'},{id:'rainbow',label:'RAINBOW'},
+];
+const BULLET_COLORS=[
+  {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
+  {id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},
+];
+const BULLET_SHAPES=[
+  {id:'laser',label:'LASER',icon:'|'},{id:'plasma',label:'PLASMA',icon:'●'},
+  {id:'diamond',label:'DIAMOND',icon:'◆'},{id:'star',label:'STAR',icon:'★'},
+  {id:'comet',label:'COMET',icon:'☄'},
+];
+const AURAS=[
+  {id:'none',label:'NONE',color:'#334'},{id:'cyan',label:'CYAN',color:'#00f5ff'},
+  {id:'gold',label:'GOLD',color:'#ffd700'},{id:'purple',label:'VOID',color:'#cc44ff'},
+  {id:'red',label:'DANGER',color:'#ff4455'},
+];
+const DECALS=[
+  {id:'none',label:'NONE',icon:'○'},{id:'stripes',label:'STRIPES',icon:'⬌'},
+  {id:'camo',label:'CAMO',icon:'⬢'},{id:'stars',label:'STARS',icon:'★'},
+  {id:'scars',label:'SCARS',icon:'✕'},
+];
+
 const POWERUP_DEFS = {
   rapidFire:    { icon:'⚡', color:'#ffff00', label:'RAPID FIRE',    desc:'2× Fire Rate' },
   doubleDamage: { icon:'💥', color:'#ff4400', label:'DOUBLE DAMAGE', desc:'2× Damage' },
@@ -2341,30 +2389,90 @@ function drawEnemyShape(c, x, y, type, t, overrideColor) {
   c.restore();
 }
 
-function drawPlayer(x, y, inv) {
-  ctx.save();
-  ctx.translate(x, y);
-  const flash = inv > 0 && Math.sin(inv*20) > 0;
-  ctx.globalAlpha = flash ? 0.4 : 1;
-  const col = '#00f5ff';
-  ctx.shadowBlur = 14; ctx.shadowColor = col;
-  // Main body
-  ctx.fillStyle = 'rgba(0,245,255,0.1)';
-  ctx.strokeStyle = col;
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  ctx.moveTo(0,-16); ctx.lineTo(12,8); ctx.lineTo(6,4); ctx.lineTo(0,8); ctx.lineTo(-6,4); ctx.lineTo(-12,8);
-  ctx.closePath();
-  ctx.fill(); ctx.stroke();
+function drawShip(c, x, y, inv, custom, scale=1){
+  const shape=custom.shape||'classic';
+  const hullCol=custom.hullColor||'#00f5ff';
+  const cockpitCol=custom.cockpitColor||'#00f5ff';
+  const aura=custom.aura||'none';
+  const decal=custom.decal||'none';
+  const auraColors={cyan:'#00f5ff',gold:'#ffd700',purple:'#cc44ff',red:'#ff4455'};
+  const auraCol=auraColors[aura]||hullCol;
+  c.save();
+  c.translate(x,y);
+  c.scale(scale,scale);
+  const flash=inv>0&&Math.sin(inv*20)>0;
+  c.globalAlpha=flash?0.4:1;
+  // Aura ring
+  if(aura!=='none'){
+    c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
+    c.globalAlpha=(flash?0.4:1)*0.35;
+    c.shadowBlur=20; c.shadowColor=auraCol;
+    c.beginPath(); c.arc(0,0,24,0,Math.PI*2); c.stroke();
+    c.restore();
+  }
+  c.shadowBlur=aura!=='none'?24:14;
+  c.shadowColor=aura!=='none'?auraCol:hullCol;
+  // Body
+  c.fillStyle=hullCol+'1a'; c.strokeStyle=hullCol; c.lineWidth=1.8;
+  c.beginPath();
+  if(shape==='arrow'){ c.moveTo(0,-20);c.lineTo(8,10);c.lineTo(4,5);c.lineTo(0,12);c.lineTo(-4,5);c.lineTo(-8,10); }
+  else if(shape==='delta'){ c.moveTo(0,-14);c.lineTo(18,10);c.lineTo(10,6);c.lineTo(0,10);c.lineTo(-10,6);c.lineTo(-18,10); }
+  else if(shape==='dualfin'){ c.moveTo(0,-16);c.lineTo(10,4);c.lineTo(14,14);c.lineTo(8,6);c.lineTo(0,8);c.lineTo(-8,6);c.lineTo(-14,14);c.lineTo(-10,4); }
+  else if(shape==='pod'){ c.moveTo(0,-14);c.bezierCurveTo(12,-14,14,4,10,10);c.lineTo(0,8);c.lineTo(-10,10);c.bezierCurveTo(-14,4,-12,-14,0,-14); }
+  else { c.moveTo(0,-16);c.lineTo(12,8);c.lineTo(6,4);c.lineTo(0,8);c.lineTo(-6,4);c.lineTo(-12,8); }
+  c.closePath(); c.fill(); c.stroke();
   // Cockpit
-  ctx.fillStyle = 'rgba(0,245,255,0.35)';
-  ctx.beginPath(); ctx.ellipse(0,-4,4,6,0,0,Math.PI*2); ctx.fill();
+  c.fillStyle=cockpitCol+'59'; c.shadowColor=cockpitCol;
+  c.beginPath();
+  if(shape==='arrow') c.ellipse(0,-7,3,5,0,0,Math.PI*2);
+  else if(shape==='pod') c.ellipse(0,-3,5,7,0,0,Math.PI*2);
+  else c.ellipse(0,-4,4,6,0,0,Math.PI*2);
+  c.fill();
   // Wing accents
-  ctx.strokeStyle = 'rgba(0,245,255,0.5)';
-  ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(-12,8); ctx.lineTo(-16,12); ctx.lineTo(-6,8); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(12,8); ctx.lineTo(16,12); ctx.lineTo(6,8); ctx.stroke();
-  ctx.restore();
+  c.strokeStyle=hullCol+'80'; c.lineWidth=1; c.shadowColor=hullCol;
+  if(shape==='delta'){
+    c.beginPath();c.moveTo(-18,10);c.lineTo(-22,14);c.lineTo(-10,10);c.stroke();
+    c.beginPath();c.moveTo(18,10);c.lineTo(22,14);c.lineTo(10,10);c.stroke();
+  } else if(shape==='arrow'){
+    c.beginPath();c.moveTo(-8,10);c.lineTo(-12,14);c.lineTo(-4,10);c.stroke();
+    c.beginPath();c.moveTo(8,10);c.lineTo(12,14);c.lineTo(4,10);c.stroke();
+  } else if(shape==='pod'){
+    c.beginPath();c.moveTo(-10,10);c.lineTo(-14,14);c.lineTo(-6,10);c.stroke();
+    c.beginPath();c.moveTo(10,10);c.lineTo(14,14);c.lineTo(6,10);c.stroke();
+  } else if(shape!=='dualfin'){
+    c.beginPath();c.moveTo(-12,8);c.lineTo(-16,12);c.lineTo(-6,8);c.stroke();
+    c.beginPath();c.moveTo(12,8);c.lineTo(16,12);c.lineTo(6,8);c.stroke();
+  }
+  // Decals
+  if(decal==='stripes'){
+    c.save(); c.strokeStyle=hullCol; c.lineWidth=1.5; c.globalAlpha=(flash?0.4:1)*0.5;
+    c.beginPath();c.moveTo(-4,-10);c.lineTo(-4,6);c.stroke();
+    c.beginPath();c.moveTo(4,-10);c.lineTo(4,6);c.stroke();
+    c.restore();
+  } else if(decal==='stars'){
+    c.save(); c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.8;
+    [[-9,4],[9,4]].forEach(([sx,sy])=>{
+      c.beginPath();
+      for(let i=0;i<10;i++){ const a=i*Math.PI/5-Math.PI/2; const r=i%2===0?3.5:1.5; i===0?c.moveTo(sx+Math.cos(a)*r,sy+Math.sin(a)*r):c.lineTo(sx+Math.cos(a)*r,sy+Math.sin(a)*r); }
+      c.closePath(); c.fill();
+    });
+    c.restore();
+  } else if(decal==='scars'){
+    c.save(); c.strokeStyle=hullCol; c.lineWidth=1; c.globalAlpha=(flash?0.4:1)*0.6;
+    c.beginPath();c.moveTo(-6,-8);c.lineTo(-3,-2);c.stroke();
+    c.beginPath();c.moveTo(3,-6);c.lineTo(6,0);c.stroke();
+    c.beginPath();c.moveTo(-2,0);c.lineTo(2,4);c.stroke();
+    c.restore();
+  } else if(decal==='camo'){
+    c.save(); c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.2;
+    [[-6,-6,4],[4,-4,3],[-3,2,3],[5,4,2],[-8,4,2]].forEach(([cx,cy,r])=>{ c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.fill(); });
+    c.restore();
+  }
+  c.restore();
+}
+function drawPlayer(x,y,inv){
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  drawShip(ctx,x,y,inv,SAVE.shipCustom);
 }
 
 function spawnExplosion(x,y,col,count=6,big=false) {
@@ -2392,7 +2500,7 @@ function spawnThruster() {
     x: player.x + spread, y: player.y + 10,
     vy: Math.random()*2+1.5, vx:(Math.random()-.5)*0.5,
     life: 1, r: Math.random()*3+1.5,
-    col: Math.random()<.6 ? '#ff6600' : '#ffaa00'
+    col: (()=>{ const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600'; if(tc==='rainbow'){ const cols=['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff']; return cols[Math.floor(Math.random()*cols.length)]; } return Math.random()<.6 ? tc : tc+'cc'; })()
   });
 }
 
@@ -3303,17 +3411,32 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   });
 
   // Bullet trails + bullets
+  const bCol=(SAVE.shipCustom?.bulletColor)||'#00f5ff';
+  const bShape=(SAVE.shipCustom?.bulletShape)||'laser';
   bullets.forEach(b=>{
     b.trail.forEach((tp,i)=>{
       const a=(i+1)/b.trail.length*0.4;
-      ctx.save();
-      ctx.globalAlpha=a; ctx.fillStyle='#00f5ff';
+      ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=bCol;
       ctx.beginPath(); ctx.ellipse(tp.x,tp.y,2,4,0,0,Math.PI*2); ctx.fill();
       ctx.restore();
     });
     ctx.save();
-    ctx.shadowBlur=10; ctx.shadowColor='#00f5ff'; ctx.fillStyle='#00f5ff';
-    ctx.beginPath(); ctx.ellipse(b.x,b.y,3,7,0,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=10; ctx.shadowColor=bCol; ctx.fillStyle=bCol;
+    if(bShape==='plasma'){
+      ctx.beginPath(); ctx.arc(b.x,b.y,5,0,Math.PI*2); ctx.fill();
+    } else if(bShape==='diamond'){
+      ctx.save(); ctx.translate(b.x,b.y); ctx.rotate(Math.PI/4);
+      ctx.fillRect(-4,-4,8,8); ctx.restore();
+    } else if(bShape==='star'){
+      ctx.save(); ctx.translate(b.x,b.y); ctx.beginPath();
+      for(let i=0;i<10;i++){ const a=i*Math.PI/5-Math.PI/2; const r=i%2===0?6:2.5; i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); }
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    } else if(bShape==='comet'){
+      ctx.beginPath(); ctx.ellipse(b.x,b.y,2,9,0,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=0.3; ctx.beginPath(); ctx.ellipse(b.x,b.y+7,1,4,0,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.ellipse(b.x,b.y,3,7,0,0,Math.PI*2); ctx.fill();
+    }
     ctx.restore();
   });
 
@@ -4379,6 +4502,7 @@ else if(id==='screen-splash'){ setTrack('menu'); }
   if(id==='screen-cards') buildCards();
   if(id==='screen-trophies') buildTrophies();
   if(id==='screen-powerup-guide' && !document.getElementById('powerup-guide-list').hasChildNodes()) buildPowerupGuide();
+  if(id==='screen-customize') buildCustomize();
   if(id==='screen-changelog') buildChangelog();
 }
 
@@ -4920,6 +5044,83 @@ function howtoNav(dir) {
 function makeScrollable(el){
   el.addEventListener('touchstart', e=>e.stopPropagation(), {passive:true});
   el.addEventListener('touchmove', e=>e.stopPropagation(), {passive:true});
+}
+
+function drawCustomizePreview(){
+  const c=document.getElementById('customize-preview');
+  if(!c) return;
+  const cx=c.getContext('2d');
+  cx.clearRect(0,0,120,120);
+  // Star background
+  cx.fillStyle='#050d1f'; cx.fillRect(0,0,120,120);
+  drawShip(cx,60,65,0,SAVE.shipCustom||{},1.8);
+}
+
+function setCustom(key,val){
+  if(!SAVE.shipCustom) SAVE.shipCustom={};
+  SAVE.shipCustom[key]=val;
+  doSave();
+  drawCustomizePreview();
+  // Just update button border/bg without full rebuild
+  document.querySelectorAll(`[data-custom-key="${key}"]`).forEach(btn=>{
+    const isSelected = btn.dataset.customVal===val;
+    const sectionColor = btn.dataset.customColor||'#00f5ff';
+    btn.style.border=`2px solid ${isSelected?sectionColor:'#1a2540'}`;
+    btn.style.background=isSelected?sectionColor+'22':'transparent';
+    btn.style.boxShadow=isSelected?`0 0 10px ${sectionColor}44`:'none';
+  });
+}
+
+function buildCustomize(){
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  const content=document.getElementById('customize-content');
+  if(!content) return;
+  if(content.hasChildNodes()){ drawCustomizePreview(); return; }
+  const sc=SAVE.shipCustom;
+  // Insert preview canvas at top of scrollable content
+  const previewWrap=document.createElement('div');
+  previewWrap.style.cssText='display:flex;justify-content:center;padding:12px 0 16px';
+  previewWrap.innerHTML='<canvas id="customize-preview" width="130" height="130" style="border:1px solid #1a2540;border-radius:10px;background:#050d1f"></canvas>';
+  content.appendChild(previewWrap);
+
+  function section(title, color, items, key, current){
+    const div=document.createElement('div');
+    div.style.cssText='margin-bottom:20px';
+    div.innerHTML=`<div style="font-family:'Orbitron',sans-serif;font-size:10px;color:${color};letter-spacing:2px;margin-bottom:10px;padding:6px 10px;background:${color}22;border-radius:4px;border-left:3px solid ${color}">${title}</div>`;
+    const row=document.createElement('div');
+    row.style.cssText='display:flex;flex-wrap:wrap;gap:8px;padding:0 4px';
+    items.forEach(item=>{
+      const sel=current===item.id;
+      const btn=document.createElement('button');
+      btn.style.cssText=`display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 10px;border-radius:8px;border:2px solid ${sel?color:'#1a2540'};background:${sel?color+'22':'transparent'};cursor:pointer;min-width:56px;transition:all .15s;box-shadow:${sel?`0 0 10px ${color}44`:'none'}`;
+      const isColor = item.id.startsWith('#') || item.id==='rainbow';
+      if(item.id==='rainbow'){
+        btn.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff4455,#ffd700,#00ff88,#00f5ff,#cc44ff);border:2px solid ${sel?'#fff':'transparent'}"></div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
+      } else if(isColor){
+        btn.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:${item.id};box-shadow:0 0 8px ${item.id}88;border:2px solid ${sel?'#fff':'transparent'}"></div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
+      } else {
+        btn.innerHTML=`<div style="font-size:20px;line-height:1">${item.icon||'●'}</div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
+      }
+      btn.dataset.customKey=key;
+      btn.dataset.customVal=item.id;
+      btn.dataset.customColor=color;
+      btn.onclick=()=>setCustom(key,item.id);
+      row.appendChild(btn);
+    });
+    div.appendChild(row);
+    return div;
+  }
+
+  content.innerHTML='';
+  content.appendChild(section('SHIP SHAPE','#00f5ff',SHIP_SHAPES,'shape',sc.shape||'classic'));
+  requestAnimationFrame(()=>drawCustomizePreview());
+  content.appendChild(section('HULL COLOR','#00f5ff',HULL_COLORS,'hullColor',sc.hullColor||'#00f5ff'));
+  content.appendChild(section('COCKPIT COLOR','#88ddff',COCKPIT_COLORS,'cockpitColor',sc.cockpitColor||'#00f5ff'));
+  content.appendChild(section('THRUSTER COLOR','#ff8800',THRUSTER_COLORS,'thrusterColor',sc.thrusterColor||'#00f5ff'));
+  content.appendChild(section('BULLET COLOR','#ff4455',BULLET_COLORS,'bulletColor',sc.bulletColor||'#00f5ff'));
+  content.appendChild(section('BULLET SHAPE','#cc44ff',BULLET_SHAPES,'bulletShape',sc.bulletShape||'laser'));
+  content.appendChild(section('SHIP AURA','#ffd700',AURAS,'aura',sc.aura||'none'));
+  content.appendChild(section('DECALS','#00ff88',DECALS,'decal',sc.decal||'none'));
 }
 
 function buildChangelog(){
@@ -5547,18 +5748,6 @@ setTrack('menu');
   <button onclick="document.getElementById('newgame-popup').style.display='none'" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px 24px;border-radius:4px;border:2px solid #334;background:transparent;color:#556;cursor:pointer;width:100%;max-width:300px;margin-top:4px">✕ NO THANKS</button>
 </div>
 
-<!-- POWERUP GUIDE SCREEN -->
-<div id="screen-powerup-guide" class="screen screen-bg hidden screen-cards-layout">
-  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
-    <div class="screen-title" style="color:#00f5ff">🌟 POWERUPS</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">DROP RANDOMLY FROM DEFEATED ENEMIES</div>
-  </div>
-  <div id="powerup-guide-list" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
-  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
-    <button class="btn-main b-c btn-sm" onclick="showScreen(window._powerupGuidePrev||'screen-shop')">← BACK</button>
-  </div>
-</div>
-
 <!-- HOW TO PLAY OVERLAY -->
 <div id="howto-overlay" style="display:none;position:fixed;inset:0;z-index:99997;background:#000;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px">
   <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:4px;margin-bottom:20px" id="howto-page-label">HOW TO PLAY · PAGE 1 OF 7</div>
@@ -5583,6 +5772,31 @@ setTrack('menu');
     <div style="position:sticky;bottom:0;background:#050d1f;padding-top:12px;margin-top:8px">
       <button onclick="closeWhatsNew()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer;width:100%">▶ LET'S PLAY!</button>
     </div>
+  </div>
+</div>
+
+<!-- CUSTOMIZE SCREEN -->
+<div id="screen-customize" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
+    <div class="screen-title" style="color:#cc44ff">🚀 CUSTOMIZE SHIP</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:4px">PERSONALIZE YOUR VESSEL</div>
+  </div>
+  <div id="customize-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
+  </div>
+</div>
+
+<!-- CUSTOMIZE SCREEN -->
+<div id="screen-customize" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
+    <div class="screen-title" style="color:#cc44ff">🚀 CUSTOMIZE SHIP</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:8px">PERSONALIZE YOUR VESSEL</div>
+    <canvas id="customize-preview" width="120" height="120" style="display:block;margin:0 auto 4px;border:1px solid #1a2540;border-radius:8px;background:#050d1f"></canvas>
+  </div>
+  <div id="customize-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
   </div>
 </div>
 
