@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
+<link rel="manifest" href="/my-game/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+<meta name="apple-mobile-web-app-title" content="Void Invaders">
+<meta name="theme-color" content="#00f5ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
+<meta name="apple-mobile-web-app-title" content="Void Invaders">
+<meta name="theme-color" content="#00f5ff">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>VOID INVADERS v6</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
@@ -268,7 +279,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="margin-top:18px;font-size:13px;color:#445">💰 <span id="menu-coins">0</span> COINS BANKED</div>
     <div style="margin-top:10px;font-size:11px;color:#334;letter-spacing:2px">CREATED BY: ADAM DUECK Version 2.5.0</div>
 <button onclick="openChangelog()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">📡 UPDATES & ROADMAP</button>
-<button onclick="showScreen('screen-customize')" style="margin-top:6px;font-family:'Orbitron',sans-serif;font-size:9px;color:#cc44ff;background:transparent;border:1px solid #cc44ff44;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">🚀 CUSTOMIZE SHIP</button>
+<button onclick="showToast('🚀 Customization coming soon!')" style="margin-top:6px;font-family:'Orbitron',sans-serif;font-size:9px;color:#446;background:transparent;border:1px solid #1a2540;padding:5px 12px;border-radius:3px;cursor:pointer;letter-spacing:2px">🚀 CUSTOMIZE SHIP 🔒</button>
 <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
   </div>
 </div>
@@ -765,6 +776,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <script>
 'use strict';
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/my-game/sw.js').catch(()=>{});
+}
 ;
 
 // ═══════════════════════════════════════════════════
@@ -1549,7 +1563,16 @@ function sfx(type) {
       noise(0.15,0.6,'bandpass',1200,0.05);
       break;
     case 'die':
-      for(let i=0;i<6;i++) { osc(180-i*20,'sawtooth',0.12,0.5,i*0.06,40+i*5); noise(0.1,0.3,'bandpass',800+i*200,i*0.05); }
+      sfxGain.gain.value = 0.7;
+      osc(300,'sawtooth',1.8,1.0,0,40);
+      osc(240,'sawtooth',1.6,0.8,0.05,35);
+      osc(180,'sawtooth',1.4,0.7,0.15,25);
+      osc(120,'sine',1.2,0.6,0.3,18);
+      osc(80,'sine',1.0,0.5,0.5,12);
+      osc(50,'sine',0.8,0.4,0.7,8);
+      noise(0.3,0.8,'bandpass',600,0);
+      noise(0.4,0.5,'bandpass',300,0.1);
+      noise(0.6,0.3,'lowpass',150,0.3);
       break;
     case 'waveClear':
       [523,659,784,1047,1319,1568].forEach((f,i)=>osc(f,'sine',0.25,0.5-i*0.03,i*0.08));
@@ -1818,7 +1841,7 @@ try {
   }
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
-const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false,
+const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false,
   shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' } };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
@@ -2185,15 +2208,15 @@ function computeStats() {
   if(hasRelic('overclock'))   { s.fireCooldown = Math.max(40, s.fireCooldown / 2); s.damage *= 0.5; }
   // COMBAT PERKS — index 0=base, 1-3=upgrades
   if(hasPerk('voidSurge'))    { const bonus=voidSurgeStacks*([0.05,0.08,0.12,0.15][Math.max(0,perkLevel('voidSurge')-1)]||0.05); s.damage*=(1+bonus); }
-  if(hasPerk('killStreak') && killStreakCount>=10) { const bonus=[0.10,0.15,0.22,0.30][perkLevel('killStreak')]; s.fireCooldown=Math.max(40,s.fireCooldown*(1-bonus)); }
-  if(hasPerk('retribution') && retributionTimer>0) { const boost=[0.45,0.40,0.32,0.25][perkLevel('retribution')]; s.fireCooldown=Math.max(40,s.fireCooldown*boost); }
+  if(hasPerk('killStreak') && killStreakCount>=10) { const bonus=[0.10,0.15,0.22,0.30][perkLevel('killStreak')-1]; s.fireCooldown=Math.max(40,s.fireCooldown*(1-bonus)); }
+  if(hasPerk('retribution') && retributionTimer>0) { const boost=[0.45,0.40,0.32,0.25][perkLevel('retribution')-1]; s.fireCooldown=Math.max(40,s.fireCooldown*boost); }
   s.fireCooldown = Math.max(40, isFinite(s.fireCooldown) ? s.fireCooldown : 70);
   // Active powerup effects
   if(activePowerups['rapidFire'])    s.fireCooldown = Math.max(40, s.fireCooldown*0.5);
   if(activePowerups['doubleDamage']) s.damage *= 2;
   if(activePowerups['tripleShot'])   s.quadShot = true;
   if(activePowerups['ghostMode'])    s.reduction = 1.0;
-  if(hasPerk('momentum'))     { const rate=[0.04,0.06,0.10,0.14][perkLevel('momentum')]; s.bulletSpeed+=Math.min(waveTimeAlive*rate,6); }
+  if(hasPerk('momentum'))     { const rate=[0.04,0.06,0.10,0.14][perkLevel('momentum')-1]; s.bulletSpeed+=Math.min(waveTimeAlive*rate,6); }
   return s;
 }
 
@@ -2798,7 +2821,7 @@ let moveDx = 0;
         // ENTROPY FIELD — random drift per enemy
         if(hasPerk('entropyField')){
           if(!entropyOffsets.has(e)){ entropyOffsets.set(e,{dx:(Math.random()-0.5)*2,dy:(Math.random()-0.5)*2}); }
-          const drift=[1,1.5,2.5,4][perkLevel('entropyField')];
+          const drift=[1,1.5,2.5,4][perkLevel('entropyField')-1];
           const o=entropyOffsets.get(e);
           o.dx+=(Math.random()-0.5)*0.5; o.dy+=(Math.random()-0.5)*0.5;
           o.dx=Math.max(-drift,Math.min(drift,o.dx)); o.dy=Math.max(-drift,Math.min(drift,o.dy));
@@ -3104,8 +3127,8 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             sfx('hit');
             // VOLATILE ROUNDS — splash nearby enemies
             if(hasPerk('volatileRounds')){
-              const splashR=[30,45,60,80][perkLevel('volatileRounds')];
-              const splashDmg=[0.5,0.8,1.0,1.5][perkLevel('volatileRounds')];
+              const splashR=[30,45,60,80][perkLevel('volatileRounds')-1];
+              const splashDmg=[0.5,0.8,1.0,1.5][perkLevel('volatileRounds')-1];
               enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.hypot(n.x-e.x,n.y-e.y)<splashR).forEach(n=>{
                 n.hp-=stats.damage*splashDmg; n.hitFlash=1;
                 spawnExplosion(n.x,n.y,'#ff8800',2);
@@ -3118,7 +3141,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             let c=e.coinVal+Math.floor(Math.random()*6);
             // Bounty Hunter — special enemies drop more
             const isSpecial = e.diver||e.armored||e.regen||e.heavyShooter||e.splitter;
-            if(hasPerk('bountyHunter') && isSpecial){ const mult=[2,3,4,5][perkLevel('bountyHunter')]; c=Math.floor(c*mult); }
+            if(hasPerk('bountyHunter') && isSpecial){ const mult=[2,3,4,5][perkLevel('bountyHunter')-1]; c=Math.floor(c*mult); }
             // War Profiteer multiplier
             if(hasPerk('warProfiteer')) c=Math.floor(c*warProfiteerMult);
             // Scavenger — override cursedCoins and auto-collect
@@ -3140,7 +3163,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             }
             // CHAIN REACTION
             if(hasPerk('chainReaction')){
-              const chance=[0.15,0.20,0.30,0.40][perkLevel('chainReaction')];
+              const chance=[0.15,0.20,0.30,0.40][perkLevel('chainReaction')-1];
               if(Math.random()<chance){
                 enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.abs(n.x-e.x)<60&&Math.abs(n.y-e.y)<60).forEach(n=>{
                   n.hp-=stats.damage*2; n.hitFlash=1;
@@ -3150,12 +3173,12 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               }
             }
             // BLOODLUST — index 0=base
-            if(hasPerk('bloodlust')){ const chance=[0.05,0.08,0.12,0.15][perkLevel('bloodlust')]; if(Math.random()<chance && player.lives<player.maxLives){ player.lives++; updateHUD(); showToast('🩸 Bloodlust!'); } }
+            if(hasPerk('bloodlust')){ const chance=[0.05,0.08,0.12,0.15][perkLevel('bloodlust')-1]; if(Math.random()<chance && player.lives<player.maxLives){ player.lives++; updateHUD(); showToast('🩸 Bloodlust!'); } }
             // KILL STREAK
             killStreakCount++;
             // HOLLOW POINT
             bulletsFired++;
-            const hpInterval=[5,5,4,3][perkLevel('hollowPoint')];
+            const hpInterval=[5,5,4,3][perkLevel('hollowPoint')-1];
             if(hasPerk('hollowPoint') && bulletsFired%hpInterval===0){ spawnExplosion(e.x,e.y,'#00ccff',4); score+=e.scoreVal; }
             // Splitter — spawn 2 mini enemies
             if(e.splitter){
@@ -3197,7 +3220,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         if(boss.hp<=0){
           boss.alive=false;
           score+=500*wave; sessionCoins+=80;
-          if(hasPerk('voidSurge')){ voidSurgeStacks++; showToast(`⚡ Void Surge! Damage +${Math.round(voidSurgeStacks*([0.05,0.08,0.12,0.15][perkLevel('voidSurge')])*100)}%`); }
+          if(hasPerk('voidSurge')){ voidSurgeStacks++; showToast(`⚡ Void Surge! Damage +${Math.round(voidSurgeStacks*([0.05,0.08,0.12,0.15][perkLevel('voidSurge')-1])*100)}%`); }
           if(wave>=20 && !perksUnlocked){ perksUnlocked=true; showToast('⚡ PERKS UNLOCKED! Visit the shop to access them!'); }
           spawnExplosion(boss.x,boss.y,'#ff6600',8,true);
           setTimeout(()=>spawnExplosion(boss.x+30,boss.y-20,'#ff00cc',6,true),250);
@@ -3225,12 +3248,12 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         player.inv=invDur; player.shieldFlash=0.6;
         waveDamageTaken=true;
         killStreakCount=0;
-        if(hasPerk('retribution')){ const dur=[2,3,4,5][perkLevel('retribution')]; retributionTimer=dur; }
+        if(hasPerk('retribution')){ const dur=[2,3,4,5][perkLevel('retribution')-1]; retributionTimer=dur; }
         // Last Stand — trigger shield when dropping to 1 life
         if(lastStandSave && !lastStandTriggered){
           lastStandTriggered=true;
           lastStandCooldown=10;
-          const dur=[3,4,5,6][perkLevel('lastStand')];
+          const dur=[3,4,5,6][perkLevel('lastStand')-1];
           player.inv=dur; player.shieldFlash=dur;
           showToast('🛡 LAST STAND!'); sfx('setComplete');
         }
@@ -3754,7 +3777,7 @@ function waveCleared() {
   temporalRiftTimer=0;
   // Bulwark — reward undamaged wave
   if(hasPerk('warProfiteer')){
-    const rate=[0.02,0.04,0.06,0.08][perkLevel('warProfiteer')];
+    const rate=[0.02,0.04,0.06,0.08][perkLevel('warProfiteer')-1];
     warProfiteerMult=Math.min(warProfiteerMult+rate, 5.0);
   }
   if(hasPerk('bulwark') && !waveDamageTaken && !bulwarkUsedThisWave){
@@ -3804,7 +3827,59 @@ function waveCleared() {
   }
 }
 
+function showContinueScreen(diedWave, currentScore, onDecline){
+  const el=document.createElement('div');
+  el.id='continue-screen';
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px';
+  el.innerHTML=`
+    <div id="cs-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">💀</div>
+    <div id="cs-title" style="font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:#ff4455;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #ff4455">SHIP DESTROYED</div>
+    <div id="cs-wave" style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff8888;letter-spacing:3px;margin-top:6px;opacity:0;transition:all 0.4s ease 0.5s">WAVE ${diedWave} · SCORE ${currentScore.toLocaleString()}</div>
+    <div id="cs-divider" style="width:60px;height:1px;background:#ff4455;margin:20px auto;opacity:0;transition:all 0.4s ease 0.65s"></div>
+    <div id="cs-msg" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#aaa;letter-spacing:1px;line-height:1.8;max-width:280px;opacity:0;transition:all 0.4s ease 0.75s">You have <span style="color:#00ff88;font-weight:900">1 CONTINUE</span> remaining.<br>You'll restart wave ${diedWave} with 3 lives.<br><span style="color:#ff4455;font-size:10px">This is your only continue — use it wisely.</span></div>
+    <div id="cs-btns" style="width:100%;max-width:300px;margin-top:28px;opacity:0;transition:all 0.4s ease 1s">
+      <button onclick="useContinue(${diedWave})" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:16px 24px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer;width:100%;margin-bottom:10px">▶ CONTINUE</button>
+      <button onclick="declineContinue()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #1a2540;background:transparent;color:#446;cursor:pointer;width:100%">✕ END RUN</button>
+    </div>
+  `;
+  document.body.appendChild(el);
+  window._continueDecline = onDecline;
+  setTimeout(()=>{ document.getElementById('cs-icon').style.opacity='1'; document.getElementById('cs-icon').style.transform='scale(1)'; },50);
+  setTimeout(()=>{ document.getElementById('cs-title').style.opacity='1'; document.getElementById('cs-title').style.transform='translateY(0)'; },300);
+  setTimeout(()=>{ document.getElementById('cs-wave').style.opacity='1'; },500);
+  setTimeout(()=>{ document.getElementById('cs-divider').style.opacity='1'; },650);
+  setTimeout(()=>{ document.getElementById('cs-msg').style.opacity='1'; },750);
+  setTimeout(()=>{ document.getElementById('cs-btns').style.opacity='1'; },1000);
+}
+
+function useContinue(diedWave){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('hud').style.display='none';
+  const el=document.getElementById('continue-screen');
+  if(el){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(()=>el.remove(),400); }
+  SAVE.savedWave = diedWave;
+  doSave();
+  setTimeout(()=>{ _startGameActual(); },420);
+}
+
+function declineContinue(){
+  const el=document.getElementById('continue-screen');
+  if(el){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(()=>el.remove(),400); }
+  setTimeout(()=>{ if(window._continueDecline) window._continueDecline(); },400);
+}
+
 function endGame() {
+  powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
+  // Offer continue if not used and not a relic run
+  const isRelicRun = SAVE.activeRelics && SAVE.activeRelics.length > 0;
+  if(!SAVE.continueUsed && !isRelicRun){
+    SAVE.continueUsed = true; doSave();
+    showContinueScreen(wave, score, ()=>_doEndGame());
+    return;
+  }
+  _doEndGame();
+}
+function _doEndGame() {
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('music-btn').style.display = 'block';
@@ -3814,7 +3889,7 @@ function endGame() {
   perksUnlocked=false;
   perksIntroSeen=false;
   if(rafId) cancelAnimationFrame(rafId);
-  stopBattleAudio(false); stopBossTheme(false); stopShopMusic(false); stopMusic();
+  setTimeout(()=>{ stopBattleAudio(false); stopBossTheme(false); stopShopMusic(false); stopMusic(); }, 800);
   const finalScore = score;
   const finalWave = wave;
   const finalCoins = sessionCoins;
