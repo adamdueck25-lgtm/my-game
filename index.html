@@ -2552,7 +2552,8 @@ const dangerLine = document.getElementById('danger-line');
 if(dangerLine) dangerLine.style.bottom = playerYOffset + 'px';
   bullets=[]; eBullets=[]; enemies=[]; coinDrops=[]; particles=[];
   thrusterParts=[];
-  wave=SAVE.savedWave||1; score=SAVE.savedScore||0; sessionCoins=0;
+  wave=SAVE.savedWave||1; score=SAVE.savedScore||0; sessionCoins=SAVE.savedSessionCoins||0;
+  SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
   bossFight=false; boss=null;
@@ -3879,7 +3880,12 @@ function endGame() {
   // Offer continue if not used and not a relic run
   const isRelicRun = SAVE.activeRelics && SAVE.activeRelics.length > 0;
   if(!SAVE.continueUsed && !isRelicRun){
-    SAVE.continueUsed = true; doSave();
+    SAVE.continueUsed = true;
+    SAVE.savedScore = score;
+    SAVE.savedSessionCoins = sessionCoins;
+    localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+    gState = 'paused';
+    if(rafId){ cancelAnimationFrame(rafId); rafId=null; }
     showContinueScreen(wave, score, ()=>_doEndGame());
     return;
   }
