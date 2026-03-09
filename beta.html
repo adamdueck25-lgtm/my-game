@@ -84,7 +84,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #menu-canvas{position:absolute;inset:0;z-index:0}
 #menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 14px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
-.title-void{font-size:36px;display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5))}
+.title-void{font-size:36px;display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
 .title-inv{font-size:28px;display:block;color:var(--m);text-shadow:0 0 15px var(--m),0 0 40px var(--m)44;letter-spacing:8px}
 .menu-sub{font-size:13px;color:#446;letter-spacing:4px;margin-bottom:28px}
 .menu-score{font-family:'Orbitron',sans-serif;font-size:13px;color:#666;margin-bottom:28px}
@@ -104,6 +104,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #splash-btn{display:none;margin-top:56px;padding:16px 56px;background:transparent;border:1px solid #4af;color:#4af;font-family:'Courier New',monospace;font-size:13px;letter-spacing:8px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;animation:borderPulse 2s ease-in-out infinite;}
 #splash-btn:hover{background:#4af;color:#000;box-shadow:0 0 60px #4af;letter-spacing:10px;}
 #splash-version{position:absolute;bottom:20px;right:20px;font-size:10px;letter-spacing:3px;color:#1a3a5a;opacity:0;transition:opacity 1s;font-family:'Courier New',monospace;}
+#pregate-stars div{position:absolute;border-radius:50%;background:#fff;}
 @keyframes twinkle{from{opacity:0.1}to{opacity:0.9}}
 @keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 @keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.4}95%{opacity:1}97%{opacity:0.6}98%{opacity:1}}
@@ -115,14 +116,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .btn-main::before{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
 .btn-main:active::before{opacity:.12}
 .btn-main:active{transform:scale(.96)}
-.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.03);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:10px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0px var(--tc,#00f5ff)}
-.dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.07);box-shadow:0 0 12px var(--tc,#00f5ff)44}
-.dock-icon{font-size:24px;line-height:1;filter:drop-shadow(0 0 5px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:6.5px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:0.8;line-height:1.2}
+.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.08);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0px var(--tc,#00f5ff)}
+.dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
+.dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 5px var(--tc,#00f5ff))}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:0.9;line-height:1.2}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes menuPopIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+@keyframes badgePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.6}}
 .menu-anim-hidden{opacity:0}
 .b-c{border-color:var(--c);color:var(--c)}
 .b-c:hover{box-shadow:0 0 20px rgba(0,245,255,0.4);background:rgba(0,245,255,0.08)}
@@ -255,7 +257,17 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <!-- ═══════════ SCREENS ═══════════ -->
 
 <!-- MAIN MENU -->
-<div id="screen-splash" style="display:flex;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#050d1a 0%,#000 100%);flex-direction:column;align-items:center;justify-content:center;">
+<div id="screen-pregate" style="display:flex;position:fixed;inset:0;z-index:10000;background:#000;flex-direction:column;align-items:center;justify-content:center;gap:0">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,#050d1a 0%,#000 70%);pointer-events:none"></div>
+  <div id="pregate-stars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none"></div>
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:32px">
+    <div style="font-size:72px;animation:floatBob 2.5s ease-in-out infinite;filter:drop-shadow(0 0 30px #00f5ff)">👾</div>
+    <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:6px;background:linear-gradient(90deg,#00f5ff,#fff,#ff44aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center">VOID INVADERS</div>
+    <button id="pregate-btn" onclick="pregateLaunch()" style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:6px;padding:18px 48px;background:transparent;border:1px solid #00f5ff;color:#00f5ff;cursor:pointer;animation:borderPulse 2s ease-in-out infinite;margin-top:12px">▶ &nbsp;PRESS TO LAUNCH</button>
+  </div>
+</div>
+
+<div id="screen-splash" style="display:none;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#050d1a 0%,#000 100%);flex-direction:column;align-items:center;justify-content:center;">
   <div id="splash-stars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
   <div id="splash-scanline"></div>
   <div class="splash-inner">
@@ -265,9 +277,14 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div id="splash-line-bottom"></div>
     <div id="splash-title">VOID INVADERS</div>
     <div id="splash-subtitle">Space Shooter</div>
-    <button id="splash-btn" onclick="splashLaunch()">▶  Launch Game</button>
+    <div id="splash-progress-wrap" style="margin-top:48px;width:160px;opacity:0;transition:opacity 0.8s">
+      <div style="width:100%;height:1px;background:#1a3a5a;border-radius:1px;overflow:hidden">
+        <div id="splash-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00f5ff,#4af);transition:width 0.1s linear;box-shadow:0 0 8px #00f5ff"></div>
+      </div>
+    </div>
   </div>
   <div id="splash-version">v6.0</div>
+  <div id="splash-flash" style="position:absolute;inset:0;background:#00f5ff;opacity:0;pointer-events:none;z-index:20"></div>
 </div>
 
 <div id="screen-menu" class="screen">
@@ -277,32 +294,41 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div id="menu-hero-title" style="position:relative;text-align:center;padding-top:8px">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:120px;background:radial-gradient(ellipse,rgba(0,245,255,0.12) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
       <div style="font-size:48px;animation:floatBob 2.5s ease-in-out infinite;display:block;filter:drop-shadow(0 0 20px var(--c));position:relative">👾</div>
-      <div class="game-title" style="position:relative">
-        <span class="title-void" id="glitch-title">VOID INVADERS</span>
+      <div class="game-title" style="position:relative;width:100%;margin-bottom:28px">
+        <span class="title-void" id="glitch-title" style="display:block;white-space:nowrap">VOID INVADERS</span>
         <span class="title-inv">RELOADED</span>
       </div>
-      <div class="menu-sub" style="margin-bottom:0">★ GALACTIC EDITION ★</div>
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:24px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:100%">
+    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:100%">
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
-        <div class="menu-score" id="menu-hiscore" style="margin:0;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88"></div>
+        <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
       </div>
       <div style="width:1px;background:#1a2540"></div>
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">COINS</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#ffd700;text-shadow:0 0 6px #ffd70088">💰 <span id="menu-coins">0</span></div>
       </div>
+      <div style="width:1px;background:#1a2540"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">WAVE</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#00ff88;text-shadow:0 0 6px #00ff8888"><span id="menu-wave">1</span></div>
+      </div>
     </div>
 
     <!-- LAUNCH BUTTON -->
     <div style="width:100%;padding:0 16px;box-sizing:border-box">
-      <button id="btn-launch" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.06);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 6px #00f5ff44;box-shadow:0 0 10px rgba(0,245,255,0.1),inset 0 0 10px rgba(0,245,255,0.03)">
+      <button id="btn-launch" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
         <span style="position:relative;z-index:1">▶ LAUNCH MISSION</span>
         <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,245,255,0.15),transparent);animation:shimmer 2.5s ease-in-out infinite"></div>
       </button>
+    </div>
+
+    <!-- ACTIVE RUN BANNER -->
+    <div id="menu-run-banner" style="display:none;width:100%;padding:0 16px;box-sizing:border-box;margin-top:6px">
+      <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#00ff88;letter-spacing:2px;text-align:center;padding:6px;background:rgba(0,255,136,0.06);border:1px solid #00ff8833;border-radius:4px;animation:breatheGlow 2s ease-in-out infinite">⚡ ACTIVE RUN IN PROGRESS — TAP LAUNCH TO CONTINUE</div>
     </div>
 
     <!-- 2x4 NAVIGATION GRID -->
@@ -310,7 +336,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
 
-        <div class="dock-tile" onclick="openRelics()" id="btn-relics" style="--tc:#ff4455;border-color:#ff445555">
+        <div class="dock-tile" id="btn-relics" style="--tc:#ff4455;border-color:#ff445555">
           <div class="dock-icon">⚠️</div>
           <div class="dock-label">RELICS</div>
         </div>
@@ -346,8 +372,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">HOW TO PLAY</div>
         </div>
 
-        <div class="dock-tile" onclick="openChangelog()" style="--tc:#445566;border-color:#44556655">
-          <div class="dock-icon">📋</div>
+        <div class="dock-tile" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="--tc:#445566;border-color:#44556655">
+          <div class="dock-icon" style="position:relative">📋<span id="updates-badge" style="display:none;position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></div>
           <div class="dock-label">UPDATES</div>
         </div>
 
@@ -357,12 +383,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- SHIP HERO PREVIEW -->
     <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;position:relative">
       <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
-      <canvas id="menu-ship-preview" width="220" height="180" style="position:relative;display:block;margin-top:16px"></canvas>
-      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#1a2540;letter-spacing:3px;margin-top:6px;margin-bottom:10px">YOUR VESSEL</div>
+      <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block;margin-top:16px"></canvas>
+      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:6px;margin-bottom:10px">YOUR VESSEL</div>
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#1a2540;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.5.5</div>
+    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.5.5</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -1882,10 +1908,8 @@ function startGlitch() {
   if(!el) return;
   function glitch() {
     el.style.textShadow = `${(Math.random()-.5)*6}px 0 var(--m), ${(Math.random()-.5)*6}px 0 var(--c)`;
-    el.style.letterSpacing = (3+Math.random()*3)+'px';
     setTimeout(()=>{
       el.style.textShadow='';
-      el.style.letterSpacing='4px';
     }, 80);
     glitchTimer = setTimeout(glitch, 2000+Math.random()*3000);
   }
@@ -4814,6 +4838,8 @@ function playMenuEntrance(){
   const ship=document.getElementById('menu-ship-preview');
   const footer=document.getElementById('menu-footer');
   const els=[title,stats,launch,nav,ship,footer];
+  // Safety: if any key element is missing, skip animation and ensure visible
+  if(!title||!launch){ els.forEach(el=>{ if(el){ el.style.opacity='1'; el.style.transform='none'; } }); return; }
   els.forEach(el=>{ if(el){ el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='none'; } });
   const delays=[0,120,260,400,560,680];
   els.forEach((el,i)=>{ if(!el) return;
@@ -4831,25 +4857,50 @@ function playMenuEntrance(){
   }, 400);
 }
 
+function dismissUpdatesBadge(){
+  SAVE.lastSeenChangelog = CURRENT_VERSION;
+  doSave();
+  const b = document.getElementById('updates-badge');
+  if(b) b.style.display = 'none';
+}
+
 function updateMenuCoins(){
   const pl = document.getElementById('dock-perks-lock');
   if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
-  document.getElementById('menu-coins').textContent=SAVE.coins;
-  const hs=document.getElementById('menu-hiscore');
-  if(hs) hs.textContent=SAVE.hiScore>0?`HI-SCORE: ${SAVE.hiScore}`:'';
+  const badge = document.getElementById('updates-badge');
+  if(badge) badge.style.display = (SAVE.lastSeenChangelog !== CURRENT_VERSION) ? 'inline-block' : 'none';
+  const sw = SAVE.savedWave||1;
+  const midRun = sw > 1;
+  // Animate counters
+  animateCount('menu-coins', 0, SAVE.coins, 800, '', '');
+  animateCount('menu-hiscore', 0, SAVE.hiScore, 900, '', '');
+  const waveEl = document.getElementById('menu-wave');
+  if(waveEl) animateCount('menu-wave', 0, sw, 700, '', '');
+  // Active run banner + grid dim
+  const banner = document.getElementById('menu-run-banner');
+  if(banner) banner.style.display = midRun ? 'block' : 'none';
+  const grid = document.getElementById('menu-nav-grid');
+  if(grid) grid.style.opacity = midRun ? '0.7' : '1';
   const lb=document.getElementById('btn-launch');
-  const sw=SAVE.savedWave||1;
-  if(lb) lb.textContent=sw>1?`▶ CONTINUE WAVE ${sw}`:'▶ LAUNCH MISSION';
+  if(lb){
+    const lbSpan = lb.querySelector('span');
+    if(lbSpan) lbSpan.textContent = midRun ? `▶ CONTINUE WAVE ${sw}` : '▶ LAUNCH MISSION';
+    lb.style.borderColor = midRun ? '#00ff88' : '#00f5ff';
+    lb.style.color = midRun ? '#00ff88' : '#00f5ff';
+    lb.style.background = midRun ? 'rgba(0,255,136,0.18)' : 'rgba(0,245,255,0.18)';
+    lb.style.textShadow = midRun ? '0 0 8px #00ff8866' : '0 0 8px #00f5ff66';
+    lb.style.boxShadow = midRun ? '0 0 14px rgba(0,255,136,0.15),inset 0 0 14px rgba(0,255,136,0.08)' : '0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)';
+  }
   const rb=document.getElementById('btn-relics');
   const relicUnlocked = SAVE.relicsUnlocked || (SAVE.hiScore||0)>=1000000;
   const activeRelics = SAVE.activeRelics || [];
-  const midRun = (SAVE.savedWave||1) > 1;
   if(rb) {
-    rb.textContent = relicUnlocked ? '⚠ RELICS' : '🔒 RELICS';
-    rb.style.borderColor = midRun ? '#334' : relicUnlocked ? '#ff4455' : '#334';
-    rb.style.color = midRun ? '#445' : relicUnlocked ? '#ff4455' : '#445';
+    const relicIcon = rb.querySelector('.dock-icon');
+    if(relicIcon) relicIcon.textContent = midRun ? '🔒' : relicUnlocked ? '⚠️' : '🔒';
     rb.style.opacity = midRun ? '0.4' : relicUnlocked ? '1' : '0.5';
-    rb.onclick = midRun ? ()=>showToast('🔒 Relics are locked during an active run!') : openRelics;
+    rb.style.setProperty('--tc', midRun ? '#334' : relicUnlocked ? '#ff4455' : '#445');
+    rb.style.borderColor = midRun ? '#33444455' : relicUnlocked ? '#ff445555' : '#44455555';
+    rb.onclick = midRun ? ()=>showToast('🔒 Relics are locked during an active run!') : relicUnlocked ? openRelics : ()=>showToast('⚠ Reach 1,000,000 score to unlock Relics!');
   }
   // Show active relic badges on menu if mid-run
   let relicBar = document.getElementById('menu-relic-bar');
@@ -5294,7 +5345,7 @@ function stopCustomizeAnim(){
   if(_customizeRaf){ cancelAnimationFrame(_customizeRaf); _customizeRaf=null; }
 }
 
-let _menuShipRaf=null, _menuShipThruster=[], _menuShipLastT=0;
+let _menuShipRaf=null, _menuShipThruster=[], _menuShipLastT=0, _menuShipBoostTimer=0, _menuShipBullets=[], _menuShipFireTimer=0;
 function startMenuShipPreview(){
   if(_menuShipRaf) cancelAnimationFrame(_menuShipRaf);
   _menuShipThruster=[]; _menuShipLastT=0;
@@ -5310,8 +5361,14 @@ function startMenuShipPreview(){
     cx.clearRect(0,0,W,H);
     // Thruster particles
     const shipX=W/2, shipY=H/2+Math.sin(t*1.4)*8;
+    // Occasional engine boost burst
+    if(!_menuShipBoostTimer) _menuShipBoostTimer=0;
+    _menuShipBoostTimer-=dt;
+    const boosting = _menuShipBoostTimer>0;
+    if(_menuShipBoostTimer<=0 && Math.random()<0.004) _menuShipBoostTimer=0.35;
     const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600';
-    if(Math.random()<0.7){
+    const thrusterRate = boosting ? 1.0 : 0.7;
+    if(Math.random()<thrusterRate){
       const col=tc==='rainbow'?['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff'][Math.floor(Math.random()*5)]:tc;
       _menuShipThruster.push({x:shipX+(Math.random()-.5)*8,y:shipY+18,vx:(Math.random()-.5)*0.5,vy:Math.random()*2+1,life:1,r:Math.random()*4+2,col});
     }
@@ -5320,8 +5377,19 @@ function startMenuShipPreview(){
       cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill();
     });
     _menuShipThruster=_menuShipThruster.filter(p=>p.life>0&&p.y<H+20);
+    // Occasional bullet fire
+    if(!_menuShipBullets) _menuShipBullets=[];
+    if(!_menuShipFireTimer) _menuShipFireTimer=0;
+    _menuShipFireTimer-=dt;
+    if(_menuShipFireTimer<=0 && Math.random()<0.008){ _menuShipFireTimer=0.6+Math.random()*0.8; _menuShipBullets.push({x:shipX,y:shipY-18,life:1}); }
+    const bCol=(SAVE.shipCustom?.bulletColor)||'#00f5ff';
+    _menuShipBullets.forEach(b=>{ b.y-=dt*220; b.life-=dt*1.5;
+      cx.globalAlpha=Math.max(0,b.life); cx.fillStyle=bCol; cx.shadowBlur=10; cx.shadowColor=bCol;
+      cx.fillRect(b.x-1.5,b.y-8,3,12);
+    });
+    _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
-    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.8);
+    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0);
   }
   requestAnimationFrame(loop);
 }
@@ -5483,6 +5551,30 @@ try {
 } catch(e) {
   document.body.innerHTML += `<div style="position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">INIT ERROR: ${e.message}<br>${e.stack}</div>`;
 }
+function initPregate() {
+  const container = document.getElementById('pregate-stars');
+  for(let i=0;i<120;i++){
+    const s = document.createElement('div');
+    const size = Math.random()*2+0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;opacity:${Math.random()*0.5+0.1};animation:twinkle ${2+Math.random()*4}s ${Math.random()*3}s infinite alternate;`;
+    container.appendChild(s);
+  }
+}
+
+function pregateLaunch() {
+  // Start music immediately on user tap — works on all devices
+  resumeAC();
+  if(currentTrackName !== 'menu') setTrack('menu');
+  // Hide pregate, show splash
+  const gate = document.getElementById('screen-pregate');
+  gate.style.transition = 'opacity 0.5s';
+  gate.style.opacity = '0';
+  setTimeout(()=>{ gate.style.display='none'; }, 500);
+  const splash = document.getElementById('screen-splash');
+  splash.style.display = 'flex';
+  initSplash();
+}
+
 function initSplash() {
   const container = document.getElementById('splash-stars');
   for(let i=0;i<150;i++){
@@ -5495,34 +5587,73 @@ function initSplash() {
   const creatorEl  = document.getElementById('splash-creator');
   const titleEl    = document.getElementById('splash-title');
   const subtitleEl = document.getElementById('splash-subtitle');
-  const btn        = document.getElementById('splash-btn');
   const lineTop    = document.getElementById('splash-line-top');
   const lineBot    = document.getElementById('splash-line-bottom');
   const versionEl  = document.getElementById('splash-version');
-  const fullName   = 'Adam Dueck';
+  const progressWrap = document.getElementById('splash-progress-wrap');
+  const progressBar  = document.getElementById('splash-progress-bar');
+  const flashEl      = document.getElementById('splash-flash');
+  const fullName = 'Adam Dueck';
   let i = 0;
-  setTimeout(()=>{ creatorEl.style.opacity='1'; }, 600);
+
+  // ── Sequence (8 seconds total) ──────────────────
+  setTimeout(()=>{ creatorEl.style.opacity='1'; }, 400);
   setTimeout(()=>{
     lineTop.style.transition='width 0.6s ease, opacity 0.6s';
     lineTop.style.width='160px'; lineTop.style.opacity='1';
-  }, 1200);
+  }, 900);
   setTimeout(()=>{
     nameEl.style.opacity='1'; nameEl.style.transition='opacity 0.4s';
     const type = setInterval(()=>{
-      nameEl.textContent = fullName.slice(0,++i) + (i<fullName.length?'█':'');
+      nameEl.textContent = fullName.slice(0,++i)+(i<fullName.length?'█':'');
       if(i>=fullName.length){ clearInterval(type); nameEl.textContent=fullName; }
-    }, 70);
-  }, 1500);
+    }, 65);
+  }, 1200);
   setTimeout(()=>{
     lineBot.style.transition='width 0.6s ease, opacity 0.6s';
     lineBot.style.width='160px'; lineBot.style.opacity='1';
-  }, 2600);
-  setTimeout(()=>{ titleEl.style.opacity='1'; titleEl.style.animation='pulseGlow 3s ease-in-out infinite'; }, 3000);
-  setTimeout(()=>{ subtitleEl.style.opacity='1'; versionEl.style.opacity='1'; }, 3600);
-  setTimeout(()=>{ btn.style.display='block'; }, 4200);
+  }, 2200);
+  setTimeout(()=>{ titleEl.style.opacity='1'; titleEl.style.animation='pulseGlow 3s ease-in-out infinite'; }, 2700);
+  setTimeout(()=>{ subtitleEl.style.opacity='1'; versionEl.style.opacity='1'; }, 3300);
+
+  // Progress bar appears and fills over remaining time
+  setTimeout(()=>{
+    progressWrap.style.opacity='1';
+    let pct=0;
+    const fill = setInterval(()=>{
+      pct = Math.min(100, pct + 100/(4400/80));
+      if(progressBar) progressBar.style.width = pct+'%';
+      if(pct>=100) clearInterval(fill);
+    }, 80);
+  }, 3600);
+
+  // Scanline intensifies at ~5.5s
+  setTimeout(()=>{
+    const scanline = document.getElementById('splash-scanline');
+    if(scanline) scanline.style.animation='scanlineFlash 0.3s ease-in-out 3';
+  }, 5500);
+
+  // Title flickers at ~6.5s — feels like power surge
+  setTimeout(()=>{
+    let flicks=0;
+    const flicker = setInterval(()=>{
+      titleEl.style.opacity = flicks%2===0?'0.2':'1';
+      if(++flicks>=6){ clearInterval(flicker); titleEl.style.opacity='1'; }
+    }, 100);
+  }, 6500);
+
+  // White flash right before launch
+  setTimeout(()=>{
+    if(flashEl){ flashEl.style.transition='opacity 0.15s'; flashEl.style.opacity='0.6';
+      setTimeout(()=>{ flashEl.style.transition='opacity 0.6s'; flashEl.style.opacity='0'; }, 150);
+    }
+  }, 7700);
+
+  // Auto-launch at 8 seconds
+  setTimeout(()=>{ splashLaunch(); }, 8000);
 }
 try {
-  initSplash();
+  initPregate();
 } catch(e) {
   document.body.innerHTML += `<div style="position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">${e.message} — ${e.stack}</div>`;
 }
@@ -6001,8 +6132,6 @@ function splashLaunch() {
   splash.style.transition='opacity 0.8s';
   splash.style.opacity='0';
   setTimeout(()=>{ splash.style.display='none'; checkWhatsNew(); }, 800);
-  resumeAC();
-  if(currentTrackName !== 'menu') setTrack('menu');
   showScreen('screen-menu');
   } catch(e) {
     document.body.innerHTML += `<div style="position:fixed;top:40px;left:0;right:0;background:#ff4400;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">${e.message}<br>${e.stack}</div>`;
