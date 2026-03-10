@@ -116,10 +116,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .btn-main::before{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
 .btn-main:active::before{opacity:.12}
 .btn-main:active{transform:scale(.96)}
-.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.08);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0px var(--tc,#00f5ff)}
+.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
-.dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 5px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:0.9;line-height:1.2}
+.dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -327,10 +327,6 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </button>
     </div>
 
-    <!-- ACTIVE RUN BANNER -->
-    <div id="menu-run-banner" style="display:none;width:100%;padding:0 16px;box-sizing:border-box;margin-top:6px">
-      <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#00ff88;letter-spacing:2px;text-align:center;padding:6px;background:rgba(0,255,136,0.06);border:1px solid #00ff8833;border-radius:4px;animation:breatheGlow 2s ease-in-out infinite">⚡ ACTIVE RUN IN PROGRESS — TAP LAUNCH TO CONTINUE</div>
-    </div>
 
     <!-- 2x4 NAVIGATION GRID -->
     <div id="menu-nav-grid" style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:16px">
@@ -342,38 +338,38 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">RELICS</div>
         </div>
 
-        <div class="dock-tile" onclick="openShop('screen-menu')" style="--tc:#ffd700;border-color:#ffd70055">
+        <div class="dock-tile" onclick="openShop('screen-menu')" style="--tc:#ffd700;border-color:#ffd70099">
           <div class="dock-icon">🛒</div>
           <div class="dock-label">SHOP</div>
         </div>
 
-        <div class="dock-tile" onclick="openTrophies('screen-menu')" style="--tc:#ffaa00;border-color:#ffaa0055">
+        <div class="dock-tile" onclick="openTrophies('screen-menu')" style="--tc:#ffaa00;border-color:#ffaa0099">
           <div class="dock-icon">🏆</div>
           <div class="dock-label">TROPHIES</div>
         </div>
 
-        <div class="dock-tile" onclick="openLeaderboard()" style="--tc:#00f5ff;border-color:#00f5ff55">
+        <div class="dock-tile" onclick="openLeaderboard()" style="--tc:#00f5ff;border-color:#00f5ff99">
           <div class="dock-icon">📡</div>
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks()" style="--tc:#00ccff;border-color:#00ccff55">
+        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks()" style="--tc:#00ccff;border-color:#00ccff99">
           <div class="dock-icon" id="dock-perks-icon">⚡</div>
           <div class="dock-label">PERKS</div>
           <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
-        <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff55">
+        <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff99">
           <div class="dock-icon">🚀</div>
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" onclick="showHowToPlay()" style="--tc:#aaaaaa;border-color:#aaaaaa55">
+        <div class="dock-tile" onclick="showHowToPlay()" style="--tc:#aaaaaa;border-color:#aaaaaa99">
           <div class="dock-icon">❓</div>
           <div class="dock-label">HOW TO PLAY</div>
         </div>
 
-        <div class="dock-tile" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="--tc:#445566;border-color:#44556655">
+        <div class="dock-tile" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="--tc:#778899;border-color:#77889999">
           <div class="dock-icon" style="position:relative">📋<span id="updates-badge" style="display:none;position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></div>
           <div class="dock-label">UPDATES</div>
         </div>
@@ -4872,56 +4868,70 @@ function dismissUpdatesBadge(){
 }
 
 function updateMenuCoins(){
-  const pl = document.getElementById('dock-perks-lock');
-  if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
-  const badge = document.getElementById('updates-badge');
-  if(badge) badge.style.display = (SAVE.lastSeenChangelog !== CURRENT_VERSION) ? 'inline-block' : 'none';
   const sw = SAVE.savedWave||1;
   const midRun = sw > 1;
-  // Animate counters
+  const activeRelics = SAVE.activeRelics || [];
+  const relicUnlocked = SAVE.relicsUnlocked || (SAVE.hiScore||0)>=1000000;
+
+  // Animate stats counters
   animateCount('menu-coins', 0, SAVE.coins, 800, '', '');
-  animateCount('menu-hiscore', 0, SAVE.hiScore, 900, '', '');
+  animateCount('menu-hiscore', 0, SAVE.hiScore||0, 900, '', '');
   const waveEl = document.getElementById('menu-wave');
   if(waveEl) animateCount('menu-wave', 0, sw, 700, '', '');
-  // Active run banner + grid dim
-  const banner = document.getElementById('menu-run-banner');
-  if(banner) banner.style.display = midRun ? 'block' : 'none';
-  const grid = document.getElementById('menu-nav-grid');
-  if(grid) grid.style.opacity = midRun ? '0.7' : '1';
-  const lb=document.getElementById('btn-launch');
+
+  // Launch button
+  const lb = document.getElementById('btn-launch');
   if(lb){
     const lbSpan = lb.querySelector('span');
-    if(lbSpan) lbSpan.textContent = midRun ? `▶ CONTINUE WAVE ${sw}` : '▶ LAUNCH MISSION';
+    const txt = midRun ? `▶ CONTINUE WAVE ${sw}` : '▶ LAUNCH MISSION';
+    if(lbSpan) lbSpan.textContent = txt;
+    else lb.childNodes.forEach(n=>{ if(n.nodeType===3) n.textContent = txt; });
     lb.style.borderColor = midRun ? '#00ff88' : '#00f5ff';
     lb.style.color = midRun ? '#00ff88' : '#00f5ff';
     lb.style.background = midRun ? 'rgba(0,255,136,0.18)' : 'rgba(0,245,255,0.18)';
     lb.style.textShadow = midRun ? '0 0 8px #00ff8866' : '0 0 8px #00f5ff66';
     lb.style.boxShadow = midRun ? '0 0 14px rgba(0,255,136,0.15),inset 0 0 14px rgba(0,255,136,0.08)' : '0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)';
   }
-  const rb=document.getElementById('btn-relics');
-  const relicUnlocked = SAVE.relicsUnlocked || (SAVE.hiScore||0)>=1000000;
-  const activeRelics = SAVE.activeRelics || [];
-  if(rb) {
+
+  // Relic badges appended inside launch button wrapper
+  let relicBar = document.getElementById('menu-relic-bar');
+  if(!relicBar){
+    relicBar = document.createElement('div');
+    relicBar.id = 'menu-relic-bar';
+    relicBar.style.cssText = 'display:flex;gap:6px;justify-content:center;align-items:center;min-height:20px;margin-top:4px';
+    const lbWrap = document.getElementById('btn-launch')?.parentElement;
+    if(lbWrap) lbWrap.appendChild(relicBar);
+  }
+  relicBar.innerHTML = (midRun && activeRelics.length) ? activeRelics.map(id=>{
+    const r = RELICS.find(x=>x.id===id);
+    return r ? `<div style="font-size:16px;cursor:pointer" onclick="showToast('${r.icon} ${r.name}: ${r.buff} · ⚠ ${r.debuff}')">${r.icon}</div>` : '';
+  }).join('') : '';
+
+  // Relics tile
+  const rb = document.getElementById('btn-relics');
+  if(rb){
     const relicIcon = rb.querySelector('.dock-icon');
     if(relicIcon) relicIcon.textContent = midRun ? '🔒' : relicUnlocked ? '⚠️' : '🔒';
     rb.style.opacity = midRun ? '0.4' : relicUnlocked ? '1' : '0.5';
     rb.style.setProperty('--tc', midRun ? '#334' : relicUnlocked ? '#ff4455' : '#445');
-    rb.style.borderColor = midRun ? '#33444455' : relicUnlocked ? '#ff445555' : '#44455555';
-    rb.onclick = midRun ? ()=>showToast('🔒 Relics are locked during an active run!') : relicUnlocked ? openRelics : ()=>showToast('⚠ Reach 1,000,000 score to unlock Relics!');
+    rb.style.borderColor = midRun ? '#33333355' : relicUnlocked ? '#ff445599' : '#44444455';
+    rb.onclick = midRun ? ()=>showToast('🔒 Relics locked during active run!') : relicUnlocked ? openRelics : ()=>showToast('⚠ Reach 1,000,000 score to unlock!');
   }
+
+  // Perks lock badge
+  const pl = document.getElementById('dock-perks-lock');
+  if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
+
+  // Updates badge
+  const badge = document.getElementById('updates-badge');
+  if(badge) badge.style.display = (SAVE.lastSeenChangelog !== CURRENT_VERSION) ? 'inline-block' : 'none';
+
+  // Grid dim when mid-run
+  const grid = document.getElementById('menu-nav-grid');
+  if(grid) grid.style.opacity = midRun ? '0.7' : '1';
   // Show active relic badges on menu if mid-run
-  let relicBar = document.getElementById('menu-relic-bar');
-  if(!relicBar) {
-    relicBar = document.createElement('div');
-    relicBar.id = 'menu-relic-bar';
-    relicBar.style.cssText = 'display:flex;gap:6px;justify-content:center;align-items:center;margin-top:-12px;margin-bottom:8px;min-height:20px';
-    const launchBtn = document.getElementById('btn-launch');
-    if(launchBtn) launchBtn.parentElement.insertBefore(relicBar, launchBtn);
-  }
-  relicBar.innerHTML = midRun ? activeRelics.map(id => {
-    const r = RELICS.find(x => x.id === id);
-    return r ? `<div class="relic-badge" style="width:28px;height:28px;font-size:14px;cursor:pointer;pointer-events:auto" onclick="showToast('${r.icon} ${r.name}: ${r.buff} · ⚠ ${r.debuff}')">${r.icon}</div>` : '';
-  }).join('') : '';
+  // Relic badges in run banner
+
 }
 
 // ═══════════════════════════════════════════════════
