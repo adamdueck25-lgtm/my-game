@@ -263,7 +263,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:32px">
     <div style="font-size:72px;animation:floatBob 2.5s ease-in-out infinite;filter:drop-shadow(0 0 30px #00f5ff)">👾</div>
     <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:6px;background:linear-gradient(90deg,#00f5ff,#fff,#ff44aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center">VOID INVADERS</div>
-    <button id="pregate-btn" onclick="pregateLaunch()" style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:6px;padding:18px 48px;background:transparent;border:1px solid #00f5ff;color:#00f5ff;cursor:pointer;animation:borderPulse 2s ease-in-out infinite;margin-top:12px">▶ &nbsp;PRESS TO LAUNCH</button>
+    <div id="pregate-loading" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:4px;color:#1a3a5a;margin-top:12px;animation:twinkle 1s ease-in-out infinite alternate">INITIALIZING...</div>
+    <button id="pregate-btn" onclick="pregateLaunch()" style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:6px;padding:18px 48px;background:transparent;border:1px solid #00f5ff;color:#00f5ff;cursor:pointer;animation:borderPulse 2s ease-in-out infinite;margin-top:12px;opacity:0;pointer-events:none">▶ &nbsp;PRESS TO LAUNCH</button>
   </div>
 </div>
 
@@ -1352,7 +1353,13 @@ async function loadAudioFile(url) {
   } catch(e) { console.warn('Audio load failed:', url, e); return null; }
 }
 
-loadAudioFile('menu.mp3').then(buf=>{ menuBuffer=buf; });
+loadAudioFile('menu.mp3').then(buf=>{
+  menuBuffer=buf;
+  const btn = document.getElementById('pregate-btn');
+  if(btn){ btn.style.transition='opacity 0.6s'; btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
+  const loading = document.getElementById('pregate-loading');
+  if(loading){ loading.style.transition='opacity 0.3s'; loading.style.opacity='0'; setTimeout(()=>loading.remove(),300); }
+});
 loadAudioFile('battle.mp3').then(buf=>{ battleBuffer=buf; });
 loadAudioFile('shop.mp3').then(buf=>{ shopBuffer=buf; });
 loadAudioFile('alt-battle.mp3').then(buf=>{ altBattleBuffer=buf; });
@@ -5642,15 +5649,8 @@ function initSplash() {
     }, 100);
   }, 6500);
 
-  // White flash right before launch
-  setTimeout(()=>{
-    if(flashEl){ flashEl.style.transition='opacity 0.15s'; flashEl.style.opacity='0.6';
-      setTimeout(()=>{ flashEl.style.transition='opacity 0.6s'; flashEl.style.opacity='0'; }, 150);
-    }
-  }, 7700);
-
-  // Auto-launch at 8 seconds
-  setTimeout(()=>{ splashLaunch(); }, 8000);
+  // Auto-launch at 8.5 seconds
+  setTimeout(()=>{ splashLaunch(); }, 8500);
 }
 try {
   initPregate();
