@@ -264,7 +264,19 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-size:72px;animation:floatBob 2.5s ease-in-out infinite;filter:drop-shadow(0 0 30px #00f5ff)">👾</div>
     <div style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:32px;letter-spacing:6px;background:linear-gradient(90deg,#00f5ff,#fff,#ff44aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center">VOID INVADERS</div>
     <div id="pregate-loading" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:4px;color:#1a3a5a;margin-top:12px;animation:twinkle 1s ease-in-out infinite alternate">INITIALIZING...</div>
+    <div id="pregate-loading" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:4px;color:#1a3a5a;margin-top:12px;animation:twinkle 1s ease-in-out infinite alternate">INITIALIZING...</div>
     <button id="pregate-btn" onclick="pregateLaunch()" style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:6px;padding:18px 48px;background:transparent;border:1px solid #00f5ff;color:#00f5ff;cursor:pointer;animation:borderPulse 2s ease-in-out infinite;margin-top:12px;opacity:0;pointer-events:none">▶ &nbsp;PRESS TO LAUNCH</button>
+
+    <!-- HINTS -->
+    <div style="margin-top:40px;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 24px;border:1px solid #0d2035;border-radius:8px;background:rgba(0,10,20,0.6);max-width:300px">
+      <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#3a6a9a;letter-spacing:3px;text-align:center">🔊 BEST WITH VOLUME ON</div>
+      <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,#1a3a5a,transparent)"></div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:7.5px;color:#2a4a6a;letter-spacing:1.5px;text-align:center;line-height:2">
+        📱 iPHONE · SHARE → <span style="color:#3a6a9a">ADD TO HOME SCREEN</span><br>
+        🤖 ANDROID · MENU → <span style="color:#3a6a9a">ADD TO HOME SCREEN</span>
+      </div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:7px;color:#1a3050;letter-spacing:1px;text-align:center">INSTALL FOR THE BEST EXPERIENCE</div>
+    </div>
   </div>
 </div>
 
@@ -385,7 +397,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.5.5</div>
+    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.0</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -2227,9 +2239,17 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.5.5';
+const CURRENT_VERSION = '2.6.0';
 
 const VERSION_NOTES = {
+'2.6.0': [
+    '🎨 All-new main menu — navigation dock, animated ship preview & sequential entrance animations',
+    '🎵 New cinematic menu music with timed splash-to-menu transition',
+    '🚀 New launch gate screen — game initializes before you enter',
+    '🐛 Fixed unlimited continues bug — continue now correctly limited to one per run',
+    '🐛 Fixed game over screen auto-dismissing before leaderboard submission',
+    '⚙️ Performance optimizations coming soon — stay tuned',
+  ],
 '2.5.5': [
     '🚀 Ship customization now live — personalize your hull, cockpit, thruster, bullets & more',
     '✨ Live animated ship preview in customize screen — watch your ship bob with thruster particles',
@@ -4027,7 +4047,6 @@ function _doEndGame() {
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
-  initSplash();
   document.getElementById('go-final').textContent = finalScore;
   document.getElementById('go-wave').textContent = finalWave;
   document.getElementById('go-coins').textContent = finalCoins;
@@ -5493,6 +5512,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.0</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ All-new main menu — horizontal dock, animated ship preview & entrance animations<br>✅ New cinematic menu music with timed splash-to-menu transition<br>✅ New launch gate screen — game initializes cleanly before entry<br>✅ Fixed unlimited continues bug<br>✅ Fixed perk max level stat bug<br>✅ Fixed game over screen auto-dismissing before leaderboard submission<br>⏳ Performance optimizations coming soon</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.5.0</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Wild Perk Slot — unlocks after Wave 30 boss, no category restrictions<br>✅ Super Bosses on every 10th wave with 3 phases, special attacks & victory screen<br>✅ Bosses drop powerups at 75%, 50% & 25% HP from wave 15+<br>✅ Time Freeze now stops boss movement and projectiles<br>✅ Quad Shot powerup replaces Triple Shot<br>✅ Bulwark shields no longer stack if used during a wave<br>✅ Enemy & boss HP scaling reduced past wave 30<br>✅ Various bug fixes and stability improvements</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffd700;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.4.7</div>
