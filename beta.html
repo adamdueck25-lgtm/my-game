@@ -74,15 +74,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .relic-badge{width:32px;height:32px;border-radius:50%;background:rgba(255,68,85,0.15);border:1.5px solid rgba(255,68,85,0.5);display:flex;align-items:center;justify-content:center;font-size:16px;backdrop-filter:blur(6px);}
 
 /* SCREENS */
-.screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px)+16px);pointer-events:auto;background:rgba(3,6,16,0)}
+.screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);pointer-events:auto;background:rgba(3,6,16,0)}
 .screen.hidden{display:none}
 .screen-bg{background:rgba(3,6,16,0.96)}
 #screen-shop,#screen-packs,#screen-gameover,#screen-leaderboard{justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important}
 
 /* MENU */
-#screen-menu{background:transparent}
+#screen-menu{background:transparent;justify-content:flex-start}
 #menu-canvas{position:absolute;inset:0;z-index:0}
-#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 14px}
+#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
 .title-void{font-size:36px;display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
 .title-inv{font-size:28px;display:block;color:var(--m);text-shadow:0 0 15px var(--m),0 0 40px var(--m)44;letter-spacing:8px}
@@ -193,7 +193,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #go-final{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--c);text-shadow:0 0 25px var(--c);margin:6px 0}
 
 /* Music Toggle */
-#music-btn{position:fixed;top:10px;right:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#334;background:transparent;border:1px solid #223;padding:4px 8px;border-radius:3px;cursor:pointer;pointer-events:auto}
+#music-btn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#334;background:transparent;border:1px solid #223;padding:4px 8px;border-radius:3px;cursor:pointer;pointer-events:auto}
 </style>
 </head>
 <body>
@@ -252,7 +252,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 </div>
 
 <button id="music-btn" onclick="toggleMusic()">♪ ON</button>
-<button id="reset-btn" onclick="confirmReset()" style="position:fixed;top:10px;left:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#ff4455;background:rgba(255,68,85,0.08);border:1px solid #ff4455;padding:5px 10px;border-radius:3px;cursor:pointer;pointer-events:auto;letter-spacing:1px">⟳ RESET</button><div id="toast"></div>
+<button id="reset-btn" onclick="confirmReset()" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#ff4455;background:rgba(255,68,85,0.08);border:1px solid #ff4455;padding:5px 10px;border-radius:3px;cursor:pointer;pointer-events:auto;letter-spacing:1px">⟳ RESET</button><div id="toast"></div>
 
 <!-- ═══════════ SCREENS ═══════════ -->
 
@@ -4912,11 +4912,11 @@ function playMenuEntrance(){
 
 const ANNOUNCEMENTS = [
   {
-    id: 'ann_lbreset',
+    id: 'ann_welcome_261',
     date: '2026-03-11',
-    title: '⚠ LEADERBOARD RESET TONIGHT',
-    color: '#ff4455',
-    body: 'THE GLOBAL LEADERBOARD WILL BE WIPED AT MIDNIGHT PST TONIGHT. THIS RESET IS NECESSARY DUE TO SCORING BALANCE FIXES AND BUG PATCHES THAT AFFECTED SCORE TOTALS IN PREVIOUS VERSIONS. ALL SCORES SUBMITTED AFTER THE RESET WILL REFLECT THE CORRECTED SYSTEM. GOOD LUCK OUT THERE — MAY THE BEST COMMANDER CLAIM THE TOP SPOT.'
+    title: '👾 WELCOME TO VOID INVADERS',
+    color: '#00ff88',
+    body: 'Thanks for playing! Add the game to your home screen for the best experience — tap Share then Add to Home Screen on iPhone, or Menu then Add to Home Screen on Android. Compete on the global leaderboard and see how far you can push your wave count. Good luck, Commander.'
   },
   {
     id: 'ann_261',
