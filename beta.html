@@ -141,9 +141,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:600px;margin-bottom:14px}
 .si{border:1px solid #1a2540;border-radius:6px;padding:16px;background:rgba(0,15,35,0.8);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:6px}
 .si:active{transform:scale(.97)}
-.si.aff{border-color:var(--c);box-shadow:0 0 10px rgba(0,245,255,0.15)}
+.si.aff{border-color:var(--uc);box-shadow:0 0 10px var(--uca)}
 .si.maxed{opacity:.5;cursor:not-allowed}
-.si-n{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--c);letter-spacing:1px}
+.si-n{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--uc);letter-spacing:1px}
 .si-d{font-size:13px;color:#aaa;line-height:1.5;font-weight:500}
 .si-l{font-size:12px;color:#778;font-weight:600;letter-spacing:1px}
 .si-c{font-size:18px;color:var(--g);font-weight:700}
@@ -280,6 +280,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <div id="screen-splash" style="display:none;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#050d1a 0%,#000 100%);flex-direction:column;align-items:center;justify-content:center;">
   <div id="splash-stars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
+  <canvas id="splash-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity 0.8s"></canvas>
   <div id="splash-scanline"></div>
   <div class="splash-inner">
     <div id="splash-creator">A Game Created by</div>
@@ -788,10 +789,16 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   50%{box-shadow:0 0 20px rgba(0,245,255,0.9),0 0 40px rgba(0,245,255,0.4),0 0 60px rgba(0,245,255,0.15);border-color:#88ffff}
   100%{box-shadow:0 0 8px rgba(0,245,255,0.4),0 0 16px rgba(0,245,255,0.2);border-color:#00f5ff}
 }
-.si{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .2s}
+.si{--uc:#00f5ff;--uca:rgba(0,245,255,0.15);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .2s}
 .si::after{content:'';position:absolute;top:-50%;left:-60%;width:30%;height:200%;background:rgba(255,255,255,0.06);transform:skewX(-20deg);transition:left .4s}
-@media(hover:hover){.si.aff:hover::after{left:130%}.si.aff:hover{transform:scale(1.03);box-shadow:0 0 18px rgba(0,245,255,0.3)}}
+@media(hover:hover){.si.aff:hover::after{left:130%}.si.aff:hover{transform:scale(1.03);box-shadow:0 0 22px var(--uc),0 0 40px var(--uca)}}
 .si.bought{animation:itemPop .3s ease}
+@keyframes cardPulse{0%,100%{box-shadow:0 0 10px var(--uca)}50%{box-shadow:0 0 24px var(--uc),0 0 44px var(--uca)}}
+.si-pips{display:flex;gap:5px;align-items:center;margin:2px 0}
+.pip{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--uc);opacity:0.3;transition:all .2s;flex-shrink:0}
+.pip.filled{background:var(--uc);opacity:1;box-shadow:0 0 6px var(--uc)}
+.si-stat{font-family:'Orbitron',sans-serif;font-size:10px;color:#556;letter-spacing:1px}
+.stat-next{color:var(--uc);font-weight:700}
 .coin-pop{position:absolute;pointer-events:none;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#ffd700;text-shadow:0 0 8px #ffd700;animation:coinFloat .8s ease forwards;z-index:99}
 .shop-coins-display{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffd700;text-shadow:0 0 12px #ffd700,0 0 30px #ffd70066;transition:all .3s;text-align:center;margin-bottom:2px}
 .shop-coins-display.tick{animation:tickUp .25s ease}
@@ -1647,6 +1654,7 @@ function toggleMusic() {
 
 // ── SFX ─────────────────────────────────────────────
 var _suppressNavSound = false;
+var _splashAnimId = null;
 function sfx(type) {
   resumeAC();
   const t = AC.currentTime;
@@ -1752,10 +1760,10 @@ function sfx(type) {
       osc(660,'square',0.04,0.15);
       break;
     case 'navTap':
-      sfxGain.gain.value = 0.28;
-      osc(660,'sine',0.20,0.12);
-      osc(440,'sine',0.14,0.18,0.01,300);
-      noise(0.04,0.10,'bandpass',2000);
+      sfxGain.gain.value = 0.75;
+      osc(660,'sine',0.52,0.12);
+      osc(440,'sine',0.36,0.18,0.01,300);
+      noise(0.08,0.13,'bandpass',2000);
       break;
     case 'upgradeSelect':
       sfxGain.gain.value = 0.30;
@@ -1766,11 +1774,11 @@ function sfx(type) {
       noise(0.06,0.4,'bandpass',2400,0.04);
       break;
     case 'navBack':
-      sfxGain.gain.value = 0.30;
-      osc(480,'sine',0.18,0.35,0,200);
-      osc(280,'triangle',0.14,0.28,0.02,130);
-      osc(140,'sine',0.10,0.22,0,80);
-      noise(0.05,0.08,'highpass',4000);
+      sfxGain.gain.value = 0.65;
+      osc(480,'sine',0.38,0.35,0,200);
+      osc(280,'triangle',0.28,0.28,0.02,130);
+      osc(140,'sine',0.20,0.22,0,80);
+      noise(0.10,0.08,'highpass',4000);
       break;
     case 'packOpen':
       sfxGain.gain.value = 0.28;
@@ -2208,12 +2216,12 @@ const RELICS = [
 ];
 
 const UPGRADES = [
-  {key:'fireRate',name:'FIRE RATE',desc:'Bullets fire at a higher frequency',max:5,costs:[100,200,400,700,1100],icon:'⚡'},
-  {key:'bulletSpd',name:'BULLET SPD',desc:'Bullets travel faster towards the target',max:5,costs:[80,180,350,600,950],icon:'🏹'},
-  {key:'multishot',name:'MULTI-SHOT',desc:'Adds Additional Bullet Per Shot',max:2,costs:[400,900],icon:'💥'},
-  {key:'damage',name:'DAMAGE',desc:'Bullets have more power',max:5,costs:[120,250,500,850,1300],icon:'🔥'},
-  {key:'speed',name:'MOVE SPEED',desc:'Ship Moves faster',max:5,costs:[80,160,320,550,850],icon:'💨'},
-  {key:'health',name:'HEALTH',desc:'Replenish life · max 5 total',max:99,costs:[],icon:'❤️'},
+  {key:'fireRate',name:'FIRE RATE',desc:'Bullets fire at a higher frequency',max:5,costs:[100,200,400,700,1100],icon:'⚡',color:'#ff8c00'},
+  {key:'bulletSpd',name:'BULLET SPD',desc:'Bullets travel faster towards the target',max:5,costs:[80,180,350,600,950],icon:'🏹',color:'#00e5ff'},
+  {key:'multishot',name:'MULTI-SHOT',desc:'Adds Additional Bullet Per Shot',max:2,costs:[400,900],icon:'💥',color:'#e040fb'},
+  {key:'damage',name:'DAMAGE',desc:'Bullets have more power',max:5,costs:[120,250,500,850,1300],icon:'🔥',color:'#ff4444'},
+  {key:'speed',name:'MOVE SPEED',desc:'Ship Moves faster',max:5,costs:[80,160,320,550,850],icon:'💨',color:'#4fc3f7'},
+  {key:'health',name:'HEALTH',desc:'Replenish life · max 5 total',max:99,costs:[],icon:'❤️',color:'#44ff88'},
 ];
   // ── DEV MODE ─────────────────────────────────────────
 let devTapCount = 0, devTapTimer = null, devPinEntry = '', devWaveTarget = 1;
@@ -5177,7 +5185,7 @@ function stopShopCanvas() {
   if(shopCanvasAnim){ cancelAnimationFrame(shopCanvasAnim); shopCanvasAnim=null; }
 }
 
-function spawnUpgradeParticles(el, isHealth) {
+function spawnUpgradeParticles(el, isHealth, upgradeColor) {
   if(!document.getElementById('upgrade-pop-style')) {
     const s = document.createElement('style'); s.id = 'upgrade-pop-style';
     s.textContent = `@keyframes upgradePop{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1;transform:translateY(-12px) scale(1.15)}100%{opacity:0;transform:translateY(-72px) scale(.65)}}`;
@@ -5187,7 +5195,7 @@ function spawnUpgradeParticles(el, isHealth) {
   const cx = elRect.left + elRect.width * 0.5;
   const cy = elRect.top  + elRect.height * 0.5;
   const symbol = isHealth ? '❤️' : '▲';
-  const color  = isHealth ? '#ff4455' : '#00f5ff';
+  const color  = isHealth ? '#ff4455' : (upgradeColor || '#00f5ff');
   const overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99990;overflow:hidden';
   document.body.appendChild(overlay);
@@ -5222,6 +5230,17 @@ function animateCoinsDown(targetId, newVal) {
 // ═══════════════════════════════════════════════════
 //  SHOP UI
 // ═══════════════════════════════════════════════════
+function getUpgradeStat(key, lv, lives) {
+  switch(key) {
+    case 'fireRate':  { const cd=Math.max(70,400-lv*55); return (1000/cd).toFixed(1)+'/s'; }
+    case 'bulletSpd': return (8+lv*1.5).toFixed(1);
+    case 'multishot': { const n=1+lv; return n+(n===1?' shot':' shots'); }
+    case 'damage':    return (1+lv*.3).toFixed(1)+'×';
+    case 'speed':     return (3.5+lv*.5).toFixed(1);
+    case 'health':    return lives+'♥';
+  }
+  return '';
+}
 function buildShop() {
   const pb = document.getElementById('btn-perks-shop');
   if(pb){ 
@@ -5242,24 +5261,25 @@ function buildShop() {
     const relicBlocked = (u.key==='multishot' && hasRelic('voidCurse'));
     const can=(u.key==='health' ? !healthMaxed : !maxed)&&!relicBlocked&&SAVE.coins>=cost;
     const el=document.createElement('div');
-    el.className='si'+((maxed&&u.key!=='health')||healthMaxed?' maxed':can?' aff':'');
-    el.style.animationDelay=`${idx*0.05}s`;
-    el.style.animation=`screenSlideIn .3s ease ${idx*0.04}s both`;
-    el.className='si'+((maxed&&u.key!=='health')||healthMaxed?' maxed':can?' aff':'');
-    el.style.animationDelay=`${idx*0.05}s`;
-    el.style.animation=`screenSlideIn .3s ease ${idx*0.04}s both`;
+    const isMaxed=(maxed&&u.key!=='health')||healthMaxed;
+    el.className='si'+(isMaxed?' maxed':can?' aff':'');
+    el.style.animation=`screenSlideIn .3s ease ${idx*0.04}s both`+(can?`, cardPulse 2s ease-in-out ${idx*0.04+0.4}s infinite`:'');
+    el.style.setProperty('--uc', u.color);
+    el.style.setProperty('--uca', u.color+'33');
+    const pipCount=u.key==='health'?5:u.max;
+    const pipFilled=u.key==='health'?Math.min(currentLives,5):Math.min(lv,u.max);
+    const pips=Array(pipCount).fill(0).map((_,i)=>`<span class="pip${i<pipFilled?' filled':''}"></span>`).join('');
+    const curStat=getUpgradeStat(u.key,lv,u.key==='health'?currentLives:null);
+    const nxtStat=isMaxed?null:getUpgradeStat(u.key,lv+1,u.key==='health'?Math.min(5,currentLives+1):null);
+    const statLine=isMaxed
+      ?`<span style="color:var(--gr)">${curStat} ✦ MAX</span>`
+      :`${curStat} → <span class="stat-next">${nxtStat}</span>`;
     el.innerHTML=`
       <div class="si-n">${u.icon} ${u.name}</div>
-      <div class="si-d">${u.key==='health' ? `Need Health? · ${currentLives}/5 lives` : u.desc}</div>
-      <div class="si-l">
-  <div style="display:flex;gap:3px;align-items:center;margin-bottom:3px">
-    ${u.key==='health'
-  ? Array(5).fill(0).map((_,i)=>`<div style="height:6px;flex:1;border-radius:3px;background:${i<currentLives?'#ff4455':'#1a2540'};box-shadow:${i<currentLives?'0 0 6px #ff4455':''};transition:all .2s"></div>`).join('')
-  : Array(u.max).fill(0).map((_,i)=>`<div style="height:6px;flex:1;border-radius:3px;background:${i<lv?'var(--c)':'#1a2540'};box-shadow:${i<lv?'0 0 6px var(--c)':''};transition:all .2s"></div>`).join('')}
-  </div>
-  <span style="font-size:10px;color:${(maxed&&u.key!=='health')?'var(--gr)':'#778'};letter-spacing:1px">${u.key==='health'?(currentLives+' / 5 LIVES'):(maxed?'✦ MAXED':lv+' / '+u.max)}</span>
-</div>
-      <div class="si-c">${(maxed&&u.key!=='health')?'✓ MAXED':'💰 '+cost}</div>
+      <div class="si-d">${u.key==='health'?`Need Health? · ${currentLives}/5 lives`:u.desc}</div>
+      <div class="si-pips">${pips}</div>
+      <div class="si-stat">${statLine}</div>
+      <div class="si-c">${isMaxed?'✓ MAXED':'💰 '+cost}</div>
     `;
     if(can&&(!maxed||u.key==='health')&&!healthMaxed&&!relicBlocked) el.onclick=()=>{
       if(SAVE.coins<cost) return;
@@ -5272,7 +5292,7 @@ function buildShop() {
       }
       doSave(); sfx('upgradeSelect');
       spawnCoinPop(el, cost);
-      spawnUpgradeParticles(el, u.key === 'health');
+      spawnUpgradeParticles(el, u.key === 'health', u.color);
       el.classList.add('bought');
       setTimeout(()=>{ el.classList.remove('bought'); buildShop(); },320);
       showToast(`${u.icon} ${u.name} upgraded!`);
@@ -5843,6 +5863,214 @@ function pregateLaunch() {
   initSplash();
 }
 
+function drawSplashEnemy(c, x, y, type, elapsed) {
+  var cols = ['#ff4455','#aa44ff','#ff8800'];
+  var col = cols[type] || '#ff4455';
+  var bob = Math.sin(elapsed * 2.5 + type * 1.3) * 2.5;
+  c.save();
+  c.translate(x, y + bob);
+  c.strokeStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.lineWidth = 1.5;
+  if (type === 2) {
+    // UFO — disc + dome + window lights
+    c.beginPath(); c.ellipse(0, 2, 12, 5, 0, 0, Math.PI * 2);
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.arc(0, -2, 6, Math.PI, 0, true); c.closePath();
+    c.fillStyle = col + '55'; c.fill(); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.6)';
+    [-4, 0, 4].forEach(function(ox) { c.beginPath(); c.arc(ox, 2, 1.3, 0, Math.PI * 2); c.fill(); });
+  } else if (type === 1) {
+    // Crab — wide body with side claws
+    c.beginPath();
+    c.moveTo(-14, 4); c.lineTo(-8, -6); c.lineTo(0, -9); c.lineTo(8, -6); c.lineTo(14, 4);
+    c.lineTo(10, 8); c.lineTo(-10, 8); c.closePath();
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-14, 4); c.lineTo(-18, 0); c.moveTo(14, 4); c.lineTo(18, 0); c.stroke();
+    c.fillStyle = col; c.shadowBlur = 5;
+    c.beginPath(); c.arc(-5, 0, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(5, 0, 2, 0, Math.PI * 2); c.fill();
+  } else {
+    // Basic invader — compact pentagon body with antennae
+    c.beginPath();
+    c.moveTo(0, -11); c.lineTo(9, 2); c.lineTo(7, 9); c.lineTo(-7, 9); c.lineTo(-9, 2); c.closePath();
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-4, -11); c.lineTo(-7, -16); c.moveTo(4, -11); c.lineTo(7, -16); c.stroke();
+    c.fillStyle = col; c.shadowBlur = 5;
+    c.beginPath(); c.arc(-4, 2, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(4, 2, 2, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+}
+
+function startSplashShipAnim() {
+  var canvas = document.getElementById('splash-canvas');
+  if (!canvas) return;
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var W = canvas.width, H = canvas.height;
+  var ctx = canvas.getContext('2d');
+  canvas.style.opacity = '1';
+
+  var startT = null, lastT = null;
+  var baseY  = H * 0.84;
+
+  // Ship — enters from right, flies left
+  var ship = { x: W + 60, y: baseY, vx: -90 };
+
+  // Three enemies in pursuit formation behind the ship
+  var enemies = [
+    { x: W + 150, y: baseY,      alive: true, type: 0 },
+    { x: W + 210, y: baseY - 18, alive: true, type: 1 },
+    { x: W + 190, y: baseY + 18, alive: true, type: 2 }
+  ];
+
+  // Thruster particles trailing behind the ship
+  var thrusterParts = [];
+  var tCols = ['#00f5ff','#ffffff','#4488ff'];
+
+  // One backward bullet fired at ~2.2s
+  var bullet = null, bulletFired = false;
+
+  // Explosion sparks + ring on hit
+  var exParts = [];
+
+  var shipCustom = (typeof SAVE !== 'undefined' && SAVE && SAVE.shipCustom && SAVE.shipCustom.shape)
+    ? SAVE.shipCustom
+    : { shape: 'classic', hullColor: '#00f5ff', cockpitColor: '#00f5ff', aura: 'none', decal: 'none' };
+
+  function spawnExplosion(ex, ey) {
+    for (var i = 0; i < 12; i++) {
+      var a = (i / 12) * Math.PI * 2;
+      var spd = 1.5 + Math.random() * 2.5;
+      exParts.push({ x: ex, y: ey, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd,
+                     life: 1, r: 2 + Math.random() * 3, col: i % 2 === 0 ? '#ff4455' : '#ff8800', ring: false });
+    }
+    exParts.push({ x: ex, y: ey, r: 0, life: 1, col: '#ff4455', ring: true });
+  }
+
+  function loop(ts) {
+    _splashAnimId = requestAnimationFrame(loop);
+    if (!startT) startT = ts;
+    var elapsed = (ts - startT) / 1000;
+    var dt = lastT ? Math.min((ts - lastT) / 1000, 0.05) : 0.016;
+    lastT = ts;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Accelerate to exit after 5 s
+    var targetVx = elapsed > 5 ? -520 : -90;
+    ship.vx += (targetVx - ship.vx) * Math.min(dt * 3.5, 1);
+    ship.x  += ship.vx * dt;
+    ship.y   = baseY + Math.sin(elapsed * 1.8) * 7;
+
+    // Enemies lag-chase the ship in formation
+    for (var ei = 0; ei < enemies.length; ei++) {
+      var en = enemies[ei];
+      if (!en.alive) continue;
+      var tx = ship.x + 80 + ei * 52;
+      var ty = ship.y  + (ei === 1 ? -22 : ei === 2 ? 22 : 0);
+      en.x += (tx - en.x) * Math.min(dt * 2.5, 1);
+      en.y += (ty - en.y) * Math.min(dt * 2.5, 1);
+    }
+
+    // Spawn thruster particles — ship faces left so thruster exits to the right (+x)
+    if (Math.random() < 0.9) {
+      var tc = tCols[Math.floor(Math.random() * tCols.length)];
+      thrusterParts.push({
+        x: ship.x + 16,
+        y: ship.y + (Math.random() - 0.5) * 10,
+        vx: Math.abs(ship.vx) * dt * (0.3 + Math.random() * 0.4) + 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        life: 1, r: 1.5 + Math.random() * 2.5, col: tc
+      });
+    }
+
+    // Update + draw thruster
+    for (var ti = thrusterParts.length - 1; ti >= 0; ti--) {
+      var tp = thrusterParts[ti];
+      tp.x += tp.vx; tp.y += tp.vy;
+      tp.life -= dt * 3.5;
+      if (tp.life <= 0) { thrusterParts.splice(ti, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = tp.life * 0.85;
+      ctx.fillStyle   = tp.col;
+      ctx.shadowColor = tp.col; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(tp.x, tp.y, Math.max(0.1, tp.r * tp.life), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Fire backward bullet at 2.2 s into animation
+    if (!bulletFired && elapsed >= 2.2) {
+      bulletFired = true;
+      bullet = { x: ship.x + 16, y: ship.y };
+    }
+    if (bullet) {
+      bullet.x += 260 * dt;
+      // Hit nearest alive enemy
+      for (var bi = 0; bi < enemies.length; bi++) {
+        var ben = enemies[bi];
+        if (!ben.alive) continue;
+        if (Math.abs(bullet.x - ben.x) < 22 && Math.abs(bullet.y - ben.y) < 18) {
+          spawnExplosion(ben.x, ben.y);
+          ben.alive = false;
+          bullet = null;
+          break;
+        }
+      }
+      if (bullet && bullet.x > W + 20) bullet = null;
+    }
+
+    // Draw bullet
+    if (bullet) {
+      ctx.save();
+      ctx.fillStyle = '#00f5ff'; ctx.shadowColor = '#00f5ff'; ctx.shadowBlur = 10;
+      ctx.fillRect(bullet.x - 8, bullet.y - 2, 16, 4);
+      ctx.restore();
+    }
+
+    // Draw enemies (only those still on screen)
+    for (var di = 0; di < enemies.length; di++) {
+      var den = enemies[di];
+      if (!den.alive || den.x > W + 50) continue;
+      drawSplashEnemy(ctx, den.x, den.y, den.type, elapsed);
+    }
+
+    // Draw ship facing left (direction of travel)
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+    ctx.rotate(-Math.PI / 2);
+    drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
+    ctx.restore();
+
+    // Update + draw explosion particles
+    for (var pi = exParts.length - 1; pi >= 0; pi--) {
+      var p = exParts[pi];
+      p.life -= dt * 1.6;
+      if (p.life <= 0) { exParts.splice(pi, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.shadowColor = p.col; ctx.shadowBlur = 8;
+      if (p.ring) {
+        p.r += dt * 90;
+        ctx.strokeStyle = p.col; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
+      } else {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.06;
+        ctx.fillStyle = p.col;
+        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.1, p.r * p.life), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Stop when ship fully exits left
+    if (ship.x < -100 && thrusterParts.length === 0 && exParts.length === 0) {
+      cancelAnimationFrame(_splashAnimId); _splashAnimId = null;
+      ctx.clearRect(0, 0, W, H);
+    }
+  }
+
+  _splashAnimId = requestAnimationFrame(loop);
+}
+
 function initSplash() {
   const container = document.getElementById('splash-stars');
   for(let i=0;i<150;i++){
@@ -5882,6 +6110,7 @@ function initSplash() {
     lineBot.style.width='160px'; lineBot.style.opacity='1';
   }, 2200);
   setTimeout(()=>{ titleEl.style.opacity='1'; titleEl.style.animation='pulseGlow 3s ease-in-out infinite'; }, 2700);
+  setTimeout(()=>{ startSplashShipAnim(); }, 2800);
   setTimeout(()=>{ subtitleEl.style.opacity='1'; versionEl.style.opacity='1'; }, 3300);
 
   // Progress bar appears and fills over remaining time
@@ -6389,6 +6618,9 @@ function showBossSpinner(kills,preBonus,waveNum,coins,newTrophies) {
 
 function splashLaunch() {
   try {
+  if (_splashAnimId) { cancelAnimationFrame(_splashAnimId); _splashAnimId = null; }
+  var sc = document.getElementById('splash-canvas');
+  if (sc) sc.style.opacity = '0';
   const splash = document.getElementById('screen-splash');
   splash.style.transition='opacity 0.8s';
   splash.style.opacity='0';
