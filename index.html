@@ -74,17 +74,17 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .relic-badge{width:32px;height:32px;border-radius:50%;background:rgba(255,68,85,0.15);border:1.5px solid rgba(255,68,85,0.5);display:flex;align-items:center;justify-content:center;font-size:16px;backdrop-filter:blur(6px);}
 
 /* SCREENS */
-.screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px)+16px);pointer-events:auto;background:rgba(3,6,16,0)}
+.screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);pointer-events:auto;background:rgba(3,6,16,0)}
 .screen.hidden{display:none}
 .screen-bg{background:rgba(3,6,16,0.96)}
 #screen-shop,#screen-packs,#screen-gameover,#screen-leaderboard{justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important}
 
 /* MENU */
-#screen-menu{background:transparent}
+#screen-menu{background:transparent;justify-content:flex-start;overflow:hidden}
 #menu-canvas{position:absolute;inset:0;z-index:0}
-#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:20px 14px}
+#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
-.title-void{font-size:36px;display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
+.title-void{font-size:clamp(24px, 7.8vw, 36px);display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
 .title-inv{font-size:28px;display:block;color:var(--m);text-shadow:0 0 15px var(--m),0 0 40px var(--m)44;letter-spacing:8px}
 .menu-sub{font-size:13px;color:#446;letter-spacing:4px;margin-bottom:28px}
 .menu-score{font-family:'Orbitron',sans-serif;font-size:13px;color:#666;margin-bottom:28px}
@@ -102,7 +102,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #splash-title{font-size:52px;font-weight:bold;letter-spacing:10px;color:#fff;opacity:0;transition:opacity 1.2s;}
 #splash-subtitle{font-size:10px;letter-spacing:6px;color:#4af7;text-transform:uppercase;opacity:0;margin-top:10px;transition:opacity 1s;}
 #splash-btn{display:none;margin-top:56px;padding:16px 56px;background:transparent;border:1px solid #4af;color:#4af;font-family:'Courier New',monospace;font-size:13px;letter-spacing:8px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;animation:borderPulse 2s ease-in-out infinite;}
-#splash-btn:hover{background:#4af;color:#000;box-shadow:0 0 60px #4af;letter-spacing:10px;}
+@media(hover:hover){#splash-btn:hover{background:#4af;color:#000;box-shadow:0 0 60px #4af;letter-spacing:10px;}}
 #splash-version{position:absolute;bottom:20px;right:20px;font-size:10px;letter-spacing:3px;color:#1a3a5a;opacity:0;transition:opacity 1s;font-family:'Courier New',monospace;}
 #pregate-stars div{position:absolute;border-radius:50%;background:#fff;}
 @keyframes twinkle{from{opacity:0.1}to{opacity:0.9}}
@@ -119,7 +119,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
 .dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -127,13 +127,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 @keyframes badgePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.6}}
 .menu-anim-hidden{opacity:0}
 .b-c{border-color:var(--c);color:var(--c)}
-.b-c:hover{box-shadow:0 0 20px rgba(0,245,255,0.4);background:rgba(0,245,255,0.08)}
 .b-m{border-color:var(--m);color:var(--m)}
-.b-m:hover{box-shadow:0 0 20px rgba(255,0,204,0.4);background:rgba(255,0,204,0.08)}
 .b-g{border-color:var(--g);color:var(--g)}
-.b-g:hover{box-shadow:0 0 20px rgba(255,215,0,0.4);background:rgba(255,215,0,0.08)}
 .b-gr{border-color:var(--gr);color:var(--gr)}
-.b-gr:hover{box-shadow:0 0 20px rgba(0,255,136,0.4);background:rgba(0,255,136,0.08)}
+@media(hover:hover){.b-c:hover{box-shadow:0 0 20px rgba(0,245,255,0.4);background:rgba(0,245,255,0.08)}.b-m:hover{box-shadow:0 0 20px rgba(255,0,204,0.4);background:rgba(255,0,204,0.08)}.b-g:hover{box-shadow:0 0 20px rgba(255,215,0,0.4);background:rgba(255,215,0,0.08)}.b-gr:hover{box-shadow:0 0 20px rgba(0,255,136,0.4);background:rgba(0,255,136,0.08)}}
 .btn-sm{padding:9px 18px;font-size:11px;min-width:unset}
 .btn-xs{padding:7px 14px;font-size:10px;min-width:unset}
 
@@ -193,7 +190,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #go-final{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--c);text-shadow:0 0 25px var(--c);margin:6px 0}
 
 /* Music Toggle */
-#music-btn{position:fixed;top:10px;right:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#334;background:transparent;border:1px solid #223;padding:4px 8px;border-radius:3px;cursor:pointer;pointer-events:auto}
+#music-btn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#334;background:transparent;border:1px solid #223;padding:4px 8px;border-radius:3px;cursor:pointer;pointer-events:auto}
 </style>
 </head>
 <body>
@@ -252,7 +249,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 </div>
 
 <button id="music-btn" onclick="toggleMusic()">♪ ON</button>
-<button id="reset-btn" onclick="confirmReset()" style="position:fixed;top:10px;left:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#ff4455;background:rgba(255,68,85,0.08);border:1px solid #ff4455;padding:5px 10px;border-radius:3px;cursor:pointer;pointer-events:auto;letter-spacing:1px">⟳ RESET</button><div id="toast"></div>
+<button id="reset-btn" onclick="confirmReset()" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#ff4455;background:rgba(255,68,85,0.08);border:1px solid #ff4455;padding:5px 10px;border-radius:3px;cursor:pointer;pointer-events:auto;letter-spacing:1px">⟳ RESET</button><div id="toast"></div>
 
 <!-- ═══════════ SCREENS ═══════════ -->
 
@@ -304,7 +301,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div id="menu-content">
 
     <!-- ANNOUNCEMENTS TICKER -->
-    <div id="menu-ticker-wrap" onclick="openAnnouncements()" style="width:100%;background:rgba(0,245,255,0.05);border-bottom:1px solid #00f5ff22;border-top:1px solid #00f5ff22;padding:7px 0;cursor:pointer;overflow:hidden;position:relative;margin-bottom:8px;flex-shrink:0">
+    <div id="menu-ticker-wrap" onclick="openAnnouncements()" style="width:calc(100% + 28px);margin-left:-14px;margin-right:-14px;background:rgba(0,245,255,0.05);border-bottom:1px solid #00f5ff22;border-top:1px solid #00f5ff22;padding:7px 0;cursor:pointer;overflow:hidden;position:relative;margin-bottom:8px;flex-shrink:0">
       <div id="menu-ticker-inner" style="display:inline-block;white-space:nowrap;font-family:'Orbitron',sans-serif;font-size:9px;color:#00f5ff;letter-spacing:2px;will-change:transform"></div>
       <div id="menu-ticker-badge" style="display:none;position:absolute;top:50%;right:10px;transform:translateY(-50%);background:#ff4455;border-radius:10px;font-family:'Orbitron',sans-serif;font-size:7px;color:#fff;letter-spacing:1px;padding:2px 6px;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite">NEW</div>
     </div>
@@ -320,7 +317,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:100%">
+    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
         <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
@@ -338,7 +335,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- LAUNCH BUTTON -->
-    <div style="width:100%;padding:0 16px;box-sizing:border-box">
+    <div style="width:100%;box-sizing:border-box">
       <button id="btn-launch" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
         <span style="position:relative;z-index:1">▶ LAUNCH MISSION</span>
         <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,245,255,0.15),transparent);animation:shimmer 2.5s ease-in-out infinite"></div>
@@ -347,7 +344,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 
     <!-- 2x4 NAVIGATION GRID -->
-    <div id="menu-nav-grid" style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:16px">
+    <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:16px">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
 
@@ -371,7 +368,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks()" style="--tc:#00ccff;border-color:#00ccff99">
+        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks('screen-menu')" style="--tc:#00ccff;border-color:#00ccff99">
           <div class="dock-icon" id="dock-perks-icon">⚡</div>
           <div class="dock-label">PERKS</div>
           <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
@@ -396,10 +393,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- SHIP HERO PREVIEW -->
-    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;position:relative">
-      <div style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
-      <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block;margin-top:16px"></canvas>
-      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:6px;margin-bottom:10px">YOUR VESSEL</div>
+    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
+      <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block"></canvas>
+      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:4px">YOUR VESSEL</div>
+      <div id="menu-vessel-shape" style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff66;letter-spacing:3px;margin-top:4px"></div>
+      <div id="menu-vessel-perks" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:8px;max-width:320px"></div>
     </div>
 
     <!-- FOOTER -->
@@ -749,7 +748,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:4px;text-align:center">🏆 SUBMIT TO LEADERBOARD</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#aa8800;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
     <div style="display:flex;gap:8px;align-items:center;justify-content:center">
-      <input id="go-name-input" maxlength="16" placeholder="ENTER NAME" style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;padding:10px 12px;background:rgba(0,20,40,0.8);border:1px solid #ffd70066;border-radius:4px;color:#ffd700;width:180px;text-transform:uppercase;outline:none"/>
+      <input id="go-name-input" maxlength="16" placeholder="ENTER NAME" style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:2px;padding:10px 12px;background:rgba(0,20,40,0.8);border:1px solid #ffd70066;border-radius:4px;color:#ffd700;width:180px;text-transform:uppercase;outline:none"/>
       <button id="go-submit-btn" onclick="submitLeaderboardScore()" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;padding:10px 14px;background:rgba(255,215,0,0.12);border:1px solid #ffd700;color:#ffd700;border-radius:4px;cursor:pointer;font-weight:700">▶ SUBMIT</button>
     </div>
     <div id="go-submit-msg" style="font-size:10px;color:#aa8800;text-align:center;margin-top:6px;letter-spacing:1px;min-height:16px;"></div>
@@ -790,8 +789,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 }
 .si{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .2s}
 .si::after{content:'';position:absolute;top:-50%;left:-60%;width:30%;height:200%;background:rgba(255,255,255,0.06);transform:skewX(-20deg);transition:left .4s}
-.si.aff:hover::after{left:130%}
-.si.aff:hover{transform:scale(1.03);box-shadow:0 0 18px rgba(0,245,255,0.3)}
+@media(hover:hover){.si.aff:hover::after{left:130%}.si.aff:hover{transform:scale(1.03);box-shadow:0 0 18px rgba(0,245,255,0.3)}}
 .si.bought{animation:itemPop .3s ease}
 .coin-pop{position:absolute;pointer-events:none;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#ffd700;text-shadow:0 0 8px #ffd700;animation:coinFloat .8s ease forwards;z-index:99}
 .shop-coins-display{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffd700;text-shadow:0 0 12px #ffd700,0 0 30px #ffd70066;transition:all .3s;text-align:center;margin-bottom:2px}
@@ -799,7 +797,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .set-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;margin-left:6px;vertical-align:middle}
 /* Pack card shimmer on affordable */
 .pc.can-buy{background:linear-gradient(135deg,rgba(0,0,0,.5) 0%,rgba(255,255,255,.04) 50%,rgba(0,0,0,.5) 100%)!important;background-size:200% 200%!important;animation:shimmer 3s ease infinite!important}
-.pc.can-buy:hover{transform:scale(1.05)!important;box-shadow:0 0 20px currentColor!important}
+@media(hover:hover){.pc.can-buy:hover{transform:scale(1.05)!important;box-shadow:0 0 20px currentColor!important}}
 /* Rift indicator */
 #rift-indicator{position:absolute;inset:0;border:3px solid #cc44ff;pointer-events:none;border-radius:0;opacity:0;transition:opacity .3s;box-shadow:inset 0 0 30px rgba(200,68,255,0.3)}
 #rift-indicator.active{opacity:1}
@@ -2257,9 +2255,18 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.6.1';
+const CURRENT_VERSION = '2.6.2';
 
 const VERSION_NOTES = {
+'2.6.2': [
+    '📱 Mobile UI polish — announcement banner & stats row now stretch edge-to-edge',
+    '🐛 Fixed main menu scrolling on small screens',
+    '🐛 Fixed iOS auto-zoom on Game Over name input',
+    '🐛 Fixed sticky hover highlights on touch devices',
+    '🐛 Fixed Perks back button returning to shop instead of main menu',
+    '🚀 Ship hangar on main menu — live ship preview, hull type & active perks at a glance',
+    '🎨 Dock labels increased for better readability',
+  ],
 '2.6.1': [
     '🐛 Fixed score inflation bug after using a continue — wave scores now calculate correctly',
     '🐛 Fixed music toggle on main menu restarting track instead of muting',
@@ -4461,12 +4468,12 @@ function buildTrophies() {
 
 // ── PERKS ────────────────────────────────────────
 let perksPrevScreen = 'screen-shop';
-function openPerks() {
+function openPerks(from) {
   if(!perksUnlocked) {
     showToast('🔒 Defeat the Wave 20 Boss this run to unlock Perks!');
     return;
   }
-  perksPrevScreen = 'screen-shop';
+  perksPrevScreen = from || 'screen-shop';
   buildPerks();
   const s = document.getElementById('screen-perks');
   document.body.appendChild(s);
@@ -4740,7 +4747,7 @@ function showScreen(id) {
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
   const isMenu   = id==='screen-menu' || id==='screen-splash';
   const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies';
-  if(id==='screen-menu'){ updateMenuCoins(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu'); }
+  if(id==='screen-menu'){ updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu'); }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
   if(id==='screen-shop') buildShop();
@@ -4912,6 +4919,13 @@ function playMenuEntrance(){
 
 const ANNOUNCEMENTS = [
   {
+    id: 'ann_262',
+    date: '2026-03-12',
+    title: 'VERSION 2.6.2 OUT NOW',
+    color: '#00f5ff',
+    body: 'Mobile polish update — the announcement banner and stats row now stretch properly edge-to-edge. Fixed main menu scrolling, iOS auto-zoom on the Game Over name input, and sticky hover highlights on touch screens. The Perks back button now correctly returns to the main menu instead of dropping you into the shop. Ship hangar on the main menu now shows your hull type and active perks at a glance. Dock labels bumped up for better readability.'
+  },
+  {
     id: 'ann_welcome_261',
     date: '2026-03-11',
     title: '👾 WELCOME TO VOID INVADERS',
@@ -5044,6 +5058,29 @@ function dismissUpdatesBadge(){
   doSave();
   const b = document.getElementById('updates-badge');
   if(b) b.style.display = 'none';
+}
+
+function updateMenuVesselInfo(){
+  const shapeEl = document.getElementById('menu-vessel-shape');
+  const perksEl = document.getElementById('menu-vessel-perks');
+  if(!shapeEl || !perksEl) return;
+  const shapeNames = {classic:'CLASSIC',arrow:'ARROW',delta:'DELTA',dualfin:'DUAL FIN',pod:'POD'};
+  const shape = (SAVE.shipCustom && SAVE.shipCustom.shape) || 'classic';
+  shapeEl.textContent = (shapeNames[shape]||shape.toUpperCase()) + ' HULL';
+  perksEl.innerHTML = '';
+  const activePerks = SAVE.activePerks || [];
+  if(activePerks.length === 0){
+    perksEl.innerHTML = '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:#223;letter-spacing:2px">NO PERKS ACTIVE</span>';
+  } else {
+    activePerks.forEach(id=>{
+      const def = (PERKS||[]).find(p=>p.id===id);
+      if(!def) return;
+      const chip = document.createElement('div');
+      chip.style.cssText = 'display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,0.04);border:1px solid #1a2540;border-radius:6px;padding:3px 8px;font-family:Orbitron,sans-serif;font-size:8px;color:#446;letter-spacing:1px';
+      chip.textContent = def.icon+' '+def.name;
+      perksEl.appendChild(chip);
+    });
+  }
 }
 
 function updateMenuCoins(){
@@ -5673,6 +5710,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>✅ Fixed main menu scrolling on small screens<br>✅ Fixed iOS auto-zoom on Game Over name input<br>✅ Fixed sticky hover highlights on touch devices<br>✅ Fixed Perks back button returning to shop instead of main menu<br>✅ Ship hangar on main menu — live preview, hull type & active perks at a glance<br>✅ Dock labels increased for better readability</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.1</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Fixed score inflation bug after using a continue<br>✅ Fixed music toggle on main menu restarting track instead of muting<br>✅ Fixed bomb trophy rewards being granted during relic runs<br>✅ Fixed duplicate INITIALIZING text on launch screen<br>✅ Announcements banner added to main menu<br>✅ How To Play screen redesigned for better readability<br>⏳ Performance optimizations coming soon</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.0</div>
@@ -6403,6 +6442,17 @@ setTrack('menu');
   <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;">
   <div style="max-width:500px;margin:0 auto;">
 
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
+    <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
+      ✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>
+      ✅ Main menu no longer scrollable on small screens<br>
+      ✅ Fixed iOS auto-zoom on Game Over name input<br>
+      ✅ Touch hover states fixed — no more sticky highlights on mobile<br>
+      ✅ Dock labels bumped up for better readability<br>
+      ✅ Ship hangar added to main menu — shows your hull, perks & a live preview<br>
+      ✅ Fixed Perks nav from main menu — back button now returns to menu, not shop<br>
+      ✅ Vessel display cleaned up — shows hull type instead of a confusing level number
+    </div>
 
     <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
     <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
