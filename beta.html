@@ -1646,6 +1646,7 @@ function toggleMusic() {
 }
 
 // ── SFX ─────────────────────────────────────────────
+var _suppressNavSound = false;
 function sfx(type) {
   resumeAC();
   const t = AC.currentTime;
@@ -1749,6 +1750,49 @@ function sfx(type) {
       break;
     case 'menuMove':
       osc(660,'square',0.04,0.15);
+      break;
+    case 'navTap':
+      sfxGain.gain.value = 0.22;
+      osc(1100,'square',0.04,0.5);
+      osc(780,'sine',0.07,0.35,0.02,320);
+      noise(0.03,0.25,'highpass',7000);
+      break;
+    case 'upgradeSelect':
+      sfxGain.gain.value = 0.30;
+      osc(110,'sawtooth',0.18,0.9,0,260);
+      osc(360,'square',0.12,0.7,0.04,720);
+      osc(720,'sine',0.14,0.55,0.07,1400);
+      osc(1800,'sine',0.1,0.35,0.11,2600);
+      noise(0.06,0.4,'bandpass',2400,0.04);
+      break;
+    case 'navBack':
+      sfxGain.gain.value = 0.18;
+      osc(520,'sine',0.06,0.4,0,220);
+      osc(320,'square',0.04,0.25,0.02,150);
+      noise(0.025,0.15,'highpass',5000);
+      break;
+    case 'packOpen':
+      sfxGain.gain.value = 0.28;
+      noise(0.12,0.7,'highpass',4000);
+      osc(180,'sawtooth',0.2,0.6,0,600);
+      [330,415,494,622,740,880].forEach((f,i)=>osc(f,'sine',0.18,0.5-i*0.04,0.08+i*0.07));
+      osc(1760,'sine',0.3,0.4,0.55);
+      noise(0.08,0.2,'bandpass',3000,0.5);
+      break;
+    case 'perkEquip':
+      sfxGain.gain.value = 0.32;
+      osc(90,'sawtooth',0.22,1.0,0,200);
+      osc(300,'square',0.16,0.8,0.05,680);
+      [440,550,660].forEach((f,i)=>osc(f,'sine',0.2,0.6-i*0.1,0.08+i*0.03));
+      osc(1400,'sine',0.18,0.55,0.14,2200);
+      noise(0.08,0.45,'bandpass',2800,0.1);
+      break;
+    case 'perkUpgrade':
+      sfxGain.gain.value = 0.26;
+      [330,415,523,659,830].forEach((f,i)=>osc(f,'sine',0.14,0.5,i*0.065));
+      osc(1047,'sine',0.35,0.5,0.32);
+      osc(1047,'triangle',0.3,0.25,0.32);
+      noise(0.06,0.2,'highpass',7000,0.3);
       break;
     case 'waveStart':
       osc(220,'sawtooth',0.1,0.6,0,440); osc(440,'square',0.06,0.4,0.1);
@@ -4597,11 +4641,11 @@ function equipPerk(id, wild=false) {
     if(SAVE.activePerks.length<3){ showToast('Fill your first 3 slots first!'); return; }
     SAVE.activePerks[3]=id;
     if(!SAVE.perkLevels) SAVE.perkLevels={};
-    doSave(); sfx('relicActivate'); buildPerks(); return;
+    doSave(); sfx('perkEquip'); buildPerks(); return;
   }
   SAVE.activePerks.push(id);
   if(!SAVE.perkLevels) SAVE.perkLevels={};
-  doSave(); sfx('relicActivate'); buildPerks();
+  doSave(); sfx('perkEquip'); buildPerks();
 }
 
 function upgradePerk(id) {
@@ -4614,7 +4658,7 @@ function upgradePerk(id) {
   if(SAVE.coins<cost){ showToast('Not enough coins!'); return; }
   SAVE.coins-=cost;
   SAVE.perkLevels[id]=lv+1;
-  doSave(); sfx('purchase'); buildPerks();
+  doSave(); sfx('perkUpgrade'); buildPerks();
   showToast(`⚡ ${p.name} upgraded to LV${lv+1}!`);
 }
 
@@ -4736,6 +4780,9 @@ function doReset() {
 }
 
 function showScreen(id) {
+  const _autoScreens = new Set(['screen-splash','screen-summary','screen-waveclear','screen-gameover','screen-spinner','screen-enemy-intro','screen-perks-intro']);
+  if(id !== '__game__' && gState !== 'playing' && !_autoScreens.has(id) && !_suppressNavSound) sfx('navTap');
+  _suppressNavSound = false;
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   const gameVisible = id==='__game__';
   document.getElementById('hud').style.display=gameVisible?'flex':'none';
@@ -5187,6 +5234,31 @@ function stopShopCanvas() {
   if(shopCanvasAnim){ cancelAnimationFrame(shopCanvasAnim); shopCanvasAnim=null; }
 }
 
+function spawnUpgradeParticles(el, isHealth) {
+  if(!document.getElementById('upgrade-pop-style')) {
+    const s = document.createElement('style'); s.id = 'upgrade-pop-style';
+    s.textContent = `@keyframes upgradePop{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1;transform:translateY(-12px) scale(1.15)}100%{opacity:0;transform:translateY(-72px) scale(.65)}}`;
+    document.head.appendChild(s);
+  }
+  const elRect = el.getBoundingClientRect();
+  const cx = elRect.left + elRect.width * 0.5;
+  const cy = elRect.top  + elRect.height * 0.5;
+  const symbol = isHealth ? '❤️' : '▲';
+  const color  = isHealth ? '#ff4455' : '#00f5ff';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99990;overflow:hidden';
+  document.body.appendChild(overlay);
+  for(let i = 0; i < 9; i++) {
+    const p = document.createElement('div');
+    const ox = (Math.random() - 0.5) * elRect.width * 0.9;
+    const sz = isHealth ? 13 + Math.random() * 7 : 11 + Math.random() * 9;
+    p.style.cssText = `position:absolute;left:${cx + ox}px;top:${cy}px;font-size:${sz}px;color:${color};text-shadow:0 0 8px ${color};opacity:0;pointer-events:none;animation:upgradePop 0.7s ease ${i*0.055}s forwards`;
+    p.textContent = symbol;
+    overlay.appendChild(p);
+  }
+  setTimeout(() => overlay.remove(), 1100);
+}
+
 function spawnCoinPop(el, amount) {
   const pop = document.createElement('div');
   pop.className='coin-pop';
@@ -5255,8 +5327,9 @@ function buildShop() {
         player.maxLives = Math.min(5, player.maxLives+1);
         updateHUD();
       }
-      doSave(); sfx('purchase');
+      doSave(); sfx('upgradeSelect');
       spawnCoinPop(el, cost);
+      spawnUpgradeParticles(el, u.key === 'health');
       el.classList.add('bought');
       setTimeout(()=>{ el.classList.remove('bought'); buildShop(); },320);
       showToast(`${u.icon} ${u.name} upgraded!`);
@@ -5309,7 +5382,7 @@ function buyPack(pack){
     if(SAVE.setsComplete[k]) return;
     if(s.cards.every(c=>(SAVE.cards[c.id]||0)>0)){ SAVE.setsComplete[k]=true; newSets.push(s.name); }
   });
-  doSave(); sfx('cardGet');
+  doSave(); sfx('packOpen');
   if(newSets.length) setTimeout(()=>sfx('setComplete'),300);
   const res=document.getElementById('pull-results');
   res.innerHTML='';
@@ -5793,6 +5866,15 @@ try {
   document.body.innerHTML += `<div style="position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">INIT ERROR: ${e.message}<br>${e.stack}</div>`;
 }
 function initPregate() {
+  // Back button sound — capture phase fires before onclick/showScreen
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button');
+    if(btn && btn.textContent.trim().startsWith('←')){
+      sfx('navBack');
+      _suppressNavSound = true;
+    }
+  }, true);
+
   const container = document.getElementById('pregate-stars');
   for(let i=0;i<120;i++){
     const s = document.createElement('div');
