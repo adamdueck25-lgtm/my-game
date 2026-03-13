@@ -120,6 +120,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
 .dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
 .dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+#menu-ship-preview{height:clamp(80px,15vh,140px);aspect-ratio:160/140;width:auto}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -344,7 +345,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 
     <!-- 2x4 NAVIGATION GRID -->
-    <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:16px">
+    <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;margin-top:16px">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
 
@@ -368,7 +369,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks()" style="--tc:#00ccff;border-color:#00ccff99">
+        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks('screen-menu')" style="--tc:#00ccff;border-color:#00ccff99">
           <div class="dock-icon" id="dock-perks-icon">⚡</div>
           <div class="dock-label">PERKS</div>
           <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
@@ -393,7 +394,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- SHIP HERO PREVIEW -->
-    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
+    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
       <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block"></canvas>
       <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:4px">YOUR VESSEL</div>
@@ -2255,9 +2256,18 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.6.1';
+const CURRENT_VERSION = '2.6.2';
 
 const VERSION_NOTES = {
+'2.6.2': [
+    '📱 Mobile UI polish — announcement banner & stats row now stretch edge-to-edge',
+    '🐛 Fixed main menu scrolling on small screens',
+    '🐛 Fixed iOS auto-zoom on Game Over name input',
+    '🐛 Fixed sticky hover highlights on touch devices',
+    '🐛 Fixed Perks back button returning to shop instead of main menu',
+    '🚀 Ship hangar on main menu — live ship preview, hull type & active perks at a glance',
+    '🎨 Dock labels increased for better readability',
+  ],
 '2.6.1': [
     '🐛 Fixed score inflation bug after using a continue — wave scores now calculate correctly',
     '🐛 Fixed music toggle on main menu restarting track instead of muting',
@@ -4459,12 +4469,12 @@ function buildTrophies() {
 
 // ── PERKS ────────────────────────────────────────
 let perksPrevScreen = 'screen-shop';
-function openPerks() {
+function openPerks(from) {
   if(!perksUnlocked) {
     showToast('🔒 Defeat the Wave 20 Boss this run to unlock Perks!');
     return;
   }
-  perksPrevScreen = 'screen-shop';
+  perksPrevScreen = from || 'screen-shop';
   buildPerks();
   const s = document.getElementById('screen-perks');
   document.body.appendChild(s);
@@ -4910,6 +4920,13 @@ function playMenuEntrance(){
 
 const ANNOUNCEMENTS = [
   {
+    id: 'ann_262',
+    date: '2026-03-12',
+    title: 'VERSION 2.6.2 OUT NOW',
+    color: '#00f5ff',
+    body: 'Mobile polish update — the announcement banner and stats row now stretch properly edge-to-edge. Fixed main menu scrolling, iOS auto-zoom on the Game Over name input, and sticky hover highlights on touch screens. The Perks back button now correctly returns to the main menu instead of dropping you into the shop. Ship hangar on the main menu now shows your hull type and active perks at a glance. Dock labels bumped up for better readability.'
+  },
+  {
     id: 'ann_welcome_261',
     date: '2026-03-11',
     title: '👾 WELCOME TO VOID INVADERS',
@@ -5050,9 +5067,7 @@ function updateMenuVesselInfo(){
   if(!shapeEl || !perksEl) return;
   const shapeNames = {classic:'CLASSIC',arrow:'ARROW',delta:'DELTA',dualfin:'DUAL FIN',pod:'POD'};
   const shape = (SAVE.shipCustom && SAVE.shipCustom.shape) || 'classic';
-  const ups = SAVE.upgrades || {};
-  const totalUps = Object.values(ups).reduce((a,b)=>a+b,0);
-  shapeEl.textContent = (shapeNames[shape]||shape.toUpperCase()) + (totalUps>0?' · LV '+totalUps:'');
+  shapeEl.textContent = (shapeNames[shape]||shape.toUpperCase()) + ' HULL';
   perksEl.innerHTML = '';
   const activePerks = SAVE.activePerks || [];
   if(activePerks.length === 0){
@@ -5696,6 +5711,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>✅ Fixed main menu scrolling on small screens<br>✅ Fixed iOS auto-zoom on Game Over name input<br>✅ Fixed sticky hover highlights on touch devices<br>✅ Fixed Perks back button returning to shop instead of main menu<br>✅ Ship hangar on main menu — live preview, hull type & active perks at a glance<br>✅ Dock labels increased for better readability</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.1</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Fixed score inflation bug after using a continue<br>✅ Fixed music toggle on main menu restarting track instead of muting<br>✅ Fixed bomb trophy rewards being granted during relic runs<br>✅ Fixed duplicate INITIALIZING text on launch screen<br>✅ Announcements banner added to main menu<br>✅ How To Play screen redesigned for better readability<br>⏳ Performance optimizations coming soon</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.0</div>
@@ -6426,6 +6443,17 @@ setTrack('menu');
   <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;box-sizing:border-box;">
   <div style="max-width:500px;margin:0 auto;">
 
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
+    <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
+      ✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>
+      ✅ Main menu no longer scrollable on small screens<br>
+      ✅ Fixed iOS auto-zoom on Game Over name input<br>
+      ✅ Touch hover states fixed — no more sticky highlights on mobile<br>
+      ✅ Dock labels bumped up for better readability<br>
+      ✅ Ship hangar added to main menu — shows your hull, perks & a live preview<br>
+      ✅ Fixed Perks nav from main menu — back button now returns to menu, not shop<br>
+      ✅ Vessel display cleaned up — shows hull type instead of a confusing level number
+    </div>
 
     <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
     <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">
