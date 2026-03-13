@@ -80,11 +80,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #screen-shop,#screen-packs,#screen-gameover,#screen-leaderboard{justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important}
 
 /* MENU */
-#screen-menu{background:transparent;justify-content:flex-start}
+#screen-menu{background:transparent;justify-content:flex-start;overflow:hidden}
 #menu-canvas{position:absolute;inset:0;z-index:0}
 #menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
-.title-void{font-size:36px;display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
+.title-void{font-size:clamp(24px, 7.8vw, 36px);display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
 .title-inv{font-size:28px;display:block;color:var(--m);text-shadow:0 0 15px var(--m),0 0 40px var(--m)44;letter-spacing:8px}
 .menu-sub{font-size:13px;color:#446;letter-spacing:4px;margin-bottom:28px}
 .menu-score{font-family:'Orbitron',sans-serif;font-size:13px;color:#666;margin-bottom:28px}
@@ -102,7 +102,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #splash-title{font-size:52px;font-weight:bold;letter-spacing:10px;color:#fff;opacity:0;transition:opacity 1.2s;}
 #splash-subtitle{font-size:10px;letter-spacing:6px;color:#4af7;text-transform:uppercase;opacity:0;margin-top:10px;transition:opacity 1s;}
 #splash-btn{display:none;margin-top:56px;padding:16px 56px;background:transparent;border:1px solid #4af;color:#4af;font-family:'Courier New',monospace;font-size:13px;letter-spacing:8px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;animation:borderPulse 2s ease-in-out infinite;}
-#splash-btn:hover{background:#4af;color:#000;box-shadow:0 0 60px #4af;letter-spacing:10px;}
+@media(hover:hover){#splash-btn:hover{background:#4af;color:#000;box-shadow:0 0 60px #4af;letter-spacing:10px;}}
 #splash-version{position:absolute;bottom:20px;right:20px;font-size:10px;letter-spacing:3px;color:#1a3a5a;opacity:0;transition:opacity 1s;font-family:'Courier New',monospace;}
 #pregate-stars div{position:absolute;border-radius:50%;background:#fff;}
 @keyframes twinkle{from{opacity:0.1}to{opacity:0.9}}
@@ -119,7 +119,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
 .dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -127,13 +127,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 @keyframes badgePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:0.6}}
 .menu-anim-hidden{opacity:0}
 .b-c{border-color:var(--c);color:var(--c)}
-.b-c:hover{box-shadow:0 0 20px rgba(0,245,255,0.4);background:rgba(0,245,255,0.08)}
 .b-m{border-color:var(--m);color:var(--m)}
-.b-m:hover{box-shadow:0 0 20px rgba(255,0,204,0.4);background:rgba(255,0,204,0.08)}
 .b-g{border-color:var(--g);color:var(--g)}
-.b-g:hover{box-shadow:0 0 20px rgba(255,215,0,0.4);background:rgba(255,215,0,0.08)}
 .b-gr{border-color:var(--gr);color:var(--gr)}
-.b-gr:hover{box-shadow:0 0 20px rgba(0,255,136,0.4);background:rgba(0,255,136,0.08)}
+@media(hover:hover){.b-c:hover{box-shadow:0 0 20px rgba(0,245,255,0.4);background:rgba(0,245,255,0.08)}.b-m:hover{box-shadow:0 0 20px rgba(255,0,204,0.4);background:rgba(255,0,204,0.08)}.b-g:hover{box-shadow:0 0 20px rgba(255,215,0,0.4);background:rgba(255,215,0,0.08)}.b-gr:hover{box-shadow:0 0 20px rgba(0,255,136,0.4);background:rgba(0,255,136,0.08)}}
 .btn-sm{padding:9px 18px;font-size:11px;min-width:unset}
 .btn-xs{padding:7px 14px;font-size:10px;min-width:unset}
 
@@ -304,7 +301,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div id="menu-content">
 
     <!-- ANNOUNCEMENTS TICKER -->
-    <div id="menu-ticker-wrap" onclick="openAnnouncements()" style="width:100%;background:rgba(0,245,255,0.05);border-bottom:1px solid #00f5ff22;border-top:1px solid #00f5ff22;padding:7px 0;cursor:pointer;overflow:hidden;position:relative;margin-bottom:8px;flex-shrink:0">
+    <div id="menu-ticker-wrap" onclick="openAnnouncements()" style="width:calc(100% + 28px);margin-left:-14px;margin-right:-14px;background:rgba(0,245,255,0.05);border-bottom:1px solid #00f5ff22;border-top:1px solid #00f5ff22;padding:7px 0;cursor:pointer;overflow:hidden;position:relative;margin-bottom:8px;flex-shrink:0">
       <div id="menu-ticker-inner" style="display:inline-block;white-space:nowrap;font-family:'Orbitron',sans-serif;font-size:9px;color:#00f5ff;letter-spacing:2px;will-change:transform"></div>
       <div id="menu-ticker-badge" style="display:none;position:absolute;top:50%;right:10px;transform:translateY(-50%);background:#ff4455;border-radius:10px;font-family:'Orbitron',sans-serif;font-size:7px;color:#fff;letter-spacing:1px;padding:2px 6px;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite">NEW</div>
     </div>
@@ -320,7 +317,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:100%">
+    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
         <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
@@ -749,7 +746,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:4px;text-align:center">🏆 SUBMIT TO LEADERBOARD</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#aa8800;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
     <div style="display:flex;gap:8px;align-items:center;justify-content:center">
-      <input id="go-name-input" maxlength="16" placeholder="ENTER NAME" style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;padding:10px 12px;background:rgba(0,20,40,0.8);border:1px solid #ffd70066;border-radius:4px;color:#ffd700;width:180px;text-transform:uppercase;outline:none"/>
+      <input id="go-name-input" maxlength="16" placeholder="ENTER NAME" style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:2px;padding:10px 12px;background:rgba(0,20,40,0.8);border:1px solid #ffd70066;border-radius:4px;color:#ffd700;width:180px;text-transform:uppercase;outline:none"/>
       <button id="go-submit-btn" onclick="submitLeaderboardScore()" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;padding:10px 14px;background:rgba(255,215,0,0.12);border:1px solid #ffd700;color:#ffd700;border-radius:4px;cursor:pointer;font-weight:700">▶ SUBMIT</button>
     </div>
     <div id="go-submit-msg" style="font-size:10px;color:#aa8800;text-align:center;margin-top:6px;letter-spacing:1px;min-height:16px;"></div>
@@ -790,8 +787,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 }
 .si{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .2s}
 .si::after{content:'';position:absolute;top:-50%;left:-60%;width:30%;height:200%;background:rgba(255,255,255,0.06);transform:skewX(-20deg);transition:left .4s}
-.si.aff:hover::after{left:130%}
-.si.aff:hover{transform:scale(1.03);box-shadow:0 0 18px rgba(0,245,255,0.3)}
+@media(hover:hover){.si.aff:hover::after{left:130%}.si.aff:hover{transform:scale(1.03);box-shadow:0 0 18px rgba(0,245,255,0.3)}}
 .si.bought{animation:itemPop .3s ease}
 .coin-pop{position:absolute;pointer-events:none;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#ffd700;text-shadow:0 0 8px #ffd700;animation:coinFloat .8s ease forwards;z-index:99}
 .shop-coins-display{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffd700;text-shadow:0 0 12px #ffd700,0 0 30px #ffd70066;transition:all .3s;text-align:center;margin-bottom:2px}
@@ -799,7 +795,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .set-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-family:'Orbitron',sans-serif;font-weight:700;letter-spacing:1px;margin-left:6px;vertical-align:middle}
 /* Pack card shimmer on affordable */
 .pc.can-buy{background:linear-gradient(135deg,rgba(0,0,0,.5) 0%,rgba(255,255,255,.04) 50%,rgba(0,0,0,.5) 100%)!important;background-size:200% 200%!important;animation:shimmer 3s ease infinite!important}
-.pc.can-buy:hover{transform:scale(1.05)!important;box-shadow:0 0 20px currentColor!important}
+@media(hover:hover){.pc.can-buy:hover{transform:scale(1.05)!important;box-shadow:0 0 20px currentColor!important}}
 /* Rift indicator */
 #rift-indicator{position:absolute;inset:0;border:3px solid #cc44ff;pointer-events:none;border-radius:0;opacity:0;transition:opacity .3s;box-shadow:inset 0 0 30px rgba(200,68,255,0.3)}
 #rift-indicator.active{opacity:1}
