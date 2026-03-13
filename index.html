@@ -120,6 +120,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
 .dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
 .dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+#menu-ship-preview{height:clamp(80px,15vh,140px);aspect-ratio:160/140;width:auto}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -279,6 +280,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 <div id="screen-splash" style="display:none;position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#050d1a 0%,#000 100%);flex-direction:column;align-items:center;justify-content:center;">
   <div id="splash-stars" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
+  <canvas id="splash-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0;transition:opacity 0.8s"></canvas>
   <div id="splash-scanline"></div>
   <div class="splash-inner">
     <div id="splash-creator">A Game Created by</div>
@@ -344,7 +346,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 
     <!-- 2x4 NAVIGATION GRID -->
-    <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:16px">
+    <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;margin-top:16px">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
 
@@ -393,7 +395,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- SHIP HERO PREVIEW -->
-    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
+    <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
       <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block"></canvas>
       <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:4px">YOUR VESSEL</div>
@@ -402,7 +404,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.1</div>
+    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.3</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -1645,6 +1647,8 @@ function toggleMusic() {
 }
 
 // ── SFX ─────────────────────────────────────────────
+var _suppressNavSound = false;
+var _splashAnimId = null;
 function sfx(type) {
   resumeAC();
   const t = AC.currentTime;
@@ -1748,6 +1752,50 @@ function sfx(type) {
       break;
     case 'menuMove':
       osc(660,'square',0.04,0.15);
+      break;
+    case 'navTap':
+      sfxGain.gain.value = 0.38;
+      osc(660,'sine',0.26,0.12);
+      osc(440,'sine',0.18,0.18,0.01,300);
+      noise(0.04,0.13,'bandpass',2000);
+      break;
+    case 'upgradeSelect':
+      sfxGain.gain.value = 0.30;
+      osc(110,'sawtooth',0.18,0.9,0,260);
+      osc(360,'square',0.12,0.7,0.04,720);
+      osc(720,'sine',0.14,0.55,0.07,1400);
+      osc(1800,'sine',0.1,0.35,0.11,2600);
+      noise(0.06,0.4,'bandpass',2400,0.04);
+      break;
+    case 'navBack':
+      sfxGain.gain.value = 0.30;
+      osc(480,'sine',0.18,0.35,0,200);
+      osc(280,'triangle',0.14,0.28,0.02,130);
+      osc(140,'sine',0.10,0.22,0,80);
+      noise(0.05,0.08,'highpass',4000);
+      break;
+    case 'packOpen':
+      sfxGain.gain.value = 0.28;
+      noise(0.12,0.7,'highpass',4000);
+      osc(180,'sawtooth',0.2,0.6,0,600);
+      [330,415,494,622,740,880].forEach((f,i)=>osc(f,'sine',0.18,0.5-i*0.04,0.08+i*0.07));
+      osc(1760,'sine',0.3,0.4,0.55);
+      noise(0.08,0.2,'bandpass',3000,0.5);
+      break;
+    case 'perkEquip':
+      sfxGain.gain.value = 0.32;
+      osc(90,'sawtooth',0.22,1.0,0,200);
+      osc(300,'square',0.16,0.8,0.05,680);
+      [440,550,660].forEach((f,i)=>osc(f,'sine',0.2,0.6-i*0.1,0.08+i*0.03));
+      osc(1400,'sine',0.18,0.55,0.14,2200);
+      noise(0.08,0.45,'bandpass',2800,0.1);
+      break;
+    case 'perkUpgrade':
+      sfxGain.gain.value = 0.26;
+      [330,415,523,659,830].forEach((f,i)=>osc(f,'sine',0.14,0.5,i*0.065));
+      osc(1047,'sine',0.35,0.5,0.32);
+      osc(1047,'triangle',0.3,0.25,0.32);
+      noise(0.06,0.2,'highpass',7000,0.3);
       break;
     case 'waveStart':
       osc(220,'sawtooth',0.1,0.6,0,440); osc(440,'square',0.06,0.4,0.1);
@@ -2255,9 +2303,14 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.6.2';
+const CURRENT_VERSION = '2.6.3';
 
 const VERSION_NOTES = {
+'2.6.3': [
+    '🔊 Navigation sounds — new back button whoosh, softer forward tap that won\'t fatigue your ears',
+    '🔊 Upgrade particles — rising ▲ arrows and ❤️ hearts now actually appear when you buy upgrades',
+    '🐛 Fixed nav tap sound firing on first menu load after splash screen',
+  ],
 '2.6.2': [
     '📱 Mobile UI polish — announcement banner & stats row now stretch edge-to-edge',
     '🐛 Fixed main menu scrolling on small screens',
@@ -4596,11 +4649,11 @@ function equipPerk(id, wild=false) {
     if(SAVE.activePerks.length<3){ showToast('Fill your first 3 slots first!'); return; }
     SAVE.activePerks[3]=id;
     if(!SAVE.perkLevels) SAVE.perkLevels={};
-    doSave(); sfx('relicActivate'); buildPerks(); return;
+    doSave(); sfx('perkEquip'); buildPerks(); return;
   }
   SAVE.activePerks.push(id);
   if(!SAVE.perkLevels) SAVE.perkLevels={};
-  doSave(); sfx('relicActivate'); buildPerks();
+  doSave(); sfx('perkEquip'); buildPerks();
 }
 
 function upgradePerk(id) {
@@ -4613,7 +4666,7 @@ function upgradePerk(id) {
   if(SAVE.coins<cost){ showToast('Not enough coins!'); return; }
   SAVE.coins-=cost;
   SAVE.perkLevels[id]=lv+1;
-  doSave(); sfx('purchase'); buildPerks();
+  doSave(); sfx('perkUpgrade'); buildPerks();
   showToast(`⚡ ${p.name} upgraded to LV${lv+1}!`);
 }
 
@@ -4735,6 +4788,9 @@ function doReset() {
 }
 
 function showScreen(id) {
+  const _autoScreens = new Set(['screen-splash','screen-summary','screen-waveclear','screen-gameover','screen-spinner','screen-enemy-intro','screen-perks-intro']);
+  if(id !== '__game__' && gState !== 'playing' && !_autoScreens.has(id) && !_suppressNavSound) sfx('navTap');
+  _suppressNavSound = false;
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   const gameVisible = id==='__game__';
   document.getElementById('hud').style.display=gameVisible?'flex':'none';
@@ -4919,11 +4975,11 @@ function playMenuEntrance(){
 
 const ANNOUNCEMENTS = [
   {
-    id: 'ann_262',
-    date: '2026-03-12',
-    title: 'VERSION 2.6.2 OUT NOW',
+    id: 'ann_263',
+    date: '2026-03-13',
+    title: 'VERSION 2.6.3 OUT NOW',
     color: '#00f5ff',
-    body: 'Mobile polish update — the announcement banner and stats row now stretch properly edge-to-edge. Fixed main menu scrolling, iOS auto-zoom on the Game Over name input, and sticky hover highlights on touch screens. The Perks back button now correctly returns to the main menu instead of dropping you into the shop. Ship hangar on the main menu now shows your hull type and active perks at a glance. Dock labels bumped up for better readability.'
+    body: 'Sound & polish update — all navigation now has audio feedback with a punchy back-button whoosh and a softer, less fatiguing forward tap. Rising upgrade particles (▲ and ❤️) now properly appear when buying upgrades. Fixed a bug where the nav tap sound played spuriously on first menu load.'
   },
   {
     id: 'ann_welcome_261',
@@ -4931,69 +4987,6 @@ const ANNOUNCEMENTS = [
     title: '👾 WELCOME TO VOID INVADERS',
     color: '#00ff88',
     body: 'Thanks for playing! Add the game to your home screen for the best experience — tap Share then Add to Home Screen on iPhone, or Menu then Add to Home Screen on Android. Compete on the global leaderboard and see how far you can push your wave count. Good luck, Commander.'
-  },
-  {
-    id: 'ann_261',
-    date: '2026-03-11',
-    title: 'VERSION 2.6.1 OUT NOW',
-    color: '#00f5ff',
-    body: 'Bug fix update — patched score inflation after continues, music toggle restarting on the main menu, bomb trophy rewards slipping through on relic runs, and duplicate text on the launch screen. Announcements banner added to the main menu and How To Play has been redesigned for better readability. Performance optimizations coming soon.'
-  },
-  {
-    id: 'ann_260',
-    date: '2026-03-11',
-    title: 'VERSION 2.6.0 OUT NOW',
-    color: '#8888ff',
-    body: 'The biggest UI overhaul yet — a brand new main menu with animated ship preview, navigation dock, and a cinematic intro sequence timed to the new music. Plus several bug fixes including continues and game over screen.'
-  },
-  {
-    id: 'ann_255',
-    date: '2026-02-20',
-    title: 'VERSION 2.5.5 — SHIP CUSTOMIZATION',
-    color: '#cc44ff',
-    body: 'Personalize your ship with custom hull, cockpit, thruster color, and bullet style. Your customization persists across every run. Access it from the Customize tile on the main menu. Also includes a fix for a perk max-level bug that caused bullets to disappear.'
-  },
-  {
-    id: 'ann_250',
-    date: '2026-01-15',
-    title: 'VERSION 2.5.0 — SUPER BOSSES & PERKS',
-    color: '#ff44aa',
-    body: 'Super Bosses now appear on every 10th wave with 3 phases and unique attacks. Wild Perk Slot unlocks after Wave 30. Bosses drop powerups mid-fight from wave 15+. Time Freeze now halts boss movement and projectiles. Enemy scaling past wave 30 has been tuned for better balance.'
-  },
-  {
-    id: 'ann_247',
-    date: '2025-12-10',
-    title: 'VERSION 2.4.7 — NEW MUSIC & POWERUPS',
-    color: '#ffd700',
-    body: 'Three new battle tracks added with more variety across waves. New powerup system with 11 types including Rapid Fire, Ghost Mode, Missile Storm, and Time Freeze. How To Play completely redesigned as animated step-by-step screens.'
-  },
-  {
-    id: 'ann_230',
-    date: '2025-10-15',
-    title: 'VERSION 2.3.0 — PERKS & BOSS SPINNER',
-    color: '#00ccff',
-    body: 'Perks system added — unlock after Wave 20 and equip up to 3 passive abilities across 4 categories. Boss reward spinner gives prizes after every boss kill. 6 new enemy types introduced across waves 6–21 with unique intro screens. New SFX for enemy shooting, shields, and dive bombers.'
-  },
-  {
-    id: 'ann_220',
-    date: '2025-09-01',
-    title: 'VERSION 2.2.0 — LEADERBOARDS & RELICS',
-    color: '#ffaa00',
-    body: 'Global leaderboards added — compete for the top spot. Relics system introduced for risk vs reward runs. Full-length MP3 battle music added. Save and resume mid-wave sessions. 30 trophy milestones to chase. Fire button removed — touch to shoot.'
-  },
-  {
-    id: 'ann_200',
-    date: '2025-07-01',
-    title: 'VERSION 2.0.0 — CARDS & SETS',
-    color: '#ff8800',
-    body: 'Card packs and collection system launched. 6 card sets each with a unique set bonus ability. Wave bonus scoring and trophy rewards added. Boss every 5th wave. Score saves between sessions. Score sharing with game link.'
-  },
-  {
-    id: 'ann_welcome',
-    date: '2025-06-01',
-    title: 'WELCOME TO VOID INVADERS',
-    color: '#00ff88',
-    body: 'Thanks for playing! Add this game to your home screen for the best experience — tap Share then Add to Home Screen on iPhone, or Menu then Add to Home Screen on Android. More content, enemies, and game modes are in development.'
   },
 ];
 
@@ -5186,6 +5179,31 @@ function stopShopCanvas() {
   if(shopCanvasAnim){ cancelAnimationFrame(shopCanvasAnim); shopCanvasAnim=null; }
 }
 
+function spawnUpgradeParticles(el, isHealth) {
+  if(!document.getElementById('upgrade-pop-style')) {
+    const s = document.createElement('style'); s.id = 'upgrade-pop-style';
+    s.textContent = `@keyframes upgradePop{0%{opacity:0;transform:translateY(0) scale(.8)}20%{opacity:1;transform:translateY(-12px) scale(1.15)}100%{opacity:0;transform:translateY(-72px) scale(.65)}}`;
+    document.head.appendChild(s);
+  }
+  const elRect = el.getBoundingClientRect();
+  const cx = elRect.left + elRect.width * 0.5;
+  const cy = elRect.top  + elRect.height * 0.5;
+  const symbol = isHealth ? '❤️' : '▲';
+  const color  = isHealth ? '#ff4455' : '#00f5ff';
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99990;overflow:hidden';
+  document.body.appendChild(overlay);
+  for(let i = 0; i < 9; i++) {
+    const p = document.createElement('div');
+    const ox = (Math.random() - 0.5) * elRect.width * 0.9;
+    const sz = isHealth ? 13 + Math.random() * 7 : 11 + Math.random() * 9;
+    p.style.cssText = `position:absolute;left:${cx + ox}px;top:${cy}px;font-size:${sz}px;color:${color};text-shadow:0 0 8px ${color};opacity:0;pointer-events:none;animation:upgradePop 0.7s ease ${i*0.055}s forwards`;
+    p.textContent = symbol;
+    overlay.appendChild(p);
+  }
+  setTimeout(() => overlay.remove(), 1100);
+}
+
 function spawnCoinPop(el, amount) {
   const pop = document.createElement('div');
   pop.className='coin-pop';
@@ -5254,8 +5272,9 @@ function buildShop() {
         player.maxLives = Math.min(5, player.maxLives+1);
         updateHUD();
       }
-      doSave(); sfx('purchase');
+      doSave(); sfx('upgradeSelect');
       spawnCoinPop(el, cost);
+      spawnUpgradeParticles(el, u.key === 'health');
       el.classList.add('bought');
       setTimeout(()=>{ el.classList.remove('bought'); buildShop(); },320);
       showToast(`${u.icon} ${u.name} upgraded!`);
@@ -5308,7 +5327,7 @@ function buyPack(pack){
     if(SAVE.setsComplete[k]) return;
     if(s.cards.every(c=>(SAVE.cards[c.id]||0)>0)){ SAVE.setsComplete[k]=true; newSets.push(s.name); }
   });
-  doSave(); sfx('cardGet');
+  doSave(); sfx('packOpen');
   if(newSets.length) setTimeout(()=>sfx('setComplete'),300);
   const res=document.getElementById('pull-results');
   res.innerHTML='';
@@ -5710,6 +5729,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.3</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Navigation sounds — back button whoosh, softer forward tap<br>✅ Upgrade particles (▲ arrows & ❤️ hearts) now appear correctly on purchase<br>✅ Fixed nav tap sound firing on first menu load after splash</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>✅ Fixed main menu scrolling on small screens<br>✅ Fixed iOS auto-zoom on Game Over name input<br>✅ Fixed sticky hover highlights on touch devices<br>✅ Fixed Perks back button returning to shop instead of main menu<br>✅ Ship hangar on main menu — live preview, hull type & active perks at a glance<br>✅ Dock labels increased for better readability</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.1</div>
@@ -5792,6 +5813,15 @@ try {
   document.body.innerHTML += `<div style="position:fixed;top:0;left:0;right:0;background:#ff0000;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">INIT ERROR: ${e.message}<br>${e.stack}</div>`;
 }
 function initPregate() {
+  // Back button sound — capture phase fires before onclick/showScreen
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button');
+    if(btn && btn.textContent.trim().startsWith('←')){
+      sfx('navBack');
+      _suppressNavSound = true;
+    }
+  }, true);
+
   const container = document.getElementById('pregate-stars');
   for(let i=0;i<120;i++){
     const s = document.createElement('div');
@@ -5813,6 +5843,214 @@ function pregateLaunch() {
   const splash = document.getElementById('screen-splash');
   splash.style.display = 'flex';
   initSplash();
+}
+
+function drawSplashEnemy(c, x, y, type, elapsed) {
+  var cols = ['#ff4455','#aa44ff','#ff8800'];
+  var col = cols[type] || '#ff4455';
+  var bob = Math.sin(elapsed * 2.5 + type * 1.3) * 2.5;
+  c.save();
+  c.translate(x, y + bob);
+  c.strokeStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.lineWidth = 1.5;
+  if (type === 2) {
+    // UFO — disc + dome + window lights
+    c.beginPath(); c.ellipse(0, 2, 12, 5, 0, 0, Math.PI * 2);
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.arc(0, -2, 6, Math.PI, 0, true); c.closePath();
+    c.fillStyle = col + '55'; c.fill(); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.6)';
+    [-4, 0, 4].forEach(function(ox) { c.beginPath(); c.arc(ox, 2, 1.3, 0, Math.PI * 2); c.fill(); });
+  } else if (type === 1) {
+    // Crab — wide body with side claws
+    c.beginPath();
+    c.moveTo(-14, 4); c.lineTo(-8, -6); c.lineTo(0, -9); c.lineTo(8, -6); c.lineTo(14, 4);
+    c.lineTo(10, 8); c.lineTo(-10, 8); c.closePath();
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-14, 4); c.lineTo(-18, 0); c.moveTo(14, 4); c.lineTo(18, 0); c.stroke();
+    c.fillStyle = col; c.shadowBlur = 5;
+    c.beginPath(); c.arc(-5, 0, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(5, 0, 2, 0, Math.PI * 2); c.fill();
+  } else {
+    // Basic invader — compact pentagon body with antennae
+    c.beginPath();
+    c.moveTo(0, -11); c.lineTo(9, 2); c.lineTo(7, 9); c.lineTo(-7, 9); c.lineTo(-9, 2); c.closePath();
+    c.fillStyle = col + '33'; c.fill(); c.stroke();
+    c.beginPath(); c.moveTo(-4, -11); c.lineTo(-7, -16); c.moveTo(4, -11); c.lineTo(7, -16); c.stroke();
+    c.fillStyle = col; c.shadowBlur = 5;
+    c.beginPath(); c.arc(-4, 2, 2, 0, Math.PI * 2); c.fill();
+    c.beginPath(); c.arc(4, 2, 2, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+}
+
+function startSplashShipAnim() {
+  var canvas = document.getElementById('splash-canvas');
+  if (!canvas) return;
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var W = canvas.width, H = canvas.height;
+  var ctx = canvas.getContext('2d');
+  canvas.style.opacity = '1';
+
+  var startT = null, lastT = null;
+  var baseY  = H * 0.84;
+
+  // Ship — enters from right, flies left
+  var ship = { x: W + 60, y: baseY, vx: -90 };
+
+  // Three enemies in pursuit formation behind the ship
+  var enemies = [
+    { x: W + 150, y: baseY,      alive: true, type: 0 },
+    { x: W + 210, y: baseY - 18, alive: true, type: 1 },
+    { x: W + 190, y: baseY + 18, alive: true, type: 2 }
+  ];
+
+  // Thruster particles trailing behind the ship
+  var thrusterParts = [];
+  var tCols = ['#00f5ff','#ffffff','#4488ff'];
+
+  // One backward bullet fired at ~2.2s
+  var bullet = null, bulletFired = false;
+
+  // Explosion sparks + ring on hit
+  var exParts = [];
+
+  var shipCustom = (typeof SAVE !== 'undefined' && SAVE && SAVE.shipCustom && SAVE.shipCustom.shape)
+    ? SAVE.shipCustom
+    : { shape: 'classic', hullColor: '#00f5ff', cockpitColor: '#00f5ff', aura: 'none', decal: 'none' };
+
+  function spawnExplosion(ex, ey) {
+    for (var i = 0; i < 12; i++) {
+      var a = (i / 12) * Math.PI * 2;
+      var spd = 1.5 + Math.random() * 2.5;
+      exParts.push({ x: ex, y: ey, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd,
+                     life: 1, r: 2 + Math.random() * 3, col: i % 2 === 0 ? '#ff4455' : '#ff8800', ring: false });
+    }
+    exParts.push({ x: ex, y: ey, r: 0, life: 1, col: '#ff4455', ring: true });
+  }
+
+  function loop(ts) {
+    _splashAnimId = requestAnimationFrame(loop);
+    if (!startT) startT = ts;
+    var elapsed = (ts - startT) / 1000;
+    var dt = lastT ? Math.min((ts - lastT) / 1000, 0.05) : 0.016;
+    lastT = ts;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Accelerate to exit after 5 s
+    var targetVx = elapsed > 5 ? -520 : -90;
+    ship.vx += (targetVx - ship.vx) * Math.min(dt * 3.5, 1);
+    ship.x  += ship.vx * dt;
+    ship.y   = baseY + Math.sin(elapsed * 1.8) * 7;
+
+    // Enemies lag-chase the ship in formation
+    for (var ei = 0; ei < enemies.length; ei++) {
+      var en = enemies[ei];
+      if (!en.alive) continue;
+      var tx = ship.x + 80 + ei * 52;
+      var ty = ship.y  + (ei === 1 ? -22 : ei === 2 ? 22 : 0);
+      en.x += (tx - en.x) * Math.min(dt * 2.5, 1);
+      en.y += (ty - en.y) * Math.min(dt * 2.5, 1);
+    }
+
+    // Spawn thruster particles — ship faces left so thruster exits to the right (+x)
+    if (Math.random() < 0.9) {
+      var tc = tCols[Math.floor(Math.random() * tCols.length)];
+      thrusterParts.push({
+        x: ship.x + 16,
+        y: ship.y + (Math.random() - 0.5) * 10,
+        vx: Math.abs(ship.vx) * dt * (0.3 + Math.random() * 0.4) + 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        life: 1, r: 1.5 + Math.random() * 2.5, col: tc
+      });
+    }
+
+    // Update + draw thruster
+    for (var ti = thrusterParts.length - 1; ti >= 0; ti--) {
+      var tp = thrusterParts[ti];
+      tp.x += tp.vx; tp.y += tp.vy;
+      tp.life -= dt * 3.5;
+      if (tp.life <= 0) { thrusterParts.splice(ti, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = tp.life * 0.85;
+      ctx.fillStyle   = tp.col;
+      ctx.shadowColor = tp.col; ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(tp.x, tp.y, Math.max(0.1, tp.r * tp.life), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Fire backward bullet at 2.2 s into animation
+    if (!bulletFired && elapsed >= 2.2) {
+      bulletFired = true;
+      bullet = { x: ship.x + 16, y: ship.y };
+    }
+    if (bullet) {
+      bullet.x += 260 * dt;
+      // Hit nearest alive enemy
+      for (var bi = 0; bi < enemies.length; bi++) {
+        var ben = enemies[bi];
+        if (!ben.alive) continue;
+        if (Math.abs(bullet.x - ben.x) < 22 && Math.abs(bullet.y - ben.y) < 18) {
+          spawnExplosion(ben.x, ben.y);
+          ben.alive = false;
+          bullet = null;
+          break;
+        }
+      }
+      if (bullet && bullet.x > W + 20) bullet = null;
+    }
+
+    // Draw bullet
+    if (bullet) {
+      ctx.save();
+      ctx.fillStyle = '#00f5ff'; ctx.shadowColor = '#00f5ff'; ctx.shadowBlur = 10;
+      ctx.fillRect(bullet.x - 8, bullet.y - 2, 16, 4);
+      ctx.restore();
+    }
+
+    // Draw enemies (only those still on screen)
+    for (var di = 0; di < enemies.length; di++) {
+      var den = enemies[di];
+      if (!den.alive || den.x > W + 50) continue;
+      drawSplashEnemy(ctx, den.x, den.y, den.type, elapsed);
+    }
+
+    // Draw ship facing left (direction of travel)
+    ctx.save();
+    ctx.translate(ship.x, ship.y);
+    ctx.rotate(-Math.PI / 2);
+    drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
+    ctx.restore();
+
+    // Update + draw explosion particles
+    for (var pi = exParts.length - 1; pi >= 0; pi--) {
+      var p = exParts[pi];
+      p.life -= dt * 1.6;
+      if (p.life <= 0) { exParts.splice(pi, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.shadowColor = p.col; ctx.shadowBlur = 8;
+      if (p.ring) {
+        p.r += dt * 90;
+        ctx.strokeStyle = p.col; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
+      } else {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.06;
+        ctx.fillStyle = p.col;
+        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.1, p.r * p.life), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Stop when ship fully exits left
+    if (ship.x < -100 && thrusterParts.length === 0 && exParts.length === 0) {
+      cancelAnimationFrame(_splashAnimId); _splashAnimId = null;
+      ctx.clearRect(0, 0, W, H);
+    }
+  }
+
+  _splashAnimId = requestAnimationFrame(loop);
 }
 
 function initSplash() {
@@ -5854,6 +6092,7 @@ function initSplash() {
     lineBot.style.width='160px'; lineBot.style.opacity='1';
   }, 2200);
   setTimeout(()=>{ titleEl.style.opacity='1'; titleEl.style.animation='pulseGlow 3s ease-in-out infinite'; }, 2700);
+  setTimeout(()=>{ startSplashShipAnim(); }, 2800);
   setTimeout(()=>{ subtitleEl.style.opacity='1'; versionEl.style.opacity='1'; }, 3300);
 
   // Progress bar appears and fills over remaining time
@@ -6361,11 +6600,14 @@ function showBossSpinner(kills,preBonus,waveNum,coins,newTrophies) {
 
 function splashLaunch() {
   try {
+  if (_splashAnimId) { cancelAnimationFrame(_splashAnimId); _splashAnimId = null; }
+  var sc = document.getElementById('splash-canvas');
+  if (sc) sc.style.opacity = '0';
   const splash = document.getElementById('screen-splash');
   splash.style.transition='opacity 0.8s';
   splash.style.opacity='0';
   setTimeout(()=>{ splash.style.display='none'; checkWhatsNew(); }, 800);
-  showScreen('screen-menu');
+  _suppressNavSound = true; showScreen('screen-menu');
   } catch(e) {
     document.body.innerHTML += `<div style="position:fixed;top:40px;left:0;right:0;background:#ff4400;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">${e.message}<br>${e.stack}</div>`;
   }
