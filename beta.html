@@ -403,7 +403,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.1</div>
+    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.3</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -1752,10 +1752,10 @@ function sfx(type) {
       osc(660,'square',0.04,0.15);
       break;
     case 'navTap':
-      sfxGain.gain.value = 0.22;
-      osc(1100,'square',0.04,0.5);
-      osc(780,'sine',0.07,0.35,0.02,320);
-      noise(0.03,0.25,'highpass',7000);
+      sfxGain.gain.value = 0.28;
+      osc(660,'sine',0.20,0.12);
+      osc(440,'sine',0.14,0.18,0.01,300);
+      noise(0.04,0.10,'bandpass',2000);
       break;
     case 'upgradeSelect':
       sfxGain.gain.value = 0.30;
@@ -1766,10 +1766,11 @@ function sfx(type) {
       noise(0.06,0.4,'bandpass',2400,0.04);
       break;
     case 'navBack':
-      sfxGain.gain.value = 0.18;
-      osc(520,'sine',0.06,0.4,0,220);
-      osc(320,'square',0.04,0.25,0.02,150);
-      noise(0.025,0.15,'highpass',5000);
+      sfxGain.gain.value = 0.30;
+      osc(480,'sine',0.18,0.35,0,200);
+      osc(280,'triangle',0.14,0.28,0.02,130);
+      osc(140,'sine',0.10,0.22,0,80);
+      noise(0.05,0.08,'highpass',4000);
       break;
     case 'packOpen':
       sfxGain.gain.value = 0.28;
@@ -2300,9 +2301,14 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.6.2';
+const CURRENT_VERSION = '2.6.3';
 
 const VERSION_NOTES = {
+'2.6.3': [
+    '🔊 Navigation sounds — new back button whoosh, softer forward tap that won\'t fatigue your ears',
+    '🔊 Upgrade particles — rising ▲ arrows and ❤️ hearts now actually appear when you buy upgrades',
+    '🐛 Fixed nav tap sound firing on first menu load after splash screen',
+  ],
 '2.6.2': [
     '📱 Mobile UI polish — announcement banner & stats row now stretch edge-to-edge',
     '🐛 Fixed main menu scrolling on small screens',
@@ -4967,11 +4973,11 @@ function playMenuEntrance(){
 
 const ANNOUNCEMENTS = [
   {
-    id: 'ann_262',
-    date: '2026-03-12',
-    title: 'VERSION 2.6.2 OUT NOW',
+    id: 'ann_263',
+    date: '2026-03-13',
+    title: 'VERSION 2.6.3 OUT NOW',
     color: '#00f5ff',
-    body: 'Mobile polish update — the announcement banner and stats row now stretch properly edge-to-edge. Fixed main menu scrolling, iOS auto-zoom on the Game Over name input, and sticky hover highlights on touch screens. The Perks back button now correctly returns to the main menu instead of dropping you into the shop. Ship hangar on the main menu now shows your hull type and active perks at a glance. Dock labels bumped up for better readability.'
+    body: 'Sound & polish update — all navigation now has audio feedback with a punchy back-button whoosh and a softer, less fatiguing forward tap. Rising upgrade particles (▲ and ❤️) now properly appear when buying upgrades. Fixed a bug where the nav tap sound played spuriously on first menu load.'
   },
   {
     id: 'ann_welcome_261',
@@ -4979,69 +4985,6 @@ const ANNOUNCEMENTS = [
     title: '👾 WELCOME TO VOID INVADERS',
     color: '#00ff88',
     body: 'Thanks for playing! Add the game to your home screen for the best experience — tap Share then Add to Home Screen on iPhone, or Menu then Add to Home Screen on Android. Compete on the global leaderboard and see how far you can push your wave count. Good luck, Commander.'
-  },
-  {
-    id: 'ann_261',
-    date: '2026-03-11',
-    title: 'VERSION 2.6.1 OUT NOW',
-    color: '#00f5ff',
-    body: 'Bug fix update — patched score inflation after continues, music toggle restarting on the main menu, bomb trophy rewards slipping through on relic runs, and duplicate text on the launch screen. Announcements banner added to the main menu and How To Play has been redesigned for better readability. Performance optimizations coming soon.'
-  },
-  {
-    id: 'ann_260',
-    date: '2026-03-11',
-    title: 'VERSION 2.6.0 OUT NOW',
-    color: '#8888ff',
-    body: 'The biggest UI overhaul yet — a brand new main menu with animated ship preview, navigation dock, and a cinematic intro sequence timed to the new music. Plus several bug fixes including continues and game over screen.'
-  },
-  {
-    id: 'ann_255',
-    date: '2026-02-20',
-    title: 'VERSION 2.5.5 — SHIP CUSTOMIZATION',
-    color: '#cc44ff',
-    body: 'Personalize your ship with custom hull, cockpit, thruster color, and bullet style. Your customization persists across every run. Access it from the Customize tile on the main menu. Also includes a fix for a perk max-level bug that caused bullets to disappear.'
-  },
-  {
-    id: 'ann_250',
-    date: '2026-01-15',
-    title: 'VERSION 2.5.0 — SUPER BOSSES & PERKS',
-    color: '#ff44aa',
-    body: 'Super Bosses now appear on every 10th wave with 3 phases and unique attacks. Wild Perk Slot unlocks after Wave 30. Bosses drop powerups mid-fight from wave 15+. Time Freeze now halts boss movement and projectiles. Enemy scaling past wave 30 has been tuned for better balance.'
-  },
-  {
-    id: 'ann_247',
-    date: '2025-12-10',
-    title: 'VERSION 2.4.7 — NEW MUSIC & POWERUPS',
-    color: '#ffd700',
-    body: 'Three new battle tracks added with more variety across waves. New powerup system with 11 types including Rapid Fire, Ghost Mode, Missile Storm, and Time Freeze. How To Play completely redesigned as animated step-by-step screens.'
-  },
-  {
-    id: 'ann_230',
-    date: '2025-10-15',
-    title: 'VERSION 2.3.0 — PERKS & BOSS SPINNER',
-    color: '#00ccff',
-    body: 'Perks system added — unlock after Wave 20 and equip up to 3 passive abilities across 4 categories. Boss reward spinner gives prizes after every boss kill. 6 new enemy types introduced across waves 6–21 with unique intro screens. New SFX for enemy shooting, shields, and dive bombers.'
-  },
-  {
-    id: 'ann_220',
-    date: '2025-09-01',
-    title: 'VERSION 2.2.0 — LEADERBOARDS & RELICS',
-    color: '#ffaa00',
-    body: 'Global leaderboards added — compete for the top spot. Relics system introduced for risk vs reward runs. Full-length MP3 battle music added. Save and resume mid-wave sessions. 30 trophy milestones to chase. Fire button removed — touch to shoot.'
-  },
-  {
-    id: 'ann_200',
-    date: '2025-07-01',
-    title: 'VERSION 2.0.0 — CARDS & SETS',
-    color: '#ff8800',
-    body: 'Card packs and collection system launched. 6 card sets each with a unique set bonus ability. Wave bonus scoring and trophy rewards added. Boss every 5th wave. Score saves between sessions. Score sharing with game link.'
-  },
-  {
-    id: 'ann_welcome',
-    date: '2025-06-01',
-    title: 'WELCOME TO VOID INVADERS',
-    color: '#00ff88',
-    body: 'Thanks for playing! Add this game to your home screen for the best experience — tap Share then Add to Home Screen on iPhone, or Menu then Add to Home Screen on Android. More content, enemies, and game modes are in development.'
   },
 ];
 
@@ -5784,6 +5727,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.3</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Navigation sounds — back button whoosh, softer forward tap<br>✅ Upgrade particles (▲ arrows & ❤️ hearts) now appear correctly on purchase<br>✅ Fixed nav tap sound firing on first menu load after splash</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Mobile UI polish — announcement banner & stats row now stretch edge-to-edge<br>✅ Fixed main menu scrolling on small screens<br>✅ Fixed iOS auto-zoom on Game Over name input<br>✅ Fixed sticky hover highlights on touch devices<br>✅ Fixed Perks back button returning to shop instead of main menu<br>✅ Ship hangar on main menu — live preview, hull type & active perks at a glance<br>✅ Dock labels increased for better readability</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.1</div>
@@ -6448,7 +6393,7 @@ function splashLaunch() {
   splash.style.transition='opacity 0.8s';
   splash.style.opacity='0';
   setTimeout(()=>{ splash.style.display='none'; checkWhatsNew(); }, 800);
-  showScreen('screen-menu');
+  _suppressNavSound = true; showScreen('screen-menu');
   } catch(e) {
     document.body.innerHTML += `<div style="position:fixed;top:40px;left:0;right:0;background:#ff4400;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">${e.message}<br>${e.stack}</div>`;
   }
