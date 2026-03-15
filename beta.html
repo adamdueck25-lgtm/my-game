@@ -80,7 +80,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #screen-shop,#screen-packs,#screen-gameover,#screen-leaderboard{justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important}
 
 /* MENU */
-#screen-menu{background:transparent;justify-content:flex-start;overflow:hidden}
+#screen-menu{background:transparent;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #menu-canvas{position:absolute;inset:0;z-index:0}
 #menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
@@ -116,11 +116,14 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .btn-main::before{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
 .btn-main:active::before{opacity:.12}
 .btn-main:active{transform:scale(.96)}
-.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
+.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:10px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
-.dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
-#menu-ship-preview{height:clamp(80px,15vh,140px);aspect-ratio:160/140;width:auto}
+.dock-icon{font-size:22px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+.menu-util-btn{flex:1;padding:8px 10px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#667;background:transparent;border:1px solid #223;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s}
+.menu-util-btn:active{background:rgba(255,255,255,0.06)}
+#menu-ship-preview{height:clamp(50px,10vh,120px);aspect-ratio:160/140;width:auto}
+@media(max-height:700px){.menu-hero-emoji{font-size:32px!important}.title-void{font-size:clamp(20px,6.5vw,30px)!important}.title-inv{font-size:22px!important}#menu-hero-title{padding-top:2px!important}.game-title{margin-bottom:2px!important}#menu-nav-grid{margin-top:8px!important}.menu-stats-row{padding-top:6px!important;padding-bottom:6px!important}.menu-launch-btn{padding-top:12px!important;padding-bottom:12px!important}}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -311,7 +314,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- HERO TITLE -->
     <div id="menu-hero-title" style="position:relative;text-align:center;padding-top:8px">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:120px;background:radial-gradient(ellipse,rgba(0,245,255,0.12) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
-      <div style="font-size:48px;animation:floatBob 2.5s ease-in-out infinite;display:block;filter:drop-shadow(0 0 20px var(--c));position:relative">👾</div>
+      <div class="menu-hero-emoji" style="font-size:48px;animation:floatBob 2.5s ease-in-out infinite;display:block;filter:drop-shadow(0 0 20px var(--c));position:relative">👾</div>
       <div class="game-title" style="position:relative;width:100%;margin-bottom:28px">
         <span class="title-void" id="glitch-title" style="display:block;white-space:nowrap">VOID INVADERS</span>
         <span class="title-inv">RELOADED</span>
@@ -319,7 +322,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
+    <div id="menu-stats-row" class="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
         <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
@@ -338,7 +341,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
     <!-- LAUNCH BUTTON -->
     <div style="width:100%;box-sizing:border-box">
-      <button id="btn-launch" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
+      <button id="btn-launch" class="menu-launch-btn" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
         <span style="position:relative;z-index:1">▶ LAUNCH MISSION</span>
         <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,245,255,0.15),transparent);animation:shimmer 2.5s ease-in-out infinite"></div>
       </button>
@@ -348,7 +351,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- 2x4 NAVIGATION GRID -->
     <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;margin-top:16px">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
 
         <div class="dock-tile" id="btn-relics" style="--tc:#ff4455;border-color:#ff445555">
           <div class="dock-icon">⚠️</div>
@@ -376,21 +379,27 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
+        <div class="dock-tile" id="dock-echoes" onclick="if(!SAVE.echoesUnlocked){showToast('🌀 Echoes unlock after reaching Wave 35!');return;}showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
+          <div class="dock-icon">🌀</div>
+          <div class="dock-label">ECHOES</div>
+          <div id="dock-echoes-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
+        </div>
+
         <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff99">
           <div class="dock-icon">🚀</div>
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" onclick="showHowToPlay()" style="--tc:#aaaaaa;border-color:#aaaaaa99">
-          <div class="dock-icon">❓</div>
-          <div class="dock-label">HOW TO PLAY</div>
+        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
+          <div class="dock-icon">🔗</div>
+          <div class="dock-label">SYNERGY</div>
+          <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
-        <div class="dock-tile" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="--tc:#778899;border-color:#77889999">
-          <div class="dock-icon" style="position:relative">📋<span id="updates-badge" style="display:none;position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></div>
-          <div class="dock-label">UPDATES</div>
-        </div>
-
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;width:100%">
+        <button class="menu-util-btn" onclick="showHowToPlay()">❓ How to Play</button>
+        <button class="menu-util-btn" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="position:relative">📋 Updates<span id="updates-badge" style="display:none;position:absolute;top:6px;right:8px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></button>
       </div>
     </div>
 
@@ -520,6 +529,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
         <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
       </div>
       <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
+      <button id="ascend-btn" class="btn-main btn-sm" onclick="doAscension()" style="display:none;margin-top:6px;border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44;animation:cardPulse 2s ease-in-out infinite">🌀 ASCEND (+<span id="ascend-echo-count">0</span> Echoes)</button>
       <button class="btn-main btn-sm" onclick="showScreen('screen-menu')" style="margin-top:4px;border-color:#334;color:#556;font-size:10px;letter-spacing:2px">💾 SAVE & MENU</button>
        </div>
   </div>
@@ -591,11 +601,50 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
   <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div class="shop-grid" id="shop-grid"></div>
+    <div id="forge-section" style="width:100%;max-width:600px;margin-top:18px;display:none">
+      <div style="text-align:center;margin-bottom:10px">
+        <div style="height:1px;background:linear-gradient(90deg,transparent,#ff660066,transparent);margin-bottom:10px"></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#ff8c00;letter-spacing:3px;text-shadow:0 0 12px #ff8c00,0 0 30px #ff8c0044">🔨 STAR FORGE</div>
+        <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">INFINITE SCALING · NO LEVEL CAP</div>
+      </div>
+      <div class="shop-grid" id="forge-grid"></div>
+    </div>
     <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
       <button class="btn-main btn-sm" onclick="openTrophies('screen-shop')" style="border-color:#ffaa00;color:#ffaa00;box-shadow:0 0 10px rgba(255,170,0,0.2)">🏆 TROPHIES</button>
       <button class="btn-main btn-sm" id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" style="border-color:#00ccff;color:#00ccff;box-shadow:0 0 10px rgba(0,204,255,0.15)">⚡ PERKS ${perksUnlocked?'':'🔒'}</button>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ECHOES -->
+<div id="screen-echoes" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
+    <div class="screen-title" style="color:#aa44ff">🌀 VOID ECHOES</div>
+    <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">PERMANENT PRESTIGE UPGRADES</div>
+    <div id="echoes-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#aa44ff;text-shadow:0 0 12px #aa44ff,0 0 30px #aa44ff44;margin:6px 0 2px">🌀 0</div>
+    <div id="echoes-title" style="font-size:10px;color:#aa44ff88;letter-spacing:2px;margin-bottom:4px">PILOT</div>
+  </div>
+  <div style="height:calc(100vh - 150px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+    <div class="shop-grid" id="echoes-grid"></div>
+    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
+      <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYNERGIES -->
+<div id="screen-synergies" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
+    <div class="screen-title" style="color:#ff8800">🔗 VOID SYNERGIES</div>
+    <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">COMBINE SYSTEMS FOR POWERFUL BONUSES</div>
+    <div id="synergies-active-count" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#ff8800;margin:6px 0 2px"></div>
+  </div>
+  <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+    <div id="synergies-grid" style="width:100%;max-width:600px"></div>
+    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
+      <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
     </div>
   </div>
 </div>
@@ -689,7 +738,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <button onclick="devCoins(500)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+500</button>
           <button onclick="devCoins(2000)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+2000</button>
           <button onclick="devCoins(10000)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+10000</button>
-          <button onclick="devCoins(99999)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">MAX</button>
+          <button onclick="devCoins(999999)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">MAX</button>
         </div>
       </div>
       <div style="margin-bottom:16px">
@@ -745,7 +794,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="color:#556;font-size:12px;margin-bottom:4px;letter-spacing:2px">FINAL SCORE</div>
   <div id="go-final">0</div>
   <div style="color:#556;font-size:12px;margin:4px 0">WAVE <span id="go-wave" style="color:var(--m)">0</span> REACHED</div>
-  <div style="color:var(--g);font-size:15px;margin-bottom:24px">+<span id="go-coins">0</span> COINS EARNED</div>
+  <div style="color:var(--g);font-size:15px;margin-bottom:8px">+<span id="go-coins">0</span> COINS EARNED</div>
+  <div id="go-echo-gain" style="display:none;color:#aa44ff;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-shadow:0 0 10px #aa44ff;margin-bottom:16px;letter-spacing:2px">🌀 +<span id="go-echo-count">0</span> ECHOES</div>
   <div id="go-submit-area" style="width:100%;max-width:320px;margin-bottom:16px;border:1px solid #ffd70066;border-radius:8px;padding:12px;background:rgba(255,215,0,0.04);box-shadow:0 0 20px rgba(255,215,0,0.1);animation:pulseGlow 2s ease-in-out infinite">
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:4px;text-align:center">🏆 SUBMIT TO LEADERBOARD</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#aa8800;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
@@ -2035,7 +2085,10 @@ try {
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
 const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false, lastSeenAnnouncement:'',
-  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' } };
+  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' },
+  forgeLevels:{ damage:0, rate:0, armor:0 },
+  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
+  riftShards:0, totalRiftsCompleted:0, highestRiftLevel:0 };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2109,12 +2162,23 @@ function loadSave(){
     if(!s.cards||typeof s.cards!=='object') s.cards={};
     if(!s.setsComplete||typeof s.setsComplete!=='object') s.setsComplete={};
     if(!s.disabledSets||typeof s.disabledSets!=='object') s.disabledSets={};
+    if(!s.forgeLevels||typeof s.forgeLevels!=='object') s.forgeLevels={damage:0,rate:0,armor:0};
+    ['damage','rate','armor'].forEach(k=>{ if(!isFinite(s.forgeLevels[k])||s.forgeLevels[k]<0) s.forgeLevels[k]=0; });
+    if(!isFinite(s.echoes)||s.echoes<0) s.echoes=0;
+    if(!isFinite(s.totalEchoes)||s.totalEchoes<0) s.totalEchoes=0;
+    if(!isFinite(s.ascensionCount)||s.ascensionCount<0) s.ascensionCount=0;
+    if(!s.echoUpgrades||typeof s.echoUpgrades!=='object') s.echoUpgrades={};
+    Object.keys(s.echoUpgrades).forEach(k=>{ if(!isFinite(s.echoUpgrades[k])||s.echoUpgrades[k]<0) s.echoUpgrades[k]=0; });
+    if(!s.discoveredSynergies||!Array.isArray(s.discoveredSynergies)) s.discoveredSynergies=[];
+    if(!isFinite(s.riftShards)||s.riftShards<0) s.riftShards=0;
+    if(!isFinite(s.totalRiftsCompleted)||s.totalRiftsCompleted<0) s.totalRiftsCompleted=0;
+    if(!isFinite(s.highestRiftLevel)||s.highestRiftLevel<0) s.highestRiftLevel=0;
     // Sanitize perkLevels values
     Object.keys(s.perkLevels).forEach(k=>{ if(isNaN(s.perkLevels[k])) s.perkLevels[k]=1; });
     // Sanitize upgrade values
     Object.keys(s.upgrades).forEach(k=>{ if(isNaN(s.upgrades[k])) s.upgrades[k]=0; });
     // Cap coins
-    s.coins = Math.min(99999, Math.max(0, s.coins));
+    s.coins = Math.min(999999, Math.max(0, s.coins));
     return s;
   }catch(e){ return {...DEFAULT_SAVE}; } 
 }
@@ -2223,6 +2287,489 @@ const UPGRADES = [
   {key:'speed',name:'MOVE SPEED',desc:'Ship Moves faster',max:5,costs:[80,160,320,550,850],icon:'💨',color:'#4fc3f7'},
   {key:'health',name:'HEALTH',desc:'Replenish life · max 5 total',max:99,costs:[],icon:'❤️',color:'#44ff88'},
 ];
+
+// ── STAR FORGE (infinite scaling upgrades) ──────────────────
+const FORGE_TRACKS = [
+  { key:'damage', name:'DAMAGE FORGE', desc:'Permanently increase bullet damage', icon:'🔥', color:'#ff4444',
+    costFn:function(lv){ return 500 + lv*250 + lv*lv*10; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=0.15/(1+i*0.02); return total; },
+    statFn:function(lv){ return '+'+FORGE_TRACKS[0].effectFn(lv).toFixed(2)+' dmg'; }
+  },
+  { key:'rate', name:'RATE FORGE', desc:'Permanently increase fire rate', icon:'⚡', color:'#ff8c00',
+    costFn:function(lv){ return 500 + lv*300 + lv*lv*12; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=3/(1+i*0.03); return total; },
+    statFn:function(lv){ return '-'+FORGE_TRACKS[1].effectFn(lv).toFixed(1)+'ms cd'; }
+  },
+  { key:'armor', name:'ARMOR FORGE', desc:'Permanently increase damage reduction', icon:'🛡️', color:'#00ccff',
+    costFn:function(lv){ return 400 + lv*200 + lv*lv*8; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=0.01/(1+i*0.04); return total; },
+    statFn:function(lv){ return '+'+( FORGE_TRACKS[2].effectFn(lv)*100).toFixed(1)+'% red'; }
+  }
+];
+
+// ── VOID ECHOES (prestige upgrades) ─────────────────────
+const ECHO_UPGRADES = [
+  { key:'voidAmplifier', name:'VOID AMPLIFIER', desc:'+8% damage multiplier per level', icon:'⚡', color:'#aa44ff', max:50,
+    costFn:function(lv){ return 10 + lv*5; },
+    effectFn:function(lv){ return 1 + lv*0.08; },
+    statFn:function(lv){ return (lv*8)+'% dmg'; }
+  },
+  { key:'temporalCore', name:'TEMPORAL CORE', desc:'+2% fire rate per level', icon:'⏱️', color:'#ff44aa', max:30,
+    costFn:function(lv){ return 15 + lv*8; },
+    effectFn:function(lv){ return lv*0.02; },
+    statFn:function(lv){ return (lv*2)+'% rate'; }
+  },
+  { key:'echoShield', name:'ECHO SHIELD', desc:'+0.02 damage reduction per level', icon:'🛡️', color:'#44aaff', max:20,
+    costFn:function(lv){ return 20 + lv*6; },
+    effectFn:function(lv){ return lv*0.02; },
+    statFn:function(lv){ return '+'+(lv*0.02).toFixed(2)+' red'; }
+  },
+  { key:'resonance', name:'RESONANCE', desc:'+4% coin earn rate per level', icon:'💰', color:'#ffd700', max:25,
+    costFn:function(lv){ return 12 + lv*6; },
+    effectFn:function(lv){ return lv*0.04; },
+    statFn:function(lv){ return '+'+(lv*4)+'% coins'; }
+  },
+  { key:'voidMemory', name:'VOID MEMORY', desc:'Start each run at a higher wave', icon:'🧠', color:'#00ff88', max:15,
+    costFn:function(lv){ return 25 + lv*10; },
+    effectFn:function(lv){ return lv; },
+    statFn:function(lv){ return lv>0?'Start wave '+(1+lv):'Wave 1'; }
+  },
+  { key:'echoBurst', name:'ECHO BURST', desc:'+5% bomb damage per level', icon:'💣', color:'#ff6600', max:20,
+    costFn:function(lv){ return 18 + lv*7; },
+    effectFn:function(lv){ return lv*0.05; },
+    statFn:function(lv){ return '+'+(lv*5)+'% bomb'; }
+  }
+];
+
+const ASCENSION_TITLES = [
+  {count:0,title:'PILOT'},{count:5,title:'VOID WALKER'},{count:10,title:'ECHO LORD'},
+  {count:25,title:'PARADOX'},{count:50,title:'ETERNAL'}
+];
+function getAscensionTitle(count){
+  var t='PILOT'; for(var i=0;i<ASCENSION_TITLES.length;i++) if(count>=ASCENSION_TITLES[i].count) t=ASCENSION_TITLES[i].title; return t;
+}
+
+// ── VOID SYNERGIES ──────────────────────────────────────
+const SYNERGIES = [
+  // Tier 1 — Dual combos
+  { id:'berserker', name:'BERSERKER', icon:'🩸', tier:1, color:'#ff4444',
+    desc:'Kill heals always proc (no RNG) + 10% damage',
+    conditions:[{type:'relic',id:'bloodPact',label:'Blood Pact'},{type:'perk',id:'bloodlust',label:'Bloodlust'}],
+    bonusKey:'berserker' },
+  { id:'glassStorm', name:'GLASS STORM', icon:'💎', tier:1, color:'#ff66cc',
+    desc:'2× splash radius, splash = full damage',
+    conditions:[{type:'relic',id:'glassCannon',label:'Glass Cannon'},{type:'perk',id:'volatileRounds',label:'Volatile Rounds'}],
+    bonusKey:'glassStorm' },
+  { id:'voidHarvest', name:'VOID HARVEST', icon:'💰', tier:1, color:'#ffd700',
+    desc:'Piercing kills drop 2× coins',
+    conditions:[{type:'set',id:'void',label:'Void Set'},{type:'perk',id:'scavenger',label:'Scavenger'}],
+    bonusKey:'voidHarvest' },
+  { id:'overdrive', name:'OVERDRIVE', icon:'⚡', tier:1, color:'#ff8c00',
+    desc:'Kill streak threshold drops to 5 kills',
+    conditions:[{type:'relic',id:'overclock',label:'Overclock'},{type:'perk',id:'killStreak',label:'Kill Streak'}],
+    bonusKey:'overdrive' },
+  // Tier 2 — Triple combos
+  { id:'entropyStorm', name:'ENTROPY STORM', icon:'🌪️', tier:2, color:'#cc44ff',
+    desc:'100% chain chance, chains can chain',
+    conditions:[{type:'perk',id:'entropyField',label:'Entropy Field'},{type:'perk',id:'chainReaction',label:'Chain Reaction'},{type:'forge',id:'damage',min:10,label:'Damage Forge 10+'}],
+    bonusKey:'entropyStorm' },
+  { id:'temporalParadox', name:'TEMPORAL PARADOX', icon:'⏳', tier:2, color:'#44aaff',
+    desc:'Temporal rift duration doubled',
+    conditions:[{type:'set',id:'shadow',label:'Shadow Set'},{type:'perk',id:'momentum',label:'Momentum'},{type:'forge',id:'rate',min:10,label:'Rate Forge 10+'}],
+    bonusKey:'temporalParadox' },
+  { id:'ironFortress', name:'IRON FORTRESS', icon:'🏰', tier:2, color:'#00ccff',
+    desc:'Shields regenerate 1 per 30s',
+    conditions:[{type:'perk',id:'bulwark',label:'Bulwark'},{type:'perk',id:'ghostProtocol',label:'Ghost Protocol'},{type:'forge',id:'armor',min:10,label:'Armor Forge 10+'}],
+    bonusKey:'ironFortress' },
+  { id:'cosmicEngine', name:'COSMIC ENGINE', icon:'🔮', tier:2, color:'#ff44aa',
+    desc:'Resurrection grants 3 lives + 5s invuln',
+    conditions:[{type:'set',id:'cosmic',label:'Cosmic Set'},{type:'perk',id:'lastStand',label:'Last Stand'},{type:'echo',id:'echoShield',min:5,label:'Echo Shield 5+'}],
+    bonusKey:'cosmicEngine' },
+  // Tier 3 — Quad combos
+  { id:'voidSingularity', name:'VOID SINGULARITY', icon:'🕳️', tier:3, color:'#aa44ff',
+    desc:'Void surge stacks give 2× bonus',
+    conditions:[{type:'perk',id:'voidSurge',label:'Void Surge'},{type:'forge',id:'damage',min:20,label:'Damage Forge 20+'},{type:'echo',id:'voidAmplifier',min:10,label:'Void Amplifier 10+'},{type:'perkCount',cat:'combat',min:2,label:'2+ Combat Perks'}],
+    bonusKey:'voidSingularity' },
+  { id:'absoluteZero', name:'ABSOLUTE ZERO', icon:'❄️', tier:3, color:'#00f5ff',
+    desc:'Time freeze powerups last 2× duration',
+    conditions:[{type:'set',id:'shadow',label:'Shadow Set'},{type:'set',id:'solar',label:'Solar Set'},{type:'echo',id:'temporalCore',min:5,label:'Temporal Core 5+'},{type:'forge',id:'rate',min:15,label:'Rate Forge 15+'}],
+    bonusKey:'absoluteZero' },
+  // Tier 4 — Legendary
+  { id:'convergence', name:'THE CONVERGENCE', icon:'✨', tier:4, color:'#ffd700',
+    desc:'All stats +25%, enemy coin drops doubled',
+    conditions:[{type:'relicCount',min:3,label:'3+ Relics'},{type:'perkCount',min:4,label:'4 Perks'},{type:'allSets',label:'All 6 Sets'},{type:'forgeAny',min:25,label:'Any Forge 25+'}],
+    bonusKey:'convergence' },
+  { id:'voidEmperor', name:'VOID EMPEROR', icon:'👑', tier:4, color:'#ff4455',
+    desc:'1.5× score, enemies -10% HP',
+    conditions:[{type:'forgeAll',min:30,label:'All Forges 30+'},{type:'echo',id:'voidAmplifier',min:25,label:'Void Amplifier 25+'},{type:'ascensions',min:10,label:'10+ Ascensions'}],
+    bonusKey:'voidEmperor' }
+];
+
+function checkSynergyCondition(cond) {
+  switch(cond.type) {
+    case 'relic': return (SAVE.activeRelics||[]).indexOf(cond.id) >= 0;
+    case 'perk': return (SAVE.activePerks||[]).indexOf(cond.id) >= 0;
+    case 'set': return !!(SAVE.setsComplete||{})[cond.id] && !(SAVE.disabledSets||{})[cond.id];
+    case 'forge': return ((SAVE.forgeLevels||{})[cond.id]||0) >= (cond.min||0);
+    case 'echo': return ((SAVE.echoUpgrades||{})[cond.id]||0) >= (cond.min||0);
+    case 'perkCount':
+      if(cond.cat) { var count=0; (SAVE.activePerks||[]).forEach(function(pid){ var p=PERKS.find(function(x){return x.id===pid;}); if(p&&p.cat===cond.cat) count++; }); return count>=cond.min; }
+      return (SAVE.activePerks||[]).length >= (cond.min||0);
+    case 'relicCount': return (SAVE.activeRelics||[]).length >= (cond.min||0);
+    case 'allSets': return ['nebula','void','solar','cosmic','plasma','shadow'].every(function(k){ return !!(SAVE.setsComplete||{})[k]; });
+    case 'forgeAny': return ['damage','rate','armor'].some(function(k){ return ((SAVE.forgeLevels||{})[k]||0) >= (cond.min||0); });
+    case 'forgeAll': return ['damage','rate','armor'].every(function(k){ return ((SAVE.forgeLevels||{})[k]||0) >= (cond.min||0); });
+    case 'ascensions': return (SAVE.ascensionCount||0) >= (cond.min||0);
+  }
+  return false;
+}
+
+function computeSynergies() {
+  var active = [];
+  SYNERGIES.forEach(function(syn) {
+    var metCount = 0;
+    syn.conditions.forEach(function(c){ if(checkSynergyCondition(c)) metCount++; });
+    // Discover if at least 1 condition met
+    if(metCount > 0 && (SAVE.discoveredSynergies||[]).indexOf(syn.id) < 0) {
+      if(!SAVE.discoveredSynergies) SAVE.discoveredSynergies = [];
+      SAVE.discoveredSynergies.push(syn.id);
+    }
+    if(metCount === syn.conditions.length) active.push(syn.id);
+  });
+  return active;
+}
+
+// ── VOID RIFTS ────────────────────────────────────────
+const RIFT_MODIFIERS = [
+  { key:'swarm', name:'SWARM', icon:'🐝', desc:'3x enemies, 0.5x HP each', color:'#ffaa00' },
+  { key:'titan', name:'TITAN', icon:'👹', desc:'1 mega-enemy with 50x HP', color:'#ff4444' },
+  { key:'darkness', name:'DARKNESS', icon:'🌑', desc:'Limited visibility radius', color:'#333366' },
+  { key:'mirror', name:'MIRROR', icon:'🪞', desc:'Some enemies reflect bullets', color:'#66ccff' },
+  { key:'chrono', name:'CHRONO', icon:'⏱️', desc:'Alternating speed-up / slow-down', color:'#44ff88' },
+  { key:'overcharge', name:'OVERCHARGE', icon:'⚡', desc:'3x damage, take 2x damage', color:'#ffff44' },
+  { key:'golden', name:'GOLDEN', icon:'💰', desc:'5x coins, enemies 2x faster', color:'#ffcc00' },
+  { key:'voidStorm', name:'VOID STORM', icon:'🌀', desc:'Screen-wide damage pulses every 5s', color:'#aa44ff' }
+];
+
+const RIFT_SHOP_ITEMS = [
+  { key:'riftBlade', name:'Rift Blade', icon:'🗡️', cost:2, desc:'+15% damage rest of run', color:'#ff6644' },
+  { key:'riftAegis', name:'Rift Aegis', icon:'🛡️', cost:2, desc:'+1 max life for run', color:'#44aaff' },
+  { key:'riftCatalyst', name:'Rift Catalyst', icon:'💣', cost:3, desc:'Next bomb 5x damage', color:'#ff8844' },
+  { key:'riftEcho', name:'Rift Echo', icon:'🌀', cost:5, desc:'+50% echo gain when run ends', color:'#aa44ff' },
+  { key:'riftSiphon', name:'Rift Siphon', icon:'💜', cost:3, desc:'Full heal + 10s invulnerability', color:'#ff44aa' }
+];
+
+var riftBladeMult = 1, riftCatalystActive = false, riftEchoMult = 1, riftInvulnTimer = 0;
+var voidStormTimer = 0, chronoTimer = 0, chronoFast = true;
+
+function pickRiftModifiers(level) {
+  var pool = RIFT_MODIFIERS.slice();
+  var count = level <= 2 ? 2 : 3;
+  var picked = [];
+  for(var i=0; i<count && pool.length>0; i++){
+    var idx = Math.floor(Math.random()*pool.length);
+    picked.push(pool[idx]);
+    pool.splice(idx,1);
+  }
+  return picked;
+}
+
+function showRiftDetected(level, mods) {
+  sfx('waveClear');
+  var overlay = document.createElement('div');
+  overlay.id = 'rift-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(10,0,30,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;animation:fadeIn 0.3s;font-family:inherit;';
+  var html = '<div style="font-size:28px;font-weight:900;color:#aa44ff;text-shadow:0 0 20px #aa44ff;letter-spacing:3px;">⚡ VOID RIFT DETECTED ⚡</div>';
+  html += '<div style="font-size:14px;color:#8866cc;margin-bottom:8px;">Rift Level '+level+'</div>';
+  html += '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0;">';
+  mods.forEach(function(m){
+    html += '<div style="background:rgba(170,68,255,0.15);border:1px solid '+m.color+';border-radius:10px;padding:10px 14px;text-align:center;min-width:100px;">';
+    html += '<div style="font-size:22px;">'+m.icon+'</div>';
+    html += '<div style="font-size:12px;font-weight:700;color:'+m.color+';">'+m.name+'</div>';
+    html += '<div style="font-size:10px;color:#aaa;">'+m.desc+'</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<div style="font-size:11px;color:#888;margin:6px 0;">Dying in a rift ejects you with 1 life — run continues</div>';
+  html += '<div style="display:flex;gap:14px;margin-top:10px;">';
+  html += '<button id="rift-enter-btn" style="padding:14px 32px;font-size:16px;font-weight:900;background:linear-gradient(135deg,#7722cc,#aa44ff);color:#fff;border:none;border-radius:12px;cursor:pointer;letter-spacing:1px;">ENTER RIFT</button>';
+  html += '<button id="rift-bypass-btn" style="padding:14px 24px;font-size:14px;font-weight:700;background:rgba(255,255,255,0.08);color:#888;border:1px solid #444;border-radius:12px;cursor:pointer;">Bypass</button>';
+  html += '</div>';
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+
+  document.getElementById('rift-enter-btn').onclick = function(){
+    overlay.remove();
+    enterRift(level, mods);
+  };
+  document.getElementById('rift-bypass-btn').onclick = function(){
+    overlay.remove();
+    // Continue to normal summary
+    document.getElementById('screen-summary').classList.remove('hidden');
+    runSummarySequence(waveCleared._lastKills, waveCleared._lastPreBonus, waveCleared._lastWave, waveCleared._lastCoins, waveCleared._lastTrophies);
+  };
+}
+
+function enterRift(level, mods) {
+  riftActive = true;
+  riftLevel = level;
+  riftModifiers = mods;
+  voidStormTimer = 5;
+  chronoTimer = 3;
+  chronoFast = true;
+
+  // Spawn rift wave
+  enemies = []; eBullets = [];
+  bossFight = false; boss = null;
+
+  var hasTitan = mods.some(function(m){ return m.key==='titan'; });
+  var hasSwarm = mods.some(function(m){ return m.key==='swarm'; });
+
+  if(hasTitan) {
+    // Single mega enemy
+    var baseHp = 1+(3)+Math.floor(wave/2);
+    var hpScaled = wave>=35 ? Math.floor(baseHp*Math.pow(1.06,wave-35)*Math.pow(1.18,10)+(baseHp*0.8)) :
+                   wave>=30 ? Math.floor(baseHp*Math.pow(1.10,wave-30)*Math.pow(1.18,5)+(baseHp*0.6)) :
+                   wave>=25 ? Math.floor(baseHp*Math.pow(1.18,wave-25)+baseHp) :
+                   wave>=10 ? Math.floor(baseHp*(1+(wave-10)*0.18)) : baseHp;
+    var titanHp = Math.floor(hpScaled * 50);
+    enemies.push({
+      x:W/2, y:-40, targetY:120,
+      w:50, h:40, type:2, hp:titanHp, maxHp:titanHp, alive:true,
+      anim:0, coinVal:100, scoreVal:200,
+      entering:true, entryProgress:0,
+      hitFlash:0, shield:0, maxShield:0, shieldFlash:0,
+      heavyShooter:true, splitter:false, diver:false, armored:false, regen:false,
+      armorBroken:false, armorTimer:0,
+      diveTimer:999, diving:false, diveTargetX:0, diveTargetY:0, homeX:0, homeY:0,
+      riftTitan:true
+    });
+  } else {
+    // Normal grid, possibly with swarm multiplier
+    var cols = Math.min(10,5+Math.floor(wave/2));
+    var rows = Math.min(6,3+Math.floor(wave/3));
+    if(hasSwarm) { cols=Math.min(12,cols+3); rows=Math.min(7,rows+1); }
+    var cellW = Math.min(44,(W-60)/cols);
+    var startX = (W-cols*cellW)/2+cellW/2;
+    var startY = -rows*36;
+    for(var r=0;r<rows;r++) for(var c=0;c<cols;c++) {
+      var type = r===0?2:r<=2?1:0;
+      var hpBase = 1+(type===2?3:type===1?2:1)+Math.floor(wave/2);
+      var hpScaled2 = wave>=35 ? Math.floor(hpBase*Math.pow(1.06,wave-35)*Math.pow(1.18,10)+(hpBase*0.8)) :
+                      wave>=30 ? Math.floor(hpBase*Math.pow(1.10,wave-30)*Math.pow(1.18,5)+(hpBase*0.6)) :
+                      wave>=25 ? Math.floor(hpBase*Math.pow(1.18,wave-25)+hpBase) :
+                      wave>=10 ? Math.floor(hpBase*(1+(wave-10)*0.18)) : hpBase;
+      if(hasSwarm) hpScaled2 = Math.floor(hpScaled2 * 0.5);
+      var hasMirrorMod = mods.some(function(m){ return m.key==='mirror'; });
+      var isReflector = hasMirrorMod && type===2 && Math.random()<0.4;
+      enemies.push({
+        x:startX+c*cellW, y:startY+r*36, targetY:65+r*32,
+        w:22, h:18, type:type, hp:hpScaled2, maxHp:hpScaled2, alive:true,
+        anim:Math.random()*Math.PI*2,
+        coinVal:[5,10,20][type], scoreVal:[10,20,40][type],
+        entering:true, entryProgress:0,
+        hitFlash:0, shield:0, maxShield:0, shieldFlash:0,
+        heavyShooter:false, splitter:false, diver:false, armored:false, regen:false,
+        armorBroken:false, armorTimer:0,
+        diveTimer:2+Math.random()*3, diving:false, diveTargetX:0, diveTargetY:0, homeX:0, homeY:0,
+        riftReflector:isReflector
+      });
+    }
+  }
+
+  eDir=1; eMoveTimer=0;
+
+  // Show rift HUD
+  var riftHud = document.getElementById('rift-hud');
+  if(!riftHud) {
+    riftHud = document.createElement('div');
+    riftHud.id = 'rift-hud';
+    riftHud.style.cssText = 'position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:200;display:flex;gap:6px;pointer-events:none;';
+    document.body.appendChild(riftHud);
+  }
+  var hudHtml = '';
+  mods.forEach(function(m){
+    hudHtml += '<span style="background:rgba(170,68,255,0.25);border:1px solid '+m.color+';border-radius:6px;padding:2px 8px;font-size:10px;color:'+m.color+';font-weight:700;">'+m.icon+' '+m.name+'</span>';
+  });
+  riftHud.innerHTML = hudHtml;
+  riftHud.style.display = 'flex';
+
+  // Announce
+  var ann = document.getElementById('wa-inner');
+  ann.innerHTML = '<span style="font-size:22px;color:#aa44ff;text-shadow:0 0 20px #aa44ff;">⚡ VOID RIFT LV.'+level+' ⚡</span>';
+  ann.style.opacity='1'; ann.style.transform='scale(1)';
+  setTimeout(function(){ ann.style.opacity='0'; ann.style.transform='scale(0.5)'; }, 2000);
+
+  // Resume gameplay
+  gState = 'playing';
+  lastTime = performance.now();
+  rafId = requestAnimationFrame(gameLoop);
+}
+
+function applyRiftModifierEffects(dt) {
+  if(!riftActive) return;
+  var hasOvercharge = riftModifiers.some(function(m){ return m.key==='overcharge'; });
+  var hasVoidStorm = riftModifiers.some(function(m){ return m.key==='voidStorm'; });
+  var hasChrono = riftModifiers.some(function(m){ return m.key==='chrono'; });
+
+  // Void Storm: damage pulse every 5s
+  if(hasVoidStorm) {
+    voidStormTimer -= dt;
+    if(voidStormTimer <= 0) {
+      voidStormTimer = 5;
+      // Damage player
+      if(player && player.lives > 0 && riftInvulnTimer <= 0) {
+        player.lives--;
+        sfx('hit');
+        screenShake = {dur:0.3, mag:8, x:0, y:0};
+        // Purple flash
+        for(var i=0;i<12;i++){
+          particles.push({x:player.x+(Math.random()-0.5)*W,y:Math.random()*H,vx:(Math.random()-0.5)*2,vy:(Math.random()-0.5)*2,life:0.8,color:'#aa44ff',sz:3});
+        }
+        if(player.lives <= 0) { riftDeath(); return; }
+      }
+    }
+  }
+
+  // Chrono: alternate 3s fast / 3s slow
+  if(hasChrono) {
+    chronoTimer -= dt;
+    if(chronoTimer <= 0) {
+      chronoTimer = 3;
+      chronoFast = !chronoFast;
+    }
+  }
+
+  // Rift invulnerability countdown
+  if(riftInvulnTimer > 0) riftInvulnTimer -= dt;
+}
+
+function getRiftSpeedMult() {
+  if(!riftActive) return 1;
+  var hasGolden = riftModifiers.some(function(m){ return m.key==='golden'; });
+  var hasChrono = riftModifiers.some(function(m){ return m.key==='chrono'; });
+  var mult = 1;
+  if(hasGolden) mult *= 2;
+  if(hasChrono) mult *= chronoFast ? 1.6 : 0.5;
+  return mult;
+}
+
+function getRiftDamageMult() {
+  if(!riftActive) return 1;
+  var hasOvercharge = riftModifiers.some(function(m){ return m.key==='overcharge'; });
+  return hasOvercharge ? 3 : 1;
+}
+
+function getRiftDamageTakenMult() {
+  if(!riftActive) return 1;
+  if(riftInvulnTimer > 0) return 0;
+  var hasOvercharge = riftModifiers.some(function(m){ return m.key==='overcharge'; });
+  return hasOvercharge ? 2 : 1;
+}
+
+function getRiftCoinMult() {
+  if(!riftActive) return 1;
+  var hasGolden = riftModifiers.some(function(m){ return m.key==='golden'; });
+  return hasGolden ? 5 : 2;
+}
+
+function riftDeath() {
+  // Eject from rift with 1 life
+  riftActive = false;
+  riftModifiers = [];
+  var riftHud = document.getElementById('rift-hud');
+  if(riftHud) riftHud.style.display = 'none';
+  player.lives = 1;
+  showToast('💀 Ejected from rift — 1 life remaining');
+  // Continue to normal summary (no rift rewards) — skip rift detection
+  waveCleared._skipRift = true;
+  waveCleared();
+}
+
+function completeRift() {
+  var level = riftLevel;
+  var shardsEarned = Math.min(3, level);
+  riftBonusDamage += 0.5 * level;
+  SAVE.totalRiftsCompleted = (SAVE.totalRiftsCompleted||0) + 1;
+  if(level > (SAVE.highestRiftLevel||0)) SAVE.highestRiftLevel = level;
+
+  riftActive = false;
+  riftModifiers = [];
+  var riftHud = document.getElementById('rift-hud');
+  if(riftHud) riftHud.style.display = 'none';
+
+  sfx('waveClear');
+  showRiftRewards(shardsEarned, level);
+}
+
+function showRiftRewards(shardsEarned, level) {
+  SAVE.riftShards = (SAVE.riftShards||0) + shardsEarned;
+  doSave();
+
+  var overlay = document.createElement('div');
+  overlay.id = 'rift-reward-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(10,0,30,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;animation:fadeIn 0.3s;font-family:inherit;overflow-y:auto;padding:20px;';
+
+  var html = '<div style="font-size:24px;font-weight:900;color:#aa44ff;text-shadow:0 0 20px #aa44ff;">⚡ RIFT COMPLETE ⚡</div>';
+  html += '<div style="font-size:13px;color:#8866cc;">Level '+level+' cleared!</div>';
+  html += '<div style="display:flex;gap:16px;margin:8px 0;">';
+  html += '<div style="background:rgba(170,68,255,0.2);border:1px solid #aa44ff;border-radius:10px;padding:10px 18px;text-align:center;"><div style="font-size:22px;">💎</div><div style="font-size:16px;font-weight:900;color:#aa44ff;">+'+shardsEarned+'</div><div style="font-size:10px;color:#888;">Rift Shards</div></div>';
+  html += '<div style="background:rgba(255,100,50,0.15);border:1px solid #ff6644;border-radius:10px;padding:10px 18px;text-align:center;"><div style="font-size:22px;">⚔️</div><div style="font-size:16px;font-weight:900;color:#ff6644;">+'+( 0.5*level).toFixed(1)+'</div><div style="font-size:10px;color:#888;">Bonus Damage</div></div>';
+  html += '</div>';
+
+  // Shard shop
+  html += '<div style="font-size:14px;font-weight:700;color:#cc88ff;margin-top:8px;">RIFT SHOP — '+SAVE.riftShards+' 💎</div>';
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:360px;">';
+  RIFT_SHOP_ITEMS.forEach(function(item){
+    var canAfford = SAVE.riftShards >= item.cost;
+    html += '<button class="rift-shop-btn" data-key="'+item.key+'" style="background:'+(canAfford?'rgba(170,68,255,0.2)':'rgba(50,50,50,0.3)')+';border:1px solid '+(canAfford?item.color:'#444')+';border-radius:10px;padding:8px 12px;text-align:center;cursor:'+(canAfford?'pointer':'default')+';opacity:'+(canAfford?'1':'0.4')+';min-width:90px;color:#fff;font-family:inherit;">';
+    html += '<div style="font-size:18px;">'+item.icon+'</div>';
+    html += '<div style="font-size:11px;font-weight:700;color:'+item.color+';">'+item.name+'</div>';
+    html += '<div style="font-size:9px;color:#aaa;">'+item.desc+'</div>';
+    html += '<div style="font-size:11px;color:#aa44ff;font-weight:700;margin-top:4px;">'+item.cost+' 💎</div>';
+    html += '</button>';
+  });
+  html += '</div>';
+  html += '<button id="rift-continue-btn" style="margin-top:12px;padding:12px 28px;font-size:15px;font-weight:900;background:linear-gradient(135deg,#7722cc,#aa44ff);color:#fff;border:none;border-radius:12px;cursor:pointer;letter-spacing:1px;">CONTINUE</button>';
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+
+  // Wire up shop buttons
+  overlay.querySelectorAll('.rift-shop-btn').forEach(function(btn){
+    btn.onclick = function(){
+      var key = btn.getAttribute('data-key');
+      var item = RIFT_SHOP_ITEMS.find(function(it){ return it.key===key; });
+      if(!item || SAVE.riftShards < item.cost) return;
+      SAVE.riftShards -= item.cost;
+      doSave();
+      applyRiftShopItem(key);
+      showToast(item.icon+' '+item.name+' purchased!');
+      // Refresh overlay
+      overlay.remove();
+      showRiftRewards(0, level); // re-render with 0 new shards
+    };
+  });
+
+  document.getElementById('rift-continue-btn').onclick = function(){
+    overlay.remove();
+    // Continue to normal wave summary
+    document.getElementById('screen-summary').classList.remove('hidden');
+    runSummarySequence(waveCleared._lastKills, waveCleared._lastPreBonus, waveCleared._lastWave, waveCleared._lastCoins, waveCleared._lastTrophies);
+  };
+}
+
+function applyRiftShopItem(key) {
+  if(key==='riftBlade') riftBladeMult *= 1.15;
+  if(key==='riftAegis') player.lives++;
+  if(key==='riftCatalyst') riftCatalystActive = true;
+  if(key==='riftEcho') riftEchoMult *= 1.5;
+  if(key==='riftSiphon') {
+    player.lives = computeStats().maxLives;
+    riftInvulnTimer = 10;
+    showToast('💜 Full heal + 10s invulnerability!');
+  }
+}
+
   // ── DEV MODE ─────────────────────────────────────────
 let devTapCount = 0, devTapTimer = null, devPinEntry = '', devWaveTarget = 1;
 function devTap() {
@@ -2278,7 +2825,7 @@ function devPin(key) {
 }
 
 function devCoins(n) {
-  SAVE.coins = Math.min(99999, (isNaN(SAVE.coins)?0:SAVE.coins) + n);
+  SAVE.coins = Math.min(999999, (isNaN(SAVE.coins)?0:SAVE.coins) + n);
   doSave();
   animateCoinsDown('menu-coins', SAVE.coins);
   showToast(`💰 +${amount} COINS ADDED`);
@@ -2433,6 +2980,16 @@ function computeStats() {
     temporalRift:  (!!SAVE.setsComplete.shadow && !SAVE.disabledSets.shadow) || voidCurse,
     heatSeek:      (!!SAVE.setsComplete.solar  && !SAVE.disabledSets.solar)  || voidCurse,
   };
+  // Star Forge bonuses
+  const fl = SAVE.forgeLevels||{};
+  if(fl.damage>0) s.damage += FORGE_TRACKS[0].effectFn(fl.damage);
+  if(fl.rate>0)   s.fireCooldown = Math.max(70, s.fireCooldown - FORGE_TRACKS[1].effectFn(fl.rate));
+  if(fl.armor>0)  s.reduction = Math.min(0.6, s.reduction + FORGE_TRACKS[2].effectFn(fl.armor));
+  // Void Echo bonuses (permanent prestige multipliers)
+  const eu = SAVE.echoUpgrades||{};
+  if(eu.voidAmplifier>0) s.damage *= ECHO_UPGRADES[0].effectFn(eu.voidAmplifier);
+  if(eu.temporalCore>0)  s.fireCooldown = Math.max(40, s.fireCooldown * (1 - ECHO_UPGRADES[1].effectFn(eu.temporalCore)));
+  if(eu.echoShield>0)    s.reduction = Math.min(0.6, s.reduction + ECHO_UPGRADES[2].effectFn(eu.echoShield));
   if(hasRelic('bloodPact'))   { s.damage *= 2; s.maxLives = 3; s.blockHealthUpgrade = true; }
   if(hasRelic('glassCannon')) { s.damage *= 1.5; s.bulletSpeed *= 1.5; s.blockHealthUpgrade = true; }
   if(hasRelic('overclock'))   { s.fireCooldown = Math.max(40, s.fireCooldown / 2); s.damage *= 0.5; }
@@ -2447,6 +3004,25 @@ function computeStats() {
   if(activePowerups['tripleShot'])   s.quadShot = true;
   if(activePowerups['ghostMode'])    s.reduction = 1.0;
   if(hasPerk('momentum'))     { const rate=[0.04,0.06,0.10,0.14][perkLevel('momentum')-1]; s.bulletSpeed+=Math.min(waveTimeAlive*rate,6); }
+  // Void Synergy bonuses
+  var activeSyn = computeSynergies();
+  s._activeSynergies = activeSyn;
+  if(activeSyn.indexOf('berserker')>=0) { s.damage *= 1.10; s._berserkerGuarantee = true; }
+  if(activeSyn.indexOf('glassStorm')>=0) { s._glassStormSplash = true; }
+  if(activeSyn.indexOf('voidHarvest')>=0) { s._voidHarvest = true; }
+  if(activeSyn.indexOf('overdrive')>=0) { s._overdriveThreshold = 5; }
+  if(activeSyn.indexOf('entropyStorm')>=0) { s._entropyStorm = true; }
+  if(activeSyn.indexOf('temporalParadox')>=0) { s._temporalParadox = true; }
+  if(activeSyn.indexOf('ironFortress')>=0) { s._ironFortress = true; }
+  if(activeSyn.indexOf('cosmicEngine')>=0) { s._cosmicEngine = true; }
+  if(activeSyn.indexOf('voidSingularity')>=0) { s._voidSingularity = true; }
+  if(activeSyn.indexOf('absoluteZero')>=0) { s._absoluteZero = true; }
+  if(activeSyn.indexOf('convergence')>=0) { s.damage *= 1.25; s.fireCooldown = Math.max(40, s.fireCooldown * 0.75); s.bulletSpeed *= 1.25; s._convergenceCoins = true; }
+  if(activeSyn.indexOf('voidEmperor')>=0) { s._voidEmperor = true; }
+  // Rift bonuses
+  if(riftBonusDamage > 0) s.damage += riftBonusDamage;
+  if(typeof riftBladeMult !== 'undefined' && riftBladeMult > 1) s.damage *= riftBladeMult;
+  if(riftActive) s.damage *= getRiftDamageMult();
   return s;
 }
 
@@ -2479,6 +3055,7 @@ let temporalRiftTimer = 0;
 let bossFight = false;
 let boss = null;
 let playerYOffset = 150;
+let riftActive = false, riftModifiers = [], riftLevel = 0, riftBonusDamage = 0;
 let eYDir = 1;
 let perksUnlocked = false;
 if((SAVE.savedWave||1) > 20) perksUnlocked=true;
@@ -2782,6 +3359,9 @@ SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
   bossFight=false; boss=null;
+  riftActive=false; riftModifiers=[]; riftLevel=0; riftBonusDamage=0;
+  riftBladeMult=1; riftCatalystActive=false; riftEchoMult=1; riftInvulnTimer=0;
+  voidStormTimer=0; chronoTimer=0; chronoFast=true;
   if((SAVE.savedWave||1) > 21) perksUnlocked=true;
   applyHandedness();
   updateRelicBadges();
@@ -2901,6 +3481,7 @@ function gameLoop(ts) {
   lastTime=ts;
   const t=ts/1000;
   const stats=computeStats();
+  applyRiftModifierEffects(dt);
 
   // Screen shake decay
   if(screenShake.dur>0) {
@@ -3007,7 +3588,7 @@ let moveDx = 0;
   }
 
   if(temporalRiftTimer>0) temporalRiftTimer-=dt;
-  const riftSlowMult = temporalRiftTimer>0 ? 0.35 : 1.0;
+  const riftSlowMult = (temporalRiftTimer>0 ? 0.35 : 1.0) * getRiftSpeedMult();
   const timeFrozen = !!activePowerups['timeFreeze'];
   // Coin magnet — pull all drops toward player
   if(activePowerups['coinMagnet'] && player){
@@ -3341,6 +3922,13 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       enemies.forEach(e=>{
         if(!e.alive||b.hit.has(e)||e.mini) return;
         if(Math.abs(b.x-e.x)<13&&Math.abs(b.y-e.y)<11){
+          // Mirror modifier — reflector enemies bounce bullets back
+          if(e.riftReflector && !b.reflected) {
+            b.y=-200; b.hit.add(e);
+            eBullets.push({x:e.x,y:e.y+10,vy:5,vx:(Math.random()-0.5)*2,type:'reflect'});
+            spawnExplosion(e.x,e.y,'#66ccff',3); sfx('hit');
+            return;
+          }
           if(e.shield>0 && !stats.piercingShots){
             e.shield--; e.shieldFlash=1; b.hit.add(e);
             if(!b.pierce) b.y=-200;
@@ -3379,8 +3967,9 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('warProfiteer')) c=Math.floor(c*warProfiteerMult);
             // Scavenger — override cursedCoins and auto-collect
             if(activePowerups['goldRush']) c=Math.floor(c*5);
+            if(riftActive) c=Math.floor(c*getRiftCoinMult());
             if(hasPerk('scavenger') || !hasRelic('cursedCoins')) sessionCoins+=c;
-            score+=e.scoreVal*wave;
+            score+=e.scoreVal*wave*(riftActive?3:1);
             coinDrops.push({x:e.x,y:e.y,val:c});
             // Powerup drop — 4% chance per kill
             if(Math.random()<0.04){
@@ -3474,7 +4063,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         const invDur = hasPerk('ghostProtocol') ? [3,4,5,6][perkLevel('ghostProtocol')-1]||3 : 1.8;
         // Bulwark shield absorbs hit before any damage
         if(bulwarkShields>0){ bulwarkShields--; bulwarkUsedThisWave=true; player.inv=invDur; player.shieldFlash=0.8; sfx('shieldBreak'); showToast(`🔰 Bulwark absorbed! ${bulwarkShields} left`); return; }
-        const dmg = b.big ? 2 : 1;
+        const dmg = (b.big ? 2 : 1) * (riftActive && riftModifiers.some(function(m){return m.key==='overcharge';}) ? 2 : 1);
         const wouldDie = player.lives - dmg <= 0;
         const lastStandSave = hasPerk('lastStand') && !lastStandTriggered && player.lives - dmg <= 1 && player.lives > 0;
         player.lives = lastStandSave ? 1 : Math.max(0, player.lives - dmg);
@@ -3601,7 +4190,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
   // ── WAVE CLEAR CHECK ────────────────────────────
   const allDead = bossFight ? (boss&&!boss.alive) : enemies.every(e=>!e.alive);
-  if(allDead && gState==='playing') { waveCleared(); return; }
+  if(allDead && gState==='playing') { if(riftActive) waveCleared._wasRift=true; waveCleared(); return; }
 
   // ══════════ DRAW ═══════════════════════════════
 
@@ -3866,6 +4455,34 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
   drawPlayer(player.x,player.y,player.inv);
 
+  // Rift visual effects
+  if(riftActive) {
+    // Purple vignette
+    var vg = ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.3,W/2,H/2,Math.max(W,H)*0.8);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(1,'rgba(60,0,120,0.35)');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0,0,W,H);
+
+    // Darkness modifier — radial blackout around player
+    if(riftModifiers.some(function(m){return m.key==='darkness';})) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-in';
+      var dg = ctx.createRadialGradient(player.x,player.y,60,player.x,player.y,200);
+      dg.addColorStop(0,'rgba(255,255,255,1)');
+      dg.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle = dg;
+      ctx.fillRect(0,0,W,H);
+      ctx.restore();
+      // Re-draw background darkness
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-over';
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0,0,W,H);
+      ctx.restore();
+    }
+  }
+
   ctx.restore(); // screen shake restore
 
   updateHUD();
@@ -3983,6 +4600,18 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
               // Reveal buttons
               setTimeout(() => {
                 document.getElementById('sum-btns').style.opacity = '1';
+                // Show ascend button if wave >= 35
+                var ascBtn = document.getElementById('ascend-btn');
+                if(ascBtn) {
+                  if(wave >= 35) {
+                    var echoPreview = Math.floor(Math.pow(wave, 1.5) / 10);
+                    var echoCountSpan = document.getElementById('ascend-echo-count');
+                    if(echoCountSpan) echoCountSpan.textContent = echoPreview;
+                    ascBtn.style.display = '';
+                  } else {
+                    ascBtn.style.display = 'none';
+                  }
+                }
                 // Show trophy notifications
                 if(newTrophies.length > 0) {
                   const notifArea = document.getElementById('sum-trophy-notif');
@@ -4027,7 +4656,10 @@ function waveCleared() {
   sfx('waveClear');
   setTrack('shop');
   if(!isFinite(SAVE.coins)) SAVE.coins=0;
-  SAVE.coins=Math.min(99999, SAVE.coins+sessionCoins);
+  var resonanceBonus = (SAVE.echoUpgrades||{}).resonance||0;
+  var resonanceMult = resonanceBonus > 0 ? (1 + ECHO_UPGRADES[3].effectFn(resonanceBonus)) : 1;
+  sessionCoins = Math.round(sessionCoins * resonanceMult);
+  SAVE.coins=Math.min(999999, SAVE.coins+sessionCoins);
   const prevTotal = SAVE.totalScore || 0;
   const waveEarned = score - waveStartScore;
   waveStartScore = score;
@@ -4042,6 +4674,34 @@ function waveCleared() {
   document.getElementById('hud').style.display='none';
   document.getElementById('controls').style.display='none';
   document.getElementById('bomb-counter').style.display='none';
+  // Stash summary data for rift bypass/continue paths
+  waveCleared._lastKills = killCount;
+  waveCleared._lastPreBonus = preBonus;
+  waveCleared._lastWave = wave;
+  waveCleared._lastCoins = sessionCoins;
+  waveCleared._lastTrophies = newTrophies;
+
+  // Check if this was a rift wave that just completed
+  if(waveCleared._wasRift) {
+    waveCleared._wasRift = false;
+    completeRift();
+    return;
+  }
+
+  // Check for rift detection (wave 40, 50, 60, etc.)
+  var isRiftWave = wave >= 40 && wave % 10 === 0 && !riftActive && !waveCleared._skipRift;
+  waveCleared._skipRift = false;
+  var proceedToSummary = function(){
+    if(isRiftWave) {
+      var rLevel = Math.floor((wave - 30) / 10);
+      var mods = pickRiftModifiers(rLevel);
+      showRiftDetected(rLevel, mods);
+    } else {
+      document.getElementById('screen-summary').classList.remove('hidden');
+      runSummarySequence(killCount, preBonus, wave, sessionCoins, newTrophies);
+    }
+  };
+
   if(bossFight){
     if(wave%10===0){
       showSuperBossVictory(()=>{
@@ -4056,8 +4716,7 @@ function waveCleared() {
       showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies);
     }
   } else {
-    document.getElementById('screen-summary').classList.remove('hidden');
-    runSummarySequence(killCount, preBonus, wave, sessionCoins, newTrophies);
+    proceedToSummary();
   }
 }
 
@@ -4103,6 +4762,8 @@ function declineContinue(){
 }
 
 function endGame() {
+  // Rift death — eject instead of game over
+  if(riftActive) { riftDeath(); return; }
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
   // Offer continue if not used and not a relic run
   const isRelicRun = SAVE.activeRelics && SAVE.activeRelics.length > 0;
@@ -4117,6 +4778,61 @@ function endGame() {
     return;
   }
   _doEndGame();
+}
+function doAscension() {
+  if(wave < 35) return;
+  var echoGain = Math.floor(Math.pow(wave, 1.5) / 10);
+  echoGain = Math.floor(echoGain * 1.25); // voluntary ascension bonus
+  if((SAVE.totalEchoes||0) === 0 && (SAVE.ascensionCount||0) === 0) echoGain += 50; // first time
+  if(typeof riftEchoMult !== 'undefined' && riftEchoMult > 1) echoGain = Math.floor(echoGain * riftEchoMult);
+  // Preserve persistent data before reset
+  var savedEchoes = (SAVE.echoes||0) + echoGain;
+  var savedTotalEchoes = (SAVE.totalEchoes||0) + echoGain;
+  var savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
+  var savedAscensionCount = (SAVE.ascensionCount||0) + 1;
+  var savedCustom = JSON.parse(JSON.stringify(SAVE.shipCustom||{}));
+  var savedForge = JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0}));
+  var savedSynergiesAsc = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
+  var savedRiftShardsAsc = SAVE.riftShards||0;
+  var savedTotalRiftsAsc = SAVE.totalRiftsCompleted||0;
+  var savedHighestRiftAsc = SAVE.highestRiftLevel||0;
+  var hiScore = Math.max(score, SAVE.hiScore);
+  // Clear game state
+  powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
+  document.getElementById('reset-btn').style.display = 'block';
+  document.getElementById('music-btn').style.display = 'block';
+  document.getElementById('drag-indicator').style.display = 'none';
+  document.getElementById('canvas').style.display = 'none';
+  gState='gameover';
+  perksUnlocked=false; perksIntroSeen=false;
+  if(rafId) cancelAnimationFrame(rafId);
+  setTimeout(function(){ stopBattleAudio(false); stopBossTheme(false); stopShopMusic(false); stopMusic(); }, 800);
+  // Reset save but preserve persistent fields
+  SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
+  SAVE.hiScore = hiScore;
+  SAVE.shipCustom = savedCustom;
+  SAVE.forgeLevels = savedForge;
+  SAVE.discoveredSynergies = savedSynergiesAsc;
+  SAVE.riftShards = savedRiftShardsAsc;
+  SAVE.totalRiftsCompleted = savedTotalRiftsAsc;
+  SAVE.highestRiftLevel = savedHighestRiftAsc;
+  SAVE.echoes = savedEchoes;
+  SAVE.totalEchoes = savedTotalEchoes;
+  SAVE.echoUpgrades = savedEchoUpgrades;
+  SAVE.ascensionCount = savedAscensionCount;
+  SAVE.echoesUnlocked = true;
+  SAVE.lastSeenVersion = CURRENT_VERSION;
+  localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+  // Show ascension overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;animation:fadeIn .5s ease';
+  overlay.innerHTML = '<div style="font-size:48px;margin-bottom:16px;animation:pulseGlow 1.5s ease-in-out infinite">🌀</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#aa44ff;text-shadow:0 0 20px #aa44ff;letter-spacing:4px;margin-bottom:12px">ASCENSION</div>'+
+    '<div style="font-size:14px;color:#aa44ff88;letter-spacing:2px;margin-bottom:20px">'+getAscensionTitle(savedAscensionCount)+' · ASCENSION #'+savedAscensionCount+'</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#aa44ff;text-shadow:0 0 16px #aa44ff;margin-bottom:8px">+'+echoGain+' ECHOES</div>'+
+    '<div style="font-size:12px;color:#556;margin-bottom:24px">Total: '+savedEchoes+' 🌀</div>'+
+    '<button class="btn-main" style="border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44" onclick="this.parentElement.remove();showScreen(\'screen-menu\')">CONTINUE</button>';
+  document.body.appendChild(overlay);
 }
 function _doEndGame() {
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
@@ -4137,15 +4853,52 @@ function _doEndGame() {
   const earnedLegendary = finalScore >= 1000000;
   const savedRelics = SAVE.activeRelics || [];
   const savedCustom = JSON.parse(JSON.stringify(SAVE.shipCustom||{}));
+  const savedForge = JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0}));
+  const savedEchoes = SAVE.echoes||0;
+  const savedTotalEchoes = SAVE.totalEchoes||0;
+  const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
+  const savedAscensionCount = SAVE.ascensionCount||0;
+  const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
+  const savedRiftShards = SAVE.riftShards||0;
+  const savedTotalRifts = SAVE.totalRiftsCompleted||0;
+  const savedHighestRift = SAVE.highestRiftLevel||0;
+  // Calculate echo gain for this run
+  var echoGain = 0;
+  if(finalWave >= 35) {
+    echoGain = Math.floor(Math.pow(finalWave, 1.5) / 10);
+    if(savedTotalEchoes === 0 && savedAscensionCount === 0) echoGain += 50; // first time bonus
+    if(typeof riftEchoMult !== 'undefined' && riftEchoMult > 1) echoGain = Math.floor(echoGain * riftEchoMult);
+  }
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = hiScore;
   SAVE.shipCustom = savedCustom;
+  SAVE.forgeLevels = savedForge;
+  SAVE.echoes = savedEchoes + echoGain;
+  SAVE.totalEchoes = savedTotalEchoes + echoGain;
+  SAVE.echoUpgrades = savedEchoUpgrades;
+  SAVE.ascensionCount = savedAscensionCount;
+  SAVE.echoesUnlocked = savedEchoesUnlocked || finalWave >= 35;
+  SAVE.discoveredSynergies = savedSynergies;
+  SAVE.riftShards = savedRiftShards;
+  SAVE.totalRiftsCompleted = savedTotalRifts;
+  SAVE.highestRiftLevel = savedHighestRift;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
+  window._lastEchoGain = echoGain;
   document.getElementById('go-final').textContent = finalScore;
   document.getElementById('go-wave').textContent = finalWave;
   document.getElementById('go-coins').textContent = finalCoins;
+  var goEchoEl = document.getElementById('go-echo-gain');
+  if(goEchoEl) {
+    if(echoGain > 0) {
+      goEchoEl.style.display = '';
+      document.getElementById('go-echo-count').textContent = echoGain;
+    } else {
+      goEchoEl.style.display = 'none';
+    }
+  }
   document.getElementById('go-name-input').style.display = '';
   document.getElementById('go-name-input').value = '';
   document.getElementById('go-submit-btn').textContent = '▶ SUBMIT';
@@ -4306,7 +5059,10 @@ document.getElementById('btn-bomb').addEventListener('click',()=>{
   sessionBombs--;
   sfx('bomb');
   shake(12, 0.5);
-  if(wave>=20){
+  // Rift Catalyst — 5x bomb damage
+  var catalystActive = riftCatalystActive;
+  if(catalystActive) { riftCatalystActive = false; showToast('💣 RIFT CATALYST ACTIVATED!'); }
+  if(wave>=20 && !catalystActive){
     // Post-wave-20: bombs deal 50% damage only, don't kill
     enemies.forEach(e=>{
       if(!e.alive) return;
@@ -4808,10 +5564,12 @@ function showScreen(id) {
   const el=document.getElementById(id);
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
   const isMenu   = id==='screen-menu' || id==='screen-splash';
-  const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies';
+  const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies'||id==='screen-echoes'||id==='screen-synergies';
   if(id==='screen-menu'){ updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu'); }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
+  if(id==='screen-echoes') buildEchoes();
+  if(id==='screen-synergies') buildSynergies();
   if(id==='screen-shop') buildShop();
   if(id==='screen-packs') buildPacks();
   if(id==='screen-cards') buildCards();
@@ -5137,6 +5895,18 @@ function updateMenuCoins(){
   const pl = document.getElementById('dock-perks-lock');
   if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
 
+  // Echoes lock badge
+  const el = document.getElementById('dock-echoes-lock');
+  if(el) el.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  const echoTile = document.getElementById('dock-echoes');
+  if(echoTile) { echoTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; echoTile.style.borderColor = SAVE.echoesUnlocked ? '#aa44ff99' : '#33333399'; }
+
+  // Synergies lock badge
+  const sl = document.getElementById('dock-synergies-lock');
+  if(sl) sl.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  const synTile = document.getElementById('dock-synergies');
+  if(synTile) { synTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.echoesUnlocked ? '#ff880099' : '#33333399'; }
+
   // Updates badge
   const badge = document.getElementById('updates-badge');
   if(badge) badge.style.display = (SAVE.lastSeenChangelog !== CURRENT_VERSION) ? 'inline-block' : 'none';
@@ -5299,7 +6069,155 @@ function buildShop() {
     };
     grid.appendChild(el);
   });
+  // ── Star Forge section ──
+  var forgeSection = document.getElementById('forge-section');
+  var forgeGrid = document.getElementById('forge-grid');
+  if(forgeSection && forgeGrid){
+    var forgeUnlocked = (SAVE.savedWave||1) >= 25 || (SAVE.hiScore||0) >= 50000;
+    forgeSection.style.display = forgeUnlocked ? 'block' : 'none';
+    if(forgeUnlocked){
+      forgeGrid.innerHTML='';
+      FORGE_TRACKS.forEach(function(t,fi){
+        var lv = (SAVE.forgeLevels||{})[t.key]||0;
+        var cost = t.costFn(lv);
+        var canBuy = SAVE.coins >= cost;
+        var curEffect = t.statFn(lv);
+        var nxtEffect = t.statFn(lv+1);
+        var el = document.createElement('div');
+        el.className = 'si'+(canBuy?' aff':'');
+        el.style.animation = 'screenSlideIn .3s ease '+(fi*0.04+0.2)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(fi*0.04+0.6)+'s infinite':'');
+        el.style.setProperty('--uc', t.color);
+        el.style.setProperty('--uca', t.color+'33');
+        el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
+          '<div class="si-d">'+t.desc+'</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#ff8c00;letter-spacing:1px;margin:4px 0">LV.'+lv+' <span style="color:#556;font-size:9px">∞</span></div>'+
+          '<div class="si-stat">'+curEffect+' → <span class="stat-next">'+nxtEffect+'</span></div>'+
+          '<div class="si-c">💰 '+cost+'</div>';
+        if(canBuy) el.onclick = function(){ buyForge(t.key); };
+        forgeGrid.appendChild(el);
+      });
+    }
+  }
 startShopCanvas('shop-bg-canvas');
+}
+
+function buyForge(trackKey){
+  var ti = FORGE_TRACKS.findIndex(function(t){ return t.key===trackKey; });
+  if(ti<0) return;
+  var t = FORGE_TRACKS[ti];
+  var lv = (SAVE.forgeLevels||{})[t.key]||0;
+  var cost = t.costFn(lv);
+  if(SAVE.coins < cost) return;
+  SAVE.coins -= cost;
+  if(!SAVE.forgeLevels) SAVE.forgeLevels = {damage:0,rate:0,armor:0};
+  SAVE.forgeLevels[t.key] = lv + 1;
+  doSave(); sfx('upgradeSelect');
+  var cards = document.getElementById('forge-grid');
+  if(cards && cards.children[ti]){
+    spawnCoinPop(cards.children[ti], cost);
+    spawnUpgradeParticles(cards.children[ti], false, t.color);
+  }
+  showToast(t.icon+' '+t.name+' → LV.'+(lv+1));
+  setTimeout(function(){ buildShop(); }, 320);
+}
+
+function buildEchoes(){
+  var bal = document.getElementById('echoes-balance');
+  if(bal) bal.textContent = '🌀 ' + (SAVE.echoes||0);
+  var titleEl = document.getElementById('echoes-title');
+  if(titleEl) titleEl.textContent = getAscensionTitle(SAVE.ascensionCount||0) + ' · ' + (SAVE.ascensionCount||0) + ' ASCENSIONS';
+  var grid = document.getElementById('echoes-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  ECHO_UPGRADES.forEach(function(u, idx){
+    var lv = (SAVE.echoUpgrades||{})[u.key]||0;
+    var maxed = lv >= u.max;
+    var cost = maxed ? null : u.costFn(lv);
+    var canBuy = !maxed && (SAVE.echoes||0) >= cost;
+    var curStat = u.statFn(lv);
+    var nxtStat = maxed ? null : u.statFn(lv+1);
+    var el = document.createElement('div');
+    el.className = 'si'+(maxed?' maxed':canBuy?' aff':'');
+    el.style.animation = 'screenSlideIn .3s ease '+(idx*0.04)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(idx*0.04+0.4)+'s infinite':'');
+    el.style.setProperty('--uc', u.color);
+    el.style.setProperty('--uca', u.color+'33');
+    var pipCount = Math.min(u.max, 10);
+    var pipFilled = Math.min(lv, pipCount);
+    var pips = '';
+    for(var i=0;i<pipCount;i++) pips += '<span class="pip'+(i<pipFilled?' filled':'')+'"></span>';
+    if(u.max > 10) pips += '<span style="font-size:9px;color:#556;margin-left:2px">'+lv+'/'+u.max+'</span>';
+    var statLine = maxed
+      ? '<span style="color:var(--gr)">'+curStat+' ✦ MAX</span>'
+      : curStat+' → <span class="stat-next">'+nxtStat+'</span>';
+    el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
+      '<div class="si-d">'+u.desc+'</div>'+
+      '<div class="si-pips">'+pips+'</div>'+
+      '<div class="si-stat">'+statLine+'</div>'+
+      '<div class="si-c">'+(maxed?'✓ MAXED':'🌀 '+cost)+'</div>';
+    if(canBuy) el.onclick = function(){ buyEchoUpgrade(u.key); };
+    grid.appendChild(el);
+  });
+}
+
+function buyEchoUpgrade(key){
+  var ui = ECHO_UPGRADES.find(function(u){ return u.key===key; });
+  if(!ui) return;
+  var lv = (SAVE.echoUpgrades||{})[key]||0;
+  if(lv >= ui.max) return;
+  var cost = ui.costFn(lv);
+  if((SAVE.echoes||0) < cost) return;
+  SAVE.echoes -= cost;
+  if(!SAVE.echoUpgrades) SAVE.echoUpgrades = {};
+  SAVE.echoUpgrades[key] = lv + 1;
+  doSave(); sfx('upgradeSelect');
+  showToast(ui.icon+' '+ui.name+' → LV.'+(lv+1));
+  setTimeout(function(){ buildEchoes(); }, 320);
+}
+
+function buildSynergies(){
+  var grid = document.getElementById('synergies-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  var activeSyn = computeSynergies();
+  var discovered = SAVE.discoveredSynergies || [];
+  var countEl = document.getElementById('synergies-active-count');
+  if(countEl) countEl.textContent = activeSyn.length + ' / ' + SYNERGIES.length + ' ACTIVE';
+  // Group by tier
+  var tiers = [1,2,3,4];
+  var tierNames = {1:'TIER I — DUAL',2:'TIER II — TRIPLE',3:'TIER III — QUAD',4:'TIER IV — LEGENDARY'};
+  tiers.forEach(function(tier){
+    var syns = SYNERGIES.filter(function(s){ return s.tier===tier; });
+    if(!syns.length) return;
+    var header = document.createElement('div');
+    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#ff880088;letter-spacing:2px;margin:14px 0 8px;text-align:center';
+    header.textContent = tierNames[tier];
+    grid.appendChild(header);
+    var tierGrid = document.createElement('div');
+    tierGrid.className = 'shop-grid';
+    syns.forEach(function(syn, idx){
+      var isDiscovered = discovered.indexOf(syn.id) >= 0;
+      var isActive = activeSyn.indexOf(syn.id) >= 0;
+      var el = document.createElement('div');
+      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#22334466')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(0,10,20,0.6)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
+      if(isActive) el.style.boxShadow = '0 0 15px '+syn.color+'44, inset 0 0 15px '+syn.color+'11';
+      if(!isDiscovered) {
+        el.innerHTML = '<div style="font-size:24px;text-align:center;opacity:0.3;margin-bottom:4px">❓</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#334;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
+          '<div style="font-size:9px;color:#223;text-align:center;margin-top:4px">'+syn.conditions.length+' conditions required</div>';
+      } else {
+        var condHtml = syn.conditions.map(function(c){
+          var met = checkSynergyCondition(c);
+          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#445')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+        }).join('');
+        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(isActive?syn.color:'#778')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
+          '<div style="font-size:10px;color:'+(isActive?'#ccddee':'#556')+';margin-bottom:6px">'+syn.desc+'</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:2px">'+condHtml+'</div>'+
+          (isActive?'<div style="font-family:Orbitron,sans-serif;font-size:9px;color:'+syn.color+';letter-spacing:2px;margin-top:6px;text-align:center;text-shadow:0 0 8px '+syn.color+'">✦ ACTIVE</div>':'');
+      }
+      tierGrid.appendChild(el);
+    });
+    grid.appendChild(tierGrid);
+  });
 }
 
 function buildPacks(){
@@ -6537,8 +7455,21 @@ function spinnerContinue() {
     const {kills,preBonus,waveNum,coins,newTrophies}=spinnerPendingWaveData;
     spinnerPendingWaveData=null;
     showPerksIntro(()=>{
-      document.getElementById('screen-summary').classList.remove('hidden');
-      runSummarySequence(kills,preBonus,waveNum,coins,newTrophies);
+      // Check for rift on boss waves (40, 50, 60, etc.)
+      var isRiftWave = waveNum >= 40 && waveNum % 10 === 0 && !riftActive;
+      if(isRiftWave) {
+        waveCleared._lastKills = kills;
+        waveCleared._lastPreBonus = preBonus;
+        waveCleared._lastWave = waveNum;
+        waveCleared._lastCoins = coins;
+        waveCleared._lastTrophies = newTrophies;
+        var rLevel = Math.floor((waveNum - 30) / 10);
+        var mods = pickRiftModifiers(rLevel);
+        showRiftDetected(rLevel, mods);
+      } else {
+        document.getElementById('screen-summary').classList.remove('hidden');
+        runSummarySequence(kills,preBonus,waveNum,coins,newTrophies);
+      }
     });
   }
 }
