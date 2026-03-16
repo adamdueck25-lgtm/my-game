@@ -390,7 +390,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
+        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
           <div class="dock-icon">🔗</div>
           <div class="dock-label">SYNERGY</div>
           <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
@@ -399,6 +399,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;width:100%">
         <button class="menu-util-btn" onclick="showHowToPlay()">❓ How to Play</button>
+        <button class="menu-util-btn" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements');" style="color:#ffd700;border-color:#ffd70033">🏅 Achieve</button>
         <button class="menu-util-btn" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="position:relative">📋 Updates<span id="updates-badge" style="display:none;position:absolute;top:6px;right:8px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></button>
       </div>
     </div>
@@ -493,11 +494,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <div id="screen-summary" class="screen hidden">
   <canvas id="sum-fireworks" style="position:absolute;inset:0;pointer-events:none;z-index:0"></canvas>
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:380px;padding:0 16px">
-    <div id="sum-relic-badges" style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;margin-top:8px"></div>
-    <div id="sum-lives" style="display:flex;gap:4px;justify-content:center;margin-bottom:12px"></div>
+    <div id="sum-relic-badges" style="display:flex;gap:6px;justify-content:center;margin-bottom:4px;margin-top:4px"></div>
+    <div id="sum-lives" style="display:flex;gap:3px;justify-content:center;margin-bottom:6px"></div>
     <div id="sum-wave-badge" class="sum-wave-badge">WAVE 1 COMPLETE</div>
-    <div style="font-size:32px;margin-bottom:4px;animation:pulseGlow 1s ease-in-out infinite">✦</div>
-    <div class="screen-title" style="color:var(--gr);text-shadow:0 0 20px var(--gr);margin-bottom:18px">WAVE CLEAR</div>
+    <div style="font-size:24px;margin-bottom:2px;animation:pulseGlow 1s ease-in-out infinite">✦</div>
+    <div class="screen-title" style="color:var(--gr);text-shadow:0 0 20px var(--gr);margin-bottom:10px;font-size:20px">WAVE CLEAR</div>
 
     <div class="sum-row" id="sum-row-kills">
       <span class="sum-label">ENEMIES DEFEATED</span>
@@ -523,17 +524,30 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <div id="sum-trophy-notif" style="display:none;width:100%;max-width:340px"></div>
-    <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:18px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
+    <div id="sum-achievements" style="display:none;width:100%;max-width:340px;margin-top:8px">
+      <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffd700;letter-spacing:3px;text-align:center;margin-bottom:4px;text-shadow:0 0 8px #ffd70044">ACHIEVEMENT PROGRESS</div>
+      <div id="sum-ach-list"></div>
+    </div>
+    <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:10px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
       <div class="wc-grid" style="width:100%;max-width:340px">
         <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
         <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
+        <button class="btn-main btn-sm" id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
+        <button class="btn-main btn-sm" onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" style="border-color:#ffd700;color:#ffd700;box-shadow:0 0 10px rgba(255,215,0,0.15)">🏅 ACHIEVE</button>
       </div>
       <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
       <button id="ascend-btn" class="btn-main btn-sm" onclick="doAscension()" style="display:none;margin-top:6px;border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44;animation:cardPulse 2s ease-in-out infinite">🌀 ASCEND (+<span id="ascend-echo-count">0</span> Echoes)</button>
-      <button class="btn-main btn-sm" onclick="showScreen('screen-menu')" style="margin-top:4px;border-color:#334;color:#556;font-size:10px;letter-spacing:2px">💾 SAVE & MENU</button>
-      <button onclick="openSettings()" style="margin-top:8px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">⚙️ SETTINGS</button>
+      <button onclick="showScreen('screen-menu')" style="margin-top:4px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
        </div>
   </div>
+</div>
+
+<div id="screen-achievements" class="screen screen-bg hidden" style="justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important">
+  <button class="btn-main b-c btn-sm" onclick="showScreen(achievementsPrevScreen||'screen-menu')">← BACK</button>
+  <div style="font-size:28px;margin-bottom:4px">🏅</div>
+  <div class="screen-title" style="color:#ffd700;text-shadow:0 0 20px #ffd70066;margin-bottom:4px;font-size:18px">ACHIEVEMENTS</div>
+  <div style="font-size:9px;color:#556;letter-spacing:2px;margin-bottom:16px" id="ach-screen-subtitle"></div>
+  <div id="ach-screen-list" style="width:100%;max-width:360px"></div>
 </div>
 
 <div id="screen-waveclear" class="screen screen-bg hidden">
@@ -545,6 +559,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="wc-grid">
       <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
       <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
+      <button class="btn-main btn-sm" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
     </div>
     <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
     <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
@@ -614,6 +629,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
       <button class="btn-main btn-sm" onclick="openTrophies('screen-shop')" style="border-color:#ffaa00;color:#ffaa00;box-shadow:0 0 10px rgba(255,170,0,0.2)">🏆 TROPHIES</button>
       <button class="btn-main btn-sm" id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" style="border-color:#00ccff;color:#00ccff;box-shadow:0 0 10px rgba(0,204,255,0.15)">⚡ PERKS ${perksUnlocked?'':'🔒'}</button>
+      <button class="btn-main btn-sm" id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
     </div>
   </div>
@@ -645,7 +661,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div id="synergies-grid" style="width:100%;max-width:600px"></div>
     <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
+      <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
     </div>
   </div>
 </div>
@@ -880,41 +896,47 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #screen-summary { background: rgba(3,6,16,0.97); }
 .sum-row {
   display: flex; justify-content: space-between; align-items: center;
-  width: 100%; max-width: 340px; padding: 10px 0;
+  width: 100%; max-width: 340px; padding: 6px 0;
   border-bottom: 1px solid #0d1a33;
   opacity: 0; transform: translateX(-24px);
   transition: opacity .4s ease, transform .4s ease;
 }
 .sum-row.show { opacity: 1; transform: translateX(0); }
-.sum-label { font-size: 12px; color: #556; letter-spacing: 2px; }
+.sum-label { font-size: 10px; color: #556; letter-spacing: 2px; }
 .sum-val {
-  font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900;
   color: var(--g); text-shadow: 0 0 10px var(--g);
   transition: color .2s;
 }
 .sum-val.ticking { color: #fff; text-shadow: 0 0 20px #fff; }
 .sum-bonus {
-  font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gr);
-  letter-spacing: 2px; text-align: center; margin: 10px 0;
+  font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--gr);
+  letter-spacing: 2px; text-align: center; margin: 6px 0;
   opacity: 0; transition: opacity .5s;
 }
 .sum-bonus.show { opacity: 1; }
 .sum-total-row {
   display: flex; justify-content: space-between; align-items: center;
-  width: 100%; max-width: 340px; padding: 14px 0 6px;
+  width: 100%; max-width: 340px; padding: 8px 0 4px;
   opacity: 0; transform: translateY(10px);
   transition: opacity .5s ease, transform .5s ease;
 }
 .sum-total-row.show { opacity: 1; transform: translateY(0); }
-.sum-total-label { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #556; letter-spacing: 3px; }
+.sum-total-label { font-family: 'Orbitron', sans-serif; font-size: 10px; color: #556; letter-spacing: 3px; }
 .sum-total-val {
-  font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
   color: var(--c); text-shadow: 0 0 20px var(--c);
 }
 .sum-coins-earned {
-  font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
   color: var(--g); text-shadow: 0 0 16px var(--g);
 }
+.ach-prog-row{display:flex;align-items:center;gap:6px;padding:4px 0;opacity:0;transform:translateX(-20px);transition:opacity .4s ease,transform .4s ease;max-height:70px;overflow:hidden}
+.ach-prog-row.show{opacity:1;transform:translateX(0)}
+.ach-prog-row.fade-out{opacity:0;max-height:0;padding:0;margin:0;transform:translateX(20px);transition:opacity .4s ease,max-height .4s ease .1s,padding .4s ease .1s,transform .4s ease}
+.ach-prog-bar{flex:1;height:5px;background:#0d1a33;border-radius:3px;overflow:hidden}
+.ach-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ffd700,#ff8800);transition:width 1.2s cubic-bezier(.25,.46,.45,.94);width:0}
+.ach-prog-fill.complete{background:linear-gradient(90deg,#00ff88,#44ffaa)}
 .sum-wave-badge {
   font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 3px;
   color: #446; margin-bottom: 4px;
@@ -2157,7 +2179,9 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
   riftShards:0, totalRiftsCompleted:0, highestRiftLevel:0,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, riftsIntroSeen:false,
-  musicVolume:55, sfxVolume:50 };
+  musicVolume:55, sfxVolume:50,
+  lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
+  achievements:{} };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2192,6 +2216,42 @@ const TROPHIES = [
   { id:'t29', pts:9500000,   icon:'🏆', name:'VOID SOVEREIGN',  reward:'8 Bombs + 1500💰',    type:'mega',  val:8   },
   { id:'t30', pts:12000000,  icon:'👑', name:'EMPEROR OF VOID', reward:'10 Bombs + 2000💰',   type:'mega',  val:10  },
 ];
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
+   tiers:[{goal:50,label:'I'},{goal:250,label:'II'},{goal:1000,label:'III'},{goal:5000,label:'IV'}]},
+  {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
+   tiers:[{goal:5,label:'I'},{goal:20,label:'II'},{goal:50,label:'III'},{goal:100,label:'IV'}]},
+  {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
+   tiers:[{goal:15,label:'I'},{goal:30,label:'II'},{goal:60,label:'III'},{goal:100,label:'IV'}]},
+  {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
+   tiers:[{goal:10,label:'I'},{goal:25,label:'II'},{goal:50,label:'III'},{goal:100,label:'IV'}]},
+  {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
+   tiers:[{goal:500,label:'I'},{goal:5000,label:'II'},{goal:25000,label:'III'},{goal:100000,label:'IV'}]},
+  {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
+   tiers:[{goal:3,label:'I'},{goal:10,label:'II'},{goal:30,label:'III'},{goal:75,label:'IV'}]},
+];
+
+function checkAchievements() {
+  var newlyCompleted = [];
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var nextIdx = (currentTier === undefined) ? 0 : currentTier + 1;
+    if (nextIdx >= ach.tiers.length) return;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    while (nextIdx < ach.tiers.length && statVal >= ach.tiers[nextIdx].goal) {
+      SAVE.achievements[ach.id] = nextIdx;
+      newlyCompleted.push({ach: ach, tierIdx: nextIdx});
+      nextIdx++;
+    }
+  });
+  if (newlyCompleted.length > 0) {
+    newlyCompleted.forEach(function(entry) { _achNotifyQueue.push(entry); });
+    if (!_achNotifyActive) _showAchievementNotification();
+  }
+  return newlyCompleted;
+}
 
 const PERKS = [
   // COMBAT
@@ -2242,6 +2302,9 @@ function loadSave(){
     if(!isFinite(s.riftShards)||s.riftShards<0) s.riftShards=0;
     if(!isFinite(s.totalRiftsCompleted)||s.totalRiftsCompleted<0) s.totalRiftsCompleted=0;
     if(!isFinite(s.highestRiftLevel)||s.highestRiftLevel<0) s.highestRiftLevel=0;
+    if(!s.lifetimeStats||typeof s.lifetimeStats!=='object') s.lifetimeStats={totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0};
+    ['totalKills','totalBossKills','highestKillStreak','perfectWaves','totalCoinsCollected','highestWaveReached'].forEach(function(k){if(!isFinite(s.lifetimeStats[k])||s.lifetimeStats[k]<0)s.lifetimeStats[k]=0;});
+    if(!s.achievements||typeof s.achievements!=='object') s.achievements={};
     if(typeof s.forgeIntroSeen!=='boolean') s.forgeIntroSeen=false;
     if(typeof s.echoesIntroSeen!=='boolean') s.echoesIntroSeen=false;
     if(typeof s.synergiesIntroSeen!=='boolean') s.synergiesIntroSeen=false;
@@ -3231,6 +3294,8 @@ var _prevActiveSynergies = [];
 var _prevDiscoveredSynergies = [];
 var _synNotifyQueue = [];
 var _synNotifyActive = false;
+var _achNotifyQueue = [];
+var _achNotifyActive = false;
 const SHIP_SHAPES=[
   {id:'classic',label:'CLASSIC',icon:'△'},
   {id:'arrow',label:'ARROW',icon:'▲'},
@@ -3544,7 +3609,8 @@ waveStartScore=score;
 SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
-  _prevActiveSynergies = []; _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
+  _prevActiveSynergies = computeSynergies(); _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
+  _achNotifyQueue = []; _achNotifyActive = false;
   bossFight=false; boss=null;
   riftActive=false; riftModifiers=[]; riftLevel=0; riftBonusDamage=0;
   riftBladeMult=1; riftCatalystActive=false; riftEchoMult=1; riftInvulnTimer=0;
@@ -4144,7 +4210,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.hypot(n.x-e.x,n.y-e.y)<splashR).forEach(n=>{
                 n.hp-=stats.damage*splashDmg; n.hitFlash=1;
                 spawnExplosion(n.x,n.y,'#ff8800',2);
-                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
               });
             }
           }
@@ -4168,11 +4234,11 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               powerupDrops.push({x:e.x, y:e.y, id:pid, pulse:0});
             }
             spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],5);
-            sfx('enemyDie'); killCount++;
+            sfx('enemyDie'); killCount++; SAVE.lifetimeStats.totalKills++;
             // Chain lightning
             if(activePowerups['chainLightning']){
               const nearby=enemies.filter(n=>n.alive&&n!==e&&!n.mini).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,2);
-              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
+              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
             }
             // CHAIN REACTION
             if(hasPerk('chainReaction')){
@@ -4181,7 +4247,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                 enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.abs(n.x-e.x)<60&&Math.abs(n.y-e.y)<60).forEach(n=>{
                   n.hp-=stats.damage*2; n.hitFlash=1;
                   spawnExplosion(n.x,n.y,['#ff00cc','#00f5ff','#ff6600'][n.type],3);
-                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
                 });
               }
             }
@@ -4189,6 +4255,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('bloodlust')){ const chance=[0.05,0.08,0.12,0.15][perkLevel('bloodlust')-1]; if(Math.random()<chance && player.lives<player.maxLives){ player.lives++; updateHUD(); showToast('🩸 Bloodlust!'); } }
             // KILL STREAK
             killStreakCount++;
+            if(killStreakCount > (SAVE.lifetimeStats.highestKillStreak||0)) SAVE.lifetimeStats.highestKillStreak = killStreakCount;
             // HOLLOW POINT
             bulletsFired++;
             const hpInterval=[5,5,4,3][perkLevel('hollowPoint')-1];
@@ -4218,7 +4285,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(stats.chainKill){
               const near=enemies.filter(en=>en.alive&&en!==e)
                 .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y))[0];
-              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; } }
+              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; } }
             }
           }
         }
@@ -4232,6 +4299,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         sfx('bossHit');
         if(boss.hp<=0){
           boss.alive=false;
+          SAVE.lifetimeStats.totalBossKills++;
           score+=500*wave; sessionCoins+=80;
           if(hasPerk('voidSurge')){ voidSurgeStacks++; showToast(`⚡ Void Surge! Damage +${Math.round(voidSurgeStacks*([0.05,0.08,0.12,0.15][perkLevel('voidSurge')-1])*100)}%`); }
           if(wave>=20 && !perksUnlocked){ perksUnlocked=true; showToast('⚡ PERKS UNLOCKED! Visit the shop to access them!'); }
@@ -4724,6 +4792,126 @@ function showRow(id, delay) {
   }, delay);
 }
 
+function showSummaryAchievements(onDone) {
+  var container = document.getElementById('sum-ach-list');
+  var wrapper = document.getElementById('sum-achievements');
+  if (!container || !wrapper) { if(onDone) onDone(); return; }
+  container.innerHTML = '';
+  var relevant = ACHIEVEMENTS.filter(function(ach) {
+    return (SAVE.lifetimeStats[ach.stat] || 0) > 0;
+  });
+  if (relevant.length === 0) { wrapper.style.display = 'none'; if(onDone) onDone(); return; }
+  wrapper.style.display = 'block';
+  var completedRows = [];
+  var slideInTime = 120;
+  relevant.forEach(function(ach, i) {
+    var completedTier = SAVE.achievements[ach.id];
+    var nextIdx = (completedTier === undefined) ? 0 : completedTier + 1;
+    var allDone = nextIdx >= ach.tiers.length;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    var goal = allDone ? ach.tiers[ach.tiers.length - 1].goal : ach.tiers[nextIdx].goal;
+    var tierLabel = allDone ? 'MAX' : ach.tiers[nextIdx].label;
+    var pct = allDone ? 100 : Math.min(100, Math.floor(statVal / goal * 100));
+    var row = document.createElement('div');
+    row.className = 'ach-prog-row';
+    row.innerHTML = '<span style="font-size:14px">' + ach.icon + '</span>' +
+      '<div style="flex:1">' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:1px">' +
+      '<span class="ach-label" style="font-size:8px;color:#aab;letter-spacing:1px;font-family:Orbitron,sans-serif">' + ach.name + ' ' + tierLabel + '</span>' +
+      '<span class="ach-val" style="font-size:8px;color:' + (allDone ? '#00ff88' : '#ffd700') + ';font-family:Orbitron,sans-serif">' +
+      (allDone ? '✓ COMPLETE' : statVal + '/' + goal) + '</span>' +
+      '</div>' +
+      '<div style="font-size:7px;color:#556;margin-bottom:2px">' + ach.desc + '</div>' +
+      '<div class="ach-prog-bar"><div class="ach-prog-fill" id="ach-fill-' + ach.id + '"></div></div>' +
+      '</div>';
+    container.appendChild(row);
+    if (allDone) completedRows.push(row);
+    setTimeout(function() {
+      row.classList.add('show');
+      var fill = document.getElementById('ach-fill-' + ach.id);
+      if (fill) {
+        fill.style.width = pct + '%';
+        if (allDone) fill.classList.add('complete');
+      }
+    }, i * slideInTime);
+  });
+  var allInTime = relevant.length * slideInTime + 400;
+  if (completedRows.length > 0) {
+    setTimeout(function() {
+      completedRows.forEach(function(row) { row.classList.add('fade-out'); });
+      setTimeout(function() {
+        completedRows.forEach(function(row) { if(row.parentNode) row.parentNode.removeChild(row); });
+        if (container.children.length === 0) {
+          wrapper.style.display = 'none';
+        }
+        if(onDone) onDone();
+      }, 600);
+    }, allInTime);
+  } else {
+    setTimeout(function() { if(onDone) onDone(); }, allInTime);
+  }
+}
+
+function buildAchievementsScreen() {
+  var list = document.getElementById('ach-screen-list');
+  var subtitle = document.getElementById('ach-screen-subtitle');
+  if (!list) return;
+  list.innerHTML = '';
+  var totalTiers = 0, completedTiers = 0;
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var completedIdx = (currentTier === undefined) ? -1 : currentTier;
+    totalTiers += ach.tiers.length;
+    completedTiers += completedIdx + 1;
+  });
+  if (subtitle) subtitle.textContent = completedTiers + ' / ' + totalTiers + ' TIERS COMPLETED';
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var completedIdx = (currentTier === undefined) ? -1 : currentTier;
+    var nextIdx = completedIdx + 1;
+    var allDone = nextIdx >= ach.tiers.length;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    var card = document.createElement('div');
+    card.style.cssText = 'background:rgba(10,16,36,0.8);border:1px solid ' + (allDone ? '#00ff8844' : '#1a2540') + ';border-radius:8px;padding:12px;margin-bottom:10px;';
+    var headerColor = allDone ? '#00ff88' : '#ffd700';
+    var html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+      '<span style="font-size:22px">' + ach.icon + '</span>' +
+      '<div style="flex:1">' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:' + headerColor + ';letter-spacing:2px">' + ach.name + '</div>' +
+      '<div style="font-size:8px;color:#556;margin-top:1px">' + ach.desc + '</div>' +
+      '</div>' +
+      (allDone ? '<span style="font-size:8px;color:#00ff88;font-family:Orbitron,sans-serif;letter-spacing:1px">✓ MAX</span>' : '') +
+      '</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:6px">';
+    ach.tiers.forEach(function(tier, idx) {
+      var isComplete = idx <= completedIdx;
+      var isCurrent = idx === nextIdx && !allDone;
+      var pct = 0;
+      if (isComplete) pct = 100;
+      else if (isCurrent) pct = Math.min(100, Math.floor(statVal / tier.goal * 100));
+      var barBg = isComplete ? 'linear-gradient(90deg,#00ff88,#44ffaa)' : 'linear-gradient(90deg,#ffd700,#ff8800)';
+      var tierColor = isComplete ? '#00ff88' : (isCurrent ? '#ffd700' : '#334');
+      var labelColor = isComplete ? '#00ff88' : (isCurrent ? '#aab' : '#334');
+      var valColor = isComplete ? '#00ff8888' : (isCurrent ? '#ffd700' : '#223');
+      html += '<div style="opacity:' + (isComplete || isCurrent ? '1' : '0.35') + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">' +
+        '<span style="font-size:8px;color:' + labelColor + ';font-family:Orbitron,sans-serif;letter-spacing:1px">' +
+        'TIER ' + tier.label + (isComplete ? ' ✓' : '') + '</span>' +
+        '<span style="font-size:8px;color:' + valColor + ';font-family:Orbitron,sans-serif">' +
+        (isComplete ? tier.goal + '/' + tier.goal : (isCurrent ? statVal + '/' + tier.goal : '0/' + tier.goal)) + '</span>' +
+        '</div>' +
+        '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;border-radius:2px;background:' + barBg + ';transition:width .6s ease"></div>' +
+        '</div>' +
+        '<div style="font-size:7px;color:#445;margin-top:2px;font-style:italic">Reward: Coming soon</div>' +
+        '</div>';
+    });
+    html += '</div>';
+    card.innerHTML = html;
+    list.appendChild(card);
+  });
+}
+
 function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
   const bonus = Math.round(waveScore * 0.05 * waveNum);
   const totalWaveScore = waveScore + bonus;
@@ -4753,6 +4941,7 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
   document.getElementById('sum-btns').style.opacity = '0';
   document.getElementById('sum-streak-msg').classList.remove('show');
   const notif=document.getElementById('sum-trophy-notif'); if(notif){notif.innerHTML='';notif.style.display='none';}
+  var achWrap=document.getElementById('sum-achievements'); if(achWrap){achWrap.style.display='none'; document.getElementById('sum-ach-list').innerHTML='';}
   ['sum-total-score-row','sum-coins-row'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('show');
@@ -4784,33 +4973,37 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
           animateCount('sum-total-score', 0, totalWaveScore, 600, '', '', () => {
             document.getElementById('sum-coins-row').classList.add('show');
             animateCount('sum-coins-val', 0, coins, 700, '+', ' 💰', () => {
-              // Reveal buttons
+              // Show achievements, then reveal buttons after
               setTimeout(() => {
-                document.getElementById('sum-btns').style.opacity = '1';
-                // Show ascend button if wave >= 35
-                var ascBtn = document.getElementById('ascend-btn');
-                if(ascBtn) {
-                  if(wave >= 35) {
-                    var echoPreview = Math.floor(Math.pow(wave, 1.5) / 10);
-                    var echoCountSpan = document.getElementById('ascend-echo-count');
-                    if(echoCountSpan) echoCountSpan.textContent = echoPreview;
-                    ascBtn.style.display = '';
-                  } else {
-                    ascBtn.style.display = 'none';
-                  }
-                }
-                // Show trophy notifications
-                if(newTrophies.length > 0) {
-                  const notifArea = document.getElementById('sum-trophy-notif');
-                  if(notifArea) {
-                    if(newTrophies.length === 1) {
-                      notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies[0].name} UNLOCKED! → ${newTrophies[0].reward}<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ▶</span></div>`;
-                    } else {
-                      notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies.length} TROPHIES UNLOCKED!<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ALL ▶</span></div>`;
+                showSummaryAchievements(function() {
+                  setTimeout(function() {
+                    document.getElementById('sum-btns').style.opacity = '1';
+                    // Show ascend button if wave >= 35
+                    var ascBtn = document.getElementById('ascend-btn');
+                    if(ascBtn) {
+                      if(wave >= 35) {
+                        var echoPreview = Math.floor(Math.pow(wave, 1.5) / 10);
+                        var echoCountSpan = document.getElementById('ascend-echo-count');
+                        if(echoCountSpan) echoCountSpan.textContent = echoPreview;
+                        ascBtn.style.display = '';
+                      } else {
+                        ascBtn.style.display = 'none';
+                      }
                     }
-                    notifArea.style.display = 'block';
-                  }
-                }
+                    // Show trophy notifications
+                    if(newTrophies.length > 0) {
+                      const notifArea = document.getElementById('sum-trophy-notif');
+                      if(notifArea) {
+                        if(newTrophies.length === 1) {
+                          notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies[0].name} UNLOCKED! → ${newTrophies[0].reward}<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ▶</span></div>`;
+                        } else {
+                          notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies.length} TROPHIES UNLOCKED!<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ALL ▶</span></div>`;
+                        }
+                        notifArea.style.display = 'block';
+                      }
+                    }
+                  }, 200);
+                });
               }, 300);
             });
           });
@@ -4837,7 +5030,10 @@ function waveCleared() {
   bulwarkUsedThisWave=false;
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
-  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; doSave();
+  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs;
+  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+  if(!waveDamageTaken) SAVE.lifetimeStats.perfectWaves = (SAVE.lifetimeStats.perfectWaves||0) + 1;
+  doSave();
   gState='waveclear';
   if(rafId) cancelAnimationFrame(rafId);
   sfx('waveClear');
@@ -4856,6 +5052,7 @@ function waveCleared() {
   SAVE.totalScore = prevTotal + waveEarned + waveBonus;
   SAVE.savedScore = score;
   doSave();
+  var newAchievements = checkAchievements();
   const newTrophies = checkNewTrophies(prevTotal);
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('hud').style.display='none';
@@ -4983,6 +5180,10 @@ function doAscension() {
     activeSynergies: computeSynergies(),
     kills: killCount
   };
+  // Update final lifetime stats from this run
+  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+  SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + sessionCoins;
+  checkAchievements();
   // Preserve persistent data before reset
   var savedEchoes = (SAVE.echoes||0) + echoGain;
   var savedTotalEchoes = (SAVE.totalEchoes||0) + echoGain;
@@ -5000,6 +5201,8 @@ function doAscension() {
   var savedRiftsIntroA = SAVE.riftsIntroSeen||false;
   var savedMusicVolA = SAVE.musicVolume;
   var savedSfxVolA = SAVE.sfxVolume;
+  var savedLifetimeStatsA = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  var savedAchievementsA = JSON.parse(JSON.stringify(SAVE.achievements||{}));
   var hiScore = Math.max(score, SAVE.hiScore);
   // Clear game state
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
@@ -5031,6 +5234,8 @@ function doAscension() {
   SAVE.riftsIntroSeen = savedRiftsIntroA;
   SAVE.musicVolume = savedMusicVolA;
   SAVE.sfxVolume = savedSfxVolA;
+  SAVE.lifetimeStats = savedLifetimeStatsA;
+  SAVE.achievements = savedAchievementsA;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
   // Show ascension overlay
@@ -5089,6 +5294,12 @@ function _doEndGame() {
   const savedRiftsIntroE = SAVE.riftsIntroSeen||false;
   const savedMusicVolE = SAVE.musicVolume;
   const savedSfxVolE = SAVE.sfxVolume;
+  // Update final lifetime stats from this run
+  if(finalWave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = finalWave;
+  SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + finalCoins;
+  checkAchievements();
+  const savedLifetimeStatsE = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  const savedAchievementsE = JSON.parse(JSON.stringify(SAVE.achievements||{}));
   // Calculate echo gain for this run
   var echoGain = 0;
   if(finalWave >= 35) {
@@ -5121,6 +5332,8 @@ function _doEndGame() {
   SAVE.highestRiftLevel = savedHighestRift;
   SAVE.musicVolume = savedMusicVolE;
   SAVE.sfxVolume = savedSfxVolE;
+  SAVE.lifetimeStats = savedLifetimeStatsE;
+  SAVE.achievements = savedAchievementsE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -5347,6 +5560,8 @@ let cardsPrevScreen='screen-menu';
 let shopPrevScreen='screen-waveclear';
 let packsPrevScreen='screen-shop';
 let pullPrevScreen='screen-packs';
+let synergyPrevScreen='screen-menu';
+let achievementsPrevScreen='screen-menu';
 
 
 // ── TROPHY SYSTEM ─────────────────────────────────────────────
@@ -5778,6 +5993,8 @@ function doReset() {
   const savedRiftsIntro = SAVE.riftsIntroSeen||false;
   const savedMusicVol = SAVE.musicVolume;
   const savedSfxVol = SAVE.sfxVolume;
+  const savedLifetimeStatsR = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  const savedAchievementsR = JSON.parse(JSON.stringify(SAVE.achievements||{}));
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
   SAVE.shipCustom = savedCustom2;
@@ -5797,6 +6014,8 @@ function doReset() {
   SAVE.riftsIntroSeen = savedRiftsIntro;
   SAVE.musicVolume = savedMusicVol;
   SAVE.sfxVolume = savedSfxVol;
+  SAVE.lifetimeStats = savedLifetimeStatsR;
+  SAVE.achievements = savedAchievementsR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -6499,9 +6718,14 @@ function buildSynergies(){
       el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#22334466')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(0,10,20,0.6)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
       if(isActive) el.style.boxShadow = '0 0 15px '+syn.color+'44, inset 0 0 15px '+syn.color+'11';
       if(!isDiscovered) {
-        el.innerHTML = '<div style="font-size:24px;text-align:center;opacity:0.3;margin-bottom:4px">❓</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#334;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
-          '<div style="font-size:9px;color:#223;text-align:center;margin-top:4px">'+syn.conditions.length+' conditions required</div>';
+        var hintHtml = syn.conditions.map(function(c){
+          var met = checkSynergyCondition(c);
+          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#334')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+        }).join('');
+        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.3;margin-bottom:2px">❓</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#445;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
+          '<div style="font-size:8px;color:#334;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center">'+hintHtml+'</div>';
       } else {
         var condHtml = syn.conditions.map(function(c){
           var met = checkSynergyCondition(c);
@@ -7959,25 +8183,24 @@ function _showSynergyNotification() {
   var isActivated = entry.type === 'activated';
   var borderColor = isActivated ? syn.color : syn.color + '66';
   var glowIntensity = isActivated ? '44' : '22';
-  var labelText = isActivated ? 'SYNERGY ACTIVATED' : 'SYNERGY DISCOVERED';
-  var labelColor = isActivated ? '#ff880088' : '#66aaff88';
-  var descText = isActivated ? syn.desc : 'Progress tracked in Synergies menu';
+  var labelText = isActivated ? 'ACTIVATED' : 'DISCOVERED';
+  var labelColor = isActivated ? '#ff8800' : '#66aaff88';
   var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;top:12px;right:12px;z-index:9990;pointer-events:none;' +
-    'max-width:240px;padding:12px 16px;border-radius:10px;' +
+  el.style.cssText = 'position:fixed;top:12px;right:12px;z-index:999999;pointer-events:none;' +
+    'padding:8px 14px;border-radius:8px;' +
     'background:rgba(10,10,30,0.92);border:2px solid ' + borderColor + ';' +
     'box-shadow:0 0 20px ' + syn.color + glowIntensity + ',0 0 40px ' + syn.color + '22;' +
     'font-family:Orbitron,sans-serif;' +
     'transform:translateX(300px);opacity:0;' +
     'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
-  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
-    '<span style="font-size:' + (isActivated ? '24' : '20') + 'px">' + syn.icon + '</span>' +
-    '<span style="font-size:' + (isActivated ? '12' : '11') + 'px;font-weight:900;color:' +
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
+    '<span style="font-size:' + (isActivated ? '20' : '16') + 'px">' + syn.icon + '</span>' +
+    '<div>' +
+    '<div style="font-size:10px;font-weight:900;color:' +
       (isActivated ? syn.color : '#aabbcc') + ';text-shadow:0 0 10px ' +
-      (isActivated ? syn.color : 'transparent') + ';letter-spacing:2px">' + syn.name + '</span>' +
-    '</div>' +
-    '<div style="font-size:8px;color:' + labelColor + ';letter-spacing:2px;margin-bottom:2px">' + labelText + '</div>' +
-    '<div style="font-size:10px;color:#aabbcc;line-height:1.4">' + descText + '</div>';
+      (isActivated ? syn.color : 'transparent') + ';letter-spacing:2px">' + syn.name + '</div>' +
+    '<div style="font-size:7px;color:' + labelColor + ';letter-spacing:2px;margin-top:1px">' + labelText + '</div>' +
+    '</div></div>';
   document.body.appendChild(el);
   requestAnimationFrame(function() {
     requestAnimationFrame(function() {
@@ -7995,6 +8218,44 @@ function _showSynergyNotification() {
       _showSynergyNotification();
     }, 450);
   }, holdTime);
+}
+
+function _showAchievementNotification() {
+  if (_achNotifyQueue.length === 0) { _achNotifyActive = false; return; }
+  _achNotifyActive = true;
+  var entry = _achNotifyQueue.shift();
+  var ach = entry.ach;
+  var tier = ach.tiers[entry.tierIdx];
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:12px;left:12px;z-index:999999;pointer-events:none;' +
+    'padding:8px 14px;border-radius:8px;' +
+    'background:rgba(10,10,30,0.94);border:2px solid #ffd700;' +
+    'box-shadow:0 0 20px #ffd70044,0 0 40px #ffd70022;' +
+    'font-family:Orbitron,sans-serif;' +
+    'transform:translateX(-300px);opacity:0;' +
+    'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
+    '<span style="font-size:18px">' + ach.icon + '</span>' +
+    '<div>' +
+    '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ' ' + tier.label + '</div>' +
+    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT</div>' +
+    '</div></div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.style.transform = 'translateX(0)';
+      el.style.opacity = '1';
+    });
+  });
+  sfx('trophyClaim');
+  setTimeout(function() {
+    el.style.transform = 'translateX(-300px)';
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      _showAchievementNotification();
+    }, 450);
+  }, 3500);
 }
 
 function dismissPerksIntro() {
