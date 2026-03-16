@@ -2152,7 +2152,7 @@ try {
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
 const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false, lastSeenAnnouncement:'',
-  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' },
+  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
   forgeLevels:{ damage:0, rate:0, armor:0 },
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
   riftShards:0, totalRiftsCompleted:0, highestRiftLevel:0,
@@ -2246,6 +2246,7 @@ function loadSave(){
     if(typeof s.echoesIntroSeen!=='boolean') s.echoesIntroSeen=false;
     if(typeof s.synergiesIntroSeen!=='boolean') s.synergiesIntroSeen=false;
     if(typeof s.riftsIntroSeen!=='boolean') s.riftsIntroSeen=false;
+    if(s.shipCustom && !s.shipCustom.sprite) s.shipCustom.sprite='none';
     if(!isFinite(s.musicVolume)||s.musicVolume<0||s.musicVolume>100) s.musicVolume=55;
     if(!isFinite(s.sfxVolume)||s.sfxVolume<0||s.sfxVolume>100) s.sfxVolume=50;
     // Sanitize perkLevels values
@@ -2377,6 +2378,7 @@ const FORGE_TRACKS = [
     statFn:function(lv){ return '-'+FORGE_TRACKS[1].effectFn(lv).toFixed(1)+'ms cd'; }
   },
   { key:'armor', name:'ARMOR FORGE', desc:'Permanently increase damage reduction', icon:'🛡️', color:'#00ccff',
+    comingSoon:true,
     costFn:function(lv){ return 150 + lv*100 + lv*lv*4; },
     effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=0.01/(1+i*0.04); return total; },
     statFn:function(lv){ return '+'+( FORGE_TRACKS[2].effectFn(lv)*100).toFixed(1)+'% red'; }
@@ -2396,6 +2398,7 @@ const ECHO_UPGRADES = [
     statFn:function(lv){ return (lv*2)+'% rate'; }
   },
   { key:'echoShield', name:'ECHO SHIELD', desc:'+0.02 damage reduction per level', icon:'🛡️', color:'#44aaff', max:20,
+    comingSoon:true,
     costFn:function(lv){ return 20 + lv*6; },
     effectFn:function(lv){ return lv*0.02; },
     statFn:function(lv){ return '+'+(lv*0.02).toFixed(2)+' red'; }
@@ -2509,6 +2512,13 @@ function computeSynergies() {
     if(metCount > 0 && (SAVE.discoveredSynergies||[]).indexOf(syn.id) < 0) {
       if(!SAVE.discoveredSynergies) SAVE.discoveredSynergies = [];
       SAVE.discoveredSynergies.push(syn.id);
+      if (typeof gState !== 'undefined' && gState === 'playing') {
+        if (_prevDiscoveredSynergies.indexOf(syn.id) < 0) {
+          _synNotifyQueue.push({syn: syn, type: 'discovered'});
+          _prevDiscoveredSynergies.push(syn.id);
+          if (!_synNotifyActive) _showSynergyNotification();
+        }
+      }
     }
     if(metCount === syn.conditions.length) active.push(syn.id);
   });
@@ -2936,7 +2946,7 @@ function devUnlockAll() {
   SAVE.relicsUnlocked = true;
   SAVE.echoesUnlocked = true;
   SAVE.coins = 999999;
-  SAVE.forgeLevels = { damage:10, rate:10, armor:10 };
+  SAVE.forgeLevels = { damage:10, rate:10, armor:0 };
   SAVE.echoes = (SAVE.echoes||0) + 1000;
   SAVE.totalEchoes = (SAVE.totalEchoes||0) + 1000;
   SAVE.ascensionCount = Math.max(SAVE.ascensionCount||0, 3);
@@ -2979,7 +2989,7 @@ const CURRENT_VERSION = '2.7.0';
 
 const VERSION_NOTES = {
 '2.7.0': [
-    '🔥 Star Forge — permanent damage, fire rate & armor upgrades (unlocks at Wave 25)',
+    '🔥 Star Forge — permanent damage & fire rate upgrades (unlocks at Wave 25)',
     '🌀 Void Echoes — ascend past Wave 35 to earn echo currency for powerful multipliers',
     '🔗 Synergies — combine perks, relics, sets & forge levels for unique combo bonuses',
     '⚡ Void Rifts — enter dimensional rifts every 10 waves past Wave 40 for bonus rewards',
@@ -3150,6 +3160,19 @@ function computeStats() {
   if(activeSyn.indexOf('absoluteZero')>=0) { s._absoluteZero = true; }
   if(activeSyn.indexOf('convergence')>=0) { s.damage *= 1.25; s.fireCooldown = Math.max(40, s.fireCooldown * 0.75); s.bulletSpeed *= 1.25; s._convergenceCoins = true; }
   if(activeSyn.indexOf('voidEmperor')>=0) { s._voidEmperor = true; }
+  // Detect newly-activated synergies during gameplay
+  if (typeof gState !== 'undefined' && gState === 'playing') {
+    for (var _si = 0; _si < activeSyn.length; _si++) {
+      if (_prevActiveSynergies.indexOf(activeSyn[_si]) < 0) {
+        var _synDef = SYNERGIES.find(function(x){ return x.id === activeSyn[_si]; });
+        if (_synDef) _synNotifyQueue.push({syn: _synDef, type: 'activated'});
+      }
+    }
+    _prevActiveSynergies = activeSyn.slice();
+    if (_synNotifyQueue.length > 0 && !_synNotifyActive) {
+      _showSynergyNotification();
+    }
+  }
   // Rift bonuses
   if(riftBonusDamage > 0) s.damage += riftBonusDamage;
   if(typeof riftBladeMult !== 'undefined' && riftBladeMult > 1) s.damage *= riftBladeMult;
@@ -3204,6 +3227,10 @@ let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
 let powerupDrops = [];
 let activePowerups = {};
+var _prevActiveSynergies = [];
+var _prevDiscoveredSynergies = [];
+var _synNotifyQueue = [];
+var _synNotifyActive = false;
 const SHIP_SHAPES=[
   {id:'classic',label:'CLASSIC',icon:'△'},
   {id:'arrow',label:'ARROW',icon:'▲'},
@@ -3242,6 +3269,22 @@ const DECALS=[
   {id:'camo',label:'CAMO',icon:'⬢'},{id:'stars',label:'STARS',icon:'★'},
   {id:'scars',label:'SCARS',icon:'✕'},
 ];
+
+// ── SPRITE SHIP SKINS ──────────────────────────────
+const SPRITE_SHIPS=[
+  {id:'none',label:'NONE',icon:'○'},
+  {id:'pixelShip',label:'PIXEL SHIP',icon:'🚀'},
+];
+var _spriteImages={};
+var playerSpriteState='idle';
+(function(){
+  var srcs={
+    pixelShip_idle:'data:image/png;base64,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',
+    pixelShip_boost:'data:image/png;base64,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',
+    pixelShip_full:'data:image/png;base64,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'
+  };
+  Object.keys(srcs).forEach(function(k){ var img=new Image(); img.src=srcs[k]; _spriteImages[k]=img; });
+})();
 
 const POWERUP_DEFS = {
   rapidFire:    { icon:'⚡', color:'#ffff00', label:'RAPID FIRE',    desc:'2× Fire Rate' },
@@ -3357,6 +3400,18 @@ function drawShip(c, x, y, inv, custom, scale=1){
   c.scale(scale,scale);
   const flash=inv>0&&Math.sin(inv*20)>0;
   c.globalAlpha=flash?0.4:1;
+  // Sprite override — skip procedural body if a sprite is active
+  if(custom.sprite && custom.sprite!=='none' && _spriteImages[custom.sprite+'_idle']){
+    var sprKey=custom.sprite+'_'+(playerSpriteState||'idle');
+    var img=_spriteImages[sprKey]||_spriteImages[custom.sprite+'_idle'];
+    if(img&&img.complete){
+      c.imageSmoothingEnabled=false;
+      c.drawImage(img,-24,-24,48,48);
+      c.imageSmoothingEnabled=true;
+    }
+    c.restore();
+    return;
+  }
   // Aura ring
   if(aura!=='none'){
     c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
@@ -3426,7 +3481,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
   c.restore();
 }
 function drawPlayer(x,y,inv){
-  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   drawShip(ctx,x,y,inv,SAVE.shipCustom);
 }
 
@@ -3489,6 +3544,7 @@ waveStartScore=score;
 SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
+  _prevActiveSynergies = []; _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
   bossFight=false; boss=null;
   riftActive=false; riftModifiers=[]; riftLevel=0; riftBonusDamage=0;
   riftBladeMult=1; riftCatalystActive=false; riftEchoMult=1; riftInvulnTimer=0;
@@ -3650,6 +3706,10 @@ let moveDx = 0;
   fireTimer-=dt*1000;
   if(fireTimer < -safeCooldown) fireTimer = -safeCooldown;
   const firing=fireHeld||KEYS[' ']||KEYS['z'];
+  // Update sprite animation state
+  if(firing) playerSpriteState='full';
+  else if(Math.abs(moveDx)>0.2) playerSpriteState='boost';
+  else playerSpriteState='idle';
   if(firing && fireTimer<=0) {
     fireTimer=safeCooldown;
     const pierce=stats.piercingShots;
@@ -6297,20 +6357,31 @@ function buildShop() {
       FORGE_TRACKS.forEach(function(t,fi){
         var lv = (SAVE.forgeLevels||{})[t.key]||0;
         var cost = t.costFn(lv);
-        var canBuy = SAVE.coins >= cost;
+        var canBuy = !t.comingSoon && SAVE.coins >= cost;
         var curEffect = t.statFn(lv);
         var nxtEffect = t.statFn(lv+1);
         var el = document.createElement('div');
-        el.className = 'si'+(canBuy?' aff':'');
+        el.className = 'si'+(t.comingSoon?'':canBuy?' aff':'');
         el.style.animation = 'screenSlideIn .3s ease '+(fi*0.04+0.2)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(fi*0.04+0.6)+'s infinite':'');
-        el.style.setProperty('--uc', t.color);
-        el.style.setProperty('--uca', t.color+'33');
-        el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
-          '<div class="si-d">'+t.desc+'</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#ff8c00;letter-spacing:1px;margin:4px 0">LV.'+lv+' <span style="color:#556;font-size:9px">∞</span></div>'+
-          '<div class="si-stat">'+curEffect+' → <span class="stat-next">'+nxtEffect+'</span></div>'+
-          '<div class="si-c">💰 '+cost+'</div>';
-        if(canBuy) el.onclick = function(){ buyForge(t.key); };
+        el.style.setProperty('--uc', t.comingSoon?'#445':t.color);
+        el.style.setProperty('--uca', t.comingSoon?'#44500':'#'+t.color.slice(1)+'33');
+        if(t.comingSoon){
+          el.style.opacity='0.45';
+          el.style.filter='grayscale(0.8)';
+          el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
+            '<div class="si-d">'+t.desc+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#556;letter-spacing:1px;margin:6px 0">🔒 COMING SOON</div>'+
+            '<div class="si-c" style="color:#556">—</div>';
+          el.onclick = function(){ showToast('🔒 Damage mitigation coming soon!'); };
+        } else {
+          el.style.setProperty('--uca', t.color+'33');
+          el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
+            '<div class="si-d">'+t.desc+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#ff8c00;letter-spacing:1px;margin:4px 0">LV.'+lv+' <span style="color:#556;font-size:9px">∞</span></div>'+
+            '<div class="si-stat">'+curEffect+' → <span class="stat-next">'+nxtEffect+'</span></div>'+
+            '<div class="si-c">💰 '+cost+'</div>';
+          if(canBuy) el.onclick = function(){ buyForge(t.key); };
+        }
         forgeGrid.appendChild(el);
       });
     }
@@ -6350,28 +6421,38 @@ function buildEchoes(){
     var lv = (SAVE.echoUpgrades||{})[u.key]||0;
     var maxed = lv >= u.max;
     var cost = maxed ? null : u.costFn(lv);
-    var canBuy = !maxed && (SAVE.echoes||0) >= cost;
+    var canBuy = !u.comingSoon && !maxed && (SAVE.echoes||0) >= cost;
     var curStat = u.statFn(lv);
     var nxtStat = maxed ? null : u.statFn(lv+1);
     var el = document.createElement('div');
-    el.className = 'si'+(maxed?' maxed':canBuy?' aff':'');
+    el.className = 'si'+(u.comingSoon?'':maxed?' maxed':canBuy?' aff':'');
     el.style.animation = 'screenSlideIn .3s ease '+(idx*0.04)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(idx*0.04+0.4)+'s infinite':'');
-    el.style.setProperty('--uc', u.color);
-    el.style.setProperty('--uca', u.color+'33');
-    var pipCount = Math.min(u.max, 10);
-    var pipFilled = Math.min(lv, pipCount);
-    var pips = '';
-    for(var i=0;i<pipCount;i++) pips += '<span class="pip'+(i<pipFilled?' filled':'')+'"></span>';
-    if(u.max > 10) pips += '<span style="font-size:9px;color:#556;margin-left:2px">'+lv+'/'+u.max+'</span>';
-    var statLine = maxed
-      ? '<span style="color:var(--gr)">'+curStat+' ✦ MAX</span>'
-      : curStat+' → <span class="stat-next">'+nxtStat+'</span>';
-    el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
-      '<div class="si-d">'+u.desc+'</div>'+
-      '<div class="si-pips">'+pips+'</div>'+
-      '<div class="si-stat">'+statLine+'</div>'+
-      '<div class="si-c">'+(maxed?'✓ MAXED':'🌀 '+cost)+'</div>';
-    if(canBuy) el.onclick = function(){ buyEchoUpgrade(u.key); };
+    el.style.setProperty('--uc', u.comingSoon?'#445':u.color);
+    el.style.setProperty('--uca', u.comingSoon?'#44500':u.color+'33');
+    if(u.comingSoon){
+      el.style.opacity='0.45';
+      el.style.filter='grayscale(0.8)';
+      el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
+        '<div class="si-d">'+u.desc+'</div>'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#556;letter-spacing:1px;margin:6px 0">🔒 COMING SOON</div>'+
+        '<div class="si-c" style="color:#556">—</div>';
+      el.onclick = function(){ showToast('🔒 Damage mitigation coming soon!'); };
+    } else {
+      var pipCount = Math.min(u.max, 10);
+      var pipFilled = Math.min(lv, pipCount);
+      var pips = '';
+      for(var i=0;i<pipCount;i++) pips += '<span class="pip'+(i<pipFilled?' filled':'')+'"></span>';
+      if(u.max > 10) pips += '<span style="font-size:9px;color:#556;margin-left:2px">'+lv+'/'+u.max+'</span>';
+      var statLine = maxed
+        ? '<span style="color:var(--gr)">'+curStat+' ✦ MAX</span>'
+        : curStat+' → <span class="stat-next">'+nxtStat+'</span>';
+      el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
+        '<div class="si-d">'+u.desc+'</div>'+
+        '<div class="si-pips">'+pips+'</div>'+
+        '<div class="si-stat">'+statLine+'</div>'+
+        '<div class="si-c">'+(maxed?'✓ MAXED':'🌀 '+cost)+'</div>';
+      if(canBuy) el.onclick = function(){ buyEchoUpgrade(u.key); };
+    }
     grid.appendChild(el);
   });
 }
@@ -6650,7 +6731,7 @@ const HOWTO_PAGES = [
     content:`
       🔥 The Star Forge unlocks after reaching Wave 25<br>
       🛒 Find it at the bottom of the SHOP screen<br>
-      ⚡ Three tracks: Damage, Fire Rate, and Armor<br>
+      ⚡ Two active tracks: Damage and Fire Rate (Armor coming soon)<br>
       ♾️ Forge upgrades are permanent and infinite<br>
       📈 Each level has diminishing returns but always helps`
   },
@@ -6778,6 +6859,7 @@ function startCustomizeAnim(){
     });
     _customizeBullets=_customizeBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
+    playerSpriteState=['idle','boost','full'][Math.floor(t*0.8)%3];
     drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2);
   }
   requestAnimationFrame(loop);
@@ -6831,6 +6913,7 @@ function startMenuShipPreview(){
     });
     _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
+    playerSpriteState=boosting?'full':'boost';
     drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0);
   }
   requestAnimationFrame(loop);
@@ -6863,14 +6946,48 @@ function setCustom(key,val){
     btn.style.background=isSelected?sectionColor+'22':'transparent';
     btn.style.boxShadow=isSelected?`0 0 10px ${sectionColor}44`:'none';
   });
+  if(key==='sprite') updateSpriteOverrideState();
+}
+
+function updateSpriteOverrideState(){
+  var spriteActive=SAVE.shipCustom&&SAVE.shipCustom.sprite&&SAVE.shipCustom.sprite!=='none';
+  var overriddenKeys=['shape','hullColor','cockpitColor','aura','decal'];
+  overriddenKeys.forEach(function(key){
+    document.querySelectorAll('[data-custom-key="'+key+'"]').forEach(function(btn){
+      btn.style.opacity=spriteActive?'0.3':'1';
+      btn.style.pointerEvents=spriteActive?'none':'auto';
+    });
+  });
+  // Update section titles
+  var content=document.getElementById('customize-content');
+  if(!content) return;
+  var overriddenTitles=['SHIP SHAPE','HULL COLOR','COCKPIT COLOR','SHIP AURA','DECALS'];
+  for(var i=0;i<content.children.length;i++){
+    var titleDiv=content.children[i].querySelector('div');
+    if(!titleDiv) continue;
+    var text=titleDiv.textContent.replace(/\s*\(OVERRIDDEN BY SPRITE\)/,'');
+    if(overriddenTitles.indexOf(text)>=0){
+      titleDiv.style.opacity=spriteActive?'0.4':'1';
+      var tag=titleDiv.querySelector('.spr-tag');
+      if(spriteActive&&!tag){
+        var span=document.createElement('span');
+        span.className='spr-tag';
+        span.style.cssText='margin-left:8px;font-size:8px;color:#ff8800;opacity:1';
+        span.textContent='(OVERRIDDEN BY SPRITE)';
+        titleDiv.appendChild(span);
+      } else if(!spriteActive&&tag){
+        tag.remove();
+      }
+    }
+  }
 }
 
 function buildCustomize(){
-  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
-  if(content.hasChildNodes()) return;
+  if(content.hasChildNodes()){ updateSpriteOverrideState(); return; }
   const sc=SAVE.shipCustom;
 
   function section(title, color, items, key, current){
@@ -6902,6 +7019,7 @@ function buildCustomize(){
   }
 
   content.innerHTML='';
+  content.appendChild(section('SPRITES','#ff8800',SPRITE_SHIPS,'sprite',sc.sprite||'none'));
   content.appendChild(section('SHIP SHAPE','#00f5ff',SHIP_SHAPES,'shape',sc.shape||'classic'));
   requestAnimationFrame(()=>drawCustomizePreview());
   content.appendChild(section('HULL COLOR','#00f5ff',HULL_COLORS,'hullColor',sc.hullColor||'#00f5ff'));
@@ -6911,6 +7029,7 @@ function buildCustomize(){
   content.appendChild(section('BULLET SHAPE','#cc44ff',BULLET_SHAPES,'bulletShape',sc.bulletShape||'laser'));
   content.appendChild(section('SHIP AURA','#ffd700',AURAS,'aura',sc.aura||'none'));
   content.appendChild(section('DECALS','#00ff88',DECALS,'decal',sc.decal||'none'));
+  updateSpriteOverrideState();
 }
 
 function buildChangelog(){
@@ -6919,7 +7038,7 @@ function buildChangelog(){
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>🌀 Expanded rift modifiers and rewards<br>📱 App Store release via Capacitor</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff8800;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.7.0</div>
-      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Star Forge — permanent damage, fire rate & armor upgrades (Wave 25+)<br>✅ Void Echoes — ascend past Wave 35 to earn echo currency for multipliers<br>✅ Synergies — combine perks, relics, sets & forge levels for combo bonuses<br>✅ Void Rifts — dimensional rifts every 10 waves past Wave 40<br>✅ Settings menu with music & SFX volume sliders<br>✅ Enhanced leaderboard with tappable player cards (ship, perks, synergies, forge)<br>✅ Splash screens & How to Play pages for all new systems<br>✅ Star Forge costs rebalanced to be more accessible<br>✅ Performance: removed GPU-heavy shadows from particles & bullets<br>✅ Performance: lowered enemy shadow threshold for smoother high-wave gameplay<br>✅ Fixed Void Rift entry freezing game with menu music persisting<br>✅ Fixed reset button clearing endgame progress (echoes, forge, synergies)<br>✅ Fixed music toggle disappearing after save & quit<br>✅ Volume settings persist across resets and ascension</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Star Forge — permanent damage & fire rate upgrades (Wave 25+)<br>✅ Void Echoes — ascend past Wave 35 to earn echo currency for multipliers<br>✅ Synergies — combine perks, relics, sets & forge levels for combo bonuses<br>✅ Void Rifts — dimensional rifts every 10 waves past Wave 40<br>✅ Settings menu with music & SFX volume sliders<br>✅ Enhanced leaderboard with tappable player cards (ship, perks, synergies, forge)<br>✅ Splash screens & How to Play pages for all new systems<br>✅ Star Forge costs rebalanced to be more accessible<br>✅ Performance: removed GPU-heavy shadows from particles & bullets<br>✅ Performance: lowered enemy shadow threshold for smoother high-wave gameplay<br>✅ Fixed Void Rift entry freezing game with menu music persisting<br>✅ Fixed reset button clearing endgame progress (echoes, forge, synergies)<br>✅ Fixed music toggle disappearing after save & quit<br>✅ Volume settings persist across resets and ascension</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.3</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Navigation sounds — back button whoosh, softer forward tap<br>✅ Upgrade particles (▲ arrows & ❤️ hearts) now appear correctly on purchase<br>✅ Fixed nav tap sound firing on first menu load after splash</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
@@ -7211,6 +7330,7 @@ function startSplashShipAnim() {
     ctx.save();
     ctx.translate(ship.x, ship.y);
     ctx.rotate(-Math.PI / 2);
+    playerSpriteState='full';
     drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
     ctx.restore();
 
@@ -7564,6 +7684,7 @@ function showPlayerCard(entry, rank) {
   var shipCanvas = document.getElementById('lb-card-ship');
   if(shipCanvas && entry.shipCustom) {
     var ctx = shipCanvas.getContext('2d');
+    playerSpriteState='idle';
     drawShip(ctx, 50, 54, 0, entry.shipCustom, 2.2);
   }
 }
@@ -7830,6 +7951,52 @@ function spawnPowerupPickup(x,y,color,icon) {
   }
 }
 
+function _showSynergyNotification() {
+  if (_synNotifyQueue.length === 0) { _synNotifyActive = false; return; }
+  _synNotifyActive = true;
+  var entry = _synNotifyQueue.shift();
+  var syn = entry.syn;
+  var isActivated = entry.type === 'activated';
+  var borderColor = isActivated ? syn.color : syn.color + '66';
+  var glowIntensity = isActivated ? '44' : '22';
+  var labelText = isActivated ? 'SYNERGY ACTIVATED' : 'SYNERGY DISCOVERED';
+  var labelColor = isActivated ? '#ff880088' : '#66aaff88';
+  var descText = isActivated ? syn.desc : 'Progress tracked in Synergies menu';
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:12px;right:12px;z-index:9990;pointer-events:none;' +
+    'max-width:240px;padding:12px 16px;border-radius:10px;' +
+    'background:rgba(10,10,30,0.92);border:2px solid ' + borderColor + ';' +
+    'box-shadow:0 0 20px ' + syn.color + glowIntensity + ',0 0 40px ' + syn.color + '22;' +
+    'font-family:Orbitron,sans-serif;' +
+    'transform:translateX(300px);opacity:0;' +
+    'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+    '<span style="font-size:' + (isActivated ? '24' : '20') + 'px">' + syn.icon + '</span>' +
+    '<span style="font-size:' + (isActivated ? '12' : '11') + 'px;font-weight:900;color:' +
+      (isActivated ? syn.color : '#aabbcc') + ';text-shadow:0 0 10px ' +
+      (isActivated ? syn.color : 'transparent') + ';letter-spacing:2px">' + syn.name + '</span>' +
+    '</div>' +
+    '<div style="font-size:8px;color:' + labelColor + ';letter-spacing:2px;margin-bottom:2px">' + labelText + '</div>' +
+    '<div style="font-size:10px;color:#aabbcc;line-height:1.4">' + descText + '</div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.style.transform = 'translateX(0)';
+      el.style.opacity = '1';
+    });
+  });
+  sfx('waveStart');
+  var holdTime = isActivated ? 3500 : 3000;
+  setTimeout(function() {
+    el.style.transform = 'translateX(300px)';
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      _showSynergyNotification();
+    }, 450);
+  }, holdTime);
+}
+
 function dismissPerksIntro() {
   document.getElementById('screen-perks-intro').classList.add('hidden');
   if(window._perksIntroDone){ window._perksIntroDone(); window._perksIntroDone=null; }
@@ -7914,7 +8081,7 @@ function showForgeIntro(onDone){
     '<div id="fi-sub" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff444488;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">PERMANENT POWER UPGRADES</div>'+
     '<div id="fi-steps" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
       '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">🛒 Visit the SHOP to find your new Forge tracks</div>'+
-      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">⚡ Spend coins to permanently boost damage, fire rate, or armor</div>'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">⚡ Spend coins to permanently boost damage and fire rate</div>'+
       '<div style="padding:10px 14px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">♾️ Forge upgrades persist across runs — infinite scaling</div>'+
     '</div>'+
     '<button id="fi-btn" style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(255,68,68,0.1);border:2px solid #ff4444;color:#ff4444;border-radius:4px;cursor:pointer;margin-top:28px;opacity:0;transition:all 0.5s ease 1.1s">🔥 GOT IT</button>';
