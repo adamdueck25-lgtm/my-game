@@ -123,6 +123,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-label{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
 .menu-util-btn{flex:1;padding:8px 10px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#667;background:transparent;border:1px solid #223;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s}
 .menu-util-btn:active{background:rgba(255,255,255,0.06)}
+.nav-tab{flex:1;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ntc,#aaa);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:12px 4px 10px;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;text-shadow:0 0 8px color-mix(in srgb,var(--ntc,#aaa) 40%,transparent)}
+.nav-tab:active{background:rgba(255,255,255,0.08);border-bottom-color:var(--ntc,#aaa)}
+@media(hover:hover){.nav-tab:hover{background:rgba(255,255,255,0.05);border-bottom-color:color-mix(in srgb,var(--ntc,#aaa) 50%,transparent)}}
 #menu-ship-preview{height:clamp(50px,10vh,120px);aspect-ratio:160/140;width:auto}
 @media(max-height:700px){.menu-hero-emoji{font-size:32px!important}.title-void{font-size:clamp(20px,6.5vw,30px)!important}.title-inv{font-size:22px!important}#menu-hero-title{padding-top:2px!important}.game-title{margin-bottom:2px!important}#menu-nav-grid{margin-top:8px!important}.menu-stats-row{padding-top:6px!important;padding-bottom:6px!important}.menu-launch-btn{padding-top:12px!important;padding-bottom:12px!important}}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
@@ -189,7 +192,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 /* WAVE CLEAR */
 .wc-score{font-size:15px;color:var(--g);text-align:center;margin-bottom:20px}
-.wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;width:100%;max-width:300px}
+/* .wc-grid removed — replaced by compact link row */
 
 /* GAME OVER */
 #go-final{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--c);text-shadow:0 0 25px var(--c);margin:6px 0}
@@ -374,10 +377,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks('screen-menu')" style="--tc:#00ccff;border-color:#00ccff99">
-          <div class="dock-icon" id="dock-perks-icon">⚡</div>
-          <div class="dock-label">PERKS</div>
-          <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
+        <div class="dock-tile" id="dock-achieve" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements')" style="--tc:#ffd700;border-color:#ffd70099">
+          <div class="dock-icon">🏅</div>
+          <div class="dock-label">ACHIEVE</div>
         </div>
 
         <div class="dock-tile" id="dock-echoes" onclick="if(!SAVE.echoesUnlocked){showToast('🌀 Echoes unlock after reaching Wave 35!');return;}showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
@@ -400,7 +402,6 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;width:100%">
         <button class="menu-util-btn" onclick="showHowToPlay()">❓ How to Play</button>
-        <button class="menu-util-btn" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements');" style="color:#ffd700;border-color:#ffd70033">🏅 Achieve</button>
         <button class="menu-util-btn" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="position:relative">📋 Updates<span id="updates-badge" style="display:none;position:absolute;top:6px;right:8px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></button>
       </div>
     </div>
@@ -530,16 +531,16 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <div id="sum-ach-list"></div>
     </div>
     <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:10px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
-      <div class="wc-grid" style="width:100%;max-width:340px">
-        <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
-        <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
-        <button class="btn-main btn-sm" id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
-        <button class="btn-main btn-sm" onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" style="border-color:#ffd700;color:#ffd700;box-shadow:0 0 10px rgba(255,215,0,0.15)">🏅 ACHIEVE</button>
-      </div>
       <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
       <button id="ascend-btn" class="btn-main btn-sm" onclick="doAscension()" style="display:none;margin-top:6px;border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44;animation:cardPulse 2s ease-in-out infinite">🌀 ASCEND (+<span id="ascend-echo-count">0</span> Echoes)</button>
-      <button onclick="showScreen('screen-menu')" style="margin-top:4px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
-       </div>
+      <div style="display:flex;gap:0;justify-content:center;margin:12px 0 8px;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px">
+        <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
+        <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+        <button id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+        <button onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" class="nav-tab" style="--ntc:#ffd700">🏅 Achieve</button>
+      </div>
+      <button onclick="showScreen('screen-menu')" style="margin-top:2px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
+    </div>
   </div>
 </div>
 
@@ -561,12 +562,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-size:36px;margin-bottom:8px;animation:pulseGlow 1s ease-in-out infinite">✦</div>
     <div class="screen-title" style="color:var(--gr);text-shadow:0 0 20px var(--gr)">WAVE CLEAR</div>
     <div class="wc-score" id="wc-info"></div>
-    <div class="wc-grid">
-      <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
-      <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
-      <button class="btn-main btn-sm" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
-    </div>
     <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
+    <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin:10px 0 6px">
+      <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
+      <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+      <button onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+    </div>
     <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
   </div>
 </div>
@@ -630,11 +631,13 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div class="shop-grid" id="forge-grid"></div>
     </div>
-    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
-      <button class="btn-main btn-sm" onclick="openTrophies('screen-shop')" style="border-color:#ffaa00;color:#ffaa00;box-shadow:0 0 10px rgba(255,170,0,0.2)">🏆 TROPHIES</button>
-      <button class="btn-main btn-sm" id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" style="border-color:#00ccff;color:#00ccff;box-shadow:0 0 10px rgba(0,204,255,0.15)">⚡ PERKS ${perksUnlocked?'':'🔒'}</button>
-      <button class="btn-main btn-sm" id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
+    <div style="padding:10px 0 80px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
+      <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:12px">
+        <button onclick="showPacksFromShop()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+        <button onclick="openTrophies('screen-shop')" class="nav-tab" style="--ntc:#ffaa00">🏆 Trophies</button>
+        <button id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" class="nav-tab" style="--ntc:#00ccff">⚡ Perks</button>
+        <button id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+      </div>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
     </div>
   </div>
@@ -663,11 +666,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">COMBINE SYSTEMS FOR POWERFUL BONUSES</div>
     <div id="synergies-active-count" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#ff8800;margin:6px 0 2px"></div>
   </div>
-  <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
-    <div id="synergies-grid" style="width:100%;max-width:600px"></div>
-    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
-    </div>
+  <div id="synergies-scroll" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;position:relative;z-index:1">
+    <div id="synergies-grid" style="width:100%;max-width:600px;margin:0 auto"></div>
+  </div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
   </div>
 </div>
 
@@ -698,8 +701,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
     <div class="pack-grid" id="pack-grid"></div>
-    <div style="padding:10px 0 180px;display:flex;gap:8px;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main btn-sm" onclick="openCardsFromPacks()" style="border-color:#cc44ff;color:#cc44ff;box-shadow:0 0 10px rgba(200,68,255,0.2)">🃏 COLLECTION</button>
+    <div style="padding:10px 0 80px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
+      <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:12px">
+        <button onclick="openCardsFromPacks()" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#cc44ff;background:transparent;border:none;cursor:pointer;padding:10px 16px;-webkit-tap-highlight-color:transparent">🃏 Collection</button>
+      </div>
       <button class="btn-main b-c btn-sm" onclick="packsBack()">← BACK</button>
     </div>
   </div>
@@ -795,15 +800,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 </div>
 <!-- BOSS REWARD SPINNER -->
 <div id="screen-spinner" class="screen screen-bg hidden" style="flex-direction:column;align-items:center;justify-content:center;padding:20px;">
-  <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#ff6600;letter-spacing:4px;margin-bottom:6px">BOSS DEFEATED!</div>
-  <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#446;letter-spacing:2px;margin-bottom:24px">SPIN FOR YOUR REWARD</div>
-  <div style="position:relative;width:320px;height:320px;margin-bottom:24px">
-    <canvas id="spinner-canvas" width="320" height="320"></canvas>
-    <div id="spinner-pointer" style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:24px;z-index:2">▼</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ff8800;letter-spacing:5px;margin-bottom:4px;text-shadow:0 0 12px #ff660066">⚡ BOSS DEFEATED ⚡</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffaa44;letter-spacing:3px;margin-bottom:16px;text-shadow:0 0 8px #ff880033">SPIN THE VOID</div>
+  <div style="position:relative;width:320px;height:340px;margin-bottom:18px">
+    <canvas id="spinner-canvas" width="320" height="340"></canvas>
+    <div id="spinner-pointer" style="display:none;position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:24px;z-index:2">▼</div>
   </div>
   <div id="spinner-result" style="font-family:'Orbitron',sans-serif;font-size:18px;color:#ffd700;letter-spacing:2px;min-height:32px;text-align:center;margin-bottom:20px;text-shadow:0 0 20px #ffd700"></div>
-  <button id="spinner-btn" onclick="spinnerSpin()" style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;padding:14px 48px;background:transparent;border:2px solid #ff6600;color:#ff6600;border-radius:4px;cursor:pointer;transition:all 0.3s">▶ SPIN</button>
-  <button id="spinner-continue-btn" onclick="spinnerContinue()" style="display:none;font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;padding:14px 48px;background:transparent;border:2px solid #00ff88;color:#00ff88;border-radius:4px;cursor:pointer;margin-top:12px;transition:all 0.3s">CONTINUE →</button>
+  <button id="spinner-btn" onclick="spinnerSpin()" style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:5px;padding:16px 56px;background:linear-gradient(180deg,rgba(255,102,0,0.15),rgba(255,68,0,0.05));border:2px solid #ff6600;color:#ff8800;border-radius:8px;cursor:pointer;transition:all 0.3s;box-shadow:0 0 20px rgba(255,102,0,0.3),inset 0 0 20px rgba(255,102,0,0.05);text-shadow:0 0 10px #ff6600">▶ SPIN</button>
+  <button id="spinner-continue-btn" onclick="spinnerContinue()" style="display:none;font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;padding:14px 48px;background:linear-gradient(180deg,rgba(0,255,136,0.1),rgba(0,255,136,0.02));border:2px solid #00ff88;color:#00ff88;border-radius:8px;cursor:pointer;margin-top:12px;transition:all 0.3s;box-shadow:0 0 15px rgba(0,255,136,0.2);text-shadow:0 0 8px #00ff88">CONTINUE →</button>
 </div>
 
 <!-- LEADERBOARD -->
@@ -4123,6 +4128,11 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     }
   });
 
+  // ── LIVE ACHIEVEMENT CHECK (throttled ~1/sec) ───
+  if(!gameLoop._achTimer) gameLoop._achTimer=0;
+  gameLoop._achTimer+=dt;
+  if(gameLoop._achTimer>=1.0){ gameLoop._achTimer=0; checkAchievements(); }
+
   // ── WAVE CLEAR CHECK ────────────────────────────
   const allDead = bossFight ? (boss&&!boss.alive) : enemies.every(e=>!e.alive);
   if(allDead && gState==='playing') { waveCleared(); return; }
@@ -6421,10 +6431,9 @@ function getUpgradeStat(key, lv, lives) {
 function buildShop() {
   const pb = document.getElementById('btn-perks-shop');
   if(pb){ 
-    pb.textContent = perksUnlocked ? '⚡ PERKS' : '⚡ PERKS 🔒';
+    pb.textContent = perksUnlocked ? '⚡ Perks' : '⚡ Perks 🔒';
     pb.style.opacity = perksUnlocked ? '1' : '0.4';
-    pb.style.borderColor = perksUnlocked ? '#00ccff' : '#334';
-    pb.style.color = perksUnlocked ? '#00ccff' : '#556';
+    pb.style.setProperty('--ntc', perksUnlocked ? '#00ccff' : '#556');
   }
   animateCoinsDown('shop-coins', SAVE.coins);
   const grid=document.getElementById('shop-grid');
@@ -6621,7 +6630,7 @@ function buildSynergies(){
     var syns = SYNERGIES.filter(function(s){ return s.tier===tier; });
     if(!syns.length) return;
     var header = document.createElement('div');
-    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#ff880088;letter-spacing:2px;margin:14px 0 8px;text-align:center';
+    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:12px;color:#ff8800;letter-spacing:2px;margin:16px 0 8px;text-align:center;text-shadow:0 0 10px #ff880044';
     header.textContent = tierNames[tier];
     grid.appendChild(header);
     var tierGrid = document.createElement('div');
@@ -6630,25 +6639,25 @@ function buildSynergies(){
       var isDiscovered = discovered.indexOf(syn.id) >= 0;
       var isActive = activeSyn.indexOf(syn.id) >= 0;
       var el = document.createElement('div');
-      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#22334466')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(0,10,20,0.6)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
+      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#334455')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(8,16,30,0.85)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
       if(isActive) el.style.boxShadow = '0 0 15px '+syn.color+'44, inset 0 0 15px '+syn.color+'11';
       if(!isDiscovered) {
         var hintHtml = syn.conditions.map(function(c){
           var met = checkSynergyCondition(c);
-          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#334')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+          return '<span style="display:inline-block;font-size:10px;padding:3px 8px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#44556688')+';color:'+(met?'#44ff88':'#8899aa')+';background:'+(met?'rgba(68,255,136,0.08)':'rgba(255,255,255,0.03)')+'">'+c.label+'</span>';
         }).join('');
-        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.3;margin-bottom:2px">❓</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#445;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
-          '<div style="font-size:8px;color:#334;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
-          '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center">'+hintHtml+'</div>';
+        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.5;margin-bottom:2px">❓</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#8899aa;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
+          '<div style="font-size:10px;color:#667788;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center">'+hintHtml+'</div>';
       } else {
         var condHtml = syn.conditions.map(function(c){
           var met = checkSynergyCondition(c);
-          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#445')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+          return '<span style="display:inline-block;font-size:10px;padding:3px 8px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#44556688')+';color:'+(met?'#44ff88':'#8899aa')+';background:'+(met?'rgba(68,255,136,0.08)':'rgba(255,255,255,0.03)')+'">'+c.label+'</span>';
         }).join('');
-        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(isActive?syn.color:'#778')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
-          '<div style="font-size:10px;color:'+(isActive?'#ccddee':'#556')+';margin-bottom:6px">'+syn.desc+'</div>'+
-          '<div style="display:flex;flex-wrap:wrap;gap:2px">'+condHtml+'</div>'+
+        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:'+(isActive?syn.color:'#aabbcc')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
+          '<div style="font-size:11px;color:'+(isActive?'#ccddee':'#8899aa')+';margin-bottom:6px;line-height:1.3">'+syn.desc+'</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:3px">'+condHtml+'</div>'+
           (isActive?'<div style="font-family:Orbitron,sans-serif;font-size:9px;color:'+syn.color+';letter-spacing:2px;margin-top:6px;text-align:center;text-shadow:0 0 8px '+syn.color+'">✦ ACTIVE</div>':'');
       }
       tierGrid.appendChild(el);
@@ -7829,18 +7838,18 @@ function showPlayerCard(entry, rank) {
 
 // ── BOSS REWARD SPINNER ──────────────────────────
 const SPINNER_REWARDS = [
-  {label:'50 💰',  coins:50,   _base:50,   pack:false,life:false,color:'#556677',weight:20},
-  {label:'100 💰', coins:100,  _base:100,  pack:false,life:false,color:'#4a6080',weight:18},
-  {label:'150 💰', coins:150,  _base:150,  pack:false,life:false,color:'#3a7090',weight:12},
-  {label:'250 💰', coins:250,  _base:250,  pack:false,life:false,color:'#2a80a0',weight:10},
-  {label:'350 💰', coins:350,  _base:350,  pack:false,life:false,color:'#2090b0',weight:8},
-  {label:'500 💰', coins:500,  _base:500,  pack:false,life:false,color:'#1a9faa',weight:7},
-  {label:'FREE PACK 📦',coins:0,_base:0,   pack:true, life:false,color:'#aa44ff',weight:6},
-  {label:'750 💰', coins:750,  _base:750,  pack:false,life:false,color:'#f0a000',weight:5},
-  {label:'+1 LIFE ❤️',coins:0,_base:0,    pack:false,life:true, color:'#ff4466',weight:5},
-  {label:'1000 💰',coins:1000, _base:1000, pack:false,life:false,color:'#f0c000',weight:4},
-  {label:'2000 💰',coins:2000, _base:2000, pack:false,life:false,color:'#ff8800',weight:3},
-  {label:'JACKPOT! 5000 💰',coins:5000,_base:5000,pack:false,life:false,color:'#ff4400',weight:2},
+  {label:'50 💰',  wl:'50',   coins:50,   _base:50,   pack:false,life:false,color:'#2a5080',bg:'#0c1a2e',weight:20},
+  {label:'100 💰', wl:'100',  coins:100,  _base:100,  pack:false,life:false,color:'#3070a0',bg:'#112240',weight:18},
+  {label:'150 💰', wl:'150',  coins:150,  _base:150,  pack:false,life:false,color:'#2288bb',bg:'#0a2040',weight:12},
+  {label:'250 💰', wl:'250',  coins:250,  _base:250,  pack:false,life:false,color:'#00cccc',bg:'#0a2a3a',weight:10},
+  {label:'350 💰', wl:'350',  coins:350,  _base:350,  pack:false,life:false,color:'#00ddaa',bg:'#0a3030',weight:8},
+  {label:'500 💰', wl:'500',  coins:500,  _base:500,  pack:false,life:false,color:'#44eebb',bg:'#0c3530',weight:7},
+  {label:'FREE PACK 📦',wl:'PACK',coins:0,_base:0,   pack:true, life:false,color:'#cc55ff',bg:'#200a40',weight:6},
+  {label:'750 💰', wl:'750',  coins:750,  _base:750,  pack:false,life:false,color:'#ffaa00',bg:'#3a2500',weight:5},
+  {label:'+1 LIFE ❤️',wl:'+1 ❤️',coins:0,_base:0,    pack:false,life:true, color:'#ff4466',bg:'#3a0a18',weight:5},
+  {label:'1000 💰',wl:'1K',   coins:1000, _base:1000, pack:false,life:false,color:'#ffd000',bg:'#3a3000',weight:4},
+  {label:'2000 💰',wl:'2K',   coins:2000, _base:2000, pack:false,life:false,color:'#ff8800',bg:'#3a2000',weight:3},
+  {label:'JACKPOT! 5000 💰',wl:'5K',coins:5000,_base:5000,pack:false,life:false,color:'#ff3300',bg:'#400800',weight:2},
 ];
 
 let spinnerAngle = 0;
@@ -7848,6 +7857,51 @@ let spinnerResult = null;
 let spinnerSpinning = false;
 let spinnerRaf = null;
 let spinnerPendingWaveData = null;
+let spinnerIdleRaf = null;
+let spinnerLedAngle = 0;
+let spinnerBreathPhase = 0;
+let spinnerLastSliceIdx = -1;
+let spinnerSparks = [];
+
+function sfxSpinnerTick(progress) {
+  try {
+    resumeAC();
+    const t = AC.currentTime;
+    const o = AC.createOscillator(), g = AC.createGain();
+    const freq = 1400 - progress * 600;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(freq, t);
+    o.frequency.exponentialRampToValueAtTime(freq * 0.7, t + 0.04);
+    g.gain.setValueAtTime(0.1, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+    o.connect(g); g.connect(sfxMasterGain);
+    o.start(t); o.stop(t + 0.06);
+  } catch(e) {}
+}
+
+function spinnerFlash(color, duration) {
+  var flash = document.createElement('div');
+  flash.style.cssText = 'position:fixed;inset:0;z-index:999999;pointer-events:none;background:' + color + ';opacity:0.6;transition:opacity ' + duration + 'ms ease';
+  document.body.appendChild(flash);
+  requestAnimationFrame(function() { flash.style.opacity = '0'; });
+  setTimeout(function() { if(flash.parentNode) flash.parentNode.removeChild(flash); }, duration + 50);
+}
+
+function spinnerShake(intensity, duration) {
+  var el = document.getElementById('screen-spinner');
+  if (!el) return;
+  var startTime = performance.now();
+  function shakeFrame(now) {
+    var elapsed = now - startTime;
+    if (elapsed > duration) { el.style.transform = ''; return; }
+    var decay = 1 - elapsed / duration;
+    var dx = (Math.random() - 0.5) * intensity * decay;
+    var dy = (Math.random() - 0.5) * intensity * decay;
+    el.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    requestAnimationFrame(shakeFrame);
+  }
+  requestAnimationFrame(shakeFrame);
+}
 
 function getSpinnerSlices() {
   const total = SPINNER_REWARDS.reduce((s,r)=>s+r.weight,0);
@@ -7864,116 +7918,272 @@ function drawSpinner(angle) {
   const canvas = document.getElementById('spinner-canvas');
   if(!canvas) return;
   const ctx = canvas.getContext('2d');
-  const cx=160, cy=160, r=148;
-  ctx.clearRect(0,0,320,320);
+  const cx=160, cy=168, r=130;
+  ctx.clearRect(0,0,320,340);
   const slices = getSpinnerSlices();
+  const now = Date.now();
+  const breath = 0.5 + 0.5 * Math.sin(spinnerBreathPhase);
 
-  // Outer glow ring
-  ctx.save();
-  ctx.beginPath(); ctx.arc(cx,cy,r+4,0,Math.PI*2);
-  ctx.strokeStyle='#ff6600'; ctx.lineWidth=3;
-  ctx.shadowBlur=16; ctx.shadowColor='#ff6600';
-  ctx.stroke(); ctx.restore();
+  // === OUTER RING — neon LED track ===
+  // Dark track base
+  ctx.beginPath(); ctx.arc(cx,cy,r+14,0,Math.PI*2);
+  ctx.fillStyle='#06090f'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,r+2,0,Math.PI*2);
+  ctx.fillStyle='#06090f'; ctx.fill();
 
-  slices.forEach(s=>{
+  // LED dots on the track (NO shadowBlur — use double-draw for glow)
+  var LED_COUNT = 32;
+  var ledRadius = r + 8;
+  for (var li=0; li<LED_COUNT; li++) {
+    var ledA = (li/LED_COUNT)*Math.PI*2 + spinnerLedAngle;
+    var lx = cx+Math.cos(ledA)*ledRadius;
+    var ly = cy+Math.sin(ledA)*ledRadius;
+    var chase = ((spinnerLedAngle*2.5+li*0.35)%(Math.PI*2))/(Math.PI*2);
+    var brightness = 0.08 + 0.92*Math.pow(Math.max(0,Math.cos(chase*Math.PI*2)),4);
+    brightness *= (0.6 + 0.4*breath);
+    // Outer glow circle (larger, transparent)
+    if(brightness>0.3){
+      ctx.beginPath(); ctx.arc(lx,ly,5,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,140,20,'+(brightness*0.25)+')';
+      ctx.fill();
+    }
+    // Inner bright dot
+    ctx.beginPath(); ctx.arc(lx,ly,2.5,0,Math.PI*2);
+    var r255=255,g255=Math.floor(100+brightness*155),b255=Math.floor(brightness*60);
+    ctx.fillStyle='rgba('+r255+','+g255+','+b255+','+Math.max(0.15,brightness)+')';
+    ctx.fill();
+  }
+
+  // === SLICES — bold neon-on-dark style ===
+  slices.forEach(function(s,idx){
     const mid = s.start+s.slice/2+angle;
     const isHighValue = s.coins>=750||s.pack||s.life;
+    var bg = s.bg || '#0c1525';
 
-    // Slice fill
+    // Slice fill — rich background color
     ctx.beginPath();
     ctx.moveTo(cx,cy);
     ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);
     ctx.closePath();
-    // Gradient fill
-    const gx=cx+Math.cos(mid)*60, gy=cy+Math.sin(mid)*60;
-    const grad=ctx.createRadialGradient(cx,cy,0,gx,gy,r*0.8);
-    grad.addColorStop(0,'#0a1525');
-    grad.addColorStop(1,s.color);
+    // Two-tone gradient: dark center to colored background
+    var grad = ctx.createRadialGradient(cx,cy,10,cx,cy,r);
+    grad.addColorStop(0,'#080e18');
+    grad.addColorStop(0.35,bg);
+    grad.addColorStop(1,s.color+'44');
     ctx.fillStyle=grad;
     ctx.fill();
-    ctx.strokeStyle=isHighValue?s.color:'#1a2540';
-    ctx.lineWidth=isHighValue?2:1;
-    if(isHighValue){ctx.shadowBlur=8;ctx.shadowColor=s.color;}
-    ctx.stroke();
-    ctx.shadowBlur=0;
 
-    // Label background pill for readability
-    const lx=cx+Math.cos(mid)*76, ly=cy+Math.sin(mid)*76;
-    ctx.save();
-    ctx.translate(lx,ly);
-    ctx.rotate(mid+Math.PI/2);
-
-    // Pill background
-    const fontSize = isHighValue?10:9;
-    ctx.font=`bold ${fontSize}px Arial,sans-serif`;
-    const lines = s.label.split(' ');
-    const lineH=fontSize+3;
-    const maxW=Math.max(...lines.map(l=>ctx.measureText(l).width));
-    const pillW=maxW+10, pillH=lines.length*lineH+6;
-    ctx.fillStyle='rgba(0,0,0,0.65)';
+    // Bright neon edge band (outer 15% of slice)
     ctx.beginPath();
-    ctx.roundRect(-pillW/2,-pillH/2,pillW,pillH,4);
+    ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);
+    ctx.arc(cx,cy,r*0.82,s.start+s.slice+angle,s.start+angle,true);
+    ctx.closePath();
+    ctx.fillStyle=s.color+'22';
     ctx.fill();
 
-    // Text
-    ctx.fillStyle=isHighValue?s.color:'#ddd';
-    ctx.shadowBlur=isHighValue?6:0; ctx.shadowColor=s.color;
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    lines.forEach((l,i)=>{
-      const y=(i-(lines.length-1)/2)*lineH;
-      ctx.fillText(l,0,y);
-    });
+    // Neon border on each slice
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);
+    ctx.closePath();
+    ctx.strokeStyle=isHighValue?(s.color+'cc'):(s.color+'44');
+    ctx.lineWidth=isHighValue?2:1;
+    ctx.stroke();
+  });
+
+  // === Slice divider lines — bright neon ===
+  slices.forEach(function(s){
+    var a = s.start + angle;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(a)*28,cy+Math.sin(a)*28);
+    ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    ctx.strokeStyle='rgba(255,255,255,0.15)';
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+  });
+
+  // === High-value shimmer (no clip — just bright arc overlay) ===
+  slices.forEach(function(s){
+    if(!(s.coins>=750||s.pack||s.life)) return;
+    var shimmerT=((now*0.0006+s.start)%3)/3;
+    var shimmerAlpha = Math.max(0,Math.sin(shimmerT*Math.PI))*0.12;
+    if(shimmerAlpha<0.01) return;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);
+    ctx.closePath();
+    ctx.fillStyle='rgba(255,255,255,'+shimmerAlpha+')';
+    ctx.fill();
+  });
+
+  // === Labels — radial text reading outward from center ===
+  slices.forEach(function(s){
+    var mid = s.start+s.slice/2+angle;
+    var isHighValue = s.coins>=750||s.pack||s.life;
+    var txt = s.wl || s.label;
+    var fontSize = isHighValue?13:11;
+    ctx.save();
+    ctx.translate(cx,cy);
+    // Rotate so text reads outward along the radius
+    var textAngle = mid;
+    // Flip if text would be upside down (bottom half of wheel)
+    var normA = ((mid%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+    var flipped = normA>Math.PI/2 && normA<Math.PI*1.5;
+    if(flipped) textAngle += Math.PI;
+    ctx.rotate(textAngle);
+    ctx.font='bold '+fontSize+'px Orbitron,Arial,sans-serif';
+    ctx.textBaseline='middle';
+    // Position along the radius — centered between hub and edge
+    var textDist = r*0.58;
+    if(flipped){
+      ctx.textAlign='center';
+      // Shadow
+      ctx.fillStyle='rgba(0,0,0,0.85)';
+      ctx.fillText(txt,-textDist+1,1);
+      // Main text
+      ctx.fillStyle=isHighValue?'#fff':s.color;
+      ctx.fillText(txt,-textDist,0);
+    } else {
+      ctx.textAlign='center';
+      ctx.fillStyle='rgba(0,0,0,0.85)';
+      ctx.fillText(txt,textDist+1,1);
+      ctx.fillStyle=isHighValue?'#fff':s.color;
+      ctx.fillText(txt,textDist,0);
+    }
+    // Coin icon near outer edge for coin rewards
+    if(s.coins>0){
+      var iconDist = flipped ? -(r*0.85) : (r*0.85);
+      ctx.font='10px Arial,sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText('💰',iconDist,0);
+    }
     ctx.restore();
   });
 
-  // Center circle
+  // === Outer chrome ring ===
+  ctx.beginPath(); ctx.arc(cx,cy,r+1.5,0,Math.PI*2);
+  var ringGrad=ctx.createLinearGradient(cx,cy-r-2,cx,cy+r+2);
+  ringGrad.addColorStop(0,'#ffaa33');
+  ringGrad.addColorStop(0.5,'#ffdd88');
+  ringGrad.addColorStop(1,'#ff8800');
+  ctx.strokeStyle=ringGrad; ctx.lineWidth=2.5;
+  ctx.stroke();
+
+  // Outer glow ring (single shadowBlur — the only one in rendering)
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx,cy,r+1.5,0,Math.PI*2);
+  ctx.strokeStyle='#ff880044'; ctx.lineWidth=6;
+  ctx.shadowBlur=12; ctx.shadowColor='#ff6600';
+  ctx.stroke(); ctx.restore();
+
+  // === Center hub ===
+  // Outer hub ring
+  ctx.beginPath(); ctx.arc(cx,cy,28,0,Math.PI*2);
+  ctx.fillStyle='#0a0f1a'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,28,0,Math.PI*2);
+  var hubGrad=ctx.createLinearGradient(cx,cy-28,cx,cy+28);
+  hubGrad.addColorStop(0,'#ffcc55');
+  hubGrad.addColorStop(0.5,'#ff8800');
+  hubGrad.addColorStop(1,'#cc5500');
+  ctx.strokeStyle=hubGrad; ctx.lineWidth=3;
+  ctx.stroke();
+  // Inner hub
   ctx.beginPath(); ctx.arc(cx,cy,22,0,Math.PI*2);
-  const cg=ctx.createRadialGradient(cx-5,cy-5,2,cx,cy,26);
-  cg.addColorStop(0,'#1a2540'); cg.addColorStop(1,'#050d1f');
-  ctx.fillStyle=cg; ctx.fill();
-  ctx.strokeStyle='#ff6600'; ctx.lineWidth=2.5;
-  ctx.shadowBlur=10; ctx.shadowColor='#ff6600';
-  ctx.stroke(); ctx.shadowBlur=0;
-  ctx.fillStyle='#ff6600'; ctx.font='bold 8px Orbitron,monospace';
+  var ihGrad=ctx.createRadialGradient(cx-3,cy-3,2,cx,cy,22);
+  ihGrad.addColorStop(0,'#1a2545'); ihGrad.addColorStop(1,'#060c1a');
+  ctx.fillStyle=ihGrad; ctx.fill();
+  // VOID text
+  ctx.fillStyle='#ff9900'; ctx.font='bold 9px Orbitron,monospace';
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText('VOID',cx,cy);
+
+  // === POINTER — big bold arrow at top ===
+  ctx.save();
+  ctx.translate(cx, cy-r-2);
+  // Pointer glow (soft, no shadowBlur — double draw)
+  ctx.beginPath();
+  ctx.moveTo(0, 16);
+  ctx.lineTo(-16, -6);
+  ctx.lineTo(16, -6);
+  ctx.closePath();
+  ctx.fillStyle='rgba(255,100,0,0.3)';
+  ctx.fill();
+  // Main pointer
+  ctx.beginPath();
+  ctx.moveTo(0, 14);
+  ctx.lineTo(-12, -4);
+  ctx.lineTo(12, -4);
+  ctx.closePath();
+  var pg=ctx.createLinearGradient(0,-4,0,14);
+  pg.addColorStop(0,'#ffee88');
+  pg.addColorStop(0.5,'#ff8800');
+  pg.addColorStop(1,'#ff4400');
+  ctx.fillStyle=pg;
+  ctx.fill();
+  ctx.strokeStyle='#ffcc66'; ctx.lineWidth=1.5;
+  ctx.stroke();
+  // Pointer cap (small circle)
+  ctx.beginPath(); ctx.arc(0,-2,4,0,Math.PI*2);
+  ctx.fillStyle='#ffdd66'; ctx.fill();
+  ctx.strokeStyle='#cc6600'; ctx.lineWidth=1;
+  ctx.stroke();
+  ctx.restore();
 }
 
 let confettiParticles=[];
 function launchConfetti(rare) {
-  const colors = rare
+  var isJackpot = spinnerResult && spinnerResult.coins >= 2000;
+  var colors = isJackpot
+    ? ['#ffd700','#ff8800','#ff4400','#ffcc00','#ffffff','#ffee88']
+    : rare
     ? ['#ffd700','#ff8800','#ff4400','#ffcc00','#ffffff']
     : ['#00f5ff','#ff00cc','#00ff88','#ffd700','#ffffff'];
+  var count = isJackpot ? 180 : (rare ? 120 : 60);
   confettiParticles=[];
-  for(let i=0;i<(rare?120:60);i++){
+  var shapes=['rect','circle','star'];
+  for(var i=0;i<count;i++){
     confettiParticles.push({
-    x:160+Math.random()*320-160,
-      y:-10,
-      vx:(Math.random()-0.5)*6,
+      x:160+(Math.random()-0.5)*300,
+      y:-10-Math.random()*40,
+      vx:(Math.random()-0.5)*7,
       vy:2+Math.random()*4,
       rot:Math.random()*Math.PI*2,
       rotV:(Math.random()-0.5)*0.3,
       color:colors[Math.floor(Math.random()*colors.length)],
-      w:6+Math.random()*6, h:4+Math.random()*4,
-      life:1
+      w:5+Math.random()*7, h:3+Math.random()*5,
+      life:1,
+      shape:shapes[Math.floor(Math.random()*3)]
     });
   }
   animateConfetti();
 }
 
 function animateConfetti() {
-  const canvas=document.getElementById('spinner-canvas');
+  var canvas=document.getElementById('spinner-canvas');
   if(!canvas||confettiParticles.length===0) return;
   drawSpinner(spinnerAngle);
-  const ctx=canvas.getContext('2d');
-  confettiParticles=confettiParticles.filter(p=>{
-    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.rot+=p.rotV; p.life-=0.012;
+  var ctx=canvas.getContext('2d');
+  confettiParticles=confettiParticles.filter(function(p){
+    p.x+=p.vx; p.y+=p.vy; p.vy+=0.1; p.rot+=p.rotV; p.life-=0.01;
     if(p.life<=0) return false;
     ctx.save();
     ctx.globalAlpha=p.life;
     ctx.translate(p.x,p.y); ctx.rotate(p.rot);
     ctx.fillStyle=p.color;
-    ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+    if(p.shape==='circle'){
+      ctx.beginPath(); ctx.arc(0,0,p.w/2,0,Math.PI*2); ctx.fill();
+    } else if(p.shape==='star'){
+      ctx.beginPath();
+      for(var si=0;si<8;si++){
+        var sa=si*Math.PI/4;
+        var sr=si%2===0?p.w/2:p.w/5;
+        if(si===0) ctx.moveTo(Math.cos(sa)*sr,Math.sin(sa)*sr);
+        else ctx.lineTo(Math.cos(sa)*sr,Math.sin(sa)*sr);
+      }
+      ctx.closePath(); ctx.fill();
+    } else {
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+    }
     ctx.restore();
     return true;
   });
@@ -7982,30 +8192,105 @@ function animateConfetti() {
 
 function spinnerSpin() {
   if(spinnerSpinning) return;
+  // Cancel idle loop
+  if(spinnerIdleRaf) { cancelAnimationFrame(spinnerIdleRaf); spinnerIdleRaf=null; }
   spinnerSpinning = true;
+  spinnerLastSliceIdx = -1;
+  spinnerSparks = [];
   document.getElementById('spinner-btn').style.display='none';
-  document.getElementById('spinner-result').textContent='';
+  var resultEl = document.getElementById('spinner-result');
+  resultEl.textContent='';
+  resultEl.style.transform='scale(1)';
+  resultEl.style.transition='none';
   const totalSpin = Math.PI*2*(6+Math.random()*6);
-  const duration = 3500+Math.random()*1000;
+  const duration = 4000+Math.random()*1000;
   const startAngle = spinnerAngle;
   const startTime = performance.now();
+  var prevAngle = startAngle;
   function animate(now) {
     const elapsed = now-startTime;
     const progress = Math.min(elapsed/duration,1);
     const ease = 1-Math.pow(1-progress,4);
     spinnerAngle = startAngle+totalSpin*ease;
+
+    // Sync LED chase speed with wheel angular velocity
+    var angularVel = spinnerAngle - prevAngle;
+    spinnerLedAngle += angularVel * 0.5 + 0.01;
+    spinnerBreathPhase += 0.05;
+    prevAngle = spinnerAngle;
+
     drawSpinner(spinnerAngle);
+
+    // === Tick sounds on slice boundary crossing ===
+    var slices = getSpinnerSlices();
+    var normalized = (((-Math.PI/2)-spinnerAngle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+    var curSliceIdx = -1;
+    for(var si=0;si<slices.length;si++){
+      if(normalized>=slices[si].start&&normalized<slices[si].start+slices[si].slice){curSliceIdx=si;break;}
+    }
+    if(curSliceIdx===-1) curSliceIdx=0;
+    if(curSliceIdx!==spinnerLastSliceIdx && spinnerLastSliceIdx!==-1){
+      sfxSpinnerTick(progress);
+    }
+    spinnerLastSliceIdx = curSliceIdx;
+
+    // === Spark particles from pointer ===
+    var canvas = document.getElementById('spinner-canvas');
+    if(canvas && progress<0.92 && angularVel>0.02){
+      var ctx = canvas.getContext('2d');
+      // Spawn 1-2 sparks
+      if(Math.random()<Math.min(angularVel*8,0.9)){
+        spinnerSparks.push({
+          x:160, y:50,
+          vx:(Math.random()-0.5)*3,
+          vy:1.5+Math.random()*2.5,
+          life:0.5+Math.random()*0.3,
+          color:Math.random()>0.4?'#ff8800':'#ffcc44',
+          size:1.5+Math.random()*2
+        });
+        if(spinnerSparks.length>40) spinnerSparks.shift();
+      }
+      // Draw sparks
+      spinnerSparks=spinnerSparks.filter(function(sp){
+        sp.x+=sp.vx; sp.y+=sp.vy; sp.vy+=0.12; sp.life-=0.035;
+        if(sp.life<=0) return false;
+        ctx.beginPath();
+        ctx.arc(sp.x,sp.y,sp.size*sp.life,0,Math.PI*2);
+        ctx.fillStyle=sp.color;
+        ctx.globalAlpha=sp.life;
+        ctx.fill();
+        ctx.globalAlpha=1;
+        return true;
+      });
+    }
+
     if(progress<1){ spinnerRaf=requestAnimationFrame(animate); return; }
     spinnerSpinning=false;
+    spinnerSparks=[];
     // Find winning slice (pointer at top = -PI/2)
-    const slices = getSpinnerSlices();
-    const normalized = (((-Math.PI/2)-spinnerAngle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-    spinnerResult = slices.find(s=>normalized>=s.start&&normalized<s.start+s.slice)||slices[0];
-    const resultEl = document.getElementById('spinner-result');
-    resultEl.textContent = spinnerResult.label;
-    resultEl.style.color = spinnerResult.color;
-    sfx('trophyClaim');
+    normalized = (((-Math.PI/2)-spinnerAngle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+    spinnerResult = slices.find(function(s){return normalized>=s.start&&normalized<s.start+s.slice;})||slices[0];
+    var resEl = document.getElementById('spinner-result');
     const isRare = spinnerResult.coins>=750||spinnerResult.pack||spinnerResult.life;
+    const isJackpot = spinnerResult.coins>=2000;
+
+    // === Dramatic result reveal ===
+    if(isJackpot){
+      spinnerFlash('#ffffff',400);
+      spinnerShake(12,500);
+    } else if(isRare){
+      spinnerFlash(spinnerResult.color,300);
+      spinnerShake(6,300);
+    }
+    // Text scale-up animation
+    resEl.style.transform='scale(0)';
+    resEl.style.transition='transform 0.4s cubic-bezier(.17,.67,.35,1.5)';
+    resEl.textContent = spinnerResult.label;
+    resEl.style.color = spinnerResult.color;
+    resEl.style.textShadow = '0 0 20px '+spinnerResult.color+',0 0 40px '+spinnerResult.color+'66';
+    requestAnimationFrame(function(){ resEl.style.transform='scale(1)'; });
+
+    sfx('trophyClaim');
     launchConfetti(isRare);
     document.getElementById('spinner-continue-btn').style.display='block';
   }
@@ -8333,19 +8618,35 @@ function showBossSpinner(kills,preBonus,waveNum,coins,newTrophies) {
   spinnerPendingWaveData={kills,preBonus,waveNum,coins,newTrophies};
   // Scale rewards after wave 20
   const mult = waveNum>=20 ? Math.min(1+((waveNum-20)*0.15), 4.0) : 1.0;
-  SPINNER_REWARDS.forEach(r=>{ 
-    if(r._base>0){ 
-      r.coins=Math.floor(r._base*mult); 
+  SPINNER_REWARDS.forEach(r=>{
+    if(r._base>0){
+      r.coins=Math.floor(r._base*mult);
       r.label=`${r.coins.toLocaleString()} 💰`;
-    } 
+      r.wl = r.coins>=1000 ? (r.coins/1000)+'K' : ''+r.coins;
+    }
   });
   document.getElementById('spinner-btn').style.display='block';
   document.getElementById('spinner-continue-btn').style.display='none';
-  document.getElementById('spinner-result').textContent='';
+  var resEl = document.getElementById('spinner-result');
+  resEl.textContent='';
+  resEl.style.transform='scale(1)';
+  resEl.style.transition='none';
   const s = document.getElementById('screen-spinner');
   document.body.appendChild(s);
   showScreen('screen-spinner');
+  // Start idle animation loop
+  spinnerBreathPhase = 0;
+  spinnerLedAngle = 0;
+  spinnerSparks = [];
+  if(spinnerIdleRaf) cancelAnimationFrame(spinnerIdleRaf);
   drawSpinner(spinnerAngle);
+  spinnerIdleRaf = requestAnimationFrame(function spinnerIdleLoop() {
+    if(!document.getElementById('spinner-canvas')) { spinnerIdleRaf=null; return; }
+    spinnerBreathPhase += 0.03;
+    spinnerLedAngle += 0.015;
+    drawSpinner(spinnerAngle);
+    spinnerIdleRaf = requestAnimationFrame(spinnerIdleLoop);
+  });
 }
 
 function splashLaunch() {
