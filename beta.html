@@ -2236,17 +2236,17 @@ const TROPHIES = [
 // ── ACHIEVEMENTS ──────────────────────────────────────────────
 const ACHIEVEMENTS = [
   {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
-   tiers:[{goal:50,label:'I'},{goal:250,label:'II'},{goal:1000,label:'III'},{goal:5000,label:'IV'}]},
+   tiers:[{goal:50,label:'I',reward:3},{goal:250,label:'II',reward:5},{goal:1000,label:'III',reward:10},{goal:5000,label:'IV',reward:20}]},
   {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
-   tiers:[{goal:5,label:'I'},{goal:20,label:'II'},{goal:50,label:'III'},{goal:100,label:'IV'}]},
+   tiers:[{goal:5,label:'I',reward:3},{goal:20,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
   {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
-   tiers:[{goal:15,label:'I'},{goal:30,label:'II'},{goal:60,label:'III'},{goal:100,label:'IV'}]},
+   tiers:[{goal:15,label:'I',reward:3},{goal:30,label:'II',reward:5},{goal:60,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
   {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
-   tiers:[{goal:10,label:'I'},{goal:25,label:'II'},{goal:50,label:'III'},{goal:100,label:'IV'}]},
+   tiers:[{goal:10,label:'I',reward:3},{goal:25,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
   {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
-   tiers:[{goal:500,label:'I'},{goal:5000,label:'II'},{goal:25000,label:'III'},{goal:100000,label:'IV'}]},
+   tiers:[{goal:500,label:'I',reward:3},{goal:5000,label:'II',reward:5},{goal:25000,label:'III',reward:10},{goal:100000,label:'IV',reward:20}]},
   {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
-   tiers:[{goal:3,label:'I'},{goal:10,label:'II'},{goal:30,label:'III'},{goal:75,label:'IV'}]},
+   tiers:[{goal:3,label:'I',reward:3},{goal:10,label:'II',reward:5},{goal:30,label:'III',reward:10},{goal:75,label:'IV',reward:20}]},
 ];
 
 function checkAchievements() {
@@ -2258,7 +2258,9 @@ function checkAchievements() {
     var statVal = SAVE.lifetimeStats[ach.stat] || 0;
     while (nextIdx < ach.tiers.length && statVal >= ach.tiers[nextIdx].goal) {
       SAVE.achievements[ach.id] = nextIdx;
-      newlyCompleted.push({ach: ach, tierIdx: nextIdx});
+      var echoReward = ach.tiers[nextIdx].reward || 0;
+      if (echoReward > 0) { SAVE.echoes = (SAVE.echoes||0) + echoReward; SAVE.totalEchoes = (SAVE.totalEchoes||0) + echoReward; }
+      newlyCompleted.push({ach: ach, tierIdx: nextIdx, echoReward: echoReward});
       nextIdx++;
     }
   });
@@ -3300,18 +3302,20 @@ SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   updateRelicBadges();
   spawnWave();
   currentTrackName = '';
-  const waveTrack = getWaveTrack();
-  if(BOSS_TRACKS.has(waveTrack) && !bossThemeBuffer) {
-    const waitForBoss = setInterval(()=>{
-      if(bossThemeBuffer) {
-        clearInterval(waitForBoss);
-        currentTrackName='';
-        setTrack(waveTrack);
-      }
-    }, 200);
-    setTimeout(()=>clearInterval(waitForBoss), 10000);
-  } else {
-    setTrack(waveTrack);
+  if (!window._deferWaveMusic) {
+    const waveTrack = getWaveTrack();
+    if(BOSS_TRACKS.has(waveTrack) && !bossThemeBuffer) {
+      const waitForBoss = setInterval(()=>{
+        if(bossThemeBuffer) {
+          clearInterval(waitForBoss);
+          currentTrackName='';
+          setTrack(waveTrack);
+        }
+      }, 200);
+      setTimeout(()=>clearInterval(waitForBoss), 10000);
+    } else {
+      setTrack(waveTrack);
+    }
   }
   setTimeout(()=>updateBombDisplay(), 50);
 }
@@ -4509,13 +4513,49 @@ function showSummaryAchievements(onDone) {
         if (valSpan) { valSpan.style.color = '#ffd700'; valSpan.style.textShadow = '0 0 8px #ffd70066'; valSpan.textContent = '✓ TIER COMPLETE'; }
         try { sfx('trophyClaim'); } catch(e){}
       });
-      /* Phase 2: transition to green */
+      /* Phase 2: transition to green + echo burst */
       setTimeout(function() {
         celebrateRows.forEach(function(entry) {
           entry.row.classList.remove('complete-glow');
           entry.row.classList.add('complete-green');
           var valSpan = entry.row.querySelector('.ach-val');
           if (valSpan) { valSpan.style.color = '#00ff88'; valSpan.style.textShadow = '0 0 8px #00ff8844'; }
+          /* Echo reward burst */
+          var recentEntry = _recentAchievements.length === 0 ? null : null;
+          var echoAmt = 0;
+          var justTiers = recentMap[entry.ach.id];
+          if (justTiers) justTiers.forEach(function(ti) { echoAmt += (entry.ach.tiers[ti].reward || 0); });
+          if (echoAmt > 0) {
+            var rect = entry.row.getBoundingClientRect();
+            /* Spawn echo emoji burst particles */
+            for (var _ep = 0; _ep < 6; _ep++) {
+              var echoPart = document.createElement('div');
+              var angle = (Math.PI * 2 / 6) * _ep + (Math.random() - 0.5) * 0.5;
+              var dist = 30 + Math.random() * 40;
+              var tx = Math.cos(angle) * dist;
+              var ty = Math.sin(angle) * dist;
+              echoPart.textContent = '🌀';
+              echoPart.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-size:' + (10 + Math.random() * 8) + 'px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .7s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.3)';
+              document.body.appendChild(echoPart);
+              (function(el, dx, dy) {
+                requestAnimationFrame(function() { requestAnimationFrame(function() {
+                  el.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px)) scale(1)';
+                  el.style.opacity = '0';
+                }); });
+                setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 800);
+              })(echoPart, tx, ty);
+            }
+            /* Echo reward label */
+            var echoLabel = document.createElement('div');
+            echoLabel.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;color:#aa44ff;text-shadow:0 0 10px #aa44ff88;letter-spacing:1px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .9s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.5)';
+            echoLabel.textContent = '+' + echoAmt + ' 🌀';
+            document.body.appendChild(echoLabel);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+              echoLabel.style.transform = 'translate(-50%, calc(-50% - 35px)) scale(1.2)';
+              echoLabel.style.opacity = '0';
+            }); });
+            setTimeout(function() { if (echoLabel.parentNode) echoLabel.parentNode.removeChild(echoLabel); }, 1000);
+          }
         });
         /* Phase 3: fade out completed, then update remaining to show next tier */
         setTimeout(function() {
@@ -4611,7 +4651,7 @@ function buildAchievementsScreen() {
         '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">' +
         '<div style="height:100%;width:' + pct + '%;border-radius:2px;background:' + barBg + ';transition:width .6s ease"></div>' +
         '</div>' +
-        '<div style="font-size:7px;color:#445;margin-top:2px;font-style:italic">Reward: Coming soon</div>' +
+        '<div style="font-size:9px;color:' + (isComplete ? '#aa44ff' : '#556') + ';margin-top:3px">' + (isComplete ? '🌀 +' + tier.reward + ' Echoes ✓' : 'Reward: 🌀 +' + tier.reward + ' Echoes') + '</div>' +
         '</div>';
     });
     html += '</div>';
@@ -4722,6 +4762,10 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
 }
 
 function waveCleared() {
+  powerupDrops=[]; activePowerups={}; eBullets=[]; bullets=[]; coinDrops=[];
+  /* Clear main canvas so nothing lingers behind overlay screens */
+  var _gc = document.getElementById('canvas');
+  if (_gc) { var _gctx = _gc.getContext('2d'); _gctx.clearRect(0, 0, _gc.width, _gc.height); }
   const riftEl=document.getElementById('rift-indicator');
   if(riftEl) riftEl.classList.remove('active');
   temporalRiftTimer=0;
@@ -5763,15 +5807,21 @@ function _startGameActual() {
     _launchFromMenu = false;
     resumeAC(); stopMenuAnim();
     if(glitchTimer) clearTimeout(glitchTimer);
+    window._deferWaveMusic = true;
     initGame();
+    window._deferWaveMusic = false;
     /* Hide bomb counter during transition — it positions via getBoundingClientRect
        which returns 0,0 since controls aren't visible yet */
     var _bc = document.getElementById('bomb-counter'); if (_bc) _bc.style.display = 'none';
     playLaunchTransition(function() {
       showScreen('__game__');
       gState='playing';
+      /* Start wave music with a fade-in */
       currentTrackName = '__none__';
+      var savedVol = SAVE.musicVolume / 100;
+      masterGain.gain.setValueAtTime(0.001, AC.currentTime);
       setTrack(getWaveTrack());
+      masterGain.gain.exponentialRampToValueAtTime(Math.max(0.001, savedVol), AC.currentTime + 0.8);
       lastTime=0;
       rafId=requestAnimationFrame(gameLoop);
     });
@@ -8122,7 +8172,7 @@ function _showAchievementNotification() {
     '<span style="font-size:18px">' + ach.icon + '</span>' +
     '<div>' +
     '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ' ' + tier.label + '</div>' +
-    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT</div>' +
+    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT' + (tier.reward ? ' · +' + tier.reward + ' 🌀' : '') + '</div>' +
     '</div></div>';
   document.body.appendChild(el);
   requestAnimationFrame(function() {
