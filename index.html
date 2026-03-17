@@ -80,7 +80,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #screen-shop,#screen-packs,#screen-gameover,#screen-leaderboard{justify-content:flex-start!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-top:40px!important}
 
 /* MENU */
-#screen-menu{background:transparent;justify-content:flex-start;overflow:hidden}
+#screen-menu{background:transparent;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #menu-canvas{position:absolute;inset:0;z-index:0}
 #menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
@@ -106,6 +106,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #splash-version{position:absolute;bottom:20px;right:20px;font-size:10px;letter-spacing:3px;color:#1a3a5a;opacity:0;transition:opacity 1s;font-family:'Courier New',monospace;}
 #pregate-stars div{position:absolute;border-radius:50%;background:#fff;}
 @keyframes twinkle{from{opacity:0.1}to{opacity:0.9}}
+@keyframes shootingStar{0%{left:-10%;top:28%;opacity:0}5%{opacity:1}85%{opacity:1}100%{left:110%;top:18%;opacity:0}}
 @keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 @keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:0.4}95%{opacity:1}97%{opacity:0.6}98%{opacity:1}}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 30px #4af,0 0 60px #4af,0 0 100px #4af}50%{text-shadow:0 0 20px #4af,0 0 40px #4af,0 0 70px #08f}}
@@ -116,11 +117,14 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .btn-main::before{content:'';position:absolute;inset:0;background:currentColor;opacity:0;transition:opacity .15s}
 .btn-main:active::before{opacity:.12}
 .btn-main:active{transform:scale(.96)}
-.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:14px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
+.dock-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:1.5px solid;background:rgba(255,255,255,0.11);cursor:pointer;transition:transform .1s,background .1s,box-shadow .1s;padding:10px 4px;-webkit-tap-highlight-color:transparent;box-shadow:0 0 8px var(--tc,#00f5ff)22,inset 0 0 12px var(--tc,#00f5ff)11}
 .dock-tile:active{transform:scale(0.91);background:rgba(255,255,255,0.12);box-shadow:0 0 16px var(--tc,#00f5ff),0 0 32px var(--tc,#00f5ff)44}
-.dock-icon{font-size:28px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
-.dock-label{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
-#menu-ship-preview{height:clamp(80px,15vh,140px);aspect-ratio:160/140;width:auto}
+.dock-icon{font-size:22px;line-height:1;filter:drop-shadow(0 0 6px var(--tc,#00f5ff))}
+.dock-label{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
+.menu-util-btn{flex:1;padding:8px 10px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#667;background:transparent;border:1px solid #223;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s}
+.menu-util-btn:active{background:rgba(255,255,255,0.06)}
+#menu-ship-preview{height:clamp(50px,10vh,120px);aspect-ratio:160/140;width:auto}
+@media(max-height:700px){.menu-hero-emoji{font-size:32px!important}.title-void{font-size:clamp(20px,6.5vw,30px)!important}.title-inv{font-size:22px!important}#menu-hero-title{padding-top:2px!important}.game-title{margin-bottom:2px!important}#menu-nav-grid{margin-top:8px!important}.menu-stats-row{padding-top:6px!important;padding-bottom:6px!important}.menu-launch-btn{padding-top:12px!important;padding-bottom:12px!important}}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
 @keyframes shimmer{0%{left:-100%}60%,100%{left:150%}}
 @keyframes menuFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -249,7 +253,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
 </div>
 
-<button id="music-btn" onclick="toggleMusic()">♪ ON</button>
+<button id="music-btn" onclick="openSettings()">⚙️</button>
 <button id="reset-btn" onclick="confirmReset()" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;z-index:999;font-size:11px;font-family:'Orbitron',sans-serif;color:#ff4455;background:rgba(255,68,85,0.08);border:1px solid #ff4455;padding:5px 10px;border-radius:3px;cursor:pointer;pointer-events:auto;letter-spacing:1px">⟳ RESET</button><div id="toast"></div>
 
 <!-- ═══════════ SCREENS ═══════════ -->
@@ -311,7 +315,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- HERO TITLE -->
     <div id="menu-hero-title" style="position:relative;text-align:center;padding-top:8px">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:120px;background:radial-gradient(ellipse,rgba(0,245,255,0.12) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
-      <div style="font-size:48px;animation:floatBob 2.5s ease-in-out infinite;display:block;filter:drop-shadow(0 0 20px var(--c));position:relative">👾</div>
+      <div class="menu-hero-emoji" style="font-size:48px;animation:floatBob 2.5s ease-in-out infinite;display:block;filter:drop-shadow(0 0 20px var(--c));position:relative">👾</div>
       <div class="game-title" style="position:relative;width:100%;margin-bottom:28px">
         <span class="title-void" id="glitch-title" style="display:block;white-space:nowrap">VOID INVADERS</span>
         <span class="title-inv">RELOADED</span>
@@ -319,7 +323,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
+    <div id="menu-stats-row" class="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
         <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
         <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
@@ -338,7 +342,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
     <!-- LAUNCH BUTTON -->
     <div style="width:100%;box-sizing:border-box">
-      <button id="btn-launch" onclick="startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
+      <button id="btn-launch" class="menu-launch-btn" onclick="_launchFromMenu=true;startGame()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;letter-spacing:4px;padding:18px;border:2px solid #00f5ff;border-radius:6px;background:rgba(0,245,255,0.18);color:#00f5ff;cursor:pointer;position:relative;overflow:hidden;animation:launchPulse 1.8s ease-in-out infinite;text-shadow:0 0 8px #00f5ff66;box-shadow:0 0 14px rgba(0,245,255,0.15),inset 0 0 14px rgba(0,245,255,0.08)">
         <span style="position:relative;z-index:1">▶ LAUNCH MISSION</span>
         <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,245,255,0.15),transparent);animation:shimmer 2.5s ease-in-out infinite"></div>
       </button>
@@ -348,7 +352,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- 2x4 NAVIGATION GRID -->
     <div id="menu-nav-grid" style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;margin-top:16px">
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:8px">NAVIGATION</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
 
         <div class="dock-tile" id="btn-relics" style="--tc:#ff4455;border-color:#ff445555">
           <div class="dock-icon">⚠️</div>
@@ -376,21 +380,28 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
+        <div class="dock-tile" id="dock-echoes" onclick="if(!SAVE.echoesUnlocked){showToast('🌀 Echoes unlock after reaching Wave 35!');return;}showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
+          <div class="dock-icon">🌀</div>
+          <div class="dock-label">ECHOES</div>
+          <div id="dock-echoes-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
+        </div>
+
         <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff99">
           <div class="dock-icon">🚀</div>
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" onclick="showHowToPlay()" style="--tc:#aaaaaa;border-color:#aaaaaa99">
-          <div class="dock-icon">❓</div>
-          <div class="dock-label">HOW TO PLAY</div>
+        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
+          <div class="dock-icon">🔗</div>
+          <div class="dock-label">SYNERGY</div>
+          <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
-        <div class="dock-tile" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="--tc:#778899;border-color:#77889999">
-          <div class="dock-icon" style="position:relative">📋<span id="updates-badge" style="display:none;position:absolute;top:-4px;right:-6px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></div>
-          <div class="dock-label">UPDATES</div>
-        </div>
-
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;width:100%">
+        <button class="menu-util-btn" onclick="showHowToPlay()">❓ How to Play</button>
+        <button class="menu-util-btn" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements');" style="color:#ffd700;border-color:#ffd70033">🏅 Achieve</button>
+        <button class="menu-util-btn" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="position:relative">📋 Updates<span id="updates-badge" style="display:none;position:absolute;top:6px;right:8px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></button>
       </div>
     </div>
 
@@ -404,7 +415,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.6.3</div>
+    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.7.0 (BETA)</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -484,11 +495,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <div id="screen-summary" class="screen hidden">
   <canvas id="sum-fireworks" style="position:absolute;inset:0;pointer-events:none;z-index:0"></canvas>
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;max-width:380px;padding:0 16px">
-    <div id="sum-relic-badges" style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;margin-top:8px"></div>
-    <div id="sum-lives" style="display:flex;gap:4px;justify-content:center;margin-bottom:12px"></div>
+    <div id="sum-relic-badges" style="display:flex;gap:6px;justify-content:center;margin-bottom:4px;margin-top:4px"></div>
+    <div id="sum-lives" style="display:flex;gap:3px;justify-content:center;margin-bottom:6px"></div>
     <div id="sum-wave-badge" class="sum-wave-badge">WAVE 1 COMPLETE</div>
-    <div style="font-size:32px;margin-bottom:4px;animation:pulseGlow 1s ease-in-out infinite">✦</div>
-    <div class="screen-title" style="color:var(--gr);text-shadow:0 0 20px var(--gr);margin-bottom:18px">WAVE CLEAR</div>
+    <div style="font-size:24px;margin-bottom:2px;animation:pulseGlow 1s ease-in-out infinite">✦</div>
+    <div class="screen-title" style="color:var(--gr);text-shadow:0 0 20px var(--gr);margin-bottom:10px;font-size:20px">WAVE CLEAR</div>
 
     <div class="sum-row" id="sum-row-kills">
       <span class="sum-label">ENEMIES DEFEATED</span>
@@ -514,14 +525,33 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <div id="sum-trophy-notif" style="display:none;width:100%;max-width:340px"></div>
-    <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:18px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
+    <div id="sum-achievements" style="display:none;width:100%;max-width:340px;margin-top:8px">
+      <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffd700;letter-spacing:3px;text-align:center;margin-bottom:4px;text-shadow:0 0 8px #ffd70044">ACHIEVEMENT PROGRESS</div>
+      <div id="sum-ach-list"></div>
+    </div>
+    <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:10px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
       <div class="wc-grid" style="width:100%;max-width:340px">
         <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
         <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
+        <button class="btn-main btn-sm" id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
+        <button class="btn-main btn-sm" onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" style="border-color:#ffd700;color:#ffd700;box-shadow:0 0 10px rgba(255,215,0,0.15)">🏅 ACHIEVE</button>
       </div>
       <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
-      <button class="btn-main btn-sm" onclick="showScreen('screen-menu')" style="margin-top:4px;border-color:#334;color:#556;font-size:10px;letter-spacing:2px">💾 SAVE & MENU</button>
+      <button id="ascend-btn" class="btn-main btn-sm" onclick="doAscension()" style="display:none;margin-top:6px;border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44;animation:cardPulse 2s ease-in-out infinite">🌀 ASCEND (+<span id="ascend-echo-count">0</span> Echoes)</button>
+      <button onclick="showScreen('screen-menu')" style="margin-top:4px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
        </div>
+  </div>
+</div>
+
+<div id="screen-achievements" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
+    <div style="font-size:28px;margin-bottom:4px">🏅</div>
+    <div class="screen-title" style="color:#ffd700;text-shadow:0 0 20px #ffd70066;margin-bottom:4px;font-size:18px">ACHIEVEMENTS</div>
+    <div style="font-size:9px;color:#556;letter-spacing:2px" id="ach-screen-subtitle"></div>
+  </div>
+  <div id="ach-screen-list" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%"></div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen(achievementsPrevScreen||'screen-menu')">← BACK</button>
   </div>
 </div>
 
@@ -534,6 +564,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="wc-grid">
       <button class="btn-main b-c btn-sm" onclick="showShopFromWave()">⚡ UPGRADES</button>
       <button class="btn-main b-m btn-sm" onclick="showPacksFromWave()">📦 PACKS</button>
+      <button class="btn-main btn-sm" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
     </div>
     <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
     <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
@@ -591,11 +622,51 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
   <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div class="shop-grid" id="shop-grid"></div>
+    <div id="forge-section" style="width:100%;max-width:600px;margin-top:18px;display:none">
+      <div style="text-align:center;margin-bottom:10px">
+        <div style="height:1px;background:linear-gradient(90deg,transparent,#ff660066,transparent);margin-bottom:10px"></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#ff8c00;letter-spacing:3px;text-shadow:0 0 12px #ff8c00,0 0 30px #ff8c0044">🔨 STAR FORGE</div>
+        <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">INFINITE SCALING · NO LEVEL CAP</div>
+      </div>
+      <div class="shop-grid" id="forge-grid"></div>
+    </div>
     <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-m btn-sm" onclick="showPacksFromShop()">📦 CARD PACKS</button>
       <button class="btn-main btn-sm" onclick="openTrophies('screen-shop')" style="border-color:#ffaa00;color:#ffaa00;box-shadow:0 0 10px rgba(255,170,0,0.2)">🏆 TROPHIES</button>
       <button class="btn-main btn-sm" id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" style="border-color:#00ccff;color:#00ccff;box-shadow:0 0 10px rgba(0,204,255,0.15)">⚡ PERKS ${perksUnlocked?'':'🔒'}</button>
+      <button class="btn-main btn-sm" id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" style="border-color:#ff8800;color:#ff8800;box-shadow:0 0 10px rgba(255,136,0,0.15)">🔗 SYNERGY</button>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- ECHOES -->
+<div id="screen-echoes" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
+    <div class="screen-title" style="color:#aa44ff">🌀 VOID ECHOES</div>
+    <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">PERMANENT PRESTIGE UPGRADES</div>
+    <div id="echoes-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#aa44ff;text-shadow:0 0 12px #aa44ff,0 0 30px #aa44ff44;margin:6px 0 2px">🌀 0</div>
+    <div id="echoes-title" style="font-size:10px;color:#aa44ff88;letter-spacing:2px;margin-bottom:4px">PILOT</div>
+  </div>
+  <div style="height:calc(100vh - 150px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+    <div class="shop-grid" id="echoes-grid"></div>
+    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
+      <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYNERGIES -->
+<div id="screen-synergies" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
+    <div class="screen-title" style="color:#ff8800">🔗 VOID SYNERGIES</div>
+    <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">COMBINE SYSTEMS FOR POWERFUL BONUSES</div>
+    <div id="synergies-active-count" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#ff8800;margin:6px 0 2px"></div>
+  </div>
+  <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+    <div id="synergies-grid" style="width:100%;max-width:600px"></div>
+    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
+      <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
     </div>
   </div>
 </div>
@@ -689,7 +760,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <button onclick="devCoins(500)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+500</button>
           <button onclick="devCoins(2000)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+2000</button>
           <button onclick="devCoins(10000)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">+10000</button>
-          <button onclick="devCoins(99999)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">MAX</button>
+          <button onclick="devCoins(999999)" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffd700;background:rgba(255,215,0,0.1);color:#ffd700;border-radius:4px;cursor:pointer">MAX</button>
         </div>
       </div>
       <div style="margin-bottom:16px">
@@ -700,11 +771,20 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <button onclick="devWaveAdj(1)" style="font-family:'Orbitron',sans-serif;font-size:16px;padding:6px 14px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;border-radius:4px;cursor:pointer">+</button>
         </div>
       </div>
-      <div style="margin-bottom:12px">
+      <div style="margin-bottom:8px">
+        <button onclick="devUnlockAll()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer;width:100%">🔓 UNLOCK EVERYTHING</button>
+      </div>
+      <div style="margin-bottom:8px">
         <button onclick="SAVE.relicsUnlocked=true;doSave();updateMenuCoins();showToast('⚠ Relics Unlocked!');closeDevModal();" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff4455;background:rgba(255,68,85,0.1);color:#ff4455;border-radius:4px;cursor:pointer;width:100%">⚠ UNLOCK RELICS</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <button onclick="devAddEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #aa44ff;background:rgba(170,68,255,0.1);color:#aa44ff;border-radius:4px;cursor:pointer;width:100%">🌀 +500 ECHOES</button>
       </div>
       <div style="margin-bottom:12px">
         <button onclick="devClearLeaderboard()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff4455;background:rgba(255,68,85,0.1);color:#ff4455;border-radius:4px;cursor:pointer;width:100%">🗑 CLEAR LEADERBOARD</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <button onclick="devResetAchievements()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer;width:100%">🏅 RESET ACHIEVEMENTS</button>
       </div>
       <div style="display:flex;gap:8px;justify-content:center">
         <button onclick="devLaunch()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer">▶ LAUNCH</button>
@@ -745,7 +825,8 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="color:#556;font-size:12px;margin-bottom:4px;letter-spacing:2px">FINAL SCORE</div>
   <div id="go-final">0</div>
   <div style="color:#556;font-size:12px;margin:4px 0">WAVE <span id="go-wave" style="color:var(--m)">0</span> REACHED</div>
-  <div style="color:var(--g);font-size:15px;margin-bottom:24px">+<span id="go-coins">0</span> COINS EARNED</div>
+  <div style="color:var(--g);font-size:15px;margin-bottom:8px">+<span id="go-coins">0</span> COINS EARNED</div>
+  <div id="go-echo-gain" style="display:none;color:#aa44ff;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-shadow:0 0 10px #aa44ff;margin-bottom:16px;letter-spacing:2px">🌀 +<span id="go-echo-count">0</span> ECHOES</div>
   <div id="go-submit-area" style="width:100%;max-width:320px;margin-bottom:16px;border:1px solid #ffd70066;border-radius:8px;padding:12px;background:rgba(255,215,0,0.04);box-shadow:0 0 20px rgba(255,215,0,0.1);animation:pulseGlow 2s ease-in-out infinite">
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:4px;text-align:center">🏆 SUBMIT TO LEADERBOARD</div>
     <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#aa8800;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
@@ -820,41 +901,53 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 #screen-summary { background: rgba(3,6,16,0.97); }
 .sum-row {
   display: flex; justify-content: space-between; align-items: center;
-  width: 100%; max-width: 340px; padding: 10px 0;
+  width: 100%; max-width: 340px; padding: 6px 0;
   border-bottom: 1px solid #0d1a33;
   opacity: 0; transform: translateX(-24px);
   transition: opacity .4s ease, transform .4s ease;
 }
 .sum-row.show { opacity: 1; transform: translateX(0); }
-.sum-label { font-size: 12px; color: #556; letter-spacing: 2px; }
+.sum-label { font-size: 10px; color: #556; letter-spacing: 2px; }
 .sum-val {
-  font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900;
   color: var(--g); text-shadow: 0 0 10px var(--g);
   transition: color .2s;
 }
 .sum-val.ticking { color: #fff; text-shadow: 0 0 20px #fff; }
 .sum-bonus {
-  font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--gr);
-  letter-spacing: 2px; text-align: center; margin: 10px 0;
+  font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--gr);
+  letter-spacing: 2px; text-align: center; margin: 6px 0;
   opacity: 0; transition: opacity .5s;
 }
 .sum-bonus.show { opacity: 1; }
 .sum-total-row {
   display: flex; justify-content: space-between; align-items: center;
-  width: 100%; max-width: 340px; padding: 14px 0 6px;
+  width: 100%; max-width: 340px; padding: 8px 0 4px;
   opacity: 0; transform: translateY(10px);
   transition: opacity .5s ease, transform .5s ease;
 }
 .sum-total-row.show { opacity: 1; transform: translateY(0); }
-.sum-total-label { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #556; letter-spacing: 3px; }
+.sum-total-label { font-family: 'Orbitron', sans-serif; font-size: 10px; color: #556; letter-spacing: 3px; }
 .sum-total-val {
-  font-family: 'Orbitron', sans-serif; font-size: 26px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
   color: var(--c); text-shadow: 0 0 20px var(--c);
 }
 .sum-coins-earned {
-  font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900;
+  font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900;
   color: var(--g); text-shadow: 0 0 16px var(--g);
 }
+.ach-prog-row{display:flex;align-items:center;gap:6px;padding:4px 8px;opacity:0;transform:translateX(-20px);transition:opacity .4s ease,transform .4s ease,box-shadow .5s ease,border-color .5s ease,background .5s ease;max-height:70px;overflow:hidden;border-radius:6px;border:1px solid transparent;margin-bottom:2px}
+.ach-prog-row.show{opacity:1;transform:translateX(0)}
+.ach-prog-row.complete-glow{background:rgba(255,215,0,0.06);border-color:#ffd70066;box-shadow:0 0 12px #ffd70033,0 0 24px #ffd70011;transform:scale(1.02)}
+.ach-prog-row.complete-green{background:rgba(0,255,136,0.08);border-color:#00ff8866;box-shadow:0 0 12px #00ff8833,0 0 24px #00ff8811}
+.ach-prog-row.fade-out{opacity:0;max-height:0;padding:0;margin:0;border-width:0;transform:scale(0.95);transition:opacity .5s ease,max-height .4s ease .15s,padding .4s ease .15s,margin .4s ease .15s,border-width .3s ease .15s,transform .4s ease}
+.ach-prog-bar{flex:1;height:5px;background:#0d1a33;border-radius:3px;overflow:hidden;position:relative}
+.ach-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ffd700,#ff8800);transition:width 1.2s cubic-bezier(.25,.46,.45,.94);width:0;position:relative}
+.ach-prog-fill.complete{background:linear-gradient(90deg,#00ff88,#44ffaa,#00ff88);background-size:200% 100%;animation:achShimmer 1.2s ease}
+@keyframes achShimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.ach-prog-row .ach-sparkle{position:absolute;right:-2px;top:50%;transform:translateY(-50%);font-size:10px;opacity:0;transition:opacity .3s ease;animation:achSparkle 1s ease-in-out infinite}
+.ach-prog-row.complete-glow .ach-sparkle{opacity:1}
+@keyframes achSparkle{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.3)}}
 .sum-wave-badge {
   font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 3px;
   color: #446; margin-bottom: 4px;
@@ -936,6 +1029,10 @@ function resumeAC(){ if(AC.state==='suspended') AC.resume(); }
 // Master chain
 masterGain = AC.createGain();
 masterGain.gain.value = 0.55;
+var sfxMasterGain = AC.createGain();
+sfxMasterGain.gain.value = 0.50;
+sfxMasterGain.connect(AC.destination);
+// Volumes are overridden by applySettingsVolumes() after loadSave()
 reverbNode = AC.createConvolver();
 (()=>{
   const len = AC.sampleRate * 1.2;
@@ -1633,7 +1730,6 @@ function getWaveTrack() {
 
 function toggleMusic() {
   musicOn=!musicOn;
-  document.getElementById('music-btn').textContent=musicOn?'♪ ON':'♪ OFF';
   if(musicOn) {
     if(BOSS_TRACKS.has(currentTrackName)) {
       playBossThemeNow(false);
@@ -1652,6 +1748,66 @@ function toggleMusic() {
   }
 }
 
+// ── SETTINGS MODAL ──────────────────────────────────
+function openSettings() {
+  var modal = document.getElementById('settings-modal');
+  document.body.appendChild(modal);
+  modal.style.display = 'flex';
+  // Sync UI to current state
+  var mv = document.getElementById('settings-music-vol');
+  var sv = document.getElementById('settings-sfx-vol');
+  mv.value = SAVE.musicVolume;
+  sv.value = SAVE.sfxVolume;
+  document.getElementById('settings-music-val').textContent = SAVE.musicVolume + '%';
+  document.getElementById('settings-sfx-val').textContent = SAVE.sfxVolume + '%';
+  var tb = document.getElementById('settings-music-toggle');
+  tb.textContent = musicOn ? 'ON' : 'OFF';
+  tb.style.borderColor = musicOn ? '#00f5ff' : '#556';
+  tb.style.color = musicOn ? '#00f5ff' : '#556';
+  mv.disabled = !musicOn;
+  mv.style.opacity = musicOn ? '1' : '0.4';
+}
+function revertSettingsDefaults() {
+  onMusicVolChange(55);
+  onSfxVolChange(50);
+  document.getElementById('settings-music-vol').value = 55;
+  document.getElementById('settings-sfx-vol').value = 50;
+}
+function closeSettings() {
+  document.getElementById('settings-modal').style.display = 'none';
+  // Persist volume settings
+  if(gState !== 'gameover') { doSave(); } else { localStorage.setItem('vi2_save', JSON.stringify(SAVE)); }
+}
+function onMusicVolChange(v) {
+  v = parseInt(v, 10);
+  SAVE.musicVolume = v;
+  document.getElementById('settings-music-val').textContent = v + '%';
+  masterGain.gain.setTargetAtTime(v / 100, AC.currentTime, 0.02);
+}
+function onSfxVolChange(v) {
+  v = parseInt(v, 10);
+  SAVE.sfxVolume = v;
+  document.getElementById('settings-sfx-val').textContent = v + '%';
+  sfxMasterGain.gain.setTargetAtTime(v / 100, AC.currentTime, 0.02);
+  sfx('navTap');
+}
+function toggleMusicFromSettings() {
+  toggleMusic();
+  var tb = document.getElementById('settings-music-toggle');
+  tb.textContent = musicOn ? 'ON' : 'OFF';
+  tb.style.borderColor = musicOn ? '#00f5ff' : '#556';
+  tb.style.color = musicOn ? '#00f5ff' : '#556';
+  var mv = document.getElementById('settings-music-vol');
+  mv.disabled = !musicOn;
+  mv.style.opacity = musicOn ? '1' : '0.4';
+}
+function applySettingsVolumes() {
+  var mv = (SAVE.musicVolume != null) ? SAVE.musicVolume : 55;
+  var sv = (SAVE.sfxVolume != null) ? SAVE.sfxVolume : 50;
+  masterGain.gain.value = mv / 100;
+  sfxMasterGain.gain.value = sv / 100;
+}
+
 // ── SFX ─────────────────────────────────────────────
 var _suppressNavSound = false;
 var _splashAnimId = null;
@@ -1660,7 +1816,7 @@ function sfx(type) {
   const t = AC.currentTime;
   const sfxGain = AC.createGain();
   sfxGain.gain.value = 0.18;
-  sfxGain.connect(AC.destination);
+  sfxGain.connect(sfxMasterGain);
 
   const osc = (freq,type,dur,vol,start=0,freqEnd=null)=>{
     const o=AC.createOscillator(), g=AC.createGain();
@@ -2035,7 +2191,13 @@ try {
 } catch(e) { localStorage.removeItem('vi2_save'); }
 
 const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false, lastSeenAnnouncement:'',
-  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none' } };
+  shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
+  forgeLevels:{ damage:0, rate:0, armor:0 },
+  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
+  forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false,
+  musicVolume:55, sfxVolume:50,
+  lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
+  achievements:{} };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2070,6 +2232,45 @@ const TROPHIES = [
   { id:'t29', pts:9500000,   icon:'🏆', name:'VOID SOVEREIGN',  reward:'8 Bombs + 1500💰',    type:'mega',  val:8   },
   { id:'t30', pts:12000000,  icon:'👑', name:'EMPEROR OF VOID', reward:'10 Bombs + 2000💰',   type:'mega',  val:10  },
 ];
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
+   tiers:[{goal:50,label:'I',reward:3},{goal:250,label:'II',reward:5},{goal:1000,label:'III',reward:10},{goal:5000,label:'IV',reward:20}]},
+  {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
+   tiers:[{goal:5,label:'I',reward:3},{goal:20,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+  {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
+   tiers:[{goal:15,label:'I',reward:3},{goal:30,label:'II',reward:5},{goal:60,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+  {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
+   tiers:[{goal:10,label:'I',reward:3},{goal:25,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+  {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
+   tiers:[{goal:500,label:'I',reward:3},{goal:5000,label:'II',reward:5},{goal:25000,label:'III',reward:10},{goal:100000,label:'IV',reward:20}]},
+  {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
+   tiers:[{goal:3,label:'I',reward:3},{goal:10,label:'II',reward:5},{goal:30,label:'III',reward:10},{goal:75,label:'IV',reward:20}]},
+];
+
+function checkAchievements() {
+  var newlyCompleted = [];
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var nextIdx = (currentTier === undefined) ? 0 : currentTier + 1;
+    if (nextIdx >= ach.tiers.length) return;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    while (nextIdx < ach.tiers.length && statVal >= ach.tiers[nextIdx].goal) {
+      SAVE.achievements[ach.id] = nextIdx;
+      var echoReward = ach.tiers[nextIdx].reward || 0;
+      if (echoReward > 0) { SAVE.echoes = (SAVE.echoes||0) + echoReward; SAVE.totalEchoes = (SAVE.totalEchoes||0) + echoReward; }
+      newlyCompleted.push({ach: ach, tierIdx: nextIdx, echoReward: echoReward});
+      nextIdx++;
+    }
+  });
+  if (newlyCompleted.length > 0) {
+    newlyCompleted.forEach(function(entry) { _achNotifyQueue.push(entry); });
+    if (!_achNotifyActive) _showAchievementNotification();
+    _recentAchievements = _recentAchievements.concat(newlyCompleted);
+  }
+  return newlyCompleted;
+}
 
 const PERKS = [
   // COMBAT
@@ -2109,12 +2310,29 @@ function loadSave(){
     if(!s.cards||typeof s.cards!=='object') s.cards={};
     if(!s.setsComplete||typeof s.setsComplete!=='object') s.setsComplete={};
     if(!s.disabledSets||typeof s.disabledSets!=='object') s.disabledSets={};
+    if(!s.forgeLevels||typeof s.forgeLevels!=='object') s.forgeLevels={damage:0,rate:0,armor:0};
+    ['damage','rate','armor'].forEach(k=>{ if(!isFinite(s.forgeLevels[k])||s.forgeLevels[k]<0) s.forgeLevels[k]=0; });
+    if(!isFinite(s.echoes)||s.echoes<0) s.echoes=0;
+    if(!isFinite(s.totalEchoes)||s.totalEchoes<0) s.totalEchoes=0;
+    if(!isFinite(s.ascensionCount)||s.ascensionCount<0) s.ascensionCount=0;
+    if(!s.echoUpgrades||typeof s.echoUpgrades!=='object') s.echoUpgrades={};
+    Object.keys(s.echoUpgrades).forEach(k=>{ if(!isFinite(s.echoUpgrades[k])||s.echoUpgrades[k]<0) s.echoUpgrades[k]=0; });
+    if(!s.discoveredSynergies||!Array.isArray(s.discoveredSynergies)) s.discoveredSynergies=[];
+    if(!s.lifetimeStats||typeof s.lifetimeStats!=='object') s.lifetimeStats={totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0};
+    ['totalKills','totalBossKills','highestKillStreak','perfectWaves','totalCoinsCollected','highestWaveReached'].forEach(function(k){if(!isFinite(s.lifetimeStats[k])||s.lifetimeStats[k]<0)s.lifetimeStats[k]=0;});
+    if(!s.achievements||typeof s.achievements!=='object') s.achievements={};
+    if(typeof s.forgeIntroSeen!=='boolean') s.forgeIntroSeen=false;
+    if(typeof s.echoesIntroSeen!=='boolean') s.echoesIntroSeen=false;
+    if(typeof s.synergiesIntroSeen!=='boolean') s.synergiesIntroSeen=false;
+    if(s.shipCustom && !s.shipCustom.sprite) s.shipCustom.sprite='none';
+    if(!isFinite(s.musicVolume)||s.musicVolume<0||s.musicVolume>100) s.musicVolume=55;
+    if(!isFinite(s.sfxVolume)||s.sfxVolume<0||s.sfxVolume>100) s.sfxVolume=50;
     // Sanitize perkLevels values
     Object.keys(s.perkLevels).forEach(k=>{ if(isNaN(s.perkLevels[k])) s.perkLevels[k]=1; });
     // Sanitize upgrade values
     Object.keys(s.upgrades).forEach(k=>{ if(isNaN(s.upgrades[k])) s.upgrades[k]=0; });
     // Cap coins
-    s.coins = Math.min(99999, Math.max(0, s.coins));
+    s.coins = Math.min(999999, Math.max(0, s.coins));
     return s;
   }catch(e){ return {...DEFAULT_SAVE}; } 
 }
@@ -2125,6 +2343,7 @@ function doSave(){
 }
 let SAVE = loadSave();
 ['upgrades','cards','setsComplete'].forEach(k=>{ if(!SAVE[k]) SAVE[k]={...DEFAULT_SAVE[k]}; });
+applySettingsVolumes();
 
 // ═══════════════════════════════════════════════════
 //  CARD / SET DATA
@@ -2223,6 +2442,181 @@ const UPGRADES = [
   {key:'speed',name:'MOVE SPEED',desc:'Ship Moves faster',max:5,costs:[80,160,320,550,850],icon:'💨',color:'#4fc3f7'},
   {key:'health',name:'HEALTH',desc:'Replenish life · max 5 total',max:99,costs:[],icon:'❤️',color:'#44ff88'},
 ];
+
+// ── STAR FORGE (infinite scaling upgrades) ──────────────────
+const FORGE_TRACKS = [
+  { key:'damage', name:'DAMAGE FORGE', desc:'Permanently increase bullet damage', icon:'🔥', color:'#ff4444',
+    costFn:function(lv){ return 200 + lv*120 + lv*lv*5; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=0.15/(1+i*0.02); return total; },
+    statFn:function(lv){ return '+'+FORGE_TRACKS[0].effectFn(lv).toFixed(2)+' dmg'; }
+  },
+  { key:'rate', name:'RATE FORGE', desc:'Permanently increase fire rate', icon:'⚡', color:'#ff8c00',
+    costFn:function(lv){ return 200 + lv*150 + lv*lv*6; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=3/(1+i*0.03); return total; },
+    statFn:function(lv){ return '-'+FORGE_TRACKS[1].effectFn(lv).toFixed(1)+'ms cd'; }
+  },
+  { key:'armor', name:'ARMOR FORGE', desc:'Permanently increase damage reduction', icon:'🛡️', color:'#00ccff',
+    comingSoon:true,
+    costFn:function(lv){ return 150 + lv*100 + lv*lv*4; },
+    effectFn:function(lv){ var total=0; for(var i=0;i<lv;i++) total+=0.01/(1+i*0.04); return total; },
+    statFn:function(lv){ return '+'+( FORGE_TRACKS[2].effectFn(lv)*100).toFixed(1)+'% red'; }
+  }
+];
+
+// ── VOID ECHOES (prestige upgrades) ─────────────────────
+const ECHO_UPGRADES = [
+  { key:'voidAmplifier', name:'VOID AMPLIFIER', desc:'+8% damage multiplier per level', icon:'⚡', color:'#aa44ff', max:50,
+    costFn:function(lv){ return 10 + lv*5; },
+    effectFn:function(lv){ return 1 + lv*0.08; },
+    statFn:function(lv){ return (lv*8)+'% dmg'; }
+  },
+  { key:'temporalCore', name:'TEMPORAL CORE', desc:'+2% fire rate per level', icon:'⏱️', color:'#ff44aa', max:30,
+    costFn:function(lv){ return 15 + lv*8; },
+    effectFn:function(lv){ return lv*0.02; },
+    statFn:function(lv){ return (lv*2)+'% rate'; }
+  },
+  { key:'echoShield', name:'ECHO SHIELD', desc:'+0.02 damage reduction per level', icon:'🛡️', color:'#44aaff', max:20,
+    comingSoon:true,
+    costFn:function(lv){ return 20 + lv*6; },
+    effectFn:function(lv){ return lv*0.02; },
+    statFn:function(lv){ return '+'+(lv*0.02).toFixed(2)+' red'; }
+  },
+  { key:'resonance', name:'RESONANCE', desc:'+4% coin earn rate per level', icon:'💰', color:'#ffd700', max:25,
+    costFn:function(lv){ return 12 + lv*6; },
+    effectFn:function(lv){ return lv*0.04; },
+    statFn:function(lv){ return '+'+(lv*4)+'% coins'; }
+  },
+  { key:'voidMemory', name:'VOID MEMORY', desc:'Start each run at a higher wave', icon:'🧠', color:'#00ff88', max:15,
+    costFn:function(lv){ return 25 + lv*10; },
+    effectFn:function(lv){ return lv; },
+    statFn:function(lv){ return lv>0?'Start wave '+(1+lv):'Wave 1'; }
+  },
+  { key:'echoBurst', name:'ECHO BURST', desc:'+5% bomb damage per level', icon:'💣', color:'#ff6600', max:20,
+    costFn:function(lv){ return 18 + lv*7; },
+    effectFn:function(lv){ return lv*0.05; },
+    statFn:function(lv){ return '+'+(lv*5)+'% bomb'; }
+  }
+];
+
+const ASCENSION_TITLES = [
+  {count:0,title:'PILOT'},{count:5,title:'VOID WALKER'},{count:10,title:'ECHO LORD'},
+  {count:25,title:'PARADOX'},{count:50,title:'ETERNAL'}
+];
+function getAscensionTitle(count){
+  var t='PILOT'; for(var i=0;i<ASCENSION_TITLES.length;i++) if(count>=ASCENSION_TITLES[i].count) t=ASCENSION_TITLES[i].title; return t;
+}
+
+// ── VOID SYNERGIES ──────────────────────────────────────
+const SYNERGIES = [
+  // Tier 1 — Dual combos
+  { id:'berserker', name:'BERSERKER', icon:'🩸', tier:1, color:'#ff4444',
+    desc:'Kill heals always proc (no RNG) + 10% damage',
+    conditions:[{type:'relic',id:'bloodPact',label:'Blood Pact'},{type:'perk',id:'bloodlust',label:'Bloodlust'}],
+    bonusKey:'berserker' },
+  { id:'glassStorm', name:'GLASS STORM', icon:'💎', tier:1, color:'#ff66cc',
+    desc:'2× splash radius, splash = full damage',
+    conditions:[{type:'relic',id:'glassCannon',label:'Glass Cannon'},{type:'perk',id:'volatileRounds',label:'Volatile Rounds'}],
+    bonusKey:'glassStorm' },
+  { id:'voidHarvest', name:'VOID HARVEST', icon:'💰', tier:1, color:'#ffd700',
+    desc:'Piercing kills drop 2× coins',
+    conditions:[{type:'set',id:'void',label:'Void Set'},{type:'perk',id:'scavenger',label:'Scavenger'}],
+    bonusKey:'voidHarvest' },
+  { id:'overdrive', name:'OVERDRIVE', icon:'⚡', tier:1, color:'#ff8c00',
+    desc:'Kill streak threshold drops to 5 kills',
+    conditions:[{type:'relic',id:'overclock',label:'Overclock'},{type:'perk',id:'killStreak',label:'Kill Streak'}],
+    bonusKey:'overdrive' },
+  // Tier 2 — Triple combos
+  { id:'entropyStorm', name:'ENTROPY STORM', icon:'🌪️', tier:2, color:'#cc44ff',
+    desc:'100% chain chance, chains can chain',
+    conditions:[{type:'perk',id:'entropyField',label:'Entropy Field'},{type:'perk',id:'chainReaction',label:'Chain Reaction'},{type:'forge',id:'damage',min:10,label:'Damage Forge 10+'}],
+    bonusKey:'entropyStorm' },
+  { id:'temporalParadox', name:'TEMPORAL PARADOX', icon:'⏳', tier:2, color:'#44aaff',
+    desc:'Temporal rift duration doubled',
+    conditions:[{type:'set',id:'shadow',label:'Shadow Set'},{type:'perk',id:'momentum',label:'Momentum'},{type:'forge',id:'rate',min:10,label:'Rate Forge 10+'}],
+    bonusKey:'temporalParadox' },
+  { id:'ironFortress', name:'IRON FORTRESS', icon:'🏰', tier:2, color:'#00ccff',
+    desc:'Shields regenerate 1 per 30s',
+    conditions:[{type:'perk',id:'bulwark',label:'Bulwark'},{type:'perk',id:'ghostProtocol',label:'Ghost Protocol'},{type:'forge',id:'armor',min:10,label:'Armor Forge 10+'}],
+    bonusKey:'ironFortress' },
+  { id:'cosmicEngine', name:'COSMIC ENGINE', icon:'🔮', tier:2, color:'#ff44aa',
+    desc:'Resurrection grants 3 lives + 5s invuln',
+    conditions:[{type:'set',id:'cosmic',label:'Cosmic Set'},{type:'perk',id:'lastStand',label:'Last Stand'},{type:'echo',id:'echoShield',min:5,label:'Echo Shield 5+'}],
+    bonusKey:'cosmicEngine' },
+  // Tier 3 — Quad combos
+  { id:'voidSingularity', name:'VOID SINGULARITY', icon:'🕳️', tier:3, color:'#aa44ff',
+    desc:'Void surge stacks give 2× bonus',
+    conditions:[{type:'perk',id:'voidSurge',label:'Void Surge'},{type:'forge',id:'damage',min:20,label:'Damage Forge 20+'},{type:'echo',id:'voidAmplifier',min:10,label:'Void Amplifier 10+'},{type:'perkCount',cat:'combat',min:2,label:'2+ Combat Perks'}],
+    bonusKey:'voidSingularity' },
+  { id:'absoluteZero', name:'ABSOLUTE ZERO', icon:'❄️', tier:3, color:'#00f5ff',
+    desc:'Time freeze powerups last 2× duration',
+    conditions:[{type:'set',id:'shadow',label:'Shadow Set'},{type:'set',id:'solar',label:'Solar Set'},{type:'echo',id:'temporalCore',min:5,label:'Temporal Core 5+'},{type:'forge',id:'rate',min:15,label:'Rate Forge 15+'}],
+    bonusKey:'absoluteZero' },
+  // Tier 4 — Legendary
+  { id:'convergence', name:'THE CONVERGENCE', icon:'✨', tier:4, color:'#ffd700',
+    desc:'All stats +25%, enemy coin drops doubled',
+    conditions:[{type:'relicCount',min:3,label:'3+ Relics'},{type:'perkCount',min:4,label:'4 Perks'},{type:'allSets',label:'All 6 Sets'},{type:'forgeAny',min:25,label:'Any Forge 25+'}],
+    bonusKey:'convergence' },
+  { id:'voidEmperor', name:'VOID EMPEROR', icon:'👑', tier:4, color:'#ff4455',
+    desc:'1.5× score, enemies -10% HP',
+    conditions:[{type:'forgeAll',min:30,label:'All Forges 30+'},{type:'echo',id:'voidAmplifier',min:25,label:'Void Amplifier 25+'},{type:'ascensions',min:10,label:'10+ Ascensions'}],
+    bonusKey:'voidEmperor' }
+];
+
+function checkSynergyCondition(cond) {
+  switch(cond.type) {
+    case 'relic': return (SAVE.activeRelics||[]).indexOf(cond.id) >= 0;
+    case 'perk': return (SAVE.activePerks||[]).indexOf(cond.id) >= 0;
+    case 'set': return !!(SAVE.setsComplete||{})[cond.id] && !(SAVE.disabledSets||{})[cond.id];
+    case 'forge': return ((SAVE.forgeLevels||{})[cond.id]||0) >= (cond.min||0);
+    case 'echo': return ((SAVE.echoUpgrades||{})[cond.id]||0) >= (cond.min||0);
+    case 'perkCount':
+      if(cond.cat) { var count=0; (SAVE.activePerks||[]).forEach(function(pid){ var p=PERKS.find(function(x){return x.id===pid;}); if(p&&p.cat===cond.cat) count++; }); return count>=cond.min; }
+      return (SAVE.activePerks||[]).length >= (cond.min||0);
+    case 'relicCount': return (SAVE.activeRelics||[]).length >= (cond.min||0);
+    case 'allSets': return ['nebula','void','solar','cosmic','plasma','shadow'].every(function(k){ return !!(SAVE.setsComplete||{})[k]; });
+    case 'forgeAny': return ['damage','rate','armor'].some(function(k){ return ((SAVE.forgeLevels||{})[k]||0) >= (cond.min||0); });
+    case 'forgeAll': return ['damage','rate','armor'].every(function(k){ return ((SAVE.forgeLevels||{})[k]||0) >= (cond.min||0); });
+    case 'ascensions': return (SAVE.ascensionCount||0) >= (cond.min||0);
+  }
+  return false;
+}
+
+function computeSynergies() {
+  var active = [];
+  SYNERGIES.forEach(function(syn) {
+    var metCount = 0;
+    syn.conditions.forEach(function(c){ if(checkSynergyCondition(c)) metCount++; });
+    // Discover if at least 1 condition met
+    if(metCount > 0 && (SAVE.discoveredSynergies||[]).indexOf(syn.id) < 0) {
+      if(!SAVE.discoveredSynergies) SAVE.discoveredSynergies = [];
+      SAVE.discoveredSynergies.push(syn.id);
+      if (typeof gState !== 'undefined' && gState === 'playing') {
+        if (_prevDiscoveredSynergies.indexOf(syn.id) < 0) {
+          _synNotifyQueue.push({syn: syn, type: 'discovered'});
+          _prevDiscoveredSynergies.push(syn.id);
+          if (!_synNotifyActive) _showSynergyNotification();
+        }
+      }
+    }
+    if(metCount === syn.conditions.length) active.push(syn.id);
+  });
+  return active;
+}
+
+// ── VOID RIFTS ────────────────────────────────────────
+const RIFT_MODIFIERS = [
+  { key:'swarm', name:'SWARM', icon:'🐝', desc:'3x enemies, 0.5x HP each', color:'#ffaa00' },
+  { key:'titan', name:'TITAN', icon:'👹', desc:'1 mega-enemy with 50x HP', color:'#ff4444' },
+  { key:'darkness', name:'DARKNESS', icon:'🌑', desc:'Limited visibility radius', color:'#333366' },
+  { key:'mirror', name:'MIRROR', icon:'🪞', desc:'Some enemies reflect bullets', color:'#66ccff' },
+  { key:'chrono', name:'CHRONO', icon:'⏱️', desc:'Alternating speed-up / slow-down', color:'#44ff88' },
+  { key:'overcharge', name:'OVERCHARGE', icon:'⚡', desc:'3x damage, take 2x damage', color:'#ffff44' },
+  { key:'golden', name:'GOLDEN', icon:'💰', desc:'5x coins, enemies 2x faster', color:'#ffcc00' },
+  { key:'voidStorm', name:'VOID STORM', icon:'🌀', desc:'Screen-wide damage pulses every 5s', color:'#aa44ff' }
+];
+
+
+
   // ── DEV MODE ─────────────────────────────────────────
 let devTapCount = 0, devTapTimer = null, devPinEntry = '', devWaveTarget = 1;
 function devTap() {
@@ -2278,7 +2672,7 @@ function devPin(key) {
 }
 
 function devCoins(n) {
-  SAVE.coins = Math.min(99999, (isNaN(SAVE.coins)?0:SAVE.coins) + n);
+  SAVE.coins = Math.min(999999, (isNaN(SAVE.coins)?0:SAVE.coins) + n);
   doSave();
   animateCoinsDown('menu-coins', SAVE.coins);
   showToast(`💰 +${amount} COINS ADDED`);
@@ -2302,6 +2696,40 @@ async function devClearLeaderboard() {
   }
 }
 
+function devUnlockAll() {
+  SAVE.relicsUnlocked = true;
+  SAVE.echoesUnlocked = true;
+  SAVE.coins = 999999;
+  SAVE.forgeLevels = { damage:10, rate:10, armor:0 };
+  SAVE.echoes = (SAVE.echoes||0) + 1000;
+  SAVE.totalEchoes = (SAVE.totalEchoes||0) + 1000;
+  SAVE.ascensionCount = Math.max(SAVE.ascensionCount||0, 3);
+  SAVE.forgeIntroSeen = true;
+  SAVE.echoesIntroSeen = true;
+  SAVE.synergiesIntroSeen = true;
+  doSave();
+  updateMenuCoins();
+  closeDevModal();
+  showToast('🔓 Everything unlocked!');
+}
+
+function devAddEchoes() {
+  SAVE.echoesUnlocked = true;
+  SAVE.echoes = (SAVE.echoes||0) + 500;
+  SAVE.totalEchoes = (SAVE.totalEchoes||0) + 500;
+  doSave();
+  updateMenuCoins();
+  showToast('🌀 +500 Echoes added!');
+}
+
+function devResetAchievements() {
+  SAVE.lifetimeStats = {totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0};
+  SAVE.achievements = {};
+  _recentAchievements = [];
+  doSave();
+  showToast('🏅 Achievements & stats reset!');
+}
+
 function devLaunch() {
   SAVE.savedWave = devWaveTarget;
   doSave();
@@ -2309,9 +2737,20 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.6.3';
+const CURRENT_VERSION = '2.7.0 (BETA)';
 
 const VERSION_NOTES = {
+'2.7.0 (BETA)': [
+    '🔥 Star Forge — permanent damage & fire rate upgrades (unlocks at Wave 25)',
+    '🌀 Void Echoes — ascend past Wave 35 to earn echo currency for powerful multipliers',
+    '🔗 Synergies — combine perks, relics, sets & forge levels for unique combo bonuses',
+    '🏅 Achievements — tiered milestones with animated progress tracking',
+    '⚙️ Settings menu — adjustable music & SFX volume sliders',
+    '🏆 Enhanced leaderboard — tap any score to view a full player card with ship, perks, synergies & forge stats',
+    '🚀 Performance optimizations — reduced particle shadows & GPU load for smoother gameplay on mobile',
+    '🐛 Fixed reset button clearing endgame progress',
+    '🐛 Fixed music toggle disappearing after save & quit',
+  ],
 '2.6.3': [
     '🔊 Navigation sounds — new back button whoosh, softer forward tap that won\'t fatigue your ears',
     '🔊 Upgrade particles — rising ▲ arrows and ❤️ hearts now actually appear when you buy upgrades',
@@ -2433,6 +2872,16 @@ function computeStats() {
     temporalRift:  (!!SAVE.setsComplete.shadow && !SAVE.disabledSets.shadow) || voidCurse,
     heatSeek:      (!!SAVE.setsComplete.solar  && !SAVE.disabledSets.solar)  || voidCurse,
   };
+  // Star Forge bonuses
+  const fl = SAVE.forgeLevels||{};
+  if(fl.damage>0) s.damage += FORGE_TRACKS[0].effectFn(fl.damage);
+  if(fl.rate>0)   s.fireCooldown = Math.max(70, s.fireCooldown - FORGE_TRACKS[1].effectFn(fl.rate));
+  if(fl.armor>0)  s.reduction = Math.min(0.6, s.reduction + FORGE_TRACKS[2].effectFn(fl.armor));
+  // Void Echo bonuses (permanent prestige multipliers)
+  const eu = SAVE.echoUpgrades||{};
+  if(eu.voidAmplifier>0) s.damage *= ECHO_UPGRADES[0].effectFn(eu.voidAmplifier);
+  if(eu.temporalCore>0)  s.fireCooldown = Math.max(40, s.fireCooldown * (1 - ECHO_UPGRADES[1].effectFn(eu.temporalCore)));
+  if(eu.echoShield>0)    s.reduction = Math.min(0.6, s.reduction + ECHO_UPGRADES[2].effectFn(eu.echoShield));
   if(hasRelic('bloodPact'))   { s.damage *= 2; s.maxLives = 3; s.blockHealthUpgrade = true; }
   if(hasRelic('glassCannon')) { s.damage *= 1.5; s.bulletSpeed *= 1.5; s.blockHealthUpgrade = true; }
   if(hasRelic('overclock'))   { s.fireCooldown = Math.max(40, s.fireCooldown / 2); s.damage *= 0.5; }
@@ -2447,6 +2896,34 @@ function computeStats() {
   if(activePowerups['tripleShot'])   s.quadShot = true;
   if(activePowerups['ghostMode'])    s.reduction = 1.0;
   if(hasPerk('momentum'))     { const rate=[0.04,0.06,0.10,0.14][perkLevel('momentum')-1]; s.bulletSpeed+=Math.min(waveTimeAlive*rate,6); }
+  // Void Synergy bonuses
+  var activeSyn = computeSynergies();
+  s._activeSynergies = activeSyn;
+  if(activeSyn.indexOf('berserker')>=0) { s.damage *= 1.10; s._berserkerGuarantee = true; }
+  if(activeSyn.indexOf('glassStorm')>=0) { s._glassStormSplash = true; }
+  if(activeSyn.indexOf('voidHarvest')>=0) { s._voidHarvest = true; }
+  if(activeSyn.indexOf('overdrive')>=0) { s._overdriveThreshold = 5; }
+  if(activeSyn.indexOf('entropyStorm')>=0) { s._entropyStorm = true; }
+  if(activeSyn.indexOf('temporalParadox')>=0) { s._temporalParadox = true; }
+  if(activeSyn.indexOf('ironFortress')>=0) { s._ironFortress = true; }
+  if(activeSyn.indexOf('cosmicEngine')>=0) { s._cosmicEngine = true; }
+  if(activeSyn.indexOf('voidSingularity')>=0) { s._voidSingularity = true; }
+  if(activeSyn.indexOf('absoluteZero')>=0) { s._absoluteZero = true; }
+  if(activeSyn.indexOf('convergence')>=0) { s.damage *= 1.25; s.fireCooldown = Math.max(40, s.fireCooldown * 0.75); s.bulletSpeed *= 1.25; s._convergenceCoins = true; }
+  if(activeSyn.indexOf('voidEmperor')>=0) { s._voidEmperor = true; }
+  // Detect newly-activated synergies during gameplay
+  if (typeof gState !== 'undefined' && gState === 'playing') {
+    for (var _si = 0; _si < activeSyn.length; _si++) {
+      if (_prevActiveSynergies.indexOf(activeSyn[_si]) < 0) {
+        var _synDef = SYNERGIES.find(function(x){ return x.id === activeSyn[_si]; });
+        if (_synDef) _synNotifyQueue.push({syn: _synDef, type: 'activated'});
+      }
+    }
+    _prevActiveSynergies = activeSyn.slice();
+    if (_synNotifyQueue.length > 0 && !_synNotifyActive) {
+      _showSynergyNotification();
+    }
+  }
   return s;
 }
 
@@ -2496,6 +2973,14 @@ let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
 let powerupDrops = [];
 let activePowerups = {};
+var _prevActiveSynergies = [];
+var _prevDiscoveredSynergies = [];
+var _synNotifyQueue = [];
+var _synNotifyActive = false;
+var _achNotifyQueue = [];
+var _achNotifyActive = false;
+var _recentAchievements = [];
+var _launchFromMenu = false;
 const SHIP_SHAPES=[
   {id:'classic',label:'CLASSIC',icon:'△'},
   {id:'arrow',label:'ARROW',icon:'▲'},
@@ -2534,6 +3019,22 @@ const DECALS=[
   {id:'camo',label:'CAMO',icon:'⬢'},{id:'stars',label:'STARS',icon:'★'},
   {id:'scars',label:'SCARS',icon:'✕'},
 ];
+
+// ── SPRITE SHIP SKINS ──────────────────────────────
+const SPRITE_SHIPS=[
+  {id:'none',label:'NONE',icon:'○'},
+  {id:'pixelShip',label:'PIXEL SHIP',icon:'🚀'},
+];
+var _spriteImages={};
+var playerSpriteState='idle';
+(function(){
+  var srcs={
+    pixelShip_idle:'data:image/png;base64,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',
+    pixelShip_boost:'data:image/png;base64,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',
+    pixelShip_full:'data:image/png;base64,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'
+  };
+  Object.keys(srcs).forEach(function(k){ var img=new Image(); img.src=srcs[k]; _spriteImages[k]=img; });
+})();
 
 const POWERUP_DEFS = {
   rapidFire:    { icon:'⚡', color:'#ffff00', label:'RAPID FIRE',    desc:'2× Fire Rate' },
@@ -2600,14 +3101,14 @@ let lastTapLeft=0, lastTapRight=0;
 // ═══════════════════════════════════════════════════
 //  DRAWING HELPERS
 // ═══════════════════════════════════════════════════
-function drawEnemyShape(c, x, y, type, t, overrideColor) {
+function drawEnemyShape(c, x, y, type, t, overrideColor, doShadow) {
   const colors = ['#ff00cc','#00f5ff','#ff6600'];
   const col = overrideColor || colors[type];
   c.save();
   c.translate(x, y + Math.sin(t*2.5)*1.5);
   c.strokeStyle = col; c.fillStyle = col+'44';
   c.lineWidth = 1.5;
-  c.shadowBlur = 8; c.shadowColor = col;
+  if(doShadow){ c.shadowBlur = 8; c.shadowColor = col; }
 
   if(type===2) { // UFO
     c.beginPath(); c.ellipse(0,0,11,5,0,0,Math.PI*2); c.fill(); c.stroke();
@@ -2649,6 +3150,18 @@ function drawShip(c, x, y, inv, custom, scale=1){
   c.scale(scale,scale);
   const flash=inv>0&&Math.sin(inv*20)>0;
   c.globalAlpha=flash?0.4:1;
+  // Sprite override — skip procedural body if a sprite is active
+  if(custom.sprite && custom.sprite!=='none' && _spriteImages[custom.sprite+'_idle']){
+    var sprKey=custom.sprite+'_'+(playerSpriteState||'idle');
+    var img=_spriteImages[sprKey]||_spriteImages[custom.sprite+'_idle'];
+    if(img&&img.complete){
+      c.imageSmoothingEnabled=false;
+      c.drawImage(img,-24,-24,48,48);
+      c.imageSmoothingEnabled=true;
+    }
+    c.restore();
+    return;
+  }
   // Aura ring
   if(aura!=='none'){
     c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
@@ -2718,14 +3231,14 @@ function drawShip(c, x, y, inv, custom, scale=1){
   c.restore();
 }
 function drawPlayer(x,y,inv){
-  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   drawShip(ctx,x,y,inv,SAVE.shipCustom);
 }
 
 function spawnExplosion(x,y,col,count=6,big=false) {
   // Hard cap — never let particles pile up
-  if(particles.length>60) particles.splice(0, particles.length-40);
-  const n = big ? Math.min(count, 12) : Math.min(count, 5);
+  if(particles.length>40) particles.splice(0, particles.length-30);
+  const n = big ? Math.min(count, 8) : Math.min(count, 4);
   for(let i=0;i<n;i++) {
     const a=Math.random()*Math.PI*2, spd=(big?1.2:0.8)*(Math.random()*2.5+0.8);
     particles.push({x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:1,maxLife:1,r:(big?3:1.5)+Math.random()*1.5,col,type:'spark'});
@@ -2781,24 +3294,28 @@ waveStartScore=score;
 SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
+  _prevActiveSynergies = computeSynergies(); _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
+  _achNotifyQueue = []; _achNotifyActive = false; _recentAchievements = [];
   bossFight=false; boss=null;
   if((SAVE.savedWave||1) > 21) perksUnlocked=true;
   applyHandedness();
   updateRelicBadges();
   spawnWave();
   currentTrackName = '';
-  const waveTrack = getWaveTrack();
-  if(BOSS_TRACKS.has(waveTrack) && !bossThemeBuffer) {
-    const waitForBoss = setInterval(()=>{
-      if(bossThemeBuffer) {
-        clearInterval(waitForBoss);
-        currentTrackName='';
-        setTrack(waveTrack);
-      }
-    }, 200);
-    setTimeout(()=>clearInterval(waitForBoss), 10000);
-  } else {
-    setTrack(waveTrack);
+  if (!window._deferWaveMusic) {
+    const waveTrack = getWaveTrack();
+    if(BOSS_TRACKS.has(waveTrack) && !bossThemeBuffer) {
+      const waitForBoss = setInterval(()=>{
+        if(bossThemeBuffer) {
+          clearInterval(waitForBoss);
+          currentTrackName='';
+          setTrack(waveTrack);
+        }
+      }, 200);
+      setTimeout(()=>clearInterval(waitForBoss), 10000);
+    } else {
+      setTrack(waveTrack);
+    }
   }
   setTimeout(()=>updateBombDisplay(), 50);
 }
@@ -2938,6 +3455,10 @@ let moveDx = 0;
   fireTimer-=dt*1000;
   if(fireTimer < -safeCooldown) fireTimer = -safeCooldown;
   const firing=fireHeld||KEYS[' ']||KEYS['z'];
+  // Update sprite animation state
+  if(firing) playerSpriteState='full';
+  else if(Math.abs(moveDx)>0.2) playerSpriteState='boost';
+  else playerSpriteState='idle';
   if(firing && fireTimer<=0) {
     fireTimer=safeCooldown;
     const pierce=stats.piercingShots;
@@ -3007,7 +3528,7 @@ let moveDx = 0;
   }
 
   if(temporalRiftTimer>0) temporalRiftTimer-=dt;
-  const riftSlowMult = temporalRiftTimer>0 ? 0.35 : 1.0;
+  const riftSlowMult = (temporalRiftTimer>0 ? 0.35 : 1.0);
   const timeFrozen = !!activePowerups['timeFreeze'];
   // Coin magnet — pull all drops toward player
   if(activePowerups['coinMagnet'] && player){
@@ -3341,6 +3862,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       enemies.forEach(e=>{
         if(!e.alive||b.hit.has(e)||e.mini) return;
         if(Math.abs(b.x-e.x)<13&&Math.abs(b.y-e.y)<11){
+          // Mirror modifier — reflector enemies bounce bullets back
           if(e.shield>0 && !stats.piercingShots){
             e.shield--; e.shieldFlash=1; b.hit.add(e);
             if(!b.pierce) b.y=-200;
@@ -3365,7 +3887,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.hypot(n.x-e.x,n.y-e.y)<splashR).forEach(n=>{
                 n.hp-=stats.damage*splashDmg; n.hitFlash=1;
                 spawnExplosion(n.x,n.y,'#ff8800',2);
-                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
               });
             }
           }
@@ -3388,11 +3910,11 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               powerupDrops.push({x:e.x, y:e.y, id:pid, pulse:0});
             }
             spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],5);
-            sfx('enemyDie'); killCount++;
+            sfx('enemyDie'); killCount++; SAVE.lifetimeStats.totalKills++;
             // Chain lightning
             if(activePowerups['chainLightning']){
               const nearby=enemies.filter(n=>n.alive&&n!==e&&!n.mini).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,2);
-              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
+              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
             }
             // CHAIN REACTION
             if(hasPerk('chainReaction')){
@@ -3401,7 +3923,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                 enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.abs(n.x-e.x)<60&&Math.abs(n.y-e.y)<60).forEach(n=>{
                   n.hp-=stats.damage*2; n.hitFlash=1;
                   spawnExplosion(n.x,n.y,['#ff00cc','#00f5ff','#ff6600'][n.type],3);
-                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
                 });
               }
             }
@@ -3409,6 +3931,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('bloodlust')){ const chance=[0.05,0.08,0.12,0.15][perkLevel('bloodlust')-1]; if(Math.random()<chance && player.lives<player.maxLives){ player.lives++; updateHUD(); showToast('🩸 Bloodlust!'); } }
             // KILL STREAK
             killStreakCount++;
+            if(killStreakCount > (SAVE.lifetimeStats.highestKillStreak||0)) SAVE.lifetimeStats.highestKillStreak = killStreakCount;
             // HOLLOW POINT
             bulletsFired++;
             const hpInterval=[5,5,4,3][perkLevel('hollowPoint')-1];
@@ -3438,7 +3961,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(stats.chainKill){
               const near=enemies.filter(en=>en.alive&&en!==e)
                 .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y))[0];
-              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; } }
+              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; } }
             }
           }
         }
@@ -3452,6 +3975,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         sfx('bossHit');
         if(boss.hp<=0){
           boss.alive=false;
+          SAVE.lifetimeStats.totalBossKills++;
           score+=500*wave; sessionCoins+=80;
           if(hasPerk('voidSurge')){ voidSurgeStacks++; showToast(`⚡ Void Surge! Damage +${Math.round(voidSurgeStacks*([0.05,0.08,0.12,0.15][perkLevel('voidSurge')-1])*100)}%`); }
           if(wave>=20 && !perksUnlocked){ perksUnlocked=true; showToast('⚡ PERKS UNLOCKED! Visit the shop to access them!'); }
@@ -3474,7 +3998,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         const invDur = hasPerk('ghostProtocol') ? [3,4,5,6][perkLevel('ghostProtocol')-1]||3 : 1.8;
         // Bulwark shield absorbs hit before any damage
         if(bulwarkShields>0){ bulwarkShields--; bulwarkUsedThisWave=true; player.inv=invDur; player.shieldFlash=0.8; sfx('shieldBreak'); showToast(`🔰 Bulwark absorbed! ${bulwarkShields} left`); return; }
-        const dmg = b.big ? 2 : 1;
+        const dmg = (b.big ? 2 : 1);
         const wouldDie = player.lives - dmg <= 0;
         const lastStandSave = hasPerk('lastStand') && !lastStandTriggered && player.lives - dmg <= 1 && player.lives > 0;
         player.lives = lastStandSave ? 1 : Math.max(0, player.lives - dmg);
@@ -3649,12 +4173,10 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     ctx.save();
     ctx.globalAlpha=Math.max(0,p.life);
     if(p.type==='spark'){
-      ctx.shadowBlur=4; ctx.shadowColor=p.col;
       ctx.fillStyle=p.col;
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); ctx.fill();
     } else if(p.type==='ring'){
       ctx.strokeStyle=p.col; ctx.lineWidth=2*(1-p.r/p.maxR);
-      ctx.shadowBlur=8; ctx.shadowColor=p.col;
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.stroke();
     }
     ctx.restore();
@@ -3671,7 +4193,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.restore();
     });
     ctx.save();
-    ctx.shadowBlur=10; ctx.shadowColor=bCol; ctx.fillStyle=bCol;
+    ctx.fillStyle=bCol;
     if(bShape==='plasma'){
       ctx.beginPath(); ctx.arc(b.x,b.y,5,0,Math.PI*2); ctx.fill();
     } else if(bShape==='diamond'){
@@ -3694,19 +4216,16 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   eBullets.forEach(b=>{
     ctx.save();
     if(b.big){
-      ctx.shadowBlur=16; ctx.shadowColor='#cc00ff';
       ctx.fillStyle='#aa00ff';
       ctx.beginPath(); ctx.arc(b.x,b.y,7,0,Math.PI*2); ctx.fill();
       ctx.strokeStyle='#ee88ff'; ctx.lineWidth=1.5;
       ctx.beginPath(); ctx.arc(b.x,b.y,9,0,Math.PI*2); ctx.stroke();
     } else if(b.boss){
-      ctx.shadowBlur=12; ctx.shadowColor='#ff6600';
       ctx.fillStyle='#ff6600';
       ctx.beginPath(); ctx.arc(b.x,b.y,5,0,Math.PI*2); ctx.fill();
       ctx.strokeStyle='#ffaa00'; ctx.lineWidth=1.5;
       ctx.beginPath(); ctx.arc(b.x,b.y,7,0,Math.PI*2); ctx.stroke();
     } else {
-      ctx.shadowBlur=8; ctx.shadowColor='#ff4455';
       ctx.fillStyle='#ff4455';
       ctx.beginPath(); ctx.ellipse(b.x,b.y,3,6,0,0,Math.PI*2); ctx.fill();
     }
@@ -3714,7 +4233,8 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   });
 
   // Enemies
-  const useShadow = enemies.filter(e=>e.alive).length < 40;
+  const aliveCount = enemies.filter(e=>e.alive).length;
+  const useShadow = aliveCount < 20;
   if(activePowerups['timeFreeze']){
     ctx.save();
     ctx.fillStyle='rgba(136,221,255,0.04)';
@@ -3731,7 +4251,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       if(useShadow){ ctx.shadowBlur=6; ctx.shadowColor='#ff2244'; }
       ctx.beginPath(); ctx.arc(e.x,e.y,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
     } else {
-      drawEnemyShape(ctx,e.x,e.y,e.type,t);
+      drawEnemyShape(ctx,e.x,e.y,e.type,t,undefined,useShadow);
     }
     // Heavy shooter glow
     if(e.heavyShooter){
@@ -3866,6 +4386,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
   drawPlayer(player.x,player.y,player.inv);
 
+
   ctx.restore(); // screen shake restore
 
   updateHUD();
@@ -3920,6 +4441,225 @@ function showRow(id, delay) {
   }, delay);
 }
 
+function showSummaryAchievements(onDone) {
+  var container = document.getElementById('sum-ach-list');
+  var wrapper = document.getElementById('sum-achievements');
+  if (!container || !wrapper) { if(onDone) onDone(); return; }
+  container.innerHTML = '';
+  /* Build a lookup of achievements completed THIS wave */
+  var recentMap = {};
+  _recentAchievements.forEach(function(r) {
+    if (!recentMap[r.ach.id]) recentMap[r.ach.id] = [];
+    recentMap[r.ach.id].push(r.tierIdx);
+  });
+  var relevant = ACHIEVEMENTS.filter(function(ach) {
+    return (SAVE.lifetimeStats[ach.stat] || 0) > 0 || recentMap[ach.id];
+  });
+  if (relevant.length === 0) { wrapper.style.display = 'none'; if(onDone) onDone(); return; }
+  wrapper.style.display = 'block';
+  var celebrateRows = [];
+  var slideInTime = 140;
+  relevant.forEach(function(ach, i) {
+    var justCompleted = recentMap[ach.id];
+    var completedTier = SAVE.achievements[ach.id];
+    var nextIdx = (completedTier === undefined) ? 0 : completedTier + 1;
+    var allMaxed = nextIdx >= ach.tiers.length;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    /* If just completed this wave, show the COMPLETED tier first (bar fills to 100%) */
+    var showAsCompleted = justCompleted && justCompleted.length > 0;
+    var displayTierIdx, displayGoal, displayLabel, displayPct;
+    if (showAsCompleted) {
+      var highestCompleted = justCompleted[justCompleted.length - 1];
+      displayTierIdx = highestCompleted;
+      displayGoal = ach.tiers[highestCompleted].goal;
+      displayLabel = ach.tiers[highestCompleted].label;
+      displayPct = 100;
+    } else {
+      displayGoal = allMaxed ? ach.tiers[ach.tiers.length - 1].goal : ach.tiers[nextIdx].goal;
+      displayLabel = allMaxed ? 'MAX' : ach.tiers[nextIdx].label;
+      displayPct = allMaxed ? 100 : Math.min(100, Math.floor(statVal / displayGoal * 100));
+    }
+    var row = document.createElement('div');
+    row.className = 'ach-prog-row';
+    row.setAttribute('data-ach-id', ach.id);
+    row.innerHTML = '<span style="font-size:14px">' + ach.icon + '</span>' +
+      '<div style="flex:1">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px">' +
+      '<span class="ach-label" style="font-size:8px;color:#aab;letter-spacing:1px;font-family:Orbitron,sans-serif">' + ach.name + ' ' + displayLabel + '</span>' +
+      '<span class="ach-val" style="font-size:8px;color:#ffd700;font-family:Orbitron,sans-serif;transition:color .4s ease,text-shadow .4s ease">' +
+      (showAsCompleted ? statVal + '/' + displayGoal : (allMaxed ? '✓ MAX' : statVal + '/' + displayGoal)) + '</span>' +
+      '</div>' +
+      '<div style="font-size:9px;color:#667;margin-bottom:2px">' + (ach.desc||'') + '</div>' +
+      '<div class="ach-prog-bar"><div class="ach-prog-fill" id="ach-fill-' + ach.id + '"></div><span class="ach-sparkle">✨</span></div>' +
+      '</div>';
+    container.appendChild(row);
+    if (showAsCompleted) celebrateRows.push({row:row, ach:ach, allMaxed:allMaxed, nextIdx:nextIdx});
+    setTimeout(function() {
+      row.classList.add('show');
+      var fill = document.getElementById('ach-fill-' + ach.id);
+      if (fill) fill.style.width = displayPct + '%';
+    }, i * slideInTime);
+  });
+  var allInTime = relevant.length * slideInTime + 600;
+  if (celebrateRows.length > 0) {
+    /* Phase 1: gold glow + bar shimmer on completed rows */
+    setTimeout(function() {
+      celebrateRows.forEach(function(entry) {
+        var row = entry.row;
+        var fill = document.getElementById('ach-fill-' + entry.ach.id);
+        row.classList.add('complete-glow');
+        if (fill) fill.classList.add('complete');
+        var valSpan = row.querySelector('.ach-val');
+        if (valSpan) { valSpan.style.color = '#ffd700'; valSpan.style.textShadow = '0 0 8px #ffd70066'; valSpan.textContent = '✓ TIER COMPLETE'; }
+        try { sfx('trophyClaim'); } catch(e){}
+      });
+      /* Phase 2: transition to green + echo burst */
+      setTimeout(function() {
+        celebrateRows.forEach(function(entry) {
+          entry.row.classList.remove('complete-glow');
+          entry.row.classList.add('complete-green');
+          var valSpan = entry.row.querySelector('.ach-val');
+          if (valSpan) { valSpan.style.color = '#00ff88'; valSpan.style.textShadow = '0 0 8px #00ff8844'; }
+          /* Echo reward burst */
+          var recentEntry = _recentAchievements.length === 0 ? null : null;
+          var echoAmt = 0;
+          var justTiers = recentMap[entry.ach.id];
+          if (justTiers) justTiers.forEach(function(ti) { echoAmt += (entry.ach.tiers[ti].reward || 0); });
+          if (echoAmt > 0) {
+            var rect = entry.row.getBoundingClientRect();
+            /* Spawn echo emoji burst particles */
+            for (var _ep = 0; _ep < 6; _ep++) {
+              var echoPart = document.createElement('div');
+              var angle = (Math.PI * 2 / 6) * _ep + (Math.random() - 0.5) * 0.5;
+              var dist = 30 + Math.random() * 40;
+              var tx = Math.cos(angle) * dist;
+              var ty = Math.sin(angle) * dist;
+              echoPart.textContent = '🌀';
+              echoPart.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-size:' + (10 + Math.random() * 8) + 'px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .7s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.3)';
+              document.body.appendChild(echoPart);
+              (function(el, dx, dy) {
+                requestAnimationFrame(function() { requestAnimationFrame(function() {
+                  el.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px)) scale(1)';
+                  el.style.opacity = '0';
+                }); });
+                setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 800);
+              })(echoPart, tx, ty);
+            }
+            /* Echo reward label */
+            var echoLabel = document.createElement('div');
+            echoLabel.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;color:#aa44ff;text-shadow:0 0 10px #aa44ff88;letter-spacing:1px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .9s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.5)';
+            echoLabel.textContent = '+' + echoAmt + ' 🌀';
+            document.body.appendChild(echoLabel);
+            requestAnimationFrame(function() { requestAnimationFrame(function() {
+              echoLabel.style.transform = 'translate(-50%, calc(-50% - 35px)) scale(1.2)';
+              echoLabel.style.opacity = '0';
+            }); });
+            setTimeout(function() { if (echoLabel.parentNode) echoLabel.parentNode.removeChild(echoLabel); }, 1000);
+          }
+        });
+        /* Phase 3: fade out completed, then update remaining to show next tier */
+        setTimeout(function() {
+          var hasRemaining = false;
+          celebrateRows.forEach(function(entry) {
+            if (entry.allMaxed) {
+              /* Fully maxed — fade out entirely */
+              entry.row.classList.add('fade-out');
+            } else {
+              /* Has next tier — transition the row to show next tier progress */
+              hasRemaining = true;
+              entry.row.classList.remove('complete-green');
+              entry.row.style.transition = 'all .5s ease';
+              var ach = entry.ach;
+              var nIdx = entry.nextIdx;
+              var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+              var nGoal = ach.tiers[nIdx].goal;
+              var nLabel = ach.tiers[nIdx].label;
+              var nPct = Math.min(100, Math.floor(statVal / nGoal * 100));
+              var labelSpan = entry.row.querySelector('.ach-label');
+              var valSpan = entry.row.querySelector('.ach-val');
+              var fill = document.getElementById('ach-fill-' + ach.id);
+              if (labelSpan) labelSpan.textContent = ach.name + ' ' + nLabel;
+              if (valSpan) { valSpan.textContent = statVal + '/' + nGoal; valSpan.style.color = '#ffd700'; valSpan.style.textShadow = 'none'; }
+              if (fill) { fill.classList.remove('complete'); fill.style.transition = 'width .8s cubic-bezier(.25,.46,.45,.94)'; fill.style.width = nPct + '%'; }
+            }
+          });
+          /* Remove fully-maxed rows after fade */
+          setTimeout(function() {
+            celebrateRows.forEach(function(entry) {
+              if (entry.allMaxed && entry.row.parentNode) entry.row.parentNode.removeChild(entry.row);
+            });
+            if (container.children.length === 0) wrapper.style.display = 'none';
+            if(onDone) onDone();
+          }, 600);
+        }, 800);
+      }, 1000);
+    }, allInTime);
+  } else {
+    setTimeout(function() { if(onDone) onDone(); }, allInTime);
+  }
+  _recentAchievements = [];
+}
+
+function buildAchievementsScreen() {
+  var list = document.getElementById('ach-screen-list');
+  var subtitle = document.getElementById('ach-screen-subtitle');
+  if (!list) return;
+  list.innerHTML = '';
+  var totalTiers = 0, completedTiers = 0;
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var completedIdx = (currentTier === undefined) ? -1 : currentTier;
+    totalTiers += ach.tiers.length;
+    completedTiers += completedIdx + 1;
+  });
+  if (subtitle) subtitle.textContent = completedTiers + ' / ' + totalTiers + ' TIERS COMPLETED';
+  ACHIEVEMENTS.forEach(function(ach) {
+    var currentTier = SAVE.achievements[ach.id];
+    var completedIdx = (currentTier === undefined) ? -1 : currentTier;
+    var nextIdx = completedIdx + 1;
+    var allDone = nextIdx >= ach.tiers.length;
+    var statVal = SAVE.lifetimeStats[ach.stat] || 0;
+    var card = document.createElement('div');
+    card.style.cssText = 'background:rgba(10,16,36,0.8);border:1px solid ' + (allDone ? '#00ff8844' : '#1a2540') + ';border-radius:8px;padding:12px;margin-bottom:10px;width:100%;box-sizing:border-box;';
+    var headerColor = allDone ? '#00ff88' : '#ffd700';
+    var html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
+      '<span style="font-size:22px">' + ach.icon + '</span>' +
+      '<div style="flex:1">' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:' + headerColor + ';letter-spacing:2px">' + ach.name + '</div>' +
+      '<div style="font-size:8px;color:#556;margin-top:1px">' + ach.desc + '</div>' +
+      '</div>' +
+      (allDone ? '<span style="font-size:8px;color:#00ff88;font-family:Orbitron,sans-serif;letter-spacing:1px">✓ MAX</span>' : '') +
+      '</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:6px">';
+    ach.tiers.forEach(function(tier, idx) {
+      var isComplete = idx <= completedIdx;
+      var isCurrent = idx === nextIdx && !allDone;
+      var pct = 0;
+      if (isComplete) pct = 100;
+      else if (isCurrent) pct = Math.min(100, Math.floor(statVal / tier.goal * 100));
+      var barBg = isComplete ? 'linear-gradient(90deg,#00ff88,#44ffaa)' : 'linear-gradient(90deg,#ffd700,#ff8800)';
+      var tierColor = isComplete ? '#00ff88' : (isCurrent ? '#ffd700' : '#334');
+      var labelColor = isComplete ? '#00ff88' : (isCurrent ? '#aab' : '#334');
+      var valColor = isComplete ? '#00ff8888' : (isCurrent ? '#ffd700' : '#223');
+      html += '<div style="opacity:' + (isComplete || isCurrent ? '1' : '0.35') + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">' +
+        '<span style="font-size:8px;color:' + labelColor + ';font-family:Orbitron,sans-serif;letter-spacing:1px">' +
+        'TIER ' + tier.label + (isComplete ? ' ✓' : '') + '</span>' +
+        '<span style="font-size:8px;color:' + valColor + ';font-family:Orbitron,sans-serif">' +
+        (isComplete ? tier.goal + '/' + tier.goal : (isCurrent ? statVal + '/' + tier.goal : '0/' + tier.goal)) + '</span>' +
+        '</div>' +
+        '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">' +
+        '<div style="height:100%;width:' + pct + '%;border-radius:2px;background:' + barBg + ';transition:width .6s ease"></div>' +
+        '</div>' +
+        '<div style="font-size:9px;color:' + (isComplete ? '#aa44ff' : '#556') + ';margin-top:3px">' + (isComplete ? '🌀 +' + tier.reward + ' Echoes ✓' : 'Reward: 🌀 +' + tier.reward + ' Echoes') + '</div>' +
+        '</div>';
+    });
+    html += '</div>';
+    card.innerHTML = html;
+    list.appendChild(card);
+  });
+}
+
 function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
   const bonus = Math.round(waveScore * 0.05 * waveNum);
   const totalWaveScore = waveScore + bonus;
@@ -3949,6 +4689,7 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
   document.getElementById('sum-btns').style.opacity = '0';
   document.getElementById('sum-streak-msg').classList.remove('show');
   const notif=document.getElementById('sum-trophy-notif'); if(notif){notif.innerHTML='';notif.style.display='none';}
+  var achWrap=document.getElementById('sum-achievements'); if(achWrap){achWrap.style.display='none'; document.getElementById('sum-ach-list').innerHTML='';}
   ['sum-total-score-row','sum-coins-row'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.classList.remove('show');
@@ -3980,21 +4721,37 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
           animateCount('sum-total-score', 0, totalWaveScore, 600, '', '', () => {
             document.getElementById('sum-coins-row').classList.add('show');
             animateCount('sum-coins-val', 0, coins, 700, '+', ' 💰', () => {
-              // Reveal buttons
+              // Show achievements, then reveal buttons after
               setTimeout(() => {
-                document.getElementById('sum-btns').style.opacity = '1';
-                // Show trophy notifications
-                if(newTrophies.length > 0) {
-                  const notifArea = document.getElementById('sum-trophy-notif');
-                  if(notifArea) {
-                    if(newTrophies.length === 1) {
-                      notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies[0].name} UNLOCKED! → ${newTrophies[0].reward}<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ▶</span></div>`;
-                    } else {
-                      notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies.length} TROPHIES UNLOCKED!<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ALL ▶</span></div>`;
+                showSummaryAchievements(function() {
+                  setTimeout(function() {
+                    document.getElementById('sum-btns').style.opacity = '1';
+                    // Show ascend button if wave >= 35
+                    var ascBtn = document.getElementById('ascend-btn');
+                    if(ascBtn) {
+                      if(wave >= 35) {
+                        var echoPreview = Math.floor(Math.pow(wave, 1.5) / 10);
+                        var echoCountSpan = document.getElementById('ascend-echo-count');
+                        if(echoCountSpan) echoCountSpan.textContent = echoPreview;
+                        ascBtn.style.display = '';
+                      } else {
+                        ascBtn.style.display = 'none';
+                      }
                     }
-                    notifArea.style.display = 'block';
-                  }
-                }
+                    // Show trophy notifications
+                    if(newTrophies.length > 0) {
+                      const notifArea = document.getElementById('sum-trophy-notif');
+                      if(notifArea) {
+                        if(newTrophies.length === 1) {
+                          notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies[0].name} UNLOCKED! → ${newTrophies[0].reward}<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ▶</span></div>`;
+                        } else {
+                          notifArea.innerHTML = `<div class="trophy-notify" onclick="openTrophies('screen-summary')" style="cursor:pointer;pointer-events:auto">🏆 ${newTrophies.length} TROPHIES UNLOCKED!<br><span style="font-size:9px;color:#aa8800">TAP TO CLAIM ALL ▶</span></div>`;
+                        }
+                        notifArea.style.display = 'block';
+                      }
+                    }
+                  }, 200);
+                });
               }, 300);
             });
           });
@@ -4005,6 +4762,10 @@ function runSummarySequence(kills, waveScore, waveNum, coins, newTrophies=[]) {
 }
 
 function waveCleared() {
+  powerupDrops=[]; activePowerups={}; eBullets=[]; bullets=[]; coinDrops=[];
+  /* Clear main canvas so nothing lingers behind overlay screens */
+  var _gc = document.getElementById('canvas');
+  if (_gc) { var _gctx = _gc.getContext('2d'); _gctx.clearRect(0, 0, _gc.width, _gc.height); }
   const riftEl=document.getElementById('rift-indicator');
   if(riftEl) riftEl.classList.remove('active');
   temporalRiftTimer=0;
@@ -4021,13 +4782,19 @@ function waveCleared() {
   bulwarkUsedThisWave=false;
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
-  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; doSave();
+  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs;
+  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+  if(!waveDamageTaken) SAVE.lifetimeStats.perfectWaves = (SAVE.lifetimeStats.perfectWaves||0) + 1;
+  doSave();
   gState='waveclear';
   if(rafId) cancelAnimationFrame(rafId);
   sfx('waveClear');
   setTrack('shop');
   if(!isFinite(SAVE.coins)) SAVE.coins=0;
-  SAVE.coins=Math.min(99999, SAVE.coins+sessionCoins);
+  var resonanceBonus = (SAVE.echoUpgrades||{}).resonance||0;
+  var resonanceMult = resonanceBonus > 0 ? (1 + ECHO_UPGRADES[3].effectFn(resonanceBonus)) : 1;
+  sessionCoins = Math.round(sessionCoins * resonanceMult);
+  SAVE.coins=Math.min(999999, SAVE.coins+sessionCoins);
   const prevTotal = SAVE.totalScore || 0;
   const waveEarned = score - waveStartScore;
   waveStartScore = score;
@@ -4037,11 +4804,24 @@ function waveCleared() {
   SAVE.totalScore = prevTotal + waveEarned + waveBonus;
   SAVE.savedScore = score;
   doSave();
+  var newAchievements = checkAchievements();
   const newTrophies = checkNewTrophies(prevTotal);
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('hud').style.display='none';
   document.getElementById('controls').style.display='none';
   document.getElementById('bomb-counter').style.display='none';
+  // Stash summary data for continue paths
+  waveCleared._lastKills = killCount;
+  waveCleared._lastPreBonus = preBonus;
+  waveCleared._lastWave = wave;
+  waveCleared._lastCoins = sessionCoins;
+  waveCleared._lastTrophies = newTrophies;
+
+  var proceedToSummary = function(){
+    document.getElementById('screen-summary').classList.remove('hidden');
+    runSummarySequence(killCount, preBonus, wave, sessionCoins, newTrophies);
+  };
+
   if(bossFight){
     if(wave%10===0){
       showSuperBossVictory(()=>{
@@ -4056,8 +4836,7 @@ function waveCleared() {
       showBossSpinner(killCount, preBonus, wave, sessionCoins, newTrophies);
     }
   } else {
-    document.getElementById('screen-summary').classList.remove('hidden');
-    runSummarySequence(killCount, preBonus, wave, sessionCoins, newTrophies);
+    proceedToSummary();
   }
 }
 
@@ -4118,6 +4897,82 @@ function endGame() {
   }
   _doEndGame();
 }
+function doAscension() {
+  if(wave < 35) return;
+  var echoGain = Math.floor(Math.pow(wave, 1.5) / 10);
+  echoGain = Math.floor(echoGain * 1.25); // voluntary ascension bonus
+  if((SAVE.totalEchoes||0) === 0 && (SAVE.ascensionCount||0) === 0) echoGain += 50; // first time
+  // Snapshot run data for leaderboard submission (before SAVE reset)
+  window._lbSnapshot = {
+    shipCustom: JSON.parse(JSON.stringify(SAVE.shipCustom||{})),
+    activePerks: (SAVE.activePerks||[]).slice(),
+    perkLevels: JSON.parse(JSON.stringify(SAVE.perkLevels||{})),
+    forgeLevels: JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0})),
+    ascensionCount: SAVE.ascensionCount||0,
+    activeSynergies: computeSynergies(),
+    kills: killCount
+  };
+  // Update final lifetime stats from this run
+  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+  SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + sessionCoins;
+  checkAchievements();
+  // Preserve persistent data before reset
+  var savedEchoes = (SAVE.echoes||0) + echoGain;
+  var savedTotalEchoes = (SAVE.totalEchoes||0) + echoGain;
+  var savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
+  var savedAscensionCount = (SAVE.ascensionCount||0) + 1;
+  var savedCustom = JSON.parse(JSON.stringify(SAVE.shipCustom||{}));
+  var savedForge = JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0}));
+  var savedSynergiesAsc = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
+  var savedForgeIntroA = SAVE.forgeIntroSeen||false;
+  var savedEchoesIntroA = SAVE.echoesIntroSeen||false;
+  var savedSynergiesIntroA = SAVE.synergiesIntroSeen||false;
+  var savedMusicVolA = SAVE.musicVolume;
+  var savedSfxVolA = SAVE.sfxVolume;
+  var savedLifetimeStatsA = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  var savedAchievementsA = JSON.parse(JSON.stringify(SAVE.achievements||{}));
+  var hiScore = Math.max(score, SAVE.hiScore);
+  // Clear game state
+  powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
+  document.getElementById('reset-btn').style.display = 'block';
+  document.getElementById('music-btn').style.display = 'block';
+  document.getElementById('drag-indicator').style.display = 'none';
+  document.getElementById('canvas').style.display = 'none';
+  gState='gameover';
+  perksUnlocked=false; perksIntroSeen=false;
+  if(rafId) cancelAnimationFrame(rafId);
+  setTimeout(function(){ stopBattleAudio(false); stopBossTheme(false); stopShopMusic(false); stopMusic(); }, 800);
+  // Reset save but preserve persistent fields
+  SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
+  SAVE.hiScore = hiScore;
+  SAVE.shipCustom = savedCustom;
+  SAVE.forgeLevels = savedForge;
+  SAVE.discoveredSynergies = savedSynergiesAsc;
+  SAVE.echoes = savedEchoes;
+  SAVE.totalEchoes = savedTotalEchoes;
+  SAVE.echoUpgrades = savedEchoUpgrades;
+  SAVE.ascensionCount = savedAscensionCount;
+  SAVE.echoesUnlocked = true;
+  SAVE.forgeIntroSeen = savedForgeIntroA;
+  SAVE.echoesIntroSeen = savedEchoesIntroA;
+  SAVE.synergiesIntroSeen = savedSynergiesIntroA;
+  SAVE.musicVolume = savedMusicVolA;
+  SAVE.sfxVolume = savedSfxVolA;
+  SAVE.lifetimeStats = savedLifetimeStatsA;
+  SAVE.achievements = savedAchievementsA;
+  SAVE.lastSeenVersion = CURRENT_VERSION;
+  localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+  // Show ascension overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;animation:fadeIn .5s ease';
+  overlay.innerHTML = '<div style="font-size:48px;margin-bottom:16px;animation:pulseGlow 1.5s ease-in-out infinite">🌀</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#aa44ff;text-shadow:0 0 20px #aa44ff;letter-spacing:4px;margin-bottom:12px">ASCENSION</div>'+
+    '<div style="font-size:14px;color:#aa44ff88;letter-spacing:2px;margin-bottom:20px">'+getAscensionTitle(savedAscensionCount)+' · ASCENSION #'+savedAscensionCount+'</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#aa44ff;text-shadow:0 0 16px #aa44ff;margin-bottom:8px">+'+echoGain+' ECHOES</div>'+
+    '<div style="font-size:12px;color:#556;margin-bottom:24px">Total: '+savedEchoes+' 🌀</div>'+
+    '<button class="btn-main" style="border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44" onclick="this.parentElement.remove();showScreen(\'screen-menu\')">CONTINUE</button>';
+  document.body.appendChild(overlay);
+}
 function _doEndGame() {
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
   document.getElementById('reset-btn').style.display = 'block';
@@ -4133,19 +4988,83 @@ function _doEndGame() {
   const finalWave = wave;
   const finalCoins = sessionCoins;
   const finalKills = killCount;
+  // Snapshot run data for leaderboard submission (before SAVE reset)
+  window._lbSnapshot = {
+    shipCustom: JSON.parse(JSON.stringify(SAVE.shipCustom||{})),
+    activePerks: (SAVE.activePerks||[]).slice(),
+    perkLevels: JSON.parse(JSON.stringify(SAVE.perkLevels||{})),
+    forgeLevels: JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0})),
+    ascensionCount: SAVE.ascensionCount||0,
+    activeSynergies: computeSynergies(),
+    kills: killCount
+  };
   const hiScore = Math.max(finalScore, SAVE.hiScore);
   const earnedLegendary = finalScore >= 1000000;
   const savedRelics = SAVE.activeRelics || [];
   const savedCustom = JSON.parse(JSON.stringify(SAVE.shipCustom||{}));
+  const savedForge = JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0}));
+  const savedEchoes = SAVE.echoes||0;
+  const savedTotalEchoes = SAVE.totalEchoes||0;
+  const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
+  const savedAscensionCount = SAVE.ascensionCount||0;
+  const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
+  const savedForgeIntroE = SAVE.forgeIntroSeen||false;
+  const savedEchoesIntroE = SAVE.echoesIntroSeen||false;
+  const savedSynergiesIntroE = SAVE.synergiesIntroSeen||false;
+  const savedMusicVolE = SAVE.musicVolume;
+  const savedSfxVolE = SAVE.sfxVolume;
+  // Update final lifetime stats from this run
+  if(finalWave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = finalWave;
+  SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + finalCoins;
+  checkAchievements();
+  const savedLifetimeStatsE = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  const savedAchievementsE = JSON.parse(JSON.stringify(SAVE.achievements||{}));
+  // Calculate echo gain for this run
+  var echoGain = 0;
+  if(finalWave >= 35) {
+    echoGain = Math.floor(Math.pow(finalWave, 1.5) / 10);
+    if(savedTotalEchoes === 0 && savedAscensionCount === 0) echoGain += 50; // first time bonus
+  }
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = hiScore;
   SAVE.shipCustom = savedCustom;
+  SAVE.forgeLevels = savedForge;
+  SAVE.forgeIntroSeen = savedForgeIntroE;
+  SAVE.echoesIntroSeen = savedEchoesIntroE;
+  SAVE.synergiesIntroSeen = savedSynergiesIntroE;
+  SAVE.echoes = savedEchoes + echoGain;
+  SAVE.totalEchoes = savedTotalEchoes + echoGain;
+  SAVE.echoUpgrades = savedEchoUpgrades;
+  SAVE.ascensionCount = savedAscensionCount;
+  var wasEchoesLocked = !savedEchoesUnlocked;
+  SAVE.echoesUnlocked = savedEchoesUnlocked || finalWave >= 35;
+  SAVE.discoveredSynergies = savedSynergies;
+  // Queue echoes+synergies intro if newly unlocked
+  if(wasEchoesLocked && SAVE.echoesUnlocked && !savedEchoesIntroE){
+    SAVE.echoesIntroSeen=true; SAVE.synergiesIntroSeen=true;
+    window._showEchoesIntroAfterGameover=true;
+  }
+  SAVE.musicVolume = savedMusicVolE;
+  SAVE.sfxVolume = savedSfxVolE;
+  SAVE.lifetimeStats = savedLifetimeStatsE;
+  SAVE.achievements = savedAchievementsE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
+  window._lastEchoGain = echoGain;
   document.getElementById('go-final').textContent = finalScore;
   document.getElementById('go-wave').textContent = finalWave;
   document.getElementById('go-coins').textContent = finalCoins;
+  var goEchoEl = document.getElementById('go-echo-gain');
+  if(goEchoEl) {
+    if(echoGain > 0) {
+      goEchoEl.style.display = '';
+      document.getElementById('go-echo-count').textContent = echoGain;
+    } else {
+      goEchoEl.style.display = 'none';
+    }
+  }
   document.getElementById('go-name-input').style.display = '';
   document.getElementById('go-name-input').value = '';
   document.getElementById('go-submit-btn').textContent = '▶ SUBMIT';
@@ -4353,6 +5272,8 @@ let cardsPrevScreen='screen-menu';
 let shopPrevScreen='screen-waveclear';
 let packsPrevScreen='screen-shop';
 let pullPrevScreen='screen-packs';
+let synergyPrevScreen='screen-menu';
+let achievementsPrevScreen='screen-menu';
 
 
 // ── TROPHY SYSTEM ─────────────────────────────────────────────
@@ -4767,9 +5688,38 @@ function doReset() {
   localStorage.removeItem('vi2_save');
   const savedHi = SAVE.hiScore || 0;
   const savedCustom2 = JSON.parse(JSON.stringify(SAVE.shipCustom||{}));
+  // Preserve endgame persistent fields
+  const savedForge = JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0}));
+  const savedEchoes = SAVE.echoes||0;
+  const savedTotalEchoes = SAVE.totalEchoes||0;
+  const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
+  const savedAscensionCount = SAVE.ascensionCount||0;
+  const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
+  const savedForgeIntro = SAVE.forgeIntroSeen||false;
+  const savedEchoesIntro = SAVE.echoesIntroSeen||false;
+  const savedSynergiesIntro = SAVE.synergiesIntroSeen||false;
+  const savedMusicVol = SAVE.musicVolume;
+  const savedSfxVol = SAVE.sfxVolume;
+  const savedLifetimeStatsR = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
+  const savedAchievementsR = JSON.parse(JSON.stringify(SAVE.achievements||{}));
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
   SAVE.shipCustom = savedCustom2;
+  SAVE.forgeLevels = savedForge;
+  SAVE.echoes = savedEchoes;
+  SAVE.totalEchoes = savedTotalEchoes;
+  SAVE.echoUpgrades = savedEchoUpgrades;
+  SAVE.ascensionCount = savedAscensionCount;
+  SAVE.echoesUnlocked = savedEchoesUnlocked;
+  SAVE.discoveredSynergies = savedSynergies;
+  SAVE.forgeIntroSeen = savedForgeIntro;
+  SAVE.echoesIntroSeen = savedEchoesIntro;
+  SAVE.synergiesIntroSeen = savedSynergiesIntro;
+  SAVE.musicVolume = savedMusicVol;
+  SAVE.sfxVolume = savedSfxVol;
+  SAVE.lifetimeStats = savedLifetimeStatsR;
+  SAVE.achievements = savedAchievementsR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -4808,10 +5758,14 @@ function showScreen(id) {
   const el=document.getElementById(id);
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
   const isMenu   = id==='screen-menu' || id==='screen-splash';
-  const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies';
-  if(id==='screen-menu'){ updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu'); }
+  const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies'||id==='screen-echoes'||id==='screen-synergies';
+  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu');
+    if(window._showEchoesIntroAfterGameover){ window._showEchoesIntroAfterGameover=false; setTimeout(function(){ showEchoesIntro(function(){ showSynergiesIntro(); }); },500); }
+  }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
+  if(id==='screen-echoes') buildEchoes();
+  if(id==='screen-synergies') buildSynergies();
   if(id==='screen-shop') buildShop();
   if(id==='screen-packs') buildPacks();
   if(id==='screen-cards') buildCards();
@@ -4849,6 +5803,30 @@ function newgameStart(){
   _startGameActual();
 }
 function _startGameActual() {
+  if (_launchFromMenu) {
+    _launchFromMenu = false;
+    resumeAC(); stopMenuAnim();
+    if(glitchTimer) clearTimeout(glitchTimer);
+    window._deferWaveMusic = true;
+    initGame();
+    window._deferWaveMusic = false;
+    /* Hide bomb counter during transition — it positions via getBoundingClientRect
+       which returns 0,0 since controls aren't visible yet */
+    var _bc = document.getElementById('bomb-counter'); if (_bc) _bc.style.display = 'none';
+    playLaunchTransition(function() {
+      showScreen('__game__');
+      gState='playing';
+      /* Start wave music with a fade-in */
+      currentTrackName = '__none__';
+      var savedVol = SAVE.musicVolume / 100;
+      masterGain.gain.setValueAtTime(0.001, AC.currentTime);
+      setTrack(getWaveTrack());
+      masterGain.gain.exponentialRampToValueAtTime(Math.max(0.001, savedVol), AC.currentTime + 0.8);
+      lastTime=0;
+      rafId=requestAnimationFrame(gameLoop);
+    });
+    return;
+  }
   resumeAC(); stopMenuAnim();
   if(glitchTimer) clearTimeout(glitchTimer);
   initGame();
@@ -4979,13 +5957,200 @@ function playMenuEntrance(){
   }, 400);
 }
 
+function playLaunchTransition(callback) {
+  var menuEl = document.getElementById('screen-menu');
+  if (!menuEl) { callback(); return; }
+
+  /* Collect menu element positions before hiding */
+  var title = document.getElementById('menu-hero-title');
+  var stats = document.getElementById('menu-stats-row');
+  var launch = document.getElementById('btn-launch');
+  var nav = document.getElementById('menu-nav-grid');
+  var footer = document.getElementById('menu-footer');
+  var ticker = document.getElementById('menu-ticker-wrap');
+  var shipCanvas = document.getElementById('menu-ship-preview');
+  var shipRect = shipCanvas ? shipCanvas.getBoundingClientRect() : null;
+
+  /* Create fullscreen overlay */
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;background:transparent';
+
+  /* Star streak canvas for hyperspace effect */
+  var streakCanvas = document.createElement('canvas');
+  streakCanvas.width = window.innerWidth;
+  streakCanvas.height = window.innerHeight;
+  streakCanvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+  overlay.appendChild(streakCanvas);
+
+  /* Flash overlay */
+  var flash = document.createElement('div');
+  flash.style.cssText = 'position:absolute;inset:0;background:#fff;opacity:0;transition:opacity 0.15s ease';
+  overlay.appendChild(flash);
+
+  document.body.appendChild(overlay);
+
+  /* Animate menu elements outward */
+  var animEls = [
+    {el:title, tx:0, ty:-120, s:1.3, d:0},
+    {el:stats, tx:-300, ty:0, s:1, d:30},
+    {el:ticker, tx:300, ty:0, s:1, d:20},
+    {el:launch, tx:0, ty:0, s:1.8, d:60},
+    {el:nav, tx:0, ty:200, s:0.5, d:50},
+    {el:footer, tx:0, ty:100, s:1, d:40}
+  ];
+  animEls.forEach(function(a) {
+    if (!a.el) return;
+    a.el.style.transition = 'transform 0.5s cubic-bezier(.4,0,.9,.4), opacity 0.4s ease';
+    a.el.style.transform = 'translate(' + a.tx + 'px,' + a.ty + 'px) scale(' + a.s + ')';
+    a.el.style.opacity = '0';
+  });
+
+  /* Also blast dock tiles outward radially for extra flair */
+  var tiles = document.querySelectorAll('.dock-tile');
+  var utilBtns = document.querySelectorAll('.menu-util-btn');
+  if (nav) {
+    var navRect = nav.getBoundingClientRect();
+    var navCx = navRect.left + navRect.width / 2;
+    var navCy = navRect.top + navRect.height / 2;
+    tiles.forEach(function(tile, i) {
+      var tRect = tile.getBoundingClientRect();
+      var tcx = tRect.left + tRect.width / 2;
+      var tcy = tRect.top + tRect.height / 2;
+      var dx = (tcx - navCx) * 3;
+      var dy = (tcy - navCy) * 3;
+      tile.style.transition = 'transform 0.5s cubic-bezier(.4,0,.9,.4), opacity 0.35s ease';
+      tile.style.transitionDelay = (i * 25) + 'ms';
+      tile.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(0.3) rotate(' + (Math.random() * 40 - 20) + 'deg)';
+      tile.style.opacity = '0';
+    });
+  }
+  utilBtns.forEach(function(btn) {
+    btn.style.transition = 'transform 0.4s cubic-bezier(.4,0,.9,.4), opacity 0.3s ease';
+    btn.style.transform = 'translateY(80px)';
+    btn.style.opacity = '0';
+  });
+
+  /* Fade out menu music over the transition duration */
+  if (AC && masterGain) {
+    try {
+      masterGain.gain.setValueAtTime(masterGain.gain.value, AC.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0, AC.currentTime + 1.0);
+    } catch(e) {}
+  }
+
+  /* Ship preview — animate from menu position down to game start position */
+  if (shipCanvas && shipRect) {
+    var gameCanvas = document.getElementById('canvas');
+    var gcRect = gameCanvas ? gameCanvas.getBoundingClientRect() : {left:0,top:0,width:window.innerWidth,height:window.innerHeight};
+    var targetX = gcRect.left + gcRect.width / 2;
+    var targetY = gcRect.top + gcRect.height - 150;
+    var shipCx = shipRect.left + shipRect.width / 2;
+    var shipCy = shipRect.top + shipRect.height / 2;
+    var moveX = targetX - shipCx;
+    var moveY = targetY - shipCy;
+    shipCanvas.style.transition = 'transform 0.8s cubic-bezier(.2,.8,.3,1), opacity 0.2s ease 0.7s';
+    shipCanvas.style.transform = 'translate(' + moveX + 'px,' + moveY + 'px) scale(0.6)';
+    shipCanvas.style.opacity = '0';
+  }
+
+  /* Hyperspace star streaks */
+  var sCtx = streakCanvas.getContext('2d');
+  var streaks = [];
+  var cx = streakCanvas.width / 2;
+  var cy = streakCanvas.height / 2;
+  for (var i = 0; i < 80; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var dist = 30 + Math.random() * 60;
+    streaks.push({
+      x: cx + Math.cos(angle) * dist,
+      y: cy + Math.sin(angle) * dist,
+      vx: Math.cos(angle) * (300 + Math.random() * 400),
+      vy: Math.sin(angle) * (300 + Math.random() * 400),
+      len: 0, maxLen: 30 + Math.random() * 60,
+      alpha: 0.3 + Math.random() * 0.7,
+      color: ['#00f5ff','#ffffff','#aaddff','#88ccff'][Math.floor(Math.random()*4)]
+    });
+  }
+  var startT = performance.now();
+  var streakDuration = 900;
+  function drawStreaks(now) {
+    var elapsed = now - startT;
+    var t = Math.min(1, elapsed / streakDuration);
+    sCtx.clearRect(0, 0, streakCanvas.width, streakCanvas.height);
+    var progress = t * t; /* acceleration curve */
+    streaks.forEach(function(s) {
+      var dt = progress;
+      var sx = s.x + s.vx * dt;
+      var sy = s.y + s.vy * dt;
+      var len = s.maxLen * Math.min(1, t * 3);
+      var angle = Math.atan2(s.vy, s.vx);
+      var fadeIn = Math.min(1, t * 5);
+      var fadeOut = t > 0.7 ? 1 - (t - 0.7) / 0.3 : 1;
+      sCtx.globalAlpha = s.alpha * fadeIn * fadeOut;
+      sCtx.strokeStyle = s.color;
+      sCtx.lineWidth = 1.5;
+      sCtx.beginPath();
+      sCtx.moveTo(sx, sy);
+      sCtx.lineTo(sx - Math.cos(angle) * len, sy - Math.sin(angle) * len);
+      sCtx.stroke();
+    });
+    sCtx.globalAlpha = 1;
+    if (t < 1) requestAnimationFrame(drawStreaks);
+  }
+  requestAnimationFrame(drawStreaks);
+
+  /* Flash at peak */
+  setTimeout(function() { flash.style.opacity = '0.7'; }, 500);
+  setTimeout(function() { flash.style.transition = 'opacity 0.4s ease'; flash.style.opacity = '0'; }, 650);
+
+  /* Play launch sound */
+  try { sfx('waveStart'); } catch(e){}
+
+  /* Cleanup and callback */
+  setTimeout(function() {
+    /* Stop menu music and restore master volume */
+    try { stopMenuMusic(false); } catch(e) {}
+    masterGain.gain.cancelScheduledValues(AC.currentTime);
+    masterGain.gain.setValueAtTime(SAVE.musicVolume / 100, AC.currentTime);
+    /* Hide game HUD elements before callback so we can animate them in */
+    var livesEl = document.getElementById('lives-display');
+    var ctrlBtns = document.getElementById('ctrl-btns');
+    var bombCounter = document.getElementById('bomb-counter');
+    if (livesEl) { livesEl.style.transform = 'translateX(-80px)'; livesEl.style.opacity = '0'; livesEl.style.transition = 'none'; }
+    if (ctrlBtns) { ctrlBtns.style.transform = 'translateX(80px)'; ctrlBtns.style.opacity = '0'; ctrlBtns.style.transition = 'none'; }
+    if (bombCounter) bombCounter.style.display = 'none';
+    /* Call callback — showScreen('__game__') hides menu & shows HUD behind overlay */
+    callback();
+    /* Now reset menu element styles (menu is already hidden by showScreen) */
+    animEls.forEach(function(a) {
+      if (a.el) { a.el.style.transition = ''; a.el.style.transform = ''; a.el.style.opacity = ''; }
+    });
+    tiles.forEach(function(tile) { tile.style.transition = ''; tile.style.transform = ''; tile.style.opacity = ''; tile.style.transitionDelay = ''; });
+    utilBtns.forEach(function(btn) { btn.style.transition = ''; btn.style.transform = ''; btn.style.opacity = ''; });
+    if (shipCanvas) { shipCanvas.style.transition = ''; shipCanvas.style.transform = ''; shipCanvas.style.opacity = ''; }
+    /* Remove overlay — game is fully set up underneath */
+    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    /* Animate game HUD elements in */
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      if (livesEl) { livesEl.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; livesEl.style.transform = 'translateX(0)'; livesEl.style.opacity = '1'; }
+      if (ctrlBtns) { ctrlBtns.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; ctrlBtns.style.transform = 'translateX(0)'; ctrlBtns.style.opacity = '1'; }
+      /* Update bomb counter position after controls are visible */
+      setTimeout(function() {
+        updateBombDisplay();
+        if (livesEl) { livesEl.style.transition = ''; livesEl.style.transform = ''; livesEl.style.opacity = ''; }
+        if (ctrlBtns) { ctrlBtns.style.transition = ''; ctrlBtns.style.transform = ''; ctrlBtns.style.opacity = ''; }
+      }, 550);
+    }); });
+  }, 1100);
+}
+
 const ANNOUNCEMENTS = [
   {
-    id: 'ann_263',
-    date: '2026-03-13',
-    title: 'VERSION 2.6.3 OUT NOW',
-    color: '#00f5ff',
-    body: 'Sound & polish update — all navigation now has audio feedback with a punchy back-button whoosh and a softer, less fatiguing forward tap. Rising upgrade particles (▲ and ❤️) now properly appear when buying upgrades. Fixed a bug where the nav tap sound played spuriously on first menu load.'
+    id: 'ann_270',
+    date: '2026-03-15',
+    title: '🚀 VERSION 2.7.0 (BETA) OUT NOW',
+    color: '#ff8800',
+    body: 'Massive endgame expansion! Star Forge for permanent upgrades, Void Echoes & Ascension for replayable progression, Synergies for combo builds, and a new Achievement system with tiered milestones. Plus a settings menu with volume sliders, enhanced leaderboard with player cards, and major performance improvements.'
   },
   {
     id: 'ann_welcome_261',
@@ -5136,6 +6301,18 @@ function updateMenuCoins(){
   // Perks lock badge
   const pl = document.getElementById('dock-perks-lock');
   if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
+
+  // Echoes lock badge
+  const el = document.getElementById('dock-echoes-lock');
+  if(el) el.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  const echoTile = document.getElementById('dock-echoes');
+  if(echoTile) { echoTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; echoTile.style.borderColor = SAVE.echoesUnlocked ? '#aa44ff99' : '#33333399'; }
+
+  // Synergies lock badge
+  const sl = document.getElementById('dock-synergies-lock');
+  if(sl) sl.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  const synTile = document.getElementById('dock-synergies');
+  if(synTile) { synTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.echoesUnlocked ? '#ff880099' : '#33333399'; }
 
   // Updates badge
   const badge = document.getElementById('updates-badge');
@@ -5299,7 +6476,185 @@ function buildShop() {
     };
     grid.appendChild(el);
   });
+  // ── Star Forge section ──
+  var forgeSection = document.getElementById('forge-section');
+  var forgeGrid = document.getElementById('forge-grid');
+  if(forgeSection && forgeGrid){
+    var forgeUnlocked = (SAVE.savedWave||1) >= 25 || (SAVE.hiScore||0) >= 50000;
+    forgeSection.style.display = forgeUnlocked ? 'block' : 'none';
+    if(forgeUnlocked && !SAVE.forgeIntroSeen){
+      SAVE.forgeIntroSeen=true; doSave();
+      showForgeIntro();
+    }
+    if(forgeUnlocked){
+      forgeGrid.innerHTML='';
+      FORGE_TRACKS.forEach(function(t,fi){
+        var lv = (SAVE.forgeLevels||{})[t.key]||0;
+        var cost = t.costFn(lv);
+        var canBuy = !t.comingSoon && SAVE.coins >= cost;
+        var curEffect = t.statFn(lv);
+        var nxtEffect = t.statFn(lv+1);
+        var el = document.createElement('div');
+        el.className = 'si'+(t.comingSoon?'':canBuy?' aff':'');
+        el.style.animation = 'screenSlideIn .3s ease '+(fi*0.04+0.2)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(fi*0.04+0.6)+'s infinite':'');
+        el.style.setProperty('--uc', t.comingSoon?'#445':t.color);
+        el.style.setProperty('--uca', t.comingSoon?'#44500':'#'+t.color.slice(1)+'33');
+        if(t.comingSoon){
+          el.style.opacity='0.45';
+          el.style.filter='grayscale(0.8)';
+          el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
+            '<div class="si-d">'+t.desc+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#556;letter-spacing:1px;margin:6px 0">🔒 COMING SOON</div>'+
+            '<div class="si-c" style="color:#556">—</div>';
+          el.onclick = function(){ showToast('🔒 Damage mitigation coming soon!'); };
+        } else {
+          el.style.setProperty('--uca', t.color+'33');
+          el.innerHTML = '<div class="si-n">'+t.icon+' '+t.name+'</div>'+
+            '<div class="si-d">'+t.desc+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#ff8c00;letter-spacing:1px;margin:4px 0">LV.'+lv+' <span style="color:#556;font-size:9px">∞</span></div>'+
+            '<div class="si-stat">'+curEffect+' → <span class="stat-next">'+nxtEffect+'</span></div>'+
+            '<div class="si-c">💰 '+cost+'</div>';
+          if(canBuy) el.onclick = function(){ buyForge(t.key); };
+        }
+        forgeGrid.appendChild(el);
+      });
+    }
+  }
 startShopCanvas('shop-bg-canvas');
+}
+
+function buyForge(trackKey){
+  var ti = FORGE_TRACKS.findIndex(function(t){ return t.key===trackKey; });
+  if(ti<0) return;
+  var t = FORGE_TRACKS[ti];
+  var lv = (SAVE.forgeLevels||{})[t.key]||0;
+  var cost = t.costFn(lv);
+  if(SAVE.coins < cost) return;
+  SAVE.coins -= cost;
+  if(!SAVE.forgeLevels) SAVE.forgeLevels = {damage:0,rate:0,armor:0};
+  SAVE.forgeLevels[t.key] = lv + 1;
+  doSave(); sfx('upgradeSelect');
+  var cards = document.getElementById('forge-grid');
+  if(cards && cards.children[ti]){
+    spawnCoinPop(cards.children[ti], cost);
+    spawnUpgradeParticles(cards.children[ti], false, t.color);
+  }
+  showToast(t.icon+' '+t.name+' → LV.'+(lv+1));
+  setTimeout(function(){ buildShop(); }, 320);
+}
+
+function buildEchoes(){
+  var bal = document.getElementById('echoes-balance');
+  if(bal) bal.textContent = '🌀 ' + (SAVE.echoes||0);
+  var titleEl = document.getElementById('echoes-title');
+  if(titleEl) titleEl.textContent = getAscensionTitle(SAVE.ascensionCount||0) + ' · ' + (SAVE.ascensionCount||0) + ' ASCENSIONS';
+  var grid = document.getElementById('echoes-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  ECHO_UPGRADES.forEach(function(u, idx){
+    var lv = (SAVE.echoUpgrades||{})[u.key]||0;
+    var maxed = lv >= u.max;
+    var cost = maxed ? null : u.costFn(lv);
+    var canBuy = !u.comingSoon && !maxed && (SAVE.echoes||0) >= cost;
+    var curStat = u.statFn(lv);
+    var nxtStat = maxed ? null : u.statFn(lv+1);
+    var el = document.createElement('div');
+    el.className = 'si'+(u.comingSoon?'':maxed?' maxed':canBuy?' aff':'');
+    el.style.animation = 'screenSlideIn .3s ease '+(idx*0.04)+'s both'+(canBuy?', cardPulse 2s ease-in-out '+(idx*0.04+0.4)+'s infinite':'');
+    el.style.setProperty('--uc', u.comingSoon?'#445':u.color);
+    el.style.setProperty('--uca', u.comingSoon?'#44500':u.color+'33');
+    if(u.comingSoon){
+      el.style.opacity='0.45';
+      el.style.filter='grayscale(0.8)';
+      el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
+        '<div class="si-d">'+u.desc+'</div>'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#556;letter-spacing:1px;margin:6px 0">🔒 COMING SOON</div>'+
+        '<div class="si-c" style="color:#556">—</div>';
+      el.onclick = function(){ showToast('🔒 Damage mitigation coming soon!'); };
+    } else {
+      var pipCount = Math.min(u.max, 10);
+      var pipFilled = Math.min(lv, pipCount);
+      var pips = '';
+      for(var i=0;i<pipCount;i++) pips += '<span class="pip'+(i<pipFilled?' filled':'')+'"></span>';
+      if(u.max > 10) pips += '<span style="font-size:9px;color:#556;margin-left:2px">'+lv+'/'+u.max+'</span>';
+      var statLine = maxed
+        ? '<span style="color:var(--gr)">'+curStat+' ✦ MAX</span>'
+        : curStat+' → <span class="stat-next">'+nxtStat+'</span>';
+      el.innerHTML = '<div class="si-n">'+u.icon+' '+u.name+'</div>'+
+        '<div class="si-d">'+u.desc+'</div>'+
+        '<div class="si-pips">'+pips+'</div>'+
+        '<div class="si-stat">'+statLine+'</div>'+
+        '<div class="si-c">'+(maxed?'✓ MAXED':'🌀 '+cost)+'</div>';
+      if(canBuy) el.onclick = function(){ buyEchoUpgrade(u.key); };
+    }
+    grid.appendChild(el);
+  });
+}
+
+function buyEchoUpgrade(key){
+  var ui = ECHO_UPGRADES.find(function(u){ return u.key===key; });
+  if(!ui) return;
+  var lv = (SAVE.echoUpgrades||{})[key]||0;
+  if(lv >= ui.max) return;
+  var cost = ui.costFn(lv);
+  if((SAVE.echoes||0) < cost) return;
+  SAVE.echoes -= cost;
+  if(!SAVE.echoUpgrades) SAVE.echoUpgrades = {};
+  SAVE.echoUpgrades[key] = lv + 1;
+  doSave(); sfx('upgradeSelect');
+  showToast(ui.icon+' '+ui.name+' → LV.'+(lv+1));
+  setTimeout(function(){ buildEchoes(); }, 320);
+}
+
+function buildSynergies(){
+  var grid = document.getElementById('synergies-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  var activeSyn = computeSynergies();
+  var discovered = SAVE.discoveredSynergies || [];
+  var countEl = document.getElementById('synergies-active-count');
+  if(countEl) countEl.textContent = activeSyn.length + ' / ' + SYNERGIES.length + ' ACTIVE';
+  // Group by tier
+  var tiers = [1,2,3,4];
+  var tierNames = {1:'TIER I — DUAL',2:'TIER II — TRIPLE',3:'TIER III — QUAD',4:'TIER IV — LEGENDARY'};
+  tiers.forEach(function(tier){
+    var syns = SYNERGIES.filter(function(s){ return s.tier===tier; });
+    if(!syns.length) return;
+    var header = document.createElement('div');
+    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#ff880088;letter-spacing:2px;margin:14px 0 8px;text-align:center';
+    header.textContent = tierNames[tier];
+    grid.appendChild(header);
+    var tierGrid = document.createElement('div');
+    tierGrid.className = 'shop-grid';
+    syns.forEach(function(syn, idx){
+      var isDiscovered = discovered.indexOf(syn.id) >= 0;
+      var isActive = activeSyn.indexOf(syn.id) >= 0;
+      var el = document.createElement('div');
+      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#22334466')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(0,10,20,0.6)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
+      if(isActive) el.style.boxShadow = '0 0 15px '+syn.color+'44, inset 0 0 15px '+syn.color+'11';
+      if(!isDiscovered) {
+        var hintHtml = syn.conditions.map(function(c){
+          var met = checkSynergyCondition(c);
+          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#334')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+        }).join('');
+        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.3;margin-bottom:2px">❓</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#445;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
+          '<div style="font-size:8px;color:#334;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center">'+hintHtml+'</div>';
+      } else {
+        var condHtml = syn.conditions.map(function(c){
+          var met = checkSynergyCondition(c);
+          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#445')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+        }).join('');
+        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(isActive?syn.color:'#778')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
+          '<div style="font-size:10px;color:'+(isActive?'#ccddee':'#556')+';margin-bottom:6px">'+syn.desc+'</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:2px">'+condHtml+'</div>'+
+          (isActive?'<div style="font-family:Orbitron,sans-serif;font-size:9px;color:'+syn.color+';letter-spacing:2px;margin-top:6px;text-align:center;text-shadow:0 0 8px '+syn.color+'">✦ ACTIVE</div>':'');
+      }
+      tierGrid.appendChild(el);
+    });
+    grid.appendChild(tierGrid);
+  });
 }
 
 function buildPacks(){
@@ -5510,6 +6865,33 @@ const HOWTO_PAGES = [
       📲 Add to Home Screen for the best fullscreen experience<br>
       🌩️ Reach 1000000 pts to unlock a legendary share achievement`
   },
+  {
+    icon:'🔥', title:'STAR FORGE',
+    content:`
+      🔥 The Star Forge unlocks after reaching Wave 25<br>
+      🛒 Find it at the bottom of the SHOP screen<br>
+      ⚡ Two active tracks: Damage and Fire Rate (Armor coming soon)<br>
+      ♾️ Forge upgrades are permanent and infinite<br>
+      📈 Each level has diminishing returns but always helps`
+  },
+  {
+    icon:'🌀', title:'VOID ECHOES',
+    content:`
+      🌀 Echoes unlock after reaching Wave 35<br>
+      💀 Earn Echo currency when your run ends past Wave 35<br>
+      🔄 Ascend voluntarily for a 1.25x Echo bonus<br>
+      ⬆️ Spend Echoes on powerful permanent multipliers<br>
+      🌟 Void Amplifier can multiply your damage up to 5x`
+  },
+  {
+    icon:'🔗', title:'SYNERGIES',
+    content:`
+      🔗 Synergies unlock after reaching Wave 35<br>
+      🧩 Combine specific perks, relics, sets and forge levels<br>
+      ✨ Active synergies grant unique bonus effects<br>
+      📊 4 tiers from Dual combos to Legendary combos<br>
+      🔍 Undiscovered synergies show as ??? until conditions are met`
+  },
 ];
 
 let howtoPageIndex = 0;
@@ -5607,6 +6989,7 @@ function startCustomizeAnim(){
     });
     _customizeBullets=_customizeBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
+    playerSpriteState=['idle','boost','full'][Math.floor(t*0.8)%3];
     drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2);
   }
   requestAnimationFrame(loop);
@@ -5660,6 +7043,7 @@ function startMenuShipPreview(){
     });
     _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
+    playerSpriteState=boosting?'full':'boost';
     drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0);
   }
   requestAnimationFrame(loop);
@@ -5692,14 +7076,48 @@ function setCustom(key,val){
     btn.style.background=isSelected?sectionColor+'22':'transparent';
     btn.style.boxShadow=isSelected?`0 0 10px ${sectionColor}44`:'none';
   });
+  if(key==='sprite') updateSpriteOverrideState();
+}
+
+function updateSpriteOverrideState(){
+  var spriteActive=SAVE.shipCustom&&SAVE.shipCustom.sprite&&SAVE.shipCustom.sprite!=='none';
+  var overriddenKeys=['shape','hullColor','cockpitColor','aura','decal'];
+  overriddenKeys.forEach(function(key){
+    document.querySelectorAll('[data-custom-key="'+key+'"]').forEach(function(btn){
+      btn.style.opacity=spriteActive?'0.3':'1';
+      btn.style.pointerEvents=spriteActive?'none':'auto';
+    });
+  });
+  // Update section titles
+  var content=document.getElementById('customize-content');
+  if(!content) return;
+  var overriddenTitles=['SHIP SHAPE','HULL COLOR','COCKPIT COLOR','SHIP AURA','DECALS'];
+  for(var i=0;i<content.children.length;i++){
+    var titleDiv=content.children[i].querySelector('div');
+    if(!titleDiv) continue;
+    var text=titleDiv.textContent.replace(/\s*\(OVERRIDDEN BY SPRITE\)/,'');
+    if(overriddenTitles.indexOf(text)>=0){
+      titleDiv.style.opacity=spriteActive?'0.4':'1';
+      var tag=titleDiv.querySelector('.spr-tag');
+      if(spriteActive&&!tag){
+        var span=document.createElement('span');
+        span.className='spr-tag';
+        span.style.cssText='margin-left:8px;font-size:8px;color:#ff8800;opacity:1';
+        span.textContent='(OVERRIDDEN BY SPRITE)';
+        titleDiv.appendChild(span);
+      } else if(!spriteActive&&tag){
+        tag.remove();
+      }
+    }
+  }
 }
 
 function buildCustomize(){
-  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none'};
+  if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
-  if(content.hasChildNodes()) return;
+  if(content.hasChildNodes()){ updateSpriteOverrideState(); return; }
   const sc=SAVE.shipCustom;
 
   function section(title, color, items, key, current){
@@ -5731,6 +7149,7 @@ function buildCustomize(){
   }
 
   content.innerHTML='';
+  content.appendChild(section('SPRITES','#ff8800',SPRITE_SHIPS,'sprite',sc.sprite||'none'));
   content.appendChild(section('SHIP SHAPE','#00f5ff',SHIP_SHAPES,'shape',sc.shape||'classic'));
   requestAnimationFrame(()=>drawCustomizePreview());
   content.appendChild(section('HULL COLOR','#00f5ff',HULL_COLORS,'hullColor',sc.hullColor||'#00f5ff'));
@@ -5740,13 +7159,16 @@ function buildCustomize(){
   content.appendChild(section('BULLET SHAPE','#cc44ff',BULLET_SHAPES,'bulletShape',sc.bulletShape||'laser'));
   content.appendChild(section('SHIP AURA','#ffd700',AURAS,'aura',sc.aura||'none'));
   content.appendChild(section('DECALS','#00ff88',DECALS,'decal',sc.decal||'none'));
+  updateSpriteOverrideState();
 }
 
 function buildChangelog(){
   document.getElementById('changelog-content').innerHTML = `
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
-      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🎨 Ship skin customization<br>🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📊 Expanded leaderboard features</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📱 App Store release via Capacitor</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ff8800;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.7.0 (BETA)</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Star Forge — permanent damage & fire rate upgrades (Wave 25+)<br>✅ Void Echoes — ascend past Wave 35 to earn echo currency for multipliers<br>✅ Synergies — combine perks, relics, sets & forge levels for combo bonuses<br>✅ Achievements — 6 tiered milestones with animated progress bars & popup notifications<br>✅ Settings menu with music & SFX volume sliders<br>✅ Enhanced leaderboard with tappable player cards (ship, perks, synergies, forge)<br>✅ Cinematic launch transition from main menu into gameplay<br>✅ Star Forge costs rebalanced to be more accessible<br>✅ Performance: removed GPU-heavy shadows from particles & bullets<br>✅ Performance: lowered enemy shadow threshold for smoother high-wave gameplay<br>✅ Fixed reset button clearing endgame progress (echoes, forge, synergies)<br>✅ Fixed music toggle disappearing after save & quit<br>✅ Volume settings persist across resets and ascension</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.3</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Navigation sounds — back button whoosh, softer forward tap<br>✅ Upgrade particles (▲ arrows & ❤️ hearts) now appear correctly on purchase<br>✅ Fixed nav tap sound firing on first menu load after splash</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.6.2</div>
@@ -6038,6 +7460,7 @@ function startSplashShipAnim() {
     ctx.save();
     ctx.translate(ship.x, ship.y);
     ctx.rotate(-Math.PI / 2);
+    playerSpriteState='full';
     drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
     ctx.restore();
 
@@ -6091,6 +7514,14 @@ function initSplash() {
   const flashEl      = document.getElementById('splash-flash');
   const fullName = 'Adam Dueck';
   let i = 0;
+
+  // ── Shooting star ──────────────────
+  setTimeout(()=>{
+    var star = document.createElement('div');
+    star.style.cssText = 'position:absolute;z-index:2;pointer-events:none;width:3px;height:3px;background:#fff;border-radius:50%;box-shadow:0 0 6px 2px rgba(255,255,255,0.8),0 0 12px 4px rgba(0,245,255,0.4),-20px 0 15px 2px rgba(0,245,255,0.15),-40px 0 25px 1px rgba(0,245,255,0.08);animation:shootingStar 3s linear forwards';
+    container.appendChild(star);
+    setTimeout(function(){ if(star.parentNode) star.parentNode.removeChild(star); }, 3200);
+  }, 600);
 
   // ── Sequence (8 seconds total) ──────────────────
   setTimeout(()=>{ creatorEl.style.opacity='1'; }, 400);
@@ -6173,7 +7604,28 @@ async function submitLeaderboardScore() {
   try {
     const scores = await fetchLeaderboard();
     const activeRelics = (SAVE.activeRelics||[]).map(id => { const r = RELICS.find(x=>x.id===id); return r ? r.icon : ''; }).join('');
-    scores.push({ name, score:finalScore, wave:finalWave, relics:activeRelics, date:new Date().toISOString().slice(0,10) });
+    const snap = window._lbSnapshot || {};
+    const relicIds = (SAVE.activeRelics||[]).slice();
+    const perkData = (snap.activePerks||[]).map(id => {
+      const p = PERKS.find(x=>x.id===id);
+      const lv = (snap.perkLevels||{})[id]||1;
+      return p ? { id:p.id, icon:p.icon, name:p.name, level:lv } : null;
+    }).filter(Boolean);
+    const synergyData = (snap.activeSynergies||[]).map(id => {
+      const s = SYNERGIES.find(x=>x.id===id);
+      return s ? { id:s.id, icon:s.icon, name:s.name } : null;
+    }).filter(Boolean);
+    scores.push({
+      name, score:finalScore, wave:finalWave,
+      relics:activeRelics, relicIds:relicIds,
+      date:new Date().toISOString().slice(0,10),
+      shipCustom: snap.shipCustom || null,
+      perks: perkData,
+      synergies: synergyData,
+      forgeLevels: snap.forgeLevels || null,
+      kills: snap.kills || 0,
+      ascensionCount: snap.ascensionCount || 0
+    });
     scores.sort((a,b)=>b.score-a.score);
     const top100 = scores.slice(0,100);
     await fetch(LB_URL, {
@@ -6215,20 +7667,34 @@ async function openLeaderboard() {
   list.appendChild(rowsContainer);
 
   const renderRows = (data) => {
-    rowsContainer.innerHTML = data.length ? data.map((s,i)=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:6px;border-radius:6px;background:rgba(0,10,30,0.6);border:1px solid ${i===0?'#ffd700':i===1?'#aaa':i===2?'#cd7f32':'#1a2540'}">
+    rowsContainer.innerHTML = data.length ? data.map((s,i)=>{
+      const hullDot = s.shipCustom ? `<div style="width:8px;height:8px;border-radius:50%;background:${s.shipCustom.hullColor||'#00f5ff'};box-shadow:0 0 6px ${s.shipCustom.hullColor||'#00f5ff'};flex-shrink:0"></div>` : '';
+      const hasCard = !!(s.shipCustom || s.perks || s.synergies);
+      return `<div data-lb-idx="${i}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:6px;border-radius:6px;background:rgba(0,10,30,0.6);border:1px solid ${i===0?'#ffd700':i===1?'#aaa':i===2?'#cd7f32':'#1a2540'};${hasCard?'cursor:pointer':''}">
         <div style="font-size:18px;width:28px;text-align:center">${medals[i]||`<span style='font-family:Orbitron,sans-serif;font-size:11px;color:#334'>${i+1}</span>`}</div>
-        <div style="flex:1;font-family:'Orbitron',sans-serif;font-size:12px;color:${i===0?'#ffd700':i<3?'#ccc':'#aaa'};letter-spacing:1px">${s.name}</div>
+        <div style="flex:1;display:flex;align-items:center;gap:6px">
+          ${hullDot}
+          <span style="font-family:'Orbitron',sans-serif;font-size:12px;color:${i===0?'#ffd700':i<3?'#ccc':'#aaa'};letter-spacing:1px">${s.name}</span>
+        </div>
         <div style="text-align:right">
           <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--c)">${s.score.toLocaleString()}</div>
-          <div style="display:flex;gap:6px;align-items:center;margin-top:3px">
+          <div style="display:flex;gap:6px;align-items:center;margin-top:3px;justify-content:flex-end">
             <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#4af;letter-spacing:1px">WAVE ${s.wave}</span>
             ${s.relics?`<span style="font-size:12px;letter-spacing:2px">${s.relics}</span>`:''}
             <span style="font-size:9px;color:#334;letter-spacing:1px">${s.date||''}</span>
           </div>
         </div>
-      </div>
-    `).join('') : '<div style="color:#446;font-size:12px;text-align:center;letter-spacing:2px;padding:20px 0">NO RELIC RUNS FOUND</div>';
+        ${hasCard?'<div style="font-size:10px;color:#334;margin-left:2px">›</div>':''}
+      </div>`;
+    }).join('') : '<div style="color:#446;font-size:12px;text-align:center;letter-spacing:2px;padding:20px 0">NO RELIC RUNS FOUND</div>';
+    // Attach tap handlers for player cards
+    rowsContainer.querySelectorAll('[data-lb-idx]').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.getAttribute('data-lb-idx'));
+        const entry = data[idx];
+        if(entry && (entry.shipCustom || entry.perks || entry.synergies)) showPlayerCard(entry, idx);
+      });
+    });
   };
 
   filterBtn.onclick = () => {
@@ -6240,6 +7706,125 @@ async function openLeaderboard() {
   };
 
   renderRows(scores);
+}
+
+function showPlayerCard(entry, rank) {
+  var existing = document.getElementById('lb-player-card');
+  if(existing) existing.remove();
+  var overlay = document.createElement('div');
+  overlay.id = 'lb-player-card';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease';
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  var medals = ['🥇','🥈','🥉'];
+  var rankBadge = rank < 3 ? medals[rank] : '#'+(rank+1);
+  var sc = entry.shipCustom || {};
+  var hullCol = sc.hullColor || '#00f5ff';
+
+  var naSpan = '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:#334;letter-spacing:1px;font-style:italic">NONE</span>';
+
+  // Perk section — always show
+  var perksHTML = '<div style="margin-top:14px">' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00ccff;letter-spacing:2px;margin-bottom:6px">⚡ PERKS</div>';
+  if(entry.perks && entry.perks.length) {
+    perksHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.perks.map(function(p){
+      return '<div style="background:rgba(0,204,255,0.08);border:1px solid #00ccff33;border-radius:4px;padding:3px 7px;font-size:11px">' +
+        '<span>'+p.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+p.name+'</span>' +
+        '<span style="font-family:Orbitron,sans-serif;font-size:7px;color:#00ccff;margin-left:2px">LV'+p.level+'</span></div>';
+    }).join('') + '</div>';
+  } else { perksHTML += naSpan; }
+  perksHTML += '</div>';
+
+  // Synergies section — always show
+  var synHTML = '<div style="margin-top:14px">' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff8800;letter-spacing:2px;margin-bottom:6px">🔗 SYNERGIES</div>';
+  if(entry.synergies && entry.synergies.length) {
+    synHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.synergies.map(function(s){
+      return '<div style="background:rgba(255,136,0,0.08);border:1px solid #ff880033;border-radius:4px;padding:3px 7px;font-size:11px">' +
+        '<span>'+s.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+s.name+'</span></div>';
+    }).join('') + '</div>';
+  } else { synHTML += naSpan; }
+  synHTML += '</div>';
+
+  // Relics section — always show
+  var relicsHTML = '<div style="margin-top:14px">' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff4455;letter-spacing:2px;margin-bottom:6px">⚠ RELICS</div>';
+  if(entry.relicIds && entry.relicIds.length) {
+    relicsHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.relicIds.map(function(id){
+      var r = RELICS.find(function(x){return x.id===id;});
+      return r ? '<div style="background:rgba(255,68,85,0.08);border:1px solid #ff445533;border-radius:4px;padding:3px 7px;font-size:11px">' +
+        '<span>'+r.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+r.name+'</span></div>' : '';
+    }).join('') + '</div>';
+  } else if(entry.relics && entry.relics.length) {
+    relicsHTML += '<div style="font-size:16px;letter-spacing:4px">'+entry.relics+'</div>';
+  } else { relicsHTML += naSpan; }
+  relicsHTML += '</div>';
+
+  // Forge section — always show
+  var fl = entry.forgeLevels || {damage:0,rate:0,armor:0};
+  var hasForge = fl.damage||fl.rate||fl.armor;
+  var forgeBar = function(label, icon, val, color) {
+    var pct = Math.min(val/40*100, 100);
+    return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
+      '<span style="font-size:12px;width:20px;text-align:center">'+icon+'</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;width:44px;letter-spacing:1px">'+label+'</span>' +
+      '<div style="flex:1;height:5px;background:#0a1525;border-radius:3px;overflow:hidden">' +
+      '<div style="width:'+pct+'%;height:100%;background:'+color+';border-radius:3px"></div></div>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:'+color+';width:24px;text-align:right">'+val+'</span></div>';
+  };
+  var forgeHTML = '<div style="margin-top:14px">' +
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff4444;letter-spacing:2px;margin-bottom:6px">🔥 STAR FORGE</div>';
+  if(hasForge) {
+    forgeHTML += forgeBar('DMG','🔥',fl.damage||0,'#ff4444') +
+      forgeBar('RATE','⚡',fl.rate||0,'#ff8c00') +
+      forgeBar('ARMOR','🛡️',fl.armor||0,'#00ccff');
+  } else { forgeHTML += naSpan; }
+  forgeHTML += '</div>';
+
+  // Ascension badge — always show
+  var ascHTML = '<div style="margin-top:14px;text-align:center">' +
+    '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(entry.ascensionCount > 0 ? '#aa44ff' : '#334')+';letter-spacing:2px">🌀 ASCENSION ×'+(entry.ascensionCount||0)+'</span></div>';
+
+  var card = document.createElement('div');
+  card.style.cssText = 'width:100%;max-width:360px;background:linear-gradient(180deg,rgba(5,10,25,0.98),rgba(10,20,40,0.98));border:1px solid '+hullCol+'44;border-radius:12px;padding:20px;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px '+hullCol+'22';
+  card.innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">' +
+      '<canvas id="lb-card-ship" width="100" height="100" style="position:static;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,'+hullCol+'18 0%,rgba(0,5,15,0.7) 70%);border:1px solid '+hullCol+'33;margin-bottom:10px"></canvas>' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:16px;color:'+hullCol+';letter-spacing:2px;font-weight:700;text-align:center">'+entry.name+'</div>' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:12px;color:#ffd700;margin-top:4px">'+rankBadge+'</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:0;justify-content:center;margin-bottom:8px">' +
+      '<div style="text-align:center;flex:1">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">SCORE</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:var(--c)">'+entry.score.toLocaleString()+'</div>' +
+      '</div>' +
+      '<div style="text-align:center;flex:1">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">WAVE</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:#4af">'+entry.wave+'</div>' +
+      '</div>' +
+      (entry.kills ? '<div style="text-align:center;flex:1">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">KILLS</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:#ff4455">'+entry.kills+'</div>' +
+      '</div>' : '') +
+    '</div>' +
+    '<div style="text-align:center;margin-bottom:4px">' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:#334;letter-spacing:1px">'+(entry.date||'')+'</span>' +
+    '</div>' +
+    '<div style="height:1px;background:linear-gradient(90deg,transparent,#1a2540,transparent);margin:12px 0"></div>' +
+    perksHTML + synHTML + relicsHTML + forgeHTML + ascHTML +
+    '<div style="text-align:center;margin-top:18px">' +
+      '<button onclick="this.closest(\'#lb-player-card\').remove()" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:8px 28px;background:transparent;border:1px solid #334;color:#556;border-radius:4px;cursor:pointer">✕ CLOSE</button>' +
+    '</div>';
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  // Draw ship on the card canvas
+  var shipCanvas = document.getElementById('lb-card-ship');
+  if(shipCanvas && entry.shipCustom) {
+    var ctx = shipCanvas.getContext('2d');
+    playerSpriteState='idle';
+    drawShip(ctx, 50, 54, 0, entry.shipCustom, 2.2);
+  }
 }
 
 // ── BOSS REWARD SPINNER ──────────────────────────
@@ -6504,6 +8089,89 @@ function spawnPowerupPickup(x,y,color,icon) {
   }
 }
 
+function _showSynergyNotification() {
+  if (_synNotifyQueue.length === 0) { _synNotifyActive = false; return; }
+  _synNotifyActive = true;
+  var entry = _synNotifyQueue.shift();
+  var syn = entry.syn;
+  var isActivated = entry.type === 'activated';
+  var borderColor = isActivated ? syn.color : syn.color + '66';
+  var glowIntensity = isActivated ? '44' : '22';
+  var labelText = isActivated ? 'ACTIVATED' : 'DISCOVERED';
+  var labelColor = isActivated ? '#ff8800' : '#66aaff88';
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:12px;right:12px;z-index:999999;pointer-events:none;' +
+    'padding:8px 14px;border-radius:8px;' +
+    'background:rgba(10,10,30,0.92);border:2px solid ' + borderColor + ';' +
+    'box-shadow:0 0 20px ' + syn.color + glowIntensity + ',0 0 40px ' + syn.color + '22;' +
+    'font-family:Orbitron,sans-serif;' +
+    'transform:translateX(300px);opacity:0;' +
+    'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
+    '<span style="font-size:' + (isActivated ? '20' : '16') + 'px">' + syn.icon + '</span>' +
+    '<div>' +
+    '<div style="font-size:10px;font-weight:900;color:' +
+      (isActivated ? syn.color : '#aabbcc') + ';text-shadow:0 0 10px ' +
+      (isActivated ? syn.color : 'transparent') + ';letter-spacing:2px">' + syn.name + '</div>' +
+    '<div style="font-size:7px;color:' + labelColor + ';letter-spacing:2px;margin-top:1px">' + labelText + '</div>' +
+    '</div></div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.style.transform = 'translateX(0)';
+      el.style.opacity = '1';
+    });
+  });
+  sfx('waveStart');
+  var holdTime = isActivated ? 3500 : 3000;
+  setTimeout(function() {
+    el.style.transform = 'translateX(300px)';
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      _showSynergyNotification();
+    }, 450);
+  }, holdTime);
+}
+
+function _showAchievementNotification() {
+  if (_achNotifyQueue.length === 0) { _achNotifyActive = false; return; }
+  _achNotifyActive = true;
+  var entry = _achNotifyQueue.shift();
+  var ach = entry.ach;
+  var tier = ach.tiers[entry.tierIdx];
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:12px;left:12px;z-index:999999;pointer-events:none;' +
+    'padding:8px 14px;border-radius:8px;' +
+    'background:rgba(10,10,30,0.94);border:2px solid #ffd700;' +
+    'box-shadow:0 0 20px #ffd70044,0 0 40px #ffd70022;' +
+    'font-family:Orbitron,sans-serif;' +
+    'transform:translateX(-300px);opacity:0;' +
+    'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
+    '<span style="font-size:18px">' + ach.icon + '</span>' +
+    '<div>' +
+    '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ' ' + tier.label + '</div>' +
+    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT' + (tier.reward ? ' · +' + tier.reward + ' 🌀' : '') + '</div>' +
+    '</div></div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.style.transform = 'translateX(0)';
+      el.style.opacity = '1';
+    });
+  });
+  sfx('trophyClaim');
+  setTimeout(function() {
+    el.style.transform = 'translateX(-300px)';
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      _showAchievementNotification();
+    }, 450);
+  }, 3500);
+}
+
 function dismissPerksIntro() {
   document.getElementById('screen-perks-intro').classList.add('hidden');
   if(window._perksIntroDone){ window._perksIntroDone(); window._perksIntroDone=null; }
@@ -6565,6 +8233,70 @@ function showWildSlotIntro(onDone){
   setTimeout(()=>{ document.getElementById('wsi-steps').style.opacity='1'; },700);
   setTimeout(()=>{ const btn=document.getElementById('wsi-btn'); btn.style.opacity='1'; btn.onclick=()=>{ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(()=>{ document.body.removeChild(el); onDone(); },400); }; },1100);
 }
+
+function showForgeIntro(onDone){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px';
+  el.innerHTML='<div id="fi-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">🔥</div>'+
+    '<div id="fi-title" style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ff4444;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #ff4444">STAR FORGE UNLOCKED</div>'+
+    '<div id="fi-sub" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff444488;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">PERMANENT POWER UPGRADES</div>'+
+    '<div id="fi-steps" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">🛒 Visit the SHOP to find your new Forge tracks</div>'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">⚡ Spend coins to permanently boost damage and fire rate</div>'+
+      '<div style="padding:10px 14px;border-radius:8px;background:rgba(255,68,68,0.06);border:1px solid #ff444433;font-size:12px;color:#ccc;text-align:left">♾️ Forge upgrades persist across runs — infinite scaling</div>'+
+    '</div>'+
+    '<button id="fi-btn" style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(255,68,68,0.1);border:2px solid #ff4444;color:#ff4444;border-radius:4px;cursor:pointer;margin-top:28px;opacity:0;transition:all 0.5s ease 1.1s">🔥 GOT IT</button>';
+  document.body.appendChild(el);
+  sfx('setComplete');
+  setTimeout(function(){ document.getElementById('fi-icon').style.opacity='1'; document.getElementById('fi-icon').style.transform='scale(1)'; },50);
+  setTimeout(function(){ document.getElementById('fi-title').style.opacity='1'; document.getElementById('fi-title').style.transform='translateY(0)'; },300);
+  setTimeout(function(){ document.getElementById('fi-sub').style.opacity='1'; },500);
+  setTimeout(function(){ document.getElementById('fi-steps').style.opacity='1'; },700);
+  setTimeout(function(){ var btn=document.getElementById('fi-btn'); btn.style.opacity='1'; btn.onclick=function(){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(function(){ document.body.removeChild(el); if(onDone) onDone(); },400); }; },1100);
+}
+
+function showEchoesIntro(onDone){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px';
+  el.innerHTML='<div id="ei-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">🌀</div>'+
+    '<div id="ei-title" style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#aa44ff;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #aa44ff">VOID ECHOES UNLOCKED</div>'+
+    '<div id="ei-sub" style="font-family:Orbitron,sans-serif;font-size:10px;color:#aa44ff88;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">PRESTIGE CURRENCY & PERMANENT MULTIPLIERS</div>'+
+    '<div id="ei-steps" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(170,68,255,0.06);border:1px solid #aa44ff33;font-size:12px;color:#ccc;text-align:left">💀 Earn Echoes when your run ends past Wave 35</div>'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(170,68,255,0.06);border:1px solid #aa44ff33;font-size:12px;color:#ccc;text-align:left">🔄 Ascend voluntarily for a 1.25x Echo bonus</div>'+
+      '<div style="padding:10px 14px;border-radius:8px;background:rgba(170,68,255,0.06);border:1px solid #aa44ff33;font-size:12px;color:#ccc;text-align:left">⬆️ Spend Echoes on powerful permanent multipliers like Void Amplifier</div>'+
+    '</div>'+
+    '<button id="ei-btn" style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(170,68,255,0.1);border:2px solid #aa44ff;color:#aa44ff;border-radius:4px;cursor:pointer;margin-top:28px;opacity:0;transition:all 0.5s ease 1.1s">🌀 GOT IT</button>';
+  document.body.appendChild(el);
+  sfx('setComplete');
+  setTimeout(function(){ document.getElementById('ei-icon').style.opacity='1'; document.getElementById('ei-icon').style.transform='scale(1)'; },50);
+  setTimeout(function(){ document.getElementById('ei-title').style.opacity='1'; document.getElementById('ei-title').style.transform='translateY(0)'; },300);
+  setTimeout(function(){ document.getElementById('ei-sub').style.opacity='1'; },500);
+  setTimeout(function(){ document.getElementById('ei-steps').style.opacity='1'; },700);
+  setTimeout(function(){ var btn=document.getElementById('ei-btn'); btn.style.opacity='1'; btn.onclick=function(){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(function(){ document.body.removeChild(el); if(onDone) onDone(); },400); }; },1100);
+}
+
+function showSynergiesIntro(onDone){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px';
+  el.innerHTML='<div id="si-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">🔗</div>'+
+    '<div id="si-title" style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ff8800;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #ff8800">VOID SYNERGIES UNLOCKED</div>'+
+    '<div id="si-sub" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff880088;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">COMBINE ABILITIES FOR BONUS EFFECTS</div>'+
+    '<div id="si-steps" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,136,0,0.06);border:1px solid #ff880033;font-size:12px;color:#ccc;text-align:left">🧩 Combine specific perks, relics, sets and forge levels</div>'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(255,136,0,0.06);border:1px solid #ff880033;font-size:12px;color:#ccc;text-align:left">✨ Active synergies grant unique bonus effects to your ship</div>'+
+      '<div style="padding:10px 14px;border-radius:8px;background:rgba(255,136,0,0.06);border:1px solid #ff880033;font-size:12px;color:#ccc;text-align:left">🔍 Discover all 12 synergies across 4 tiers</div>'+
+    '</div>'+
+    '<button id="si-btn" style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(255,136,0,0.1);border:2px solid #ff8800;color:#ff8800;border-radius:4px;cursor:pointer;margin-top:28px;opacity:0;transition:all 0.5s ease 1.1s">🔗 GOT IT</button>';
+  document.body.appendChild(el);
+  sfx('setComplete');
+  setTimeout(function(){ document.getElementById('si-icon').style.opacity='1'; document.getElementById('si-icon').style.transform='scale(1)'; },50);
+  setTimeout(function(){ document.getElementById('si-title').style.opacity='1'; document.getElementById('si-title').style.transform='translateY(0)'; },300);
+  setTimeout(function(){ document.getElementById('si-sub').style.opacity='1'; },500);
+  setTimeout(function(){ document.getElementById('si-steps').style.opacity='1'; },700);
+  setTimeout(function(){ var btn=document.getElementById('si-btn'); btn.style.opacity='1'; btn.onclick=function(){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(function(){ document.body.removeChild(el); if(onDone) onDone(); },400); }; },1100);
+}
+
 
 function showSuperBossVictory(onDone){
   const el = document.createElement('div');
@@ -6798,5 +8530,44 @@ setTrack('menu');
     </div>
   </div>
 </div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#050d1f;border:1px solid #00f5ff;border-radius:10px;padding:28px 24px;max-width:320px;width:100%;text-align:center;box-shadow:0 0 40px rgba(0,245,255,0.15)">
+    <div style="font-size:28px;margin-bottom:6px">⚙️</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#00f5ff;letter-spacing:3px;margin-bottom:20px">SETTINGS</div>
+
+    <div style="text-align:left;margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#aab;letter-spacing:2px">♪ MUSIC</span>
+        <button id="settings-music-toggle" onclick="toggleMusicFromSettings()" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 10px;border-radius:3px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;letter-spacing:1px">ON</button>
+      </div>
+      <input type="range" id="settings-music-vol" min="0" max="100" value="55" oninput="onMusicVolChange(this.value)" style="width:100%;accent-color:#00f5ff;height:6px;cursor:pointer">
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:9px;color:#556">0%</span>
+        <span id="settings-music-val" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#889">55%</span>
+        <span style="font-size:9px;color:#556">100%</span>
+      </div>
+    </div>
+
+    <div style="text-align:left;margin-bottom:20px">
+      <div style="margin-bottom:6px">
+        <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#aab;letter-spacing:2px">🔊 SFX</span>
+      </div>
+      <input type="range" id="settings-sfx-vol" min="0" max="100" value="50" oninput="onSfxVolChange(this.value)" style="width:100%;accent-color:#ff8800;height:6px;cursor:pointer">
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:9px;color:#556">0%</span>
+        <span id="settings-sfx-val" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#889">50%</span>
+        <span style="font-size:9px;color:#556">100%</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin:12px 0 4px">
+      <button onclick="revertSettingsDefaults()" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#889;border-radius:4px;cursor:pointer">↺ REVERT TO DEFAULT</button>
+    </div>
+    <button onclick="closeSettings()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;padding:10px 30px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer">✕ CLOSE</button>
+  </div>
+</div>
+
 </body>
 </html>
