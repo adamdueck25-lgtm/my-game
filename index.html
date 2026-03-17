@@ -382,10 +382,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">ACHIEVE</div>
         </div>
 
-        <div class="dock-tile" id="dock-echoes" onclick="if(!SAVE.echoesUnlocked){showToast('🌀 Echoes unlock after reaching Wave 35!');return;}showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
+        <div class="dock-tile" id="dock-echoes" onclick="showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
           <div class="dock-icon">🌀</div>
           <div class="dock-label">ECHOES</div>
-          <div id="dock-echoes-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
         <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff99">
@@ -393,7 +392,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
+        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
           <div class="dock-icon">🔗</div>
           <div class="dock-label">SYNERGY</div>
           <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
@@ -536,7 +535,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <div style="display:flex;gap:0;justify-content:center;margin:12px 0 8px;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px">
         <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
         <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
-        <button id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+        <button id="btn-synergy-summary" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
         <button onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" class="nav-tab" style="--ntc:#ffd700">🏅 Achieve</button>
       </div>
       <button onclick="showScreen('screen-menu')" style="margin-top:2px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
@@ -566,7 +565,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin:10px 0 6px">
       <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
       <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
-      <button onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+      <button onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
     </div>
     <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
   </div>
@@ -636,7 +635,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
         <button onclick="showPacksFromShop()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
         <button onclick="openTrophies('screen-shop')" class="nav-tab" style="--ntc:#ffaa00">🏆 Trophies</button>
         <button id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" class="nav-tab" style="--ntc:#00ccff">⚡ Perks</button>
-        <button id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+        <button id="btn-synergy-shop" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
       </div>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
     </div>
@@ -2198,7 +2197,7 @@ try {
 const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false, lastSeenAnnouncement:'',
   shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
   forgeLevels:{ damage:0, rate:0, armor:0 },
-  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
+  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, synergiesUnlocked:false, discoveredSynergies:[],
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false,
   musicVolume:55, sfxVolume:50,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
@@ -2704,6 +2703,7 @@ async function devClearLeaderboard() {
 function devUnlockAll() {
   SAVE.relicsUnlocked = true;
   SAVE.echoesUnlocked = true;
+  SAVE.synergiesUnlocked = true;
   SAVE.coins = 999999;
   SAVE.forgeLevels = { damage:10, rate:10, armor:0 };
   SAVE.echoes = (SAVE.echoes||0) + 1000;
@@ -4963,6 +4963,7 @@ function doAscension() {
   SAVE.echoUpgrades = savedEchoUpgrades;
   SAVE.ascensionCount = savedAscensionCount;
   SAVE.echoesUnlocked = true;
+  SAVE.synergiesUnlocked = true;
   SAVE.forgeIntroSeen = savedForgeIntroA;
   SAVE.echoesIntroSeen = savedEchoesIntroA;
   SAVE.synergiesIntroSeen = savedSynergiesIntroA;
@@ -5018,6 +5019,7 @@ function _doEndGame() {
   const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
   const savedAscensionCount = SAVE.ascensionCount||0;
   const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergiesUnlocked = SAVE.synergiesUnlocked||false;
   const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
   const savedForgeIntroE = SAVE.forgeIntroSeen||false;
   const savedEchoesIntroE = SAVE.echoesIntroSeen||false;
@@ -5049,6 +5051,7 @@ function _doEndGame() {
   SAVE.ascensionCount = savedAscensionCount;
   var wasEchoesLocked = !savedEchoesUnlocked;
   SAVE.echoesUnlocked = savedEchoesUnlocked || finalWave >= 35;
+  SAVE.synergiesUnlocked = savedSynergiesUnlocked || finalWave >= 21;
   SAVE.discoveredSynergies = savedSynergies;
   // Queue echoes+synergies intro if newly unlocked
   if(wasEchoesLocked && SAVE.echoesUnlocked && !savedEchoesIntroE){
@@ -5705,6 +5708,7 @@ function doReset() {
   const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
   const savedAscensionCount = SAVE.ascensionCount||0;
   const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergiesUnlocked = SAVE.synergiesUnlocked||false;
   const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
   const savedForgeIntro = SAVE.forgeIntroSeen||false;
   const savedEchoesIntro = SAVE.echoesIntroSeen||false;
@@ -5722,6 +5726,7 @@ function doReset() {
   SAVE.echoUpgrades = savedEchoUpgrades;
   SAVE.ascensionCount = savedAscensionCount;
   SAVE.echoesUnlocked = savedEchoesUnlocked;
+  SAVE.synergiesUnlocked = savedSynergiesUnlocked;
   SAVE.discoveredSynergies = savedSynergies;
   SAVE.forgeIntroSeen = savedForgeIntro;
   SAVE.echoesIntroSeen = savedEchoesIntro;
@@ -6312,17 +6317,11 @@ function updateMenuCoins(){
   const pl = document.getElementById('dock-perks-lock');
   if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
 
-  // Echoes lock badge
-  const el = document.getElementById('dock-echoes-lock');
-  if(el) el.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
-  const echoTile = document.getElementById('dock-echoes');
-  if(echoTile) { echoTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; echoTile.style.borderColor = SAVE.echoesUnlocked ? '#aa44ff99' : '#33333399'; }
-
   // Synergies lock badge
   const sl = document.getElementById('dock-synergies-lock');
-  if(sl) sl.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  if(sl) sl.style.display = SAVE.synergiesUnlocked ? 'none' : 'block';
   const synTile = document.getElementById('dock-synergies');
-  if(synTile) { synTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.echoesUnlocked ? '#ff880099' : '#33333399'; }
+  if(synTile) { synTile.style.opacity = SAVE.synergiesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.synergiesUnlocked ? '#ff880099' : '#33333399'; }
 
   // Updates badge
   const badge = document.getElementById('updates-badge');
