@@ -123,6 +123,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .dock-label{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--tc,#00f5ff);letter-spacing:0.5px;text-align:center;opacity:1;line-height:1.2;font-weight:700;text-shadow:0 0 8px var(--tc,#00f5ff)88}
 .menu-util-btn{flex:1;padding:8px 10px;font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#667;background:transparent;border:1px solid #223;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .1s}
 .menu-util-btn:active{background:rgba(255,255,255,0.06)}
+.nav-tab{flex:1;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--ntc,#aaa);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:12px 4px 10px;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s;text-shadow:0 0 8px color-mix(in srgb,var(--ntc,#aaa) 40%,transparent)}
+.nav-tab:active{background:rgba(255,255,255,0.08);border-bottom-color:var(--ntc,#aaa)}
+@media(hover:hover){.nav-tab:hover{background:rgba(255,255,255,0.05);border-bottom-color:color-mix(in srgb,var(--ntc,#aaa) 50%,transparent)}}
 #menu-ship-preview{height:clamp(50px,10vh,120px);aspect-ratio:160/140;width:auto}
 @media(max-height:700px){.menu-hero-emoji{font-size:32px!important}.title-void{font-size:clamp(20px,6.5vw,30px)!important}.title-inv{font-size:22px!important}#menu-hero-title{padding-top:2px!important}.game-title{margin-bottom:2px!important}#menu-nav-grid{margin-top:8px!important}.menu-stats-row{padding-top:6px!important;padding-bottom:6px!important}.menu-launch-btn{padding-top:12px!important;padding-bottom:12px!important}}
 @keyframes breatheGlow{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}
@@ -323,20 +326,25 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- STATS ROW -->
-    <div id="menu-stats-row" class="menu-stats-row" style="display:flex;justify-content:center;gap:20px;padding:10px 20px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
+    <div id="menu-stats-row" class="menu-stats-row" style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;padding:10px 12px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">HI-SCORE</div>
-        <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:13px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88">0</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">⭐ SCORE</div>
+        <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:14px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88;line-height:1.4">0</div>
       </div>
-      <div style="width:1px;background:#1a2540"></div>
+      <div style="width:1px;height:24px;background:#1a2540"></div>
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">COINS</div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#ffd700;text-shadow:0 0 6px #ffd70088">💰 <span id="menu-coins">0</span></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">💰 COINS</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffd700;text-shadow:0 0 6px #ffd70088;line-height:1.4"><span id="menu-coins">0</span></div>
       </div>
-      <div style="width:1px;background:#1a2540"></div>
+      <div style="width:1px;height:24px;background:#1a2540"></div>
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:2px">WAVE</div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:13px;color:#00ff88;text-shadow:0 0 6px #00ff8888"><span id="menu-wave">1</span></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">🔑 KEYS</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;text-shadow:0 0 6px #ffcc0088;line-height:1.4"><span id="menu-keys">0</span></div>
+      </div>
+      <div style="width:1px;height:24px;background:#1a2540"></div>
+      <div style="text-align:center">
+        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">🚀 WAVE</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#00ff88;text-shadow:0 0 6px #00ff8888;line-height:1.4"><span id="menu-wave">1</span></div>
       </div>
     </div>
 
@@ -364,9 +372,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">SHOP</div>
         </div>
 
-        <div class="dock-tile" onclick="openTrophies('screen-menu')" style="--tc:#ffaa00;border-color:#ffaa0099">
-          <div class="dock-icon">🏆</div>
-          <div class="dock-label">TROPHIES</div>
+        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
+          <div class="dock-icon">🔗</div>
+          <div class="dock-label">SYNERGY</div>
+          <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
         <div class="dock-tile" onclick="openLeaderboard()" style="--tc:#00f5ff;border-color:#00f5ff99">
@@ -374,16 +383,14 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-perks" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating Wave 20!');return;}openPerks('screen-menu')" style="--tc:#00ccff;border-color:#00ccff99">
-          <div class="dock-icon" id="dock-perks-icon">⚡</div>
-          <div class="dock-label">PERKS</div>
-          <div id="dock-perks-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
+        <div class="dock-tile" id="dock-achieve" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements')" style="--tc:#ffd700;border-color:#ffd70099">
+          <div class="dock-icon">🏅</div>
+          <div class="dock-label">ACHIEVE</div>
         </div>
 
-        <div class="dock-tile" id="dock-echoes" onclick="if(!SAVE.echoesUnlocked){showToast('🌀 Echoes unlock after reaching Wave 35!');return;}showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
+        <div class="dock-tile" id="dock-echoes" onclick="showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
           <div class="dock-icon">🌀</div>
           <div class="dock-label">ECHOES</div>
-          <div id="dock-echoes-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
         </div>
 
         <div class="dock-tile" onclick="showScreen('screen-customize')" style="--tc:#cc44ff;border-color:#cc44ff99">
@@ -391,16 +398,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" id="dock-synergies" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-menu';buildSynergies();showScreen('screen-synergies')" style="--tc:#ff8800;border-color:#ff880099">
-          <div class="dock-icon">🔗</div>
-          <div class="dock-label">SYNERGY</div>
-          <div id="dock-synergies-lock" style="display:none;position:absolute;top:4px;right:4px;font-size:9px;opacity:0.6">🔒</div>
+        <div class="dock-tile" id="dock-vault" onclick="buildVaultScreen();showScreen('screen-vault')" style="--tc:#ffcc00;border-color:#ffcc0099">
+          <div class="dock-icon">📦</div>
+          <div class="dock-label">VAULT</div>
+          <div id="dock-vault-badge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></div>
         </div>
 
       </div>
       <div style="display:flex;gap:6px;margin-top:8px;width:100%">
         <button class="menu-util-btn" onclick="showHowToPlay()">❓ How to Play</button>
-        <button class="menu-util-btn" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements');" style="color:#ffd700;border-color:#ffd70033">🏅 Achieve</button>
         <button class="menu-util-btn" id="dock-updates" onclick="openChangelog();dismissUpdatesBadge()" style="position:relative">📋 Updates<span id="updates-badge" style="display:none;position:absolute;top:6px;right:8px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></span></button>
       </div>
     </div>
@@ -533,12 +539,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
       <button id="ascend-btn" class="btn-main btn-sm" onclick="doAscension()" style="display:none;margin-top:6px;border-color:#aa44ff;color:#aa44ff;box-shadow:0 0 12px #aa44ff44;animation:cardPulse 2s ease-in-out infinite">🌀 ASCEND (+<span id="ascend-echo-count">0</span> Echoes)</button>
       <div style="display:flex;gap:0;justify-content:center;margin:12px 0 8px;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px">
-        <button onclick="showShopFromWave()" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#00f5ff;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">⚡ Shop</button>
-        <button onclick="showPacksFromWave()" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff00cc;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">📦 Packs</button>
-        <button id="btn-synergy-summary" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff8800;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">🔗 Synergy</button>
-        <button onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ffd700;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">🏅 Achieve</button>
+        <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
+        <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+        <button id="btn-synergy-summary" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
+        <button onclick="achievementsPrevScreen='screen-summary';buildAchievementsScreen();showScreen('screen-achievements');" class="nav-tab" style="--ntc:#ffd700">🏅 Achieve</button>
       </div>
-      <button onclick="showScreen('screen-menu')" style="margin-top:2px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
+      <button onclick="_useMenuAlt=!_useMenuAlt;showScreen('screen-menu')" style="margin-top:2px;font-family:'Orbitron',sans-serif;font-size:9px;color:#556;background:transparent;border:1px solid #334;padding:4px 14px;border-radius:3px;cursor:pointer;letter-spacing:2px">💾 SAVE & MENU</button>
     </div>
   </div>
 </div>
@@ -563,9 +569,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="wc-score" id="wc-info"></div>
     <button class="btn-main b-gr" onclick="nextWave()">▶▶ NEXT WAVE</button>
     <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin:10px 0 6px">
-      <button onclick="showShopFromWave()" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#00f5ff;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">⚡ Shop</button>
-      <button onclick="showPacksFromWave()" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff00cc;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">📦 Packs</button>
-      <button onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff8800;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">🔗 Synergy</button>
+      <button onclick="showShopFromWave()" class="nav-tab" style="--ntc:#00f5ff">⚡ Shop</button>
+      <button onclick="showPacksFromWave()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+      <button onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-summary';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
     </div>
     <button class="btn-main" onclick="confirmReset()" style="margin-top:2px;border-color:#334;color:#445;font-size:10px;padding:7px 20px;letter-spacing:2px;min-width:auto">⟳ RESET PROGRESS</button>
   </div>
@@ -632,10 +638,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
     <div style="padding:10px 0 80px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
       <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:12px">
-        <button onclick="showPacksFromShop()" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff00cc;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">📦 Packs</button>
-        <button onclick="openTrophies('screen-shop')" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ffaa00;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">🏆 Trophies</button>
-        <button id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#00ccff;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">⚡ Perks</button>
-        <button id="btn-synergy-shop" onclick="if(!SAVE.echoesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 35!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" style="flex:1;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#ff8800;background:transparent;border:none;cursor:pointer;padding:10px 2px;-webkit-tap-highlight-color:transparent">🔗 Synergy</button>
+        <button onclick="showPacksFromShop()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
+        <button onclick="openTrophies('screen-shop')" class="nav-tab" style="--ntc:#ffaa00">🏆 Trophies</button>
+        <button id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" class="nav-tab" style="--ntc:#00ccff">⚡ Perks</button>
+        <button id="btn-synergy-shop" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
       </div>
       <button class="btn-main b-c btn-sm" onclick="shopBack()">← BACK</button>
     </div>
@@ -652,10 +658,58 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
   <div style="height:calc(100vh - 150px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div class="shop-grid" id="echoes-grid"></div>
+    <div id="echoes-key-shop" style="width:100%;max-width:340px;margin:16px auto 0;padding:12px;border-radius:10px;border:1.5px solid #ffcc0044;background:rgba(255,204,0,0.04);text-align:center">
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:6px">🔑 VOID KEYS</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#778;margin-bottom:8px">Keys open Void Crates for rare Artifacts</div>
+      <div id="echoes-key-balance" style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;margin-bottom:8px">🔑 0</div>
+      <button id="echoes-buy-key-btn" onclick="buyKeyWithEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 20px;border-radius:8px;border:1.5px solid #ffcc00;background:rgba(255,204,0,0.1);color:#ffcc00;cursor:pointer;letter-spacing:1px;transition:all .15s">BUY KEY · 🌀 50</button>
+    </div>
     <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
       <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
     </div>
   </div>
+</div>
+
+<!-- VAULT / LOOT BOXES -->
+<div id="screen-vault" class="screen screen-bg hidden screen-cards-layout">
+  <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
+    <div class="screen-title" style="color:#ffcc00">🔑 VOID VAULT</div>
+    <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">OPEN CRATES · COLLECT ARTIFACTS</div>
+    <div id="vault-key-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffcc00;text-shadow:0 0 12px #ffcc00,0 0 30px #ffcc0044;margin:6px 0 2px">🔑 0</div>
+  </div>
+  <div style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;display:flex;flex-direction:column;align-items:center">
+    <div id="vault-crate-area" style="margin:16px 0;text-align:center">
+      <div id="vault-crate-icon" style="font-size:64px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #ffcc0066)">📦</div>
+      <button id="vault-open-btn" onclick="openLootBox()" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;padding:10px 28px;border-radius:10px;border:2px solid #ffcc00;background:rgba(255,204,0,0.12);color:#ffcc00;cursor:pointer;letter-spacing:2px;margin-top:10px;transition:all .15s;box-shadow:0 0 16px #ffcc0033">🔑 OPEN CRATE</button>
+      <div style="font-size:9px;color:#556;margin-top:6px;letter-spacing:1px">Costs 1 Key per crate</div>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px">
+        <button id="vault-daily-spin-btn" onclick="openDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1.5px solid #ff8800;background:rgba(255,136,0,0.08);color:#ff8800;cursor:pointer;letter-spacing:1px;transition:all .15s">⭐ DAILY SPIN</button>
+        <button id="vault-get-keys-btn" onclick="rewardAdKey()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid #33444466;background:transparent;color:#556;cursor:pointer;letter-spacing:1px;transition:all .15s">🎬 MORE KEYS</button>
+      </div>
+      <div id="vault-daily-status" style="font-size:8px;color:#556;margin-top:4px;letter-spacing:1px"></div>
+    </div>
+    <div style="width:100%;max-width:380px;margin-top:8px">
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;text-align:center;margin-bottom:10px">ARTIFACT COLLECTION</div>
+      <div id="vault-sets-grid"></div>
+    </div>
+    <div style="font-size:9px;color:#445;text-align:center;margin:12px 0 4px;letter-spacing:1px" id="vault-stats-line"></div>
+  </div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
+  </div>
+</div>
+
+<!-- DAILY SPIN -->
+<div id="screen-daily-spin" class="screen screen-bg hidden" style="flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+  <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;letter-spacing:5px;margin-bottom:2px;text-shadow:0 0 12px #ffcc0066">⭐ DAILY SPIN ⭐</div>
+  <div id="daily-streak-display" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#ff880088;letter-spacing:2px;margin-bottom:12px"></div>
+  <div style="position:relative;width:320px;height:340px;margin-bottom:14px">
+    <canvas id="daily-spin-canvas" width="320" height="340"></canvas>
+  </div>
+  <div id="daily-spin-result" style="font-family:'Orbitron',sans-serif;font-size:18px;color:#ffd700;letter-spacing:2px;min-height:32px;text-align:center;margin-bottom:16px;text-shadow:0 0 20px #ffd700"></div>
+  <button id="daily-spin-btn" onclick="doDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;padding:12px 40px;border-radius:12px;border:2px solid #ffcc00;background:linear-gradient(180deg,rgba(255,204,0,0.15),rgba(255,170,0,0.05));color:#ffcc00;cursor:pointer;letter-spacing:3px;box-shadow:0 0 20px #ffcc0044;transition:all .15s">▶ SPIN!</button>
+  <button id="daily-spin-back-btn" onclick="showScreen('screen-vault')" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 24px;border-radius:8px;border:1px solid #00f5ff44;background:transparent;color:#00f5ff;cursor:pointer;letter-spacing:2px;margin-top:12px">← BACK</button>
+  <div id="daily-spin-timer" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#556;letter-spacing:1px;margin-top:8px;display:none"></div>
 </div>
 
 <!-- SYNERGIES -->
@@ -665,11 +719,11 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">COMBINE SYSTEMS FOR POWERFUL BONUSES</div>
     <div id="synergies-active-count" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#ff8800;margin:6px 0 2px"></div>
   </div>
-  <div style="height:calc(100vh - 130px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
-    <div id="synergies-grid" style="width:100%;max-width:600px"></div>
-    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
-    </div>
+  <div id="synergies-scroll" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;position:relative;z-index:1">
+    <div id="synergies-grid" style="width:100%;max-width:600px;margin:0 auto"></div>
+  </div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen(synergyPrevScreen||'screen-menu')">← BACK</button>
   </div>
 </div>
 
@@ -1474,9 +1528,11 @@ let battleOffset = 0;         // playback position for seamless resume
 let battleStartedAt = 0;      // AC.currentTime when we last started
 
 let menuBuffer = null;
+let menuAltBuffer = null;
 let menuSource = null;
 let menuOffset = 0;
 let menuStartedAt = 0;
+var _useMenuAlt = false; // toggles after each game session
 
 async function loadAudioFile(url) {
   try {
@@ -1492,6 +1548,7 @@ loadAudioFile('menu.mp3').then(buf=>{
   if(btn){ btn.style.transition='opacity 0.6s'; btn.style.opacity='1'; btn.style.pointerEvents='auto'; }
   document.querySelectorAll('#pregate-loading').forEach(el=>{ el.style.transition='opacity 0.3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); });
 });
+loadAudioFile('menu-alt.mp3').then(buf=>{ menuAltBuffer=buf; });
 loadAudioFile('battle.mp3').then(buf=>{ battleBuffer=buf; });
 loadAudioFile('shop.mp3').then(buf=>{ shopBuffer=buf; });
 loadAudioFile('alt-battle.mp3').then(buf=>{ altBattleBuffer=buf; });
@@ -1501,21 +1558,25 @@ loadAudioFile('boss-theme.mp3').then(buf=>{ bossThemeBuffer=buf; });
 loadAudioFile('alt-boss-theme.mp3').then(buf=>{ altBossThemeBuffer=buf; });
 
 function playMenuNow(fromStart=true) {
-  if(!menuBuffer || !musicOn) return;
+  var buf = (_useMenuAlt && menuAltBuffer) ? menuAltBuffer : menuBuffer;
+  if(!buf || !musicOn) return;
   resumeAC();
   if(menuSource) { try{ menuSource.stop(); }catch(e){} menuSource.disconnect(); menuSource=null; }
   if(fromStart) menuOffset=0;
   menuSource = AC.createBufferSource();
-  menuSource.buffer = menuBuffer;
+  menuSource.buffer = buf;
   menuSource.loop = true;
   menuSource.connect(masterGain);
-  menuSource.start(0, menuOffset % menuBuffer.duration);
-  menuStartedAt = AC.currentTime - (menuOffset % menuBuffer.duration);
+  var dur = buf.duration || 1;
+  menuSource.start(0, menuOffset % dur);
+  menuStartedAt = AC.currentTime - (menuOffset % dur);
 }
 
 function stopMenuMusic(saveOffset=true) {
   if(menuSource) {
-    if(saveOffset) menuOffset = (AC.currentTime - menuStartedAt) % menuBuffer.duration;
+    var buf = (_useMenuAlt && menuAltBuffer) ? menuAltBuffer : menuBuffer;
+    var dur = (buf && buf.duration) || 1;
+    if(saveOffset) menuOffset = (AC.currentTime - menuStartedAt) % dur;
     try{ menuSource.stop(); }catch(e){}
     menuSource.disconnect();
     menuSource = null;
@@ -2051,6 +2112,42 @@ function sfx(type) {
       osc(1047,'triangle',0.4,0.3,0.32);
       noise(0.15,0.2,'bandpass',2000,0.32);
       break;
+    case 'keyEarn':
+      // Bright metallic chime
+      osc(880,'sine',0.08,0.5,0);
+      osc(1320,'sine',0.06,0.4,0.06);
+      osc(1760,'triangle',0.1,0.3,0.1);
+      noise(0.04,0.15,'highpass',4000,0);
+      break;
+    case 'crateOpen':
+      // Deep resonant crack
+      osc(80,'sawtooth',0.15,0.6,0);
+      osc(120,'square',0.1,0.4,0.05);
+      noise(0.2,0.5,'lowpass',800,0.08);
+      osc(200,'sine',0.2,0.3,0.15);
+      noise(0.1,0.3,'bandpass',1200,0.2);
+      break;
+    case 'artifactReveal':
+      // Rising sparkle reveal
+      osc(440,'sine',0.1,0.4,0);
+      osc(660,'sine',0.1,0.4,0.08);
+      osc(880,'sine',0.12,0.5,0.16);
+      osc(1100,'triangle',0.15,0.4,0.24);
+      osc(1320,'sine',0.2,0.6,0.32);
+      noise(0.08,0.2,'highpass',3000,0.32);
+      break;
+    case 'setComplete':
+      // Triumphant fanfare cascade
+      osc(523,'sine',0.15,0.6,0);
+      osc(659,'sine',0.15,0.6,0.1);
+      osc(784,'sine',0.15,0.6,0.2);
+      osc(1047,'sine',0.3,0.8,0.3);
+      osc(1047,'triangle',0.3,0.4,0.3);
+      osc(1318,'sine',0.3,0.7,0.45);
+      osc(1568,'sine',0.4,0.6,0.55);
+      noise(0.15,0.3,'bandpass',2500,0.3);
+      noise(0.1,0.2,'highpass',4000,0.55);
+      break;
   }
 }
 
@@ -2197,7 +2294,9 @@ try {
 const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,bulletSpd:0,multishot:0,shield:0,health:0,damage:0,speed:0,extraBombs:0}, hiScore:0, totalScore:0, claimedTrophies:[], savedWave:1, firstTime:true, disabledSets:{}, lastSeenVersion:'', lastSeenTutorialPrompt:'', activeRelics:[], relicsUnlocked:false, activePerks:[], perkLevels:{}, wildSlotUnlocked:false, continueUsed:false, lastSeenAnnouncement:'',
   shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
   forgeLevels:{ damage:0, rate:0, armor:0 },
-  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:false, discoveredSynergies:[],
+  echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:true, synergiesUnlocked:false, discoveredSynergies:[],
+  keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0,
+  lastDailySpinDate:null, dailySpinStreak:0,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false,
   musicVolume:55, sfxVolume:50,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
@@ -2240,18 +2339,111 @@ const TROPHIES = [
 // ── ACHIEVEMENTS ──────────────────────────────────────────────
 const ACHIEVEMENTS = [
   {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
-   tiers:[{goal:50,label:'I',reward:3},{goal:250,label:'II',reward:5},{goal:1000,label:'III',reward:10},{goal:5000,label:'IV',reward:20}]},
+   tiers:[{goal:50,label:'I',reward:3},{goal:250,label:'II',reward:5},{goal:1000,label:'III',reward:10,keyReward:1},{goal:5000,label:'IV',reward:20,keyReward:2}]},
   {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
-   tiers:[{goal:5,label:'I',reward:3},{goal:20,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+   tiers:[{goal:5,label:'I',reward:3},{goal:20,label:'II',reward:5},{goal:50,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
   {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
-   tiers:[{goal:15,label:'I',reward:3},{goal:30,label:'II',reward:5},{goal:60,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+   tiers:[{goal:15,label:'I',reward:3},{goal:30,label:'II',reward:5},{goal:60,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
   {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
-   tiers:[{goal:10,label:'I',reward:3},{goal:25,label:'II',reward:5},{goal:50,label:'III',reward:10},{goal:100,label:'IV',reward:20}]},
+   tiers:[{goal:10,label:'I',reward:3},{goal:25,label:'II',reward:5},{goal:50,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
   {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
-   tiers:[{goal:500,label:'I',reward:3},{goal:5000,label:'II',reward:5},{goal:25000,label:'III',reward:10},{goal:100000,label:'IV',reward:20}]},
+   tiers:[{goal:500,label:'I',reward:3},{goal:5000,label:'II',reward:5},{goal:25000,label:'III',reward:10,keyReward:1},{goal:100000,label:'IV',reward:20,keyReward:2}]},
   {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
-   tiers:[{goal:3,label:'I',reward:3},{goal:10,label:'II',reward:5},{goal:30,label:'III',reward:10},{goal:75,label:'IV',reward:20}]},
+   tiers:[{goal:3,label:'I',reward:3},{goal:10,label:'II',reward:5},{goal:30,label:'III',reward:10,keyReward:1},{goal:75,label:'IV',reward:20,keyReward:2}]},
 ];
+
+// ── ARTIFACTS & LOOT BOXES ──────────────────────────────────
+const ARTIFACT_RARITIES = [
+  {id:'common',   name:'COMMON',   color:'#8899aa', glow:'#8899aa44', weight:50, particles:8,  dupeEchoes:3},
+  {id:'rare',     name:'RARE',     color:'#4488ff', glow:'#4488ff66', weight:28, particles:16, dupeEchoes:8},
+  {id:'epic',     name:'EPIC',     color:'#cc44ff', glow:'#cc44ff88', weight:15, particles:28, dupeEchoes:15},
+  {id:'legendary',name:'LEGENDARY',color:'#ffd700', glow:'#ffd700aa', weight:7,  particles:45, dupeEchoes:30}
+];
+
+const ARTIFACT_SETS = [
+  { key:'starborn', name:'STARBORN', color:'#00f5ff', icon:'⭐',
+    reward:{type:'sprite', id:'starbornShip', label:'Starborn Ship Sprite'},
+    artifacts:[
+      {id:'sb1',name:'Star Fragment',  rarity:'common', icon:'✦'},
+      {id:'sb2',name:'Nebula Core',    rarity:'common', icon:'🌟'},
+      {id:'sb3',name:'Cosmic Dust',    rarity:'rare',   icon:'💫'},
+      {id:'sb4',name:'Star Heart',     rarity:'epic',   icon:'⭐'}
+    ]},
+  { key:'voidwalker', name:'VOIDWALKER', color:'#cc44ff', icon:'🌑',
+    reward:{type:'aura', id:'voidPulse', label:'Void Pulse Aura'},
+    artifacts:[
+      {id:'vw1',name:'Shadow Shard',   rarity:'common', icon:'🔮'},
+      {id:'vw2',name:'Void Echo',      rarity:'rare',   icon:'🌀'},
+      {id:'vw3',name:'Dark Matter',    rarity:'rare',   icon:'⚫'},
+      {id:'vw4',name:'Event Horizon',  rarity:'legendary',icon:'🌑'}
+    ]},
+  { key:'inferno', name:'INFERNO', color:'#ff4400', icon:'🔥',
+    reward:{type:'decal', id:'flames', label:'Flame Decal'},
+    artifacts:[
+      {id:'if1',name:'Ember',          rarity:'common', icon:'🔸'},
+      {id:'if2',name:'Blaze Core',     rarity:'common', icon:'🔶'},
+      {id:'if3',name:'Phoenix Feather',rarity:'epic',   icon:'🔥'},
+      {id:'if4',name:'Supernova Relic',rarity:'legendary',icon:'💥'}
+    ]},
+  { key:'chrono', name:'CHRONO', color:'#44ddff', icon:'⏳',
+    reward:{type:'hullColor', id:'#44ddff', label:'Temporal Blue Hull'},
+    artifacts:[
+      {id:'ch1',name:'Time Shard',     rarity:'common', icon:'⏱️'},
+      {id:'ch2',name:'Temporal Lens',  rarity:'rare',   icon:'🔍'},
+      {id:'ch3',name:'Chrono Core',    rarity:'epic',   icon:'⏳'},
+      {id:'ch4',name:'Eternity Gate',  rarity:'legendary',icon:'🕳️'}
+    ]},
+  { key:'nova', name:'NOVA', color:'#ff8800', icon:'💥',
+    reward:{type:'bulletShape', id:'nova', label:'Nova Bolt Bullet'},
+    artifacts:[
+      {id:'nv1',name:'Solar Spark',    rarity:'common', icon:'☀️'},
+      {id:'nv2',name:'Plasma Flare',   rarity:'common', icon:'🔆'},
+      {id:'nv3',name:'Nova Fragment',  rarity:'rare',   icon:'💫'},
+      {id:'nv4',name:'Hypernova Core', rarity:'epic',   icon:'💥'}
+    ]},
+  { key:'phantom', name:'PHANTOM', color:'#88aacc', icon:'👻',
+    reward:{type:'sprite', id:'phantomShip', label:'Phantom Ship Sprite'},
+    artifacts:[
+      {id:'ph1',name:'Ghost Shard',    rarity:'common', icon:'👁️'},
+      {id:'ph2',name:'Wraith Dust',    rarity:'rare',   icon:'💨'},
+      {id:'ph3',name:'Specter Core',   rarity:'rare',   icon:'👻'},
+      {id:'ph4',name:'Phantom Heart',  rarity:'epic',   icon:'🖤'},
+      {id:'ph5',name:'Soul Reaver',    rarity:'legendary',icon:'💀'}
+    ]},
+  { key:'eternal', name:'ETERNAL', color:'#ffd700', icon:'👑',
+    reward:{type:'aura', id:'eternalGlow', label:'Eternal Crown Aura'},
+    artifacts:[
+      {id:'et1',name:'Ancient Rune',   rarity:'rare',   icon:'🔷'},
+      {id:'et2',name:'Celestial Shard',rarity:'rare',   icon:'🔹'},
+      {id:'et3',name:'Divine Spark',   rarity:'epic',   icon:'✨'},
+      {id:'et4',name:'Infinity Stone', rarity:'epic',   icon:'💎'},
+      {id:'et5',name:'Crown of Eternity',rarity:'legendary',icon:'👑'}
+    ]}
+];
+
+// Flat lookup for all artifacts
+var ALL_ARTIFACTS = [];
+ARTIFACT_SETS.forEach(function(s){ s.artifacts.forEach(function(a){ ALL_ARTIFACTS.push({id:a.id,name:a.name,rarity:a.rarity,icon:a.icon,setKey:s.key,setName:s.name,setColor:s.color}); }); });
+
+// ── MONETIZATION CONFIG (stubs — not active) ─────────────────
+var MONETIZATION = {
+  enabled: false,
+  adKeyReward: 1,
+  iapPacks: [
+    {id:'key5',  keys:5,  price:'$0.99', label:'5 Keys'},
+    {id:'key15', keys:15, price:'$1.99', label:'15 Keys'},
+    {id:'key50', keys:50, price:'$4.99', label:'50 Keys + Bonus Artifact'}
+  ]
+};
+
+function rewardAdKey(){
+  if(!MONETIZATION.enabled){ showToast('🔑 Ad rewards coming soon!'); return; }
+  SAVE.keys = (SAVE.keys||0) + MONETIZATION.adKeyReward;
+  SAVE.totalKeys = (SAVE.totalKeys||0) + MONETIZATION.adKeyReward;
+  localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+  showToast('🔑 +1 Key from ad reward!');
+  buildVaultScreen();
+}
 
 function checkAchievements() {
   var newlyCompleted = [];
@@ -2264,7 +2456,9 @@ function checkAchievements() {
       SAVE.achievements[ach.id] = nextIdx;
       var echoReward = ach.tiers[nextIdx].reward || 0;
       if (echoReward > 0) { SAVE.echoes = (SAVE.echoes||0) + echoReward; SAVE.totalEchoes = (SAVE.totalEchoes||0) + echoReward; }
-      newlyCompleted.push({ach: ach, tierIdx: nextIdx, echoReward: echoReward});
+      var keyReward = ach.tiers[nextIdx].keyReward || 0;
+      if (keyReward > 0) { SAVE.keys = (SAVE.keys||0) + keyReward; SAVE.totalKeys = (SAVE.totalKeys||0) + keyReward; }
+      newlyCompleted.push({ach: ach, tierIdx: nextIdx, echoReward: echoReward, keyReward: keyReward});
       nextIdx++;
     }
   });
@@ -2325,6 +2519,14 @@ function loadSave(){
     if(!s.lifetimeStats||typeof s.lifetimeStats!=='object') s.lifetimeStats={totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0};
     ['totalKills','totalBossKills','highestKillStreak','perfectWaves','totalCoinsCollected','highestWaveReached'].forEach(function(k){if(!isFinite(s.lifetimeStats[k])||s.lifetimeStats[k]<0)s.lifetimeStats[k]=0;});
     if(!s.achievements||typeof s.achievements!=='object') s.achievements={};
+    if(!isFinite(s.keys)||s.keys<0) s.keys=0;
+    if(!isFinite(s.totalKeys)||s.totalKeys<0) s.totalKeys=0;
+    if(!s.artifacts||typeof s.artifacts!=='object') s.artifacts={};
+    if(!s.artifactSetsComplete||typeof s.artifactSetsComplete!=='object') s.artifactSetsComplete={};
+    if(!isFinite(s.lootBoxesOpened)||s.lootBoxesOpened<0) s.lootBoxesOpened=0;
+    if(!isFinite(s.lootBoxPity)||s.lootBoxPity<0) s.lootBoxPity=0;
+    if(s.lastDailySpinDate && typeof s.lastDailySpinDate!=='string') s.lastDailySpinDate=null;
+    if(!isFinite(s.dailySpinStreak)||s.dailySpinStreak<0) s.dailySpinStreak=0;
     if(typeof s.forgeIntroSeen!=='boolean') s.forgeIntroSeen=false;
     if(typeof s.echoesIntroSeen!=='boolean') s.echoesIntroSeen=false;
     if(typeof s.synergiesIntroSeen!=='boolean') s.synergiesIntroSeen=false;
@@ -2348,6 +2550,7 @@ function doSave(){
 let SAVE = loadSave();
 ['upgrades','cards','setsComplete'].forEach(k=>{ if(!SAVE[k]) SAVE[k]={...DEFAULT_SAVE[k]}; });
 applySettingsVolumes();
+restoreArtifactRewards();
 
 // ═══════════════════════════════════════════════════
 //  CARD / SET DATA
@@ -2499,6 +2702,11 @@ const ECHO_UPGRADES = [
     costFn:function(lv){ return 18 + lv*7; },
     effectFn:function(lv){ return lv*0.05; },
     statFn:function(lv){ return '+'+(lv*5)+'% bomb'; }
+  },
+  { key:'powerupExtend', name:'POWERUP EXTEND', desc:'+1s powerup duration per level', icon:'⏳', color:'#44ddff', max:10,
+    costFn:function(lv){ return 15 + lv*8; },
+    effectFn:function(lv){ return lv; },
+    statFn:function(lv){ return lv>0 ? '+'+lv+'s (='+(10+lv)+'s)' : 'Base 10s'; }
   }
 ];
 
@@ -2703,6 +2911,7 @@ async function devClearLeaderboard() {
 function devUnlockAll() {
   SAVE.relicsUnlocked = true;
   SAVE.echoesUnlocked = true;
+  SAVE.synergiesUnlocked = true;
   SAVE.coins = 999999;
   SAVE.forgeLevels = { damage:10, rate:10, armor:0 };
   SAVE.echoes = (SAVE.echoes||0) + 1000;
@@ -3806,7 +4015,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
           updateHUD();
         }
       } else {
-        activePowerups[p.id]=POWERUP_DURATION;
+        activePowerups[p.id]=POWERUP_DURATION+((SAVE.echoUpgrades||{}).powerupExtend||0);
         updatePowerupHUD();
       }
     }
@@ -3817,7 +4026,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   if(activePids.length>0){
     const pid=activePids[0];
     const def=POWERUP_DEFS[pid];
-    const frac=Math.max(0,activePowerups[pid]/POWERUP_DURATION);
+    const frac=Math.max(0,activePowerups[pid]/(POWERUP_DURATION+((SAVE.echoUpgrades||{}).powerupExtend||0)));
     const bar=document.getElementById('powerup-hud-bar');
     const icon=document.getElementById('powerup-hud-icon');
     const hud=document.getElementById('powerup-hud');
@@ -4908,6 +5117,7 @@ function endGame() {
 }
 function doAscension() {
   if(wave < 35) return;
+  _useMenuAlt = !_useMenuAlt; // alternate menu music after ascension
   var echoGain = Math.floor(Math.pow(wave, 1.5) / 10);
   echoGain = Math.floor(echoGain * 1.25); // voluntary ascension bonus
   if((SAVE.totalEchoes||0) === 0 && (SAVE.ascensionCount||0) === 0) echoGain += 50; // first time
@@ -4940,6 +5150,14 @@ function doAscension() {
   var savedSfxVolA = SAVE.sfxVolume;
   var savedLifetimeStatsA = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
   var savedAchievementsA = JSON.parse(JSON.stringify(SAVE.achievements||{}));
+  var savedKeysA = SAVE.keys||0;
+  var savedTotalKeysA = SAVE.totalKeys||0;
+  var savedArtifactsA = JSON.parse(JSON.stringify(SAVE.artifacts||{}));
+  var savedArtifactSetsA = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
+  var savedLootBoxesA = SAVE.lootBoxesOpened||0;
+  var savedLootBoxPityA = SAVE.lootBoxPity||0;
+  var savedDailySpinDateA = SAVE.lastDailySpinDate;
+  var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
   var hiScore = Math.max(score, SAVE.hiScore);
   // Clear game state
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
@@ -4962,6 +5180,7 @@ function doAscension() {
   SAVE.echoUpgrades = savedEchoUpgrades;
   SAVE.ascensionCount = savedAscensionCount;
   SAVE.echoesUnlocked = true;
+  SAVE.synergiesUnlocked = true;
   SAVE.forgeIntroSeen = savedForgeIntroA;
   SAVE.echoesIntroSeen = savedEchoesIntroA;
   SAVE.synergiesIntroSeen = savedSynergiesIntroA;
@@ -4969,6 +5188,14 @@ function doAscension() {
   SAVE.sfxVolume = savedSfxVolA;
   SAVE.lifetimeStats = savedLifetimeStatsA;
   SAVE.achievements = savedAchievementsA;
+  SAVE.keys = savedKeysA;
+  SAVE.totalKeys = savedTotalKeysA;
+  SAVE.artifacts = savedArtifactsA;
+  SAVE.artifactSetsComplete = savedArtifactSetsA;
+  SAVE.lootBoxesOpened = savedLootBoxesA;
+  SAVE.lootBoxPity = savedLootBoxPityA;
+  SAVE.lastDailySpinDate = savedDailySpinDateA;
+  SAVE.dailySpinStreak = savedDailySpinStreakA;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
   // Show ascension overlay
@@ -4983,6 +5210,7 @@ function doAscension() {
   document.body.appendChild(overlay);
 }
 function _doEndGame() {
+  _useMenuAlt = !_useMenuAlt; // alternate menu music after each game
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('music-btn').style.display = 'block';
@@ -5017,6 +5245,7 @@ function _doEndGame() {
   const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
   const savedAscensionCount = SAVE.ascensionCount||0;
   const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergiesUnlocked = SAVE.synergiesUnlocked||false;
   const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
   const savedForgeIntroE = SAVE.forgeIntroSeen||false;
   const savedEchoesIntroE = SAVE.echoesIntroSeen||false;
@@ -5029,6 +5258,14 @@ function _doEndGame() {
   checkAchievements();
   const savedLifetimeStatsE = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
   const savedAchievementsE = JSON.parse(JSON.stringify(SAVE.achievements||{}));
+  const savedKeysE = SAVE.keys||0;
+  const savedTotalKeysE = SAVE.totalKeys||0;
+  const savedArtifactsE = JSON.parse(JSON.stringify(SAVE.artifacts||{}));
+  const savedArtifactSetsE = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
+  const savedLootBoxesE = SAVE.lootBoxesOpened||0;
+  const savedLootBoxPityE = SAVE.lootBoxPity||0;
+  const savedDailySpinDateE = SAVE.lastDailySpinDate;
+  const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
   // Calculate echo gain for this run
   var echoGain = 0;
   if(finalWave >= 35) {
@@ -5047,7 +5284,8 @@ function _doEndGame() {
   SAVE.echoUpgrades = savedEchoUpgrades;
   SAVE.ascensionCount = savedAscensionCount;
   var wasEchoesLocked = !savedEchoesUnlocked;
-  SAVE.echoesUnlocked = savedEchoesUnlocked || finalWave >= 35;
+  SAVE.echoesUnlocked = true;
+  SAVE.synergiesUnlocked = savedSynergiesUnlocked || finalWave >= 21;
   SAVE.discoveredSynergies = savedSynergies;
   // Queue echoes+synergies intro if newly unlocked
   if(wasEchoesLocked && SAVE.echoesUnlocked && !savedEchoesIntroE){
@@ -5058,6 +5296,14 @@ function _doEndGame() {
   SAVE.sfxVolume = savedSfxVolE;
   SAVE.lifetimeStats = savedLifetimeStatsE;
   SAVE.achievements = savedAchievementsE;
+  SAVE.keys = savedKeysE;
+  SAVE.totalKeys = savedTotalKeysE;
+  SAVE.artifacts = savedArtifactsE;
+  SAVE.artifactSetsComplete = savedArtifactSetsE;
+  SAVE.lootBoxesOpened = savedLootBoxesE;
+  SAVE.lootBoxPity = savedLootBoxPityE;
+  SAVE.lastDailySpinDate = savedDailySpinDateE;
+  SAVE.dailySpinStreak = savedDailySpinStreakE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -5704,6 +5950,7 @@ function doReset() {
   const savedEchoUpgrades = JSON.parse(JSON.stringify(SAVE.echoUpgrades||{}));
   const savedAscensionCount = SAVE.ascensionCount||0;
   const savedEchoesUnlocked = SAVE.echoesUnlocked||false;
+  const savedSynergiesUnlocked = SAVE.synergiesUnlocked||false;
   const savedSynergies = JSON.parse(JSON.stringify(SAVE.discoveredSynergies||[]));
   const savedForgeIntro = SAVE.forgeIntroSeen||false;
   const savedEchoesIntro = SAVE.echoesIntroSeen||false;
@@ -5712,6 +5959,14 @@ function doReset() {
   const savedSfxVol = SAVE.sfxVolume;
   const savedLifetimeStatsR = JSON.parse(JSON.stringify(SAVE.lifetimeStats||{}));
   const savedAchievementsR = JSON.parse(JSON.stringify(SAVE.achievements||{}));
+  const savedKeysR = SAVE.keys||0;
+  const savedTotalKeysR = SAVE.totalKeys||0;
+  const savedArtifactsR = JSON.parse(JSON.stringify(SAVE.artifacts||{}));
+  const savedArtifactSetsR = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
+  const savedLootBoxesR = SAVE.lootBoxesOpened||0;
+  const savedLootBoxPityR = SAVE.lootBoxPity||0;
+  const savedDailySpinDateR = SAVE.lastDailySpinDate;
+  const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
   SAVE.shipCustom = savedCustom2;
@@ -5721,6 +5976,7 @@ function doReset() {
   SAVE.echoUpgrades = savedEchoUpgrades;
   SAVE.ascensionCount = savedAscensionCount;
   SAVE.echoesUnlocked = savedEchoesUnlocked;
+  SAVE.synergiesUnlocked = savedSynergiesUnlocked;
   SAVE.discoveredSynergies = savedSynergies;
   SAVE.forgeIntroSeen = savedForgeIntro;
   SAVE.echoesIntroSeen = savedEchoesIntro;
@@ -5729,6 +5985,14 @@ function doReset() {
   SAVE.sfxVolume = savedSfxVol;
   SAVE.lifetimeStats = savedLifetimeStatsR;
   SAVE.achievements = savedAchievementsR;
+  SAVE.keys = savedKeysR;
+  SAVE.totalKeys = savedTotalKeysR;
+  SAVE.artifacts = savedArtifactsR;
+  SAVE.artifactSetsComplete = savedArtifactSetsR;
+  SAVE.lootBoxesOpened = savedLootBoxesR;
+  SAVE.lootBoxPity = savedLootBoxPityR;
+  SAVE.lastDailySpinDate = savedDailySpinDateR;
+  SAVE.dailySpinStreak = savedDailySpinStreakR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -5768,11 +6032,13 @@ function showScreen(id) {
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
   const isMenu   = id==='screen-menu' || id==='screen-splash';
   const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies'||id==='screen-echoes'||id==='screen-synergies';
-  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); if(currentTrackName !== 'menu') setTrack('menu');
+  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); stopMenuMusic(false); setTrack('menu');
     if(window._showEchoesIntroAfterGameover){ window._showEchoesIntroAfterGameover=false; setTimeout(function(){ showEchoesIntro(function(){ showSynergiesIntro(); }); },500); }
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
+  if(id==='screen-vault') buildVaultScreen();
+  if(id==='screen-daily-spin') initDailySpin();
   if(id==='screen-echoes') buildEchoes();
   if(id==='screen-synergies') buildSynergies();
   if(id==='screen-shop') buildShop();
@@ -6265,6 +6531,7 @@ function updateMenuCoins(){
   // Animate stats counters
   animateCount('menu-coins', 0, SAVE.coins, 800, '', '');
   animateCount('menu-hiscore', 0, SAVE.hiScore||0, 900, '', '');
+  animateCount('menu-keys', 0, SAVE.keys||0, 700, '', '');
   const waveEl = document.getElementById('menu-wave');
   if(waveEl) animateCount('menu-wave', 0, sw, 700, '', '');
 
@@ -6311,17 +6578,15 @@ function updateMenuCoins(){
   const pl = document.getElementById('dock-perks-lock');
   if(pl) pl.style.display = perksUnlocked ? 'none' : 'block';
 
-  // Echoes lock badge
-  const el = document.getElementById('dock-echoes-lock');
-  if(el) el.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
-  const echoTile = document.getElementById('dock-echoes');
-  if(echoTile) { echoTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; echoTile.style.borderColor = SAVE.echoesUnlocked ? '#aa44ff99' : '#33333399'; }
-
   // Synergies lock badge
   const sl = document.getElementById('dock-synergies-lock');
-  if(sl) sl.style.display = SAVE.echoesUnlocked ? 'none' : 'block';
+  if(sl) sl.style.display = SAVE.synergiesUnlocked ? 'none' : 'block';
   const synTile = document.getElementById('dock-synergies');
-  if(synTile) { synTile.style.opacity = SAVE.echoesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.echoesUnlocked ? '#ff880099' : '#33333399'; }
+  if(synTile) { synTile.style.opacity = SAVE.synergiesUnlocked ? '1' : '0.5'; synTile.style.borderColor = SAVE.synergiesUnlocked ? '#ff880099' : '#33333399'; }
+
+  // Vault daily-spin badge
+  var vaultBadge = document.getElementById('dock-vault-badge');
+  if(vaultBadge) vaultBadge.style.display = isDailySpinAvailable() ? 'block' : 'none';
 
   // Updates badge
   const badge = document.getElementById('updates-badge');
@@ -6432,7 +6697,7 @@ function buildShop() {
   if(pb){ 
     pb.textContent = perksUnlocked ? '⚡ Perks' : '⚡ Perks 🔒';
     pb.style.opacity = perksUnlocked ? '1' : '0.4';
-    pb.style.color = perksUnlocked ? '#00ccff' : '#556';
+    pb.style.setProperty('--ntc', perksUnlocked ? '#00ccff' : '#556');
   }
   animateCoinsDown('shop-coins', SAVE.coins);
   const grid=document.getElementById('shop-grid');
@@ -6554,6 +6819,14 @@ function buyForge(trackKey){
 function buildEchoes(){
   var bal = document.getElementById('echoes-balance');
   if(bal) bal.textContent = '🌀 ' + (SAVE.echoes||0);
+  var keyBal = document.getElementById('echoes-key-balance');
+  if(keyBal) keyBal.textContent = '🔑 ' + (SAVE.keys||0);
+  var keyBtn = document.getElementById('echoes-buy-key-btn');
+  if(keyBtn){
+    var canAfford = (SAVE.echoes||0)>=50;
+    keyBtn.style.opacity = canAfford?'1':'0.4';
+    keyBtn.style.cursor = canAfford?'pointer':'default';
+  }
   var titleEl = document.getElementById('echoes-title');
   if(titleEl) titleEl.textContent = getAscensionTitle(SAVE.ascensionCount||0) + ' · ' + (SAVE.ascensionCount||0) + ' ASCENSIONS';
   var grid = document.getElementById('echoes-grid');
@@ -6599,6 +6872,744 @@ function buildEchoes(){
   });
 }
 
+function buyKeyWithEchoes(){
+  var cost = 50;
+  if((SAVE.echoes||0) < cost){ showToast('🌀 Not enough Echoes!'); return; }
+  SAVE.echoes -= cost;
+  SAVE.keys = (SAVE.keys||0) + 1;
+  SAVE.totalKeys = (SAVE.totalKeys||0) + 1;
+  doSave(); sfx('keyEarn');
+  showToast('🔑 +1 Key acquired!');
+  buildEchoes();
+}
+
+// ── VAULT / LOOT BOX SYSTEM ──────────────────────────────────
+function buildVaultScreen(){
+  var bal = document.getElementById('vault-key-balance');
+  if(bal) bal.textContent = '🔑 ' + (SAVE.keys||0);
+  var btn = document.getElementById('vault-open-btn');
+  if(btn){
+    var has = (SAVE.keys||0) >= 1;
+    btn.style.opacity = has ? '1' : '0.4';
+    btn.style.cursor = has ? 'pointer' : 'default';
+    btn.style.animation = has ? 'cardPulse 2s ease-in-out infinite' : 'none';
+  }
+  // Daily spin button status
+  var dailyBtn = document.getElementById('vault-daily-spin-btn');
+  var dailyStatus = document.getElementById('vault-daily-status');
+  var dailyAvail = isDailySpinAvailable();
+  if(dailyBtn){
+    dailyBtn.style.opacity = dailyAvail ? '1' : '0.4';
+    dailyBtn.style.boxShadow = dailyAvail ? '0 0 12px #ff880044' : 'none';
+    dailyBtn.textContent = dailyAvail ? '⭐ DAILY SPIN — FREE!' : '⭐ DAILY SPIN';
+  }
+  if(dailyStatus){
+    if(!dailyAvail){
+      var now=new Date(),tom=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1),diff=tom-now;
+      var h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000);
+      dailyStatus.textContent='Next spin in '+h+'h '+m+'m';
+      dailyStatus.style.display='block';
+    } else {
+      var streak=SAVE.dailySpinStreak||0;
+      dailyStatus.textContent=streak>0?'🔥 '+streak+' day streak':'';
+      dailyStatus.style.display=streak>0?'block':'none';
+    }
+  }
+  var statsLine = document.getElementById('vault-stats-line');
+  if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates opened · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
+  // Build artifact sets grid
+  var grid = document.getElementById('vault-sets-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  ARTIFACT_SETS.forEach(function(set){
+    var owned = set.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length;
+    var total = set.artifacts.length;
+    var complete = (SAVE.artifactSetsComplete||{})[set.key];
+    var setEl = document.createElement('div');
+    setEl.style.cssText = 'border:1.5px solid '+(complete?set.color+'99':'#1a254088')+';border-radius:10px;padding:10px 12px;margin-bottom:8px;background:'+(complete?'rgba('+hexToRgb(set.color)+',0.06)':'rgba(10,15,30,0.5)')+';transition:all .2s';
+    var header = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+      '<span style="font-size:16px">'+set.icon+'</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:'+set.color+';letter-spacing:1px">'+set.name+'</span>' +
+      '</div>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(complete?'#00ff88':'#556')+'">'+owned+'/'+total+(complete?' ✓':'')+'</span>' +
+      '</div>';
+    // Progress bar
+    var barPct = Math.round((owned/total)*100);
+    var bar = '<div style="height:3px;background:#1a2540;border-radius:2px;margin-bottom:8px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+set.color+';border-radius:2px;transition:width .3s"></div></div>';
+    // Artifact icons
+    var icons = '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+    set.artifacts.forEach(function(a){
+      var has = (SAVE.artifacts||{})[a.id];
+      var rDef = ARTIFACT_RARITIES.find(function(r){ return r.id===a.rarity; });
+      icons += '<div style="width:44px;height:44px;border-radius:8px;border:1.5px solid '+(has?rDef.color+'88':'#1a254066')+';background:'+(has?'rgba('+hexToRgb(rDef.color)+',0.08)':'rgba(10,15,30,0.4)')+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px">' +
+        '<span style="font-size:'+(has?'16px':'14px')+';'+(has?'':'filter:grayscale(1) brightness(0.3)')+'">'+( has?a.icon:'❓')+'</span>' +
+        '<span style="font-size:6px;color:'+(has?rDef.color:'#334')+';letter-spacing:0.5px;font-family:Orbitron,sans-serif">'+rDef.name+'</span>' +
+        '</div>';
+    });
+    icons += '</div>';
+    // Reward line
+    var reward = '<div style="font-size:8px;color:'+(complete?'#00ff88':set.color+'88')+';margin-top:6px;letter-spacing:1px;font-family:Orbitron,sans-serif">'+(complete?'✓ REWARD: '+set.reward.label:'Reward: '+set.reward.label)+'</div>';
+    setEl.innerHTML = header + bar + icons + reward;
+    grid.appendChild(setEl);
+  });
+}
+
+function hexToRgb(hex){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return r+','+g+','+b;
+}
+
+function rollArtifact(){
+  var rarities = ARTIFACT_RARITIES.slice();
+  var pity = SAVE.lootBoxPity||0;
+  // Pity system: force higher rarity after many opens without epic+
+  var forceMinRarity = null;
+  if(pity >= 40) forceMinRarity = 'legendary';
+  else if(pity >= 15) forceMinRarity = 'epic';
+  var selectedRarity;
+  if(forceMinRarity){
+    var ri = rarities.findIndex(function(r){ return r.id===forceMinRarity; });
+    // Roll only among forced+ rarities
+    var pool = rarities.slice(ri);
+    var tw = pool.reduce(function(s,r){ return s+r.weight; },0);
+    var roll = Math.random()*tw;
+    var acc = 0;
+    for(var i=0;i<pool.length;i++){ acc+=pool[i].weight; if(roll<acc){ selectedRarity=pool[i]; break; } }
+    if(!selectedRarity) selectedRarity=pool[pool.length-1];
+  } else {
+    var tw2 = rarities.reduce(function(s,r){ return s+r.weight; },0);
+    var roll2 = Math.random()*tw2;
+    var acc2 = 0;
+    for(var j=0;j<rarities.length;j++){ acc2+=rarities[j].weight; if(roll2<acc2){ selectedRarity=rarities[j]; break; } }
+    if(!selectedRarity) selectedRarity=rarities[rarities.length-1];
+  }
+  // Pick artifact of this rarity
+  var candidates = ALL_ARTIFACTS.filter(function(a){ return a.rarity===selectedRarity.id; });
+  // Prefer un-owned artifacts (1.5x weight after 30 opens)
+  var totalOpened = SAVE.lootBoxesOpened||0;
+  var chosen;
+  if(totalOpened >= 30){
+    var weighted = candidates.map(function(a){ return {a:a, w: (SAVE.artifacts||{})[a.id] ? 1 : 1.5}; });
+    var wt = weighted.reduce(function(s,e){ return s+e.w; },0);
+    var r3 = Math.random()*wt;
+    var a3 = 0;
+    for(var k=0;k<weighted.length;k++){ a3+=weighted[k].w; if(r3<a3){ chosen=weighted[k].a; break; } }
+    if(!chosen) chosen=candidates[candidates.length-1];
+  } else {
+    chosen = candidates[Math.floor(Math.random()*candidates.length)];
+  }
+  return {artifact:chosen, rarity:selectedRarity};
+}
+
+function openLootBox(){
+  if((SAVE.keys||0) < 1){ showToast('🔑 No keys! Earn keys from achievements, boss spins, or buy with echoes.'); return; }
+  SAVE.keys--;
+  SAVE.lootBoxesOpened = (SAVE.lootBoxesOpened||0) + 1;
+  sfx('crateOpen');
+  var result = rollArtifact();
+  var isNew = !(SAVE.artifacts||{})[result.artifact.id];
+  var dupeEchoes = 0;
+  if(isNew){
+    if(!SAVE.artifacts) SAVE.artifacts={};
+    SAVE.artifacts[result.artifact.id] = true;
+    // Reset pity if epic+
+    if(result.rarity.id==='epic'||result.rarity.id==='legendary') SAVE.lootBoxPity=0;
+    else SAVE.lootBoxPity = (SAVE.lootBoxPity||0)+1;
+  } else {
+    dupeEchoes = result.rarity.dupeEchoes||3;
+    SAVE.echoes = (SAVE.echoes||0) + dupeEchoes;
+    SAVE.totalEchoes = (SAVE.totalEchoes||0) + dupeEchoes;
+    SAVE.lootBoxPity = (SAVE.lootBoxPity||0)+1;
+  }
+  // Check set completion
+  var setCompleted = null;
+  if(isNew){
+    var set = ARTIFACT_SETS.find(function(s){ return s.key===result.artifact.setKey; });
+    if(set && !(SAVE.artifactSetsComplete||{})[set.key]){
+      var allOwned = set.artifacts.every(function(a){ return (SAVE.artifacts||{})[a.id]; });
+      if(allOwned){
+        if(!SAVE.artifactSetsComplete) SAVE.artifactSetsComplete={};
+        SAVE.artifactSetsComplete[set.key] = true;
+        setCompleted = set;
+        // Unlock cosmetic reward
+        unlockArtifactReward(set.reward);
+      }
+    }
+  }
+  localStorage.setItem('vi2_save',JSON.stringify(SAVE));
+  // Get set progress
+  var aSet = ARTIFACT_SETS.find(function(s){ return s.key===result.artifact.setKey; });
+  var sOwned = aSet ? aSet.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length : 0;
+  var sTotal = aSet ? aSet.artifacts.length : 0;
+  showLootBoxAnimation(result.artifact, result.rarity, isNew, dupeEchoes, sOwned, sTotal, setCompleted);
+}
+
+function unlockArtifactReward(reward){
+  if(reward.type==='sprite'){
+    if(!SPRITE_SHIPS.find(function(s){return s.id===reward.id;})){
+      SPRITE_SHIPS.push({id:reward.id,label:reward.label,icon:'⭐'});
+    }
+  } else if(reward.type==='aura'){
+    if(!AURAS.find(function(a){return a.id===reward.id;})){
+      AURAS.push({id:reward.id,label:reward.label.toUpperCase(),color:'#cc44ff'});
+    }
+  } else if(reward.type==='decal'){
+    if(!DECALS.find(function(d){return d.id===reward.id;})){
+      DECALS.push({id:reward.id,label:reward.label.toUpperCase(),icon:'🔥'});
+    }
+  } else if(reward.type==='hullColor'){
+    if(!HULL_COLORS.find(function(h){return h.id===reward.id;})){
+      HULL_COLORS.push({id:reward.id,label:reward.label.toUpperCase()});
+    }
+  } else if(reward.type==='bulletShape'){
+    if(!BULLET_SHAPES.find(function(b){return b.id===reward.id;})){
+      BULLET_SHAPES.push({id:reward.id,label:reward.label.toUpperCase(),icon:'💥'});
+    }
+  }
+}
+
+// Ensure artifact rewards are loaded on game start for completed sets
+function restoreArtifactRewards(){
+  ARTIFACT_SETS.forEach(function(set){
+    if((SAVE.artifactSetsComplete||{})[set.key]){
+      unlockArtifactReward(set.reward);
+    }
+  });
+}
+
+// ── DAILY SPIN WHEEL ────────────────────────────────────────
+var DAILY_SPIN_REWARDS = [
+  {label:'50 💰',      wl:'50',    type:'coins',   val:50,  color:'#2a5080',bg:'#0c1a2e',weight:20},
+  {label:'100 💰',     wl:'100',   type:'coins',   val:100, color:'#3070a0',bg:'#112240',weight:15},
+  {label:'5 🌀',       wl:'5🌀',   type:'echoes',  val:5,   color:'#8844cc',bg:'#1a0a30',weight:15},
+  {label:'15 🌀',      wl:'15🌀',  type:'echoes',  val:15,  color:'#aa55dd',bg:'#200a40',weight:10},
+  {label:'1 🔑',       wl:'1🔑',   type:'keys',    val:1,   color:'#ddaa00',bg:'#2a2200',weight:12},
+  {label:'2 🔑',       wl:'2🔑',   type:'keys',    val:2,   color:'#eebb00',bg:'#302800',weight:6},
+  {label:'200 💰',     wl:'200',   type:'coins',   val:200, color:'#00cccc',bg:'#0a2a3a',weight:8},
+  {label:'25 🌀',      wl:'25🌀',  type:'echoes',  val:25,  color:'#cc66ff',bg:'#2a1050',weight:5},
+  {label:'3 🔑',       wl:'3🔑',   type:'keys',    val:3,   color:'#ffcc00',bg:'#3a3000',weight:3},
+  {label:'ARTIFACT!',  wl:'📦',    type:'artifact', val:1,  color:'#ff4466',bg:'#3a0a18',weight:3},
+  {label:'500 💰',     wl:'500',   type:'coins',   val:500, color:'#ffd000',bg:'#3a3000',weight:2},
+  {label:'5 🔑 JACKPOT!',wl:'5🔑', type:'keys',   val:5,   color:'#ff3300',bg:'#400800',weight:1},
+];
+
+var _dailySpinAngle = 0;
+var _dailySpinning = false;
+var _dailySpinResult = null;
+var _dailySpinBreath = 0;
+var _dailySpinLed = 0;
+var _dailySpinIdleRaf = null;
+
+function isDailySpinAvailable(){
+  return SAVE.lastDailySpinDate !== new Date().toISOString().slice(0,10);
+}
+
+function getDailySlices(){
+  var total = DAILY_SPIN_REWARDS.reduce(function(s,r){return s+r.weight;},0);
+  var angle = 0;
+  return DAILY_SPIN_REWARDS.map(function(r){
+    var slice = (r.weight/total)*Math.PI*2;
+    var start = angle;
+    angle += slice;
+    return {label:r.label,wl:r.wl,type:r.type,val:r.val,color:r.color,bg:r.bg,weight:r.weight,start:start,slice:slice};
+  });
+}
+
+function openDailySpin(){
+  _suppressNavSound = true;
+  showScreen('screen-daily-spin');
+}
+
+function initDailySpin(){
+  _dailySpinResult = null;
+  _dailySpinning = false;
+  _dailySpinAngle = Math.random()*Math.PI*2;
+  _dailySpinBreath = 0;
+  _dailySpinLed = 0;
+  var available = isDailySpinAvailable();
+  var btn = document.getElementById('daily-spin-btn');
+  var backBtn = document.getElementById('daily-spin-back-btn');
+  var resEl = document.getElementById('daily-spin-result');
+  if(resEl){ resEl.textContent=''; resEl.style.transform='scale(1)'; resEl.style.transition='none'; }
+  if(btn){
+    btn.style.display = available ? 'block' : 'none';
+    btn.disabled = !available;
+  }
+  // Streak display
+  var streakEl = document.getElementById('daily-streak-display');
+  if(streakEl){
+    var streak = SAVE.dailySpinStreak||0;
+    streakEl.textContent = streak > 0 ? 'DAY '+(streak+1)+' STREAK · '+(Math.min(2,1+streak*0.1)).toFixed(1)+'x BONUS' : 'SPIN DAILY FOR STREAK BONUSES';
+  }
+  // Timer
+  var timerEl = document.getElementById('daily-spin-timer');
+  if(timerEl){
+    if(!available){
+      timerEl.style.display='block';
+      updateDailyTimer();
+    } else {
+      timerEl.style.display='none';
+    }
+  }
+  // Start idle animation
+  if(_dailySpinIdleRaf) cancelAnimationFrame(_dailySpinIdleRaf);
+  drawDailySpin(_dailySpinAngle);
+  _dailySpinIdleRaf = requestAnimationFrame(function dailyIdleLoop(){
+    if(!document.getElementById('daily-spin-canvas')){ _dailySpinIdleRaf=null; return; }
+    _dailySpinBreath += 0.03;
+    _dailySpinLed += 0.015;
+    drawDailySpin(_dailySpinAngle);
+    _dailySpinIdleRaf = requestAnimationFrame(dailyIdleLoop);
+  });
+}
+
+function updateDailyTimer(){
+  var timerEl = document.getElementById('daily-spin-timer');
+  if(!timerEl) return;
+  var now = new Date();
+  var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+  var diff = tomorrow - now;
+  var h = Math.floor(diff/3600000);
+  var m = Math.floor((diff%3600000)/60000);
+  var s = Math.floor((diff%60000)/1000);
+  timerEl.textContent = 'Next spin in: '+h+'h '+m+'m '+s+'s';
+  if(document.getElementById('screen-daily-spin') && !document.getElementById('screen-daily-spin').classList.contains('hidden')){
+    setTimeout(updateDailyTimer, 1000);
+  }
+}
+
+function drawDailySpin(angle){
+  var canvas = document.getElementById('daily-spin-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var cx=160, cy=168, r=130;
+  ctx.clearRect(0,0,320,340);
+  var slices = getDailySlices();
+  var breath = 0.5+0.5*Math.sin(_dailySpinBreath);
+
+  // Outer LED ring
+  ctx.beginPath(); ctx.arc(cx,cy,r+14,0,Math.PI*2); ctx.fillStyle='#06090f'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,r+2,0,Math.PI*2); ctx.fillStyle='#06090f'; ctx.fill();
+  var LED_COUNT=32, ledR=r+8;
+  for(var li=0;li<LED_COUNT;li++){
+    var ledA=(li/LED_COUNT)*Math.PI*2+_dailySpinLed;
+    var lx=cx+Math.cos(ledA)*ledR, ly=cy+Math.sin(ledA)*ledR;
+    var chase=((_dailySpinLed*2.5+li*0.35)%(Math.PI*2))/(Math.PI*2);
+    var bright=0.08+0.92*Math.pow(Math.max(0,Math.cos(chase*Math.PI*2)),4);
+    bright*=(0.6+0.4*breath);
+    if(bright>0.3){ctx.beginPath();ctx.arc(lx,ly,5,0,Math.PI*2);ctx.fillStyle='rgba(255,180,20,'+(bright*0.25)+')';ctx.fill();}
+    ctx.beginPath();ctx.arc(lx,ly,2.5,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,'+Math.floor(140+bright*115)+','+Math.floor(bright*40)+','+Math.max(0.15,bright)+')';
+    ctx.fill();
+  }
+
+  // Slices
+  slices.forEach(function(s){
+    var mid=s.start+s.slice/2+angle;
+    var isHigh=s.type==='keys'||s.type==='artifact';
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);ctx.closePath();
+    var grad=ctx.createRadialGradient(cx,cy,10,cx,cy,r);
+    grad.addColorStop(0,'#080e18');grad.addColorStop(0.35,s.bg);grad.addColorStop(1,s.color+'44');
+    ctx.fillStyle=grad;ctx.fill();
+    ctx.beginPath();ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);ctx.arc(cx,cy,r*0.82,s.start+s.slice+angle,s.start+angle,true);ctx.closePath();
+    ctx.fillStyle=s.color+'22';ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s.start+angle,s.start+s.slice+angle);ctx.closePath();
+    ctx.strokeStyle=isHigh?(s.color+'cc'):(s.color+'44');ctx.lineWidth=isHigh?2:1;ctx.stroke();
+  });
+
+  // Dividers
+  slices.forEach(function(s){
+    var a=s.start+angle;
+    ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*28,cy+Math.sin(a)*28);ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1.5;ctx.stroke();
+  });
+
+  // Labels
+  slices.forEach(function(s){
+    var mid=s.start+s.slice/2+angle;
+    var txt=s.wl||s.label;
+    var isHigh=s.type==='keys'||s.type==='artifact';
+    var fontSize=isHigh?13:11;
+    ctx.save();ctx.translate(cx,cy);
+    var textAngle=mid;
+    var normA=((mid%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+    var flipped=normA>Math.PI/2&&normA<Math.PI*1.5;
+    if(flipped) textAngle+=Math.PI;
+    ctx.rotate(textAngle);
+    ctx.font='bold '+fontSize+'px Orbitron,Arial,sans-serif';
+    ctx.textBaseline='middle';
+    var labelR=r*0.55;
+    ctx.textAlign=flipped?'right':'left';
+    var xOff=flipped?-labelR+10:labelR-10;
+    ctx.fillStyle=s.color;ctx.fillText(txt,xOff,0);
+    ctx.restore();
+  });
+
+  // Outer chrome ring
+  ctx.beginPath();ctx.arc(cx,cy,r+1,0,Math.PI*2);
+  var rGrad=ctx.createLinearGradient(cx-r,cy-r,cx+r,cy+r);
+  rGrad.addColorStop(0,'#ffaa33');rGrad.addColorStop(0.5,'#ffdd88');rGrad.addColorStop(1,'#ff8800');
+  ctx.strokeStyle=rGrad;ctx.lineWidth=2.5;ctx.stroke();
+
+  // Center hub
+  ctx.beginPath();ctx.arc(cx,cy,26,0,Math.PI*2);
+  var hGrad=ctx.createRadialGradient(cx,cy,4,cx,cy,26);
+  hGrad.addColorStop(0,'#2a2000');hGrad.addColorStop(1,'#0a0800');
+  ctx.fillStyle=hGrad;ctx.fill();
+  ctx.strokeStyle='#ffaa33';ctx.lineWidth=2;ctx.stroke();
+  ctx.font='bold 10px Orbitron,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='#ffcc00';ctx.fillText('DAILY',cx,cy);
+
+  // Pointer (pointing down toward wheel)
+  ctx.beginPath();ctx.moveTo(cx,cy-r+8);ctx.lineTo(cx-10,cy-r-8);ctx.lineTo(cx+10,cy-r-8);ctx.closePath();
+  var pGrad=ctx.createLinearGradient(cx,cy-r-8,cx,cy-r+8);
+  pGrad.addColorStop(0,'#ffdd88');pGrad.addColorStop(1,'#ff8800');
+  ctx.fillStyle=pGrad;ctx.fill();
+  ctx.strokeStyle='#ffd700';ctx.lineWidth=1;ctx.stroke();
+}
+
+function doDailySpin(){
+  if(_dailySpinning) return;
+  if(!isDailySpinAvailable()){ showToast('⏰ Come back tomorrow for your next spin!'); return; }
+  _dailySpinning = true;
+  var btn = document.getElementById('daily-spin-btn');
+  if(btn) btn.style.display='none';
+
+  // Record the spin
+  var today = new Date().toISOString().slice(0,10);
+  var yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if(SAVE.lastDailySpinDate===yesterday){
+    SAVE.dailySpinStreak=(SAVE.dailySpinStreak||0)+1;
+  } else if(SAVE.lastDailySpinDate!==today){
+    SAVE.dailySpinStreak=0;
+  }
+  SAVE.lastDailySpinDate=today;
+
+  var slices = getDailySlices();
+  var startAngle = _dailySpinAngle;
+  var totalSpin = Math.PI*2*(6+Math.random()*6);
+  var duration = 4000+Math.random()*1000;
+  var startTime = performance.now();
+
+  // Stop idle loop
+  if(_dailySpinIdleRaf) cancelAnimationFrame(_dailySpinIdleRaf);
+
+  function spinFrame(now){
+    var elapsed = now - startTime;
+    var progress = Math.min(elapsed/duration,1);
+    var eased = 1-Math.pow(1-progress,4);
+    _dailySpinAngle = startAngle + totalSpin*eased;
+    _dailySpinBreath += 0.03;
+    _dailySpinLed += 0.02;
+    drawDailySpin(_dailySpinAngle);
+    if(progress<1){
+      requestAnimationFrame(spinFrame);
+    } else {
+      // Determine result
+      var norm = (((-Math.PI/2)-_dailySpinAngle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      _dailySpinResult = slices.find(function(s){return norm>=s.start&&norm<s.start+s.slice;})||slices[0];
+      _dailySpinning = false;
+      applyDailySpinResult(_dailySpinResult);
+    }
+  }
+  sfx('navTap');
+  requestAnimationFrame(spinFrame);
+}
+
+function applyDailySpinResult(result){
+  var streak = SAVE.dailySpinStreak||0;
+  var mult = Math.min(2,1+streak*0.1);
+  var rewardText = '';
+
+  if(result.type==='coins'){
+    var amt = Math.floor(result.val*mult);
+    SAVE.coins+=amt;
+    rewardText = '💰 +'+amt+' Coins!';
+    showToast(rewardText);
+  } else if(result.type==='echoes'){
+    var eAmt = Math.floor(result.val*mult);
+    SAVE.echoes=(SAVE.echoes||0)+eAmt;
+    SAVE.totalEchoes=(SAVE.totalEchoes||0)+eAmt;
+    rewardText = '🌀 +'+eAmt+' Echoes!';
+    showToast(rewardText);
+  } else if(result.type==='keys'){
+    SAVE.keys=(SAVE.keys||0)+result.val;
+    SAVE.totalKeys=(SAVE.totalKeys||0)+result.val;
+    rewardText = '🔑 +'+result.val+' Key'+(result.val>1?'s':'')+'!';
+    sfx('keyEarn'); showToast(rewardText);
+  } else if(result.type==='artifact'){
+    // Roll a random artifact directly
+    var artResult = rollArtifact();
+    var isNew = !(SAVE.artifacts||{})[artResult.artifact.id];
+    if(isNew){
+      if(!SAVE.artifacts) SAVE.artifacts={};
+      SAVE.artifacts[artResult.artifact.id]=true;
+      // Check set completion
+      var set = ARTIFACT_SETS.find(function(s){return s.key===artResult.artifact.setKey;});
+      if(set && !(SAVE.artifactSetsComplete||{})[set.key]){
+        var allOwned=set.artifacts.every(function(a){return (SAVE.artifacts||{})[a.id];});
+        if(allOwned){
+          if(!SAVE.artifactSetsComplete) SAVE.artifactSetsComplete={};
+          SAVE.artifactSetsComplete[set.key]=true;
+          unlockArtifactReward(set.reward);
+        }
+      }
+    } else {
+      var rDef = ARTIFACT_RARITIES.find(function(r){return r.id===artResult.rarity.id;});
+      var dupeE = rDef?rDef.dupeEchoes:3;
+      SAVE.echoes=(SAVE.echoes||0)+dupeE;
+      SAVE.totalEchoes=(SAVE.totalEchoes||0)+dupeE;
+    }
+    rewardText = isNew ? '📦 '+artResult.artifact.icon+' '+artResult.artifact.name+'!' : '📦 Duplicate → +'+( ARTIFACT_RARITIES.find(function(r){return r.id===artResult.rarity.id;})||{}).dupeEchoes+' 🌀';
+    showToast(rewardText);
+  }
+
+  localStorage.setItem('vi2_save',JSON.stringify(SAVE));
+
+  // Show result text
+  var resEl = document.getElementById('daily-spin-result');
+  if(resEl){
+    resEl.textContent = rewardText;
+    resEl.style.transition='none';
+    resEl.style.transform='scale(0.5)';
+    resEl.style.opacity='0';
+    requestAnimationFrame(function(){
+      resEl.style.transition='transform 0.4s cubic-bezier(.17,.67,.35,1.5),opacity 0.3s ease';
+      resEl.style.transform='scale(1)';
+      resEl.style.opacity='1';
+    });
+    resEl.style.color=result.color;
+    resEl.style.textShadow='0 0 20px '+result.color;
+  }
+
+  // Show timer + flash
+  sfx('trophyClaim');
+  spinnerFlash(result.color,300);
+
+  var timerEl = document.getElementById('daily-spin-timer');
+  if(timerEl){ timerEl.style.display='block'; updateDailyTimer(); }
+
+  // Resume idle animation
+  _dailySpinIdleRaf = requestAnimationFrame(function dailyIdleLoop2(){
+    if(!document.getElementById('daily-spin-canvas')){_dailySpinIdleRaf=null;return;}
+    _dailySpinBreath+=0.03;_dailySpinLed+=0.015;
+    drawDailySpin(_dailySpinAngle);
+    _dailySpinIdleRaf=requestAnimationFrame(dailyIdleLoop2);
+  });
+}
+
+function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, setTotal, setCompleted){
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s;pointer-events:auto;font-family:Orbitron,sans-serif';
+  overlay.id = 'lootbox-overlay';
+
+  // Canvas for particles
+  var cvs = document.createElement('canvas');
+  cvs.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1';
+  cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+  overlay.appendChild(cvs);
+  var pCtx = cvs.getContext('2d');
+
+  // Content container
+  var content = document.createElement('div');
+  content.style.cssText = 'position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px';
+  overlay.appendChild(content);
+
+  // Crate icon
+  var crate = document.createElement('div');
+  crate.style.cssText = 'font-size:72px;transform:scale(0.3);opacity:0;transition:all 0.6s cubic-bezier(.17,.67,.35,1.4);filter:drop-shadow(0 0 30px #ffcc00)';
+  crate.textContent = '📦';
+  content.appendChild(crate);
+
+  // Result elements (hidden initially)
+  var rarityLabel = document.createElement('div');
+  rarityLabel.style.cssText = 'font-size:14px;font-weight:900;letter-spacing:4px;margin-top:16px;opacity:0;transform:scale(0.5);transition:all 0.4s cubic-bezier(.17,.67,.35,1.4);text-shadow:0 0 20px '+rarity.color;
+  rarityLabel.style.color = rarity.color;
+  rarityLabel.textContent = rarity.name;
+  content.appendChild(rarityLabel);
+
+  var artifactIcon = document.createElement('div');
+  artifactIcon.style.cssText = 'font-size:48px;margin-top:12px;opacity:0;transform:scale(0);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4);filter:drop-shadow(0 0 20px '+rarity.color+')';
+  artifactIcon.textContent = artifact.icon;
+  content.appendChild(artifactIcon);
+
+  var artifactName = document.createElement('div');
+  artifactName.style.cssText = 'font-size:14px;font-weight:700;color:#fff;letter-spacing:2px;margin-top:8px;opacity:0;transition:opacity 0.4s ease 0.2s;text-shadow:0 0 12px '+rarity.color;
+  artifactName.textContent = artifact.name;
+  content.appendChild(artifactName);
+
+  var setInfo = document.createElement('div');
+  setInfo.style.cssText = 'font-size:9px;color:'+artifact.setColor+';letter-spacing:2px;margin-top:6px;opacity:0;transition:opacity 0.4s ease 0.3s';
+  setInfo.textContent = artifact.setName + ' ' + setOwned + '/' + setTotal;
+  content.appendChild(setInfo);
+
+  var statusLine = document.createElement('div');
+  statusLine.style.cssText = 'font-size:10px;margin-top:8px;opacity:0;transition:opacity 0.4s ease 0.4s;letter-spacing:1px';
+  if(isNew){
+    statusLine.style.color = '#00ff88';
+    statusLine.textContent = '✦ NEW ARTIFACT!';
+  } else {
+    statusLine.style.color = '#aa44ff';
+    statusLine.textContent = 'DUPLICATE · +' + dupeEchoes + ' 🌀';
+  }
+  content.appendChild(statusLine);
+
+  var setCompleteLine = document.createElement('div');
+  setCompleteLine.style.cssText = 'font-size:11px;font-weight:900;margin-top:10px;opacity:0;transition:all 0.5s ease;letter-spacing:2px';
+  if(setCompleted){
+    setCompleteLine.style.color = '#ffd700';
+    setCompleteLine.textContent = '🏆 SET COMPLETE! ' + setCompleted.reward.label;
+  }
+  content.appendChild(setCompleteLine);
+
+  var tapHint = document.createElement('div');
+  tapHint.style.cssText = 'font-size:8px;color:#445;letter-spacing:2px;margin-top:20px;opacity:0;transition:opacity 0.5s ease';
+  tapHint.textContent = 'TAP TO CONTINUE';
+  content.appendChild(tapHint);
+
+  document.body.appendChild(overlay);
+
+  // Particles system
+  var parts = [];
+  var partRaf;
+  function spawnParticles(cx,cy,count,color,spread){
+    for(var i=0;i<count;i++){
+      var angle = Math.random()*Math.PI*2;
+      var speed = 1.5 + Math.random()*spread;
+      parts.push({x:cx,y:cy,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,color:color,size:2+Math.random()*3});
+    }
+  }
+  function tickParticles(){
+    pCtx.clearRect(0,0,cvs.width,cvs.height);
+    for(var i=parts.length-1;i>=0;i--){
+      var p=parts[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.life-=0.015; p.vx*=0.99;
+      if(p.life<=0){parts.splice(i,1);continue;}
+      pCtx.globalAlpha=p.life;
+      pCtx.fillStyle=p.color;
+      pCtx.beginPath();
+      pCtx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);
+      pCtx.fill();
+    }
+    pCtx.globalAlpha=1;
+    partRaf=requestAnimationFrame(tickParticles);
+  }
+  partRaf=requestAnimationFrame(tickParticles);
+
+  // Screen shake helper
+  function lbShake(intensity,duration){
+    var start=performance.now();
+    function f(now){
+      var elapsed=now-start;
+      if(elapsed>duration){overlay.style.transform='';return;}
+      var decay=1-elapsed/duration;
+      var dx=(Math.random()-0.5)*intensity*decay;
+      var dy=(Math.random()-0.5)*intensity*decay;
+      overlay.style.transform='translate('+dx+'px,'+dy+'px)';
+      requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  }
+
+  // Flash helper
+  function lbFlash(color,dur){
+    var fl=document.createElement('div');
+    fl.style.cssText='position:fixed;inset:0;z-index:9999999;pointer-events:none;background:'+color+';opacity:0.7;transition:opacity '+dur+'ms ease';
+    document.body.appendChild(fl);
+    requestAnimationFrame(function(){fl.style.opacity='0';});
+    setTimeout(function(){if(fl.parentNode)fl.parentNode.removeChild(fl);},dur+50);
+  }
+
+  var cx = cvs.width/2, cy = cvs.height/2;
+
+  // ── PHASE 1: Anticipation (0-1.5s) ──
+  requestAnimationFrame(function(){
+    overlay.style.background = 'rgba(0,0,0,0.92)';
+    crate.style.transform = 'scale(1)';
+    crate.style.opacity = '1';
+  });
+
+  // Build energy ring
+  var energyInterval = setInterval(function(){
+    spawnParticles(cx, cy-20, 3, '#ffcc00', 2);
+  }, 80);
+
+  // ── PHASE 2: Crack open (1.5s) ──
+  setTimeout(function(){
+    clearInterval(energyInterval);
+    crate.style.transition = 'all 0.3s ease';
+    crate.style.transform = 'scale(1.4)';
+    crate.style.opacity = '0';
+
+    // Flash + shake scaled by rarity
+    if(rarity.id==='legendary'){
+      lbFlash('#ffd700',500);
+      lbShake(14,600);
+      spawnParticles(cx,cy-20,rarity.particles,'#ffd700',6);
+      spawnParticles(cx,cy-20,20,'#fff',4);
+      setTimeout(function(){ lbFlash('#fff',300); },200);
+    } else if(rarity.id==='epic'){
+      lbFlash('#cc44ff',400);
+      lbShake(8,400);
+      spawnParticles(cx,cy-20,rarity.particles,rarity.color,5);
+    } else if(rarity.id==='rare'){
+      lbFlash('#4488ff',300);
+      lbShake(4,300);
+      spawnParticles(cx,cy-20,rarity.particles,rarity.color,4);
+    } else {
+      spawnParticles(cx,cy-20,rarity.particles,rarity.color,3);
+    }
+
+    sfx('crateOpen');
+  }, 1500);
+
+  // ── PHASE 3: Reveal (2.0s) ──
+  setTimeout(function(){
+    rarityLabel.style.opacity = '1';
+    rarityLabel.style.transform = 'scale(1)';
+    sfx('artifactReveal');
+  }, 2000);
+
+  setTimeout(function(){
+    artifactIcon.style.opacity = '1';
+    artifactIcon.style.transform = 'scale(1)';
+    // Extra particles for legendary
+    if(rarity.id==='legendary'){
+      spawnParticles(cx,cy-10,25,'#ffd700',4);
+      spawnParticles(cx,cy-10,15,'#ff8800',3);
+    }
+  }, 2300);
+
+  setTimeout(function(){
+    artifactName.style.opacity = '1';
+    setInfo.style.opacity = '1';
+    statusLine.style.opacity = '1';
+    if(setCompleted){
+      setCompleteLine.style.opacity='1';
+      setCompleteLine.style.transform='scale(1.1)';
+      sfx('setComplete');
+      lbFlash('#ffd700',400);
+      lbShake(10,500);
+      spawnParticles(cx,cy,40,'#ffd700',6);
+    }
+  }, 2800);
+
+  // ── PHASE 4: Tap to dismiss (3.5s) ──
+  setTimeout(function(){
+    tapHint.style.opacity = '1';
+    overlay.onclick = function(){
+      cancelAnimationFrame(partRaf);
+      overlay.style.transition = 'opacity 0.3s';
+      overlay.style.opacity = '0';
+      setTimeout(function(){
+        if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        buildVaultScreen();
+      },350);
+    };
+  }, 3500);
+}
+
 function buyEchoUpgrade(key){
   var ui = ECHO_UPGRADES.find(function(u){ return u.key===key; });
   if(!ui) return;
@@ -6629,7 +7640,7 @@ function buildSynergies(){
     var syns = SYNERGIES.filter(function(s){ return s.tier===tier; });
     if(!syns.length) return;
     var header = document.createElement('div');
-    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#ff880088;letter-spacing:2px;margin:14px 0 8px;text-align:center';
+    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:12px;color:#ff8800;letter-spacing:2px;margin:16px 0 8px;text-align:center;text-shadow:0 0 10px #ff880044';
     header.textContent = tierNames[tier];
     grid.appendChild(header);
     var tierGrid = document.createElement('div');
@@ -6638,25 +7649,25 @@ function buildSynergies(){
       var isDiscovered = discovered.indexOf(syn.id) >= 0;
       var isActive = activeSyn.indexOf(syn.id) >= 0;
       var el = document.createElement('div');
-      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#22334466')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(0,10,20,0.6)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
+      el.style.cssText = 'border:1px solid '+(isActive?syn.color+'cc':'#334455')+';border-radius:8px;padding:12px;background:'+(isActive?'rgba(255,136,0,0.08)':'rgba(8,16,30,0.85)')+';position:relative;animation:screenSlideIn .3s ease '+(idx*0.04)+'s both';
       if(isActive) el.style.boxShadow = '0 0 15px '+syn.color+'44, inset 0 0 15px '+syn.color+'11';
       if(!isDiscovered) {
         var hintHtml = syn.conditions.map(function(c){
           var met = checkSynergyCondition(c);
-          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#334')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+          return '<span style="display:inline-block;font-size:10px;padding:3px 8px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#44556688')+';color:'+(met?'#44ff88':'#8899aa')+';background:'+(met?'rgba(68,255,136,0.08)':'rgba(255,255,255,0.03)')+'">'+c.label+'</span>';
         }).join('');
-        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.3;margin-bottom:2px">❓</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#445;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
-          '<div style="font-size:8px;color:#334;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
-          '<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center">'+hintHtml+'</div>';
+        el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.5;margin-bottom:2px">❓</div>'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#8899aa;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
+          '<div style="font-size:10px;color:#667788;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center">'+hintHtml+'</div>';
       } else {
         var condHtml = syn.conditions.map(function(c){
           var met = checkSynergyCondition(c);
-          return '<span style="display:inline-block;font-size:9px;padding:2px 6px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#33444466')+';color:'+(met?'#44ff88':'#445')+';background:'+(met?'rgba(68,255,136,0.08)':'transparent')+'">'+c.label+'</span>';
+          return '<span style="display:inline-block;font-size:10px;padding:3px 8px;border-radius:4px;margin:2px;border:1px solid '+(met?'#44ff8866':'#44556688')+';color:'+(met?'#44ff88':'#8899aa')+';background:'+(met?'rgba(68,255,136,0.08)':'rgba(255,255,255,0.03)')+'">'+c.label+'</span>';
         }).join('');
-        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(isActive?syn.color:'#778')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
-          '<div style="font-size:10px;color:'+(isActive?'#ccddee':'#556')+';margin-bottom:6px">'+syn.desc+'</div>'+
-          '<div style="display:flex;flex-wrap:wrap;gap:2px">'+condHtml+'</div>'+
+        el.innerHTML = '<div style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:'+(isActive?syn.color:'#aabbcc')+';margin-bottom:4px">'+syn.icon+' '+syn.name+'</div>'+
+          '<div style="font-size:11px;color:'+(isActive?'#ccddee':'#8899aa')+';margin-bottom:6px;line-height:1.3">'+syn.desc+'</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:3px">'+condHtml+'</div>'+
           (isActive?'<div style="font-family:Orbitron,sans-serif;font-size:9px;color:'+syn.color+';letter-spacing:2px;margin-top:6px;text-align:center;text-shadow:0 0 8px '+syn.color+'">✦ ACTIVE</div>':'');
       }
       tierGrid.appendChild(el);
@@ -6885,7 +7896,7 @@ const HOWTO_PAGES = [
   {
     icon:'🌀', title:'VOID ECHOES',
     content:`
-      🌀 Echoes unlock after reaching Wave 35<br>
+      🌀 Echoes are earned by ascending past Wave 35 and completing achievements<br>
       💀 Earn Echo currency when your run ends past Wave 35<br>
       🔄 Ascend voluntarily for a 1.25x Echo bonus<br>
       ⬆️ Spend Echoes on powerful permanent multipliers<br>
@@ -7848,7 +8859,8 @@ const SPINNER_REWARDS = [
   {label:'+1 LIFE ❤️',wl:'+1 ❤️',coins:0,_base:0,    pack:false,life:true, color:'#ff4466',bg:'#3a0a18',weight:5},
   {label:'1000 💰',wl:'1K',   coins:1000, _base:1000, pack:false,life:false,color:'#ffd000',bg:'#3a3000',weight:4},
   {label:'2000 💰',wl:'2K',   coins:2000, _base:2000, pack:false,life:false,color:'#ff8800',bg:'#3a2000',weight:3},
-  {label:'JACKPOT! 5000 💰',wl:'5K',coins:5000,_base:5000,pack:false,life:false,color:'#ff3300',bg:'#400800',weight:2},
+  {label:'JACKPOT! 5000 💰',wl:'5K',coins:5000,_base:5000,pack:false,life:false,key:false,color:'#ff3300',bg:'#400800',weight:2},
+  {label:'🔑 KEY',wl:'🔑',coins:0,_base:0,pack:false,life:false,key:true,color:'#ffcc00',bg:'#3a3000',weight:3},
 ];
 
 let spinnerAngle = 0;
@@ -8336,7 +9348,7 @@ function updatePowerupHUD() {
   if(!hud) return;
   if(activePids.length===0){ hud.style.display='none'; return; }
   const pid=activePids[0]; const def=POWERUP_DEFS[pid];
-  const frac=Math.max(0,activePowerups[pid]/POWERUP_DURATION);
+  const frac=Math.max(0,activePowerups[pid]/(POWERUP_DURATION+((SAVE.echoUpgrades||{}).powerupExtend||0)));
   const bar=document.getElementById('powerup-hud-bar');
   const icon=document.getElementById('powerup-hud-icon');
   if(bar){ bar.style.height=(frac*100)+'%'; bar.style.background=def.color; bar.style.boxShadow=`0 0 8px ${def.color}`; }
@@ -8436,7 +9448,7 @@ function _showAchievementNotification() {
     '<span style="font-size:18px">' + ach.icon + '</span>' +
     '<div>' +
     '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ' ' + tier.label + '</div>' +
-    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT' + (tier.reward ? ' · +' + tier.reward + ' 🌀' : '') + '</div>' +
+    '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT' + (tier.reward ? ' · +' + tier.reward + ' 🌀' : '') + (tier.keyReward ? ' · +' + tier.keyReward + ' 🔑' : '') + '</div>' +
     '</div></div>';
   document.body.appendChild(el);
   requestAnimationFrame(function() {
@@ -8472,6 +9484,11 @@ function spinnerContinue() {
     player.lives=Math.min(player.lives+1,player.maxLives);
     SAVE.savedLives=player.lives; doSave(); updateHUD();
     showToast('❤️ +1 Life!');
+  }
+  if(spinnerResult.key){
+    SAVE.keys=(SAVE.keys||0)+1; SAVE.totalKeys=(SAVE.totalKeys||0)+1;
+    localStorage.setItem('vi2_save',JSON.stringify(SAVE));
+    sfx('keyEarn'); showToast('🔑 +1 Key!');
   }
   if(spinnerResult.pack){
     const freePack=PACKS[Math.floor(Math.random()*(PACKS.length-1))+1];
