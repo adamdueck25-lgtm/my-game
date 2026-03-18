@@ -1081,6 +1081,52 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/my-game/sw.js').catch(()=>{});
 }
+
+// ── PUSH NOTIFICATIONS ─────────────────────────────
+var PUSH_WORKER_URL = 'https://void-push.adamdueck25.workers.dev';
+var _pushVapidPublic = 'BDnAvEUipAHUx4EVCOExiD8rimjkjCm_me_9xNlF8dJQt92dnW3-vKwCTY4mx3ZAB0Wdno9E9YUYWux33aEcE_o';
+
+function _urlBase64ToUint8Array(base64String) {
+  var padding = '='.repeat((4 - base64String.length % 4) % 4);
+  var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  var raw = atob(base64);
+  var arr = new Uint8Array(raw.length);
+  for (var i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
+
+function _subscribePush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return Promise.resolve(false);
+  return navigator.serviceWorker.ready.then(function(reg) {
+    return reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: _urlBase64ToUint8Array(_pushVapidPublic)
+    });
+  }).then(function(sub) {
+    return fetch(PUSH_WORKER_URL + '/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscription: sub.toJSON() })
+    }).then(function() { return true; });
+  }).catch(function(e) { console.warn('Push subscribe failed:', e); return false; });
+}
+
+function _unsubscribePush() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return Promise.resolve(false);
+  return navigator.serviceWorker.ready.then(function(reg) {
+    return reg.pushManager.getSubscription();
+  }).then(function(sub) {
+    if (!sub) return false;
+    var endpoint = sub.endpoint;
+    return sub.unsubscribe().then(function() {
+      return fetch(PUSH_WORKER_URL + '/unsubscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: endpoint })
+      });
+    }).then(function() { return true; });
+  }).catch(function(e) { console.warn('Push unsubscribe failed:', e); return false; });
+}
 ;
 
 // ═══════════════════════════════════════════════════
@@ -1854,6 +1900,13 @@ function openSettings() {
   tb.style.color = musicOn ? '#00f5ff' : '#556';
   mv.disabled = !musicOn;
   mv.style.opacity = musicOn ? '1' : '0.4';
+  // Sync notification toggle
+  var nb = document.getElementById('settings-notif-toggle');
+  if(nb){
+    nb.textContent = SAVE.notificationsOn ? 'ON' : 'OFF';
+    nb.style.borderColor = SAVE.notificationsOn ? '#00f5ff' : '#556';
+    nb.style.color = SAVE.notificationsOn ? '#00f5ff' : '#556';
+  }
 }
 function revertSettingsDefaults() {
   onMusicVolChange(55);
@@ -1865,6 +1918,48 @@ function closeSettings() {
   document.getElementById('settings-modal').style.display = 'none';
   // Persist volume settings
   if(gState !== 'gameover') { doSave(); } else { localStorage.setItem('vi2_save', JSON.stringify(SAVE)); }
+}
+function toggleNotifications() {
+  var btn = document.getElementById('settings-notif-toggle');
+  if (SAVE.notificationsOn) {
+    // Turn off
+    btn.textContent = '...';
+    _unsubscribePush().then(function() {
+      SAVE.notificationsOn = false;
+      btn.textContent = 'OFF';
+      btn.style.borderColor = '#556';
+      btn.style.color = '#556';
+      if(gState !== 'gameover') { doSave(); } else { localStorage.setItem('vi2_save', JSON.stringify(SAVE)); }
+      showToast('Notifications disabled');
+    });
+  } else {
+    // Turn on — request permission first
+    if (!('Notification' in window) || !('PushManager' in window)) {
+      showToast('Push not supported on this device');
+      return;
+    }
+    btn.textContent = '...';
+    Notification.requestPermission().then(function(perm) {
+      if (perm !== 'granted') {
+        btn.textContent = 'OFF';
+        showToast('Notification permission denied');
+        return;
+      }
+      _subscribePush().then(function(ok) {
+        if (ok) {
+          SAVE.notificationsOn = true;
+          btn.textContent = 'ON';
+          btn.style.borderColor = '#00f5ff';
+          btn.style.color = '#00f5ff';
+          if(gState !== 'gameover') { doSave(); } else { localStorage.setItem('vi2_save', JSON.stringify(SAVE)); }
+          showToast('🔔 Notifications enabled!');
+        } else {
+          btn.textContent = 'OFF';
+          showToast('Failed to subscribe — try again');
+        }
+      });
+    });
+  }
 }
 function onMusicVolChange(v) {
   v = parseInt(v, 10);
@@ -2366,7 +2461,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false,
   musicVolume:55, sfxVolume:70,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
-  achievements:{} };
+  achievements:{}, notificationsOn:false };
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -5577,6 +5672,7 @@ function doAscension() {
   var savedLootBoxPityA = SAVE.lootBoxPity||0;
   var savedDailySpinDateA = SAVE.lastDailySpinDate;
   var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
+  var savedNotifA = SAVE.notificationsOn||false;
   var hiScore = Math.max(score, SAVE.hiScore);
   // Clear game state
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
@@ -5619,6 +5715,7 @@ function doAscension() {
   SAVE.lootBoxPity = savedLootBoxPityA;
   SAVE.lastDailySpinDate = savedDailySpinDateA;
   SAVE.dailySpinStreak = savedDailySpinStreakA;
+  SAVE.notificationsOn = savedNotifA;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
   // Show ascension overlay
@@ -5693,6 +5790,7 @@ function _doEndGame() {
   const savedLootBoxPityE = SAVE.lootBoxPity||0;
   const savedDailySpinDateE = SAVE.lastDailySpinDate;
   const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
+  const savedNotifE = SAVE.notificationsOn||false;
   // Calculate echo gain for this run
   var echoGain = 0;
   if(finalWave >= 35) {
@@ -5735,6 +5833,7 @@ function _doEndGame() {
   SAVE.lootBoxPity = savedLootBoxPityE;
   SAVE.lastDailySpinDate = savedDailySpinDateE;
   SAVE.dailySpinStreak = savedDailySpinStreakE;
+  SAVE.notificationsOn = savedNotifE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -6402,6 +6501,7 @@ function doReset() {
   const savedLootBoxPityR = SAVE.lootBoxPity||0;
   const savedDailySpinDateR = SAVE.lastDailySpinDate;
   const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
+  const savedNotifR = SAVE.notificationsOn||false;
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
   SAVE.shipCustom = savedCustom2;
@@ -6432,6 +6532,7 @@ function doReset() {
   SAVE.lootBoxPity = savedLootBoxPityR;
   SAVE.lastDailySpinDate = savedDailySpinDateR;
   SAVE.dailySpinStreak = savedDailySpinStreakR;
+  SAVE.notificationsOn = savedNotifR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -10754,6 +10855,14 @@ setTrack('menu');
         <span id="settings-sfx-val" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#889">50%</span>
         <span style="font-size:9px;color:#556">100%</span>
       </div>
+    </div>
+
+    <div style="text-align:left;margin-bottom:20px;padding-top:16px;border-top:1px solid #223">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#aab;letter-spacing:2px">🔔 NOTIFICATIONS</span>
+        <button id="settings-notif-toggle" onclick="toggleNotifications()" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 10px;border-radius:3px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#556;cursor:pointer;letter-spacing:1px">OFF</button>
+      </div>
+      <div style="font-size:9px;color:#445;margin-top:4px">Get notified about updates & events</div>
     </div>
 
     <div style="text-align:center;margin:12px 0 4px">
