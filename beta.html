@@ -82,7 +82,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 /* MENU */
 #screen-menu{background:transparent;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #menu-canvas{position:absolute;inset:0;z-index:0}
-#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px 20px}
+#menu-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:calc(env(safe-area-inset-top,0px) + 28px) 14px calc(env(safe-area-inset-bottom,0px) + 20px);flex-grow:1}
 .game-title{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0;letter-spacing:4px;text-align:center;line-height:1.1;margin-bottom:6px}
 .title-void{font-size:clamp(24px, 7.8vw, 36px);display:block;background:linear-gradient(90deg,var(--c),#fff,var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5));background-color:transparent}
 .title-inv{font-size:28px;display:block;color:var(--m);text-shadow:0 0 15px var(--m),0 0 40px var(--m)44;letter-spacing:8px}
@@ -509,7 +509,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
     <div class="sum-row" id="sum-row-kills">
       <span class="sum-label">ENEMIES DEFEATED</span>
-      <span class="sum-val" id="sum-kills">0</span>
+      <span class="sum-val" id="sum-kills" style="color:#ff4455;text-shadow:0 0 10px #ff445588">0</span>
     </div>
     <div class="sum-row" id="sum-row-score">
       <span class="sum-label">WAVE SCORE</span>
@@ -657,16 +657,17 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div id="echoes-title" style="font-size:10px;color:#aa44ff88;letter-spacing:2px;margin-bottom:4px">PILOT</div>
   </div>
   <div style="height:calc(100vh - 150px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
-    <div class="shop-grid" id="echoes-grid"></div>
-    <div id="echoes-key-shop" style="width:100%;max-width:340px;margin:16px auto 0;padding:12px;border-radius:10px;border:1.5px solid #ffcc0044;background:rgba(255,204,0,0.04);text-align:center">
+    <div id="echoes-key-shop" style="width:100%;max-width:340px;margin:0 auto 12px;padding:12px;border-radius:10px;border:1.5px solid #ffcc0044;background:rgba(255,204,0,0.04);text-align:center">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:6px">🔑 VOID KEYS</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#778;margin-bottom:8px">Keys open Void Crates for rare Artifacts</div>
       <div id="echoes-key-balance" style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;margin-bottom:8px">🔑 0</div>
       <button id="echoes-buy-key-btn" onclick="buyKeyWithEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 20px;border-radius:8px;border:1.5px solid #ffcc00;background:rgba(255,204,0,0.1);color:#ffcc00;cursor:pointer;letter-spacing:1px;transition:all .15s">BUY KEY · 🌀 50</button>
     </div>
-    <div style="padding:10px 0 180px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;margin-top:8px">
-      <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
-    </div>
+    <div class="shop-grid" id="echoes-grid"></div>
+    <div style="height:80px;flex-shrink:0"></div>
+  </div>
+  <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
+    <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
   </div>
 </div>
 
@@ -837,6 +838,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div style="margin-bottom:8px">
         <button onclick="devAddEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #aa44ff;background:rgba(170,68,255,0.1);color:#aa44ff;border-radius:4px;cursor:pointer;width:100%">🌀 +500 ECHOES</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <button onclick="devUnlockStarborn();closeDevModal()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;border-radius:4px;cursor:pointer;width:100%">⭐ UNLOCK STARBORN SET</button>
       </div>
       <div style="margin-bottom:12px">
         <button onclick="devClearLeaderboard()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff4455;background:rgba(255,68,85,0.1);color:#ff4455;border-radius:4px;cursor:pointer;width:100%">🗑 CLEAR LEADERBOARD</button>
@@ -1533,6 +1537,8 @@ let menuSource = null;
 let menuOffset = 0;
 let menuStartedAt = 0;
 var _useMenuAlt = false; // toggles after each game session
+var _menuPlayingAlt = false; // tracks which buffer is currently playing
+var _menuStopping = false; // guard against onended firing after manual stop
 
 async function loadAudioFile(url) {
   try {
@@ -1561,12 +1567,23 @@ function playMenuNow(fromStart=true) {
   var buf = (_useMenuAlt && menuAltBuffer) ? menuAltBuffer : menuBuffer;
   if(!buf || !musicOn) return;
   resumeAC();
+  _menuStopping = true;
   if(menuSource) { try{ menuSource.stop(); }catch(e){} menuSource.disconnect(); menuSource=null; }
+  _menuStopping = false;
   if(fromStart) menuOffset=0;
+  _menuPlayingAlt = !!(_useMenuAlt && menuAltBuffer);
   menuSource = AC.createBufferSource();
   menuSource.buffer = buf;
-  menuSource.loop = true;
+  menuSource.loop = false;
   menuSource.connect(masterGain);
+  menuSource.onended = function() {
+    if(_menuStopping) return;
+    menuSource = null;
+    _useMenuAlt = !_useMenuAlt;
+    _menuPlayingAlt = !_menuPlayingAlt;
+    menuOffset = 0;
+    playMenuNow(true);
+  };
   var dur = buf.duration || 1;
   menuSource.start(0, menuOffset % dur);
   menuStartedAt = AC.currentTime - (menuOffset % dur);
@@ -1574,12 +1591,14 @@ function playMenuNow(fromStart=true) {
 
 function stopMenuMusic(saveOffset=true) {
   if(menuSource) {
-    var buf = (_useMenuAlt && menuAltBuffer) ? menuAltBuffer : menuBuffer;
+    var buf = _menuPlayingAlt ? menuAltBuffer : menuBuffer;
     var dur = (buf && buf.duration) || 1;
     if(saveOffset) menuOffset = (AC.currentTime - menuStartedAt) % dur;
+    _menuStopping = true;
     try{ menuSource.stop(); }catch(e){}
     menuSource.disconnect();
     menuSource = null;
+    _menuStopping = false;
   }
 }
 
@@ -2119,22 +2138,65 @@ function sfx(type) {
       osc(1760,'triangle',0.1,0.3,0.1);
       noise(0.04,0.15,'highpass',4000,0);
       break;
+    case 'crateCharge':
+      // Rising energy buildup — tension before the crack
+      sfxGain.gain.value = 0.35;
+      osc(60,'sawtooth',1.2,0.3,0,200);
+      osc(80,'square',1.0,0.2,0.1,300);
+      noise(1.2,0.25,'lowpass',400,0);
+      noise(0.8,0.15,'bandpass',800,0.3);
+      osc(150,'sine',0.6,0.15,0.5,600);
+      osc(200,'triangle',0.4,0.2,0.8,1200);
+      noise(0.3,0.3,'highpass',2000,0.9);
+      break;
     case 'crateOpen':
-      // Deep resonant crack
-      osc(80,'sawtooth',0.15,0.6,0);
-      osc(120,'square',0.1,0.4,0.05);
-      noise(0.2,0.5,'lowpass',800,0.08);
-      osc(200,'sine',0.2,0.3,0.15);
-      noise(0.1,0.3,'bandpass',1200,0.2);
+      // MASSIVE crack + explosion
+      sfxGain.gain.value = 0.6;
+      osc(40,'sawtooth',0.8,0.7,0);
+      osc(60,'square',0.6,0.5,0);
+      osc(80,'sawtooth',0.5,0.6,0.02);
+      noise(0.6,0.7,'lowpass',600,0);
+      noise(0.4,0.6,'lowpass',300,0.05);
+      osc(150,'square',0.3,0.4,0.08);
+      noise(0.3,0.5,'bandpass',1200,0.1);
+      osc(300,'sine',0.4,0.3,0.15,80);
+      noise(0.2,0.4,'highpass',2000,0.15);
+      osc(500,'sine',0.2,0.2,0.2,100);
       break;
     case 'artifactReveal':
-      // Rising sparkle reveal
-      osc(440,'sine',0.1,0.4,0);
-      osc(660,'sine',0.1,0.4,0.08);
-      osc(880,'sine',0.12,0.5,0.16);
-      osc(1100,'triangle',0.15,0.4,0.24);
-      osc(1320,'sine',0.2,0.6,0.32);
-      noise(0.08,0.2,'highpass',3000,0.32);
+      // Dramatic rising sparkle cascade
+      sfxGain.gain.value = 0.45;
+      osc(330,'sine',0.15,0.5,0);
+      osc(440,'sine',0.15,0.5,0.06);
+      osc(554,'sine',0.15,0.5,0.12);
+      osc(660,'sine',0.18,0.55,0.18);
+      osc(880,'sine',0.2,0.6,0.24);
+      osc(1100,'triangle',0.22,0.5,0.3);
+      osc(1320,'sine',0.25,0.65,0.36);
+      osc(1760,'sine',0.3,0.5,0.42);
+      noise(0.1,0.3,'highpass',3000,0.2);
+      noise(0.15,0.35,'highpass',4000,0.36);
+      noise(0.1,0.25,'highpass',5000,0.45);
+      break;
+    case 'legendaryReveal':
+      // Godlike fanfare — deep boom + soaring harmonics
+      sfxGain.gain.value = 0.6;
+      osc(40,'sawtooth',0.8,0.5,0);
+      osc(55,'square',0.6,0.4,0);
+      noise(0.5,0.5,'lowpass',200,0);
+      osc(220,'sine',0.2,0.5,0.15);
+      osc(330,'sine',0.2,0.5,0.2);
+      osc(440,'sine',0.25,0.6,0.25);
+      osc(554,'sine',0.25,0.6,0.3);
+      osc(660,'sine',0.3,0.65,0.35);
+      osc(880,'sine',0.35,0.7,0.4);
+      osc(1100,'triangle',0.35,0.5,0.45);
+      osc(1320,'sine',0.4,0.7,0.5);
+      osc(1760,'sine',0.5,0.6,0.55);
+      osc(2200,'sine',0.5,0.4,0.6);
+      noise(0.2,0.4,'highpass',3000,0.4);
+      noise(0.3,0.5,'highpass',5000,0.55);
+      noise(0.2,0.3,'bandpass',2500,0.3);
       break;
     case 'setComplete':
       // Triumphant fanfare cascade
@@ -2195,9 +2257,9 @@ window.addEventListener('resize',()=>{ initBg(); });
 // ═══════════════════════════════════════════════════
 //  MENU ANIMATIONS
 // ═══════════════════════════════════════════════════
-const menuCanvas = document.getElementById('menu-canvas');
-const mCtx = menuCanvas.getContext('2d');
-let menuAnimId = null;
+var menuCanvas = document.getElementById('menu-canvas');
+var mCtx = menuCanvas.getContext('2d');
+var menuAnimId = null;
 let menuEnemies = [];
 
 function startMenuAnim() {
@@ -2244,7 +2306,7 @@ function stopMenuAnim() {
 }
 
 // Glitch title effect
-let glitchTimer = 0;
+var glitchTimer = 0;
 function startGlitch() {
   const el = document.getElementById('glitch-title');
   if(!el) return;
@@ -2339,18 +2401,57 @@ const TROPHIES = [
 // ── ACHIEVEMENTS ──────────────────────────────────────────────
 const ACHIEVEMENTS = [
   {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
-   tiers:[{goal:50,label:'I',reward:3},{goal:250,label:'II',reward:5},{goal:1000,label:'III',reward:10,keyReward:1},{goal:5000,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:50,label:'I',volume:1,reward:3},{goal:250,label:'II',volume:1,reward:5},{goal:1000,label:'III',volume:1,reward:10,keyReward:1},{goal:5000,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:10000,label:'I',volume:2,reward:8},{goal:25000,label:'II',volume:2,reward:15,keyReward:1},{goal:50000,label:'III',volume:2,reward:30,keyReward:2},{goal:100000,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:200000,label:'I',volume:3,reward:20,keyReward:1},{goal:400000,label:'II',volume:3,reward:40,keyReward:2},{goal:750000,label:'III',volume:3,reward:80,keyReward:4},{goal:1500000,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
   {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
-   tiers:[{goal:5,label:'I',reward:3},{goal:20,label:'II',reward:5},{goal:50,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:5,label:'I',volume:1,reward:3},{goal:20,label:'II',volume:1,reward:5},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:200,label:'I',volume:2,reward:8},{goal:400,label:'II',volume:2,reward:15,keyReward:1},{goal:750,label:'III',volume:2,reward:30,keyReward:2},{goal:1500,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:3000,label:'I',volume:3,reward:20,keyReward:1},{goal:6000,label:'II',volume:3,reward:40,keyReward:2},{goal:10000,label:'III',volume:3,reward:80,keyReward:4},{goal:20000,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
   {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
-   tiers:[{goal:15,label:'I',reward:3},{goal:30,label:'II',reward:5},{goal:60,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:15,label:'I',volume:1,reward:3},{goal:30,label:'II',volume:1,reward:5},{goal:60,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:120,label:'I',volume:2,reward:8},{goal:140,label:'II',volume:2,reward:15,keyReward:1},{goal:170,label:'III',volume:2,reward:30,keyReward:2},{goal:200,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:250,label:'I',volume:3,reward:20,keyReward:1},{goal:300,label:'II',volume:3,reward:40,keyReward:2},{goal:400,label:'III',volume:3,reward:80,keyReward:4},{goal:500,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
   {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
-   tiers:[{goal:10,label:'I',reward:3},{goal:25,label:'II',reward:5},{goal:50,label:'III',reward:10,keyReward:1},{goal:100,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:10,label:'I',volume:1,reward:3},{goal:25,label:'II',volume:1,reward:5},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:125,label:'I',volume:2,reward:8},{goal:150,label:'II',volume:2,reward:15,keyReward:1},{goal:200,label:'III',volume:2,reward:30,keyReward:2},{goal:275,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:350,label:'I',volume:3,reward:20,keyReward:1},{goal:450,label:'II',volume:3,reward:40,keyReward:2},{goal:600,label:'III',volume:3,reward:80,keyReward:4},{goal:800,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
   {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
-   tiers:[{goal:500,label:'I',reward:3},{goal:5000,label:'II',reward:5},{goal:25000,label:'III',reward:10,keyReward:1},{goal:100000,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:500,label:'I',volume:1,reward:3},{goal:5000,label:'II',volume:1,reward:5},{goal:25000,label:'III',volume:1,reward:10,keyReward:1},{goal:100000,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:250000,label:'I',volume:2,reward:8},{goal:500000,label:'II',volume:2,reward:15,keyReward:1},{goal:1000000,label:'III',volume:2,reward:30,keyReward:2},{goal:2500000,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:5000000,label:'I',volume:3,reward:20,keyReward:1},{goal:10000000,label:'II',volume:3,reward:40,keyReward:2},{goal:25000000,label:'III',volume:3,reward:80,keyReward:4},{goal:50000000,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
   {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
-   tiers:[{goal:3,label:'I',reward:3},{goal:10,label:'II',reward:5},{goal:30,label:'III',reward:10,keyReward:1},{goal:75,label:'IV',reward:20,keyReward:2}]},
+   tiers:[
+    {goal:3,label:'I',volume:1,reward:3},{goal:10,label:'II',volume:1,reward:5},{goal:30,label:'III',volume:1,reward:10,keyReward:1},{goal:75,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:125,label:'I',volume:2,reward:8},{goal:200,label:'II',volume:2,reward:15,keyReward:1},{goal:350,label:'III',volume:2,reward:30,keyReward:2},{goal:500,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:750,label:'I',volume:3,reward:20,keyReward:1},{goal:1000,label:'II',volume:3,reward:40,keyReward:2},{goal:1500,label:'III',volume:3,reward:80,keyReward:4},{goal:2500,label:'IV',volume:3,reward:150,keyReward:6}
+   ]},
 ];
+var ACH_VOL_COLORS = ['#ffd700','#aa44ff','#ff4400'];
+var ACH_VOL_NAMES = ['VOL. I','VOL. II','VOL. III'];
+function achVolumeOf(tierIdx){ return Math.floor(tierIdx/4)+1; }
+function achVolumeComplete(achId,vol){
+  var t=SAVE.achievements[achId];
+  return t!==undefined && t>=(vol*4-1);
+}
+function achVolumeUnlocked(achId,vol){
+  return vol===1||achVolumeComplete(achId,vol-1);
+}
+function fmtGoal(n){
+  if(n>=1000000) return (n/1000000)+'M';
+  if(n>=1000) return (n/1000)+'K';
+  return ''+n;
+}
 
 // ── ARTIFACTS & LOOT BOXES ──────────────────────────────────
 const ARTIFACT_RARITIES = [
@@ -2550,7 +2651,6 @@ function doSave(){
 let SAVE = loadSave();
 ['upgrades','cards','setsComplete'].forEach(k=>{ if(!SAVE[k]) SAVE[k]={...DEFAULT_SAVE[k]}; });
 applySettingsVolumes();
-restoreArtifactRewards();
 
 // ═══════════════════════════════════════════════════
 //  CARD / SET DATA
@@ -2920,10 +3020,32 @@ function devUnlockAll() {
   SAVE.forgeIntroSeen = true;
   SAVE.echoesIntroSeen = true;
   SAVE.synergiesIntroSeen = true;
+  // Unlock Starborn artifact set
+  if(!SAVE.artifacts) SAVE.artifacts = {};
+  if(!SAVE.artifactSetsComplete) SAVE.artifactSetsComplete = {};
+  var _sbSet = ARTIFACT_SETS.find(function(s){return s.key==='starborn';});
+  if(_sbSet){
+    _sbSet.artifacts.forEach(function(a){ SAVE.artifacts[a.id] = (SAVE.artifacts[a.id]||0) + 1; });
+    SAVE.artifactSetsComplete.starborn = true;
+    unlockArtifactReward(_sbSet.reward);
+  }
   doSave();
   updateMenuCoins();
   closeDevModal();
   showToast('🔓 Everything unlocked!');
+}
+
+function devUnlockStarborn() {
+  if(!SAVE.artifacts) SAVE.artifacts = {};
+  if(!SAVE.artifactSetsComplete) SAVE.artifactSetsComplete = {};
+  var sbSet = ARTIFACT_SETS.find(function(s){return s.key==='starborn';});
+  if(sbSet){
+    sbSet.artifacts.forEach(function(a){ SAVE.artifacts[a.id] = (SAVE.artifacts[a.id]||0) + 1; });
+    SAVE.artifactSetsComplete.starborn = true;
+    unlockArtifactReward(sbSet.reward);
+  }
+  doSave();
+  showToast('⭐ Starborn set unlocked!');
 }
 
 function devAddEchoes() {
@@ -2950,7 +3072,7 @@ function devLaunch() {
   startGame();
 }
 
-const CURRENT_VERSION = '2.7.0 (BETA)';
+var CURRENT_VERSION = '2.7.0 (BETA)';
 
 const VERSION_NOTES = {
 '2.7.0 (BETA)': [
@@ -3156,8 +3278,8 @@ resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 if(window.visualViewport) window.visualViewport.addEventListener('resize', resizeCanvas);
 
-let gState = 'menu'; // menu|playing|waveclear|gameover
-let player, bullets, eBullets, enemies, coinDrops, particles;
+var gState = 'menu'; // menu|playing|waveclear|gameover
+var player, bullets, eBullets, enemies, coinDrops, particles;
 let wave, score, sessionCoins, sessionBombs;
 let fireTimer, eMoveTimer, eFireTimer, eDir, killCount;
 let screenShake = {x:0,y:0,dur:0,mag:0};
@@ -3170,7 +3292,7 @@ let bossFight = false;
 let boss = null;
 let playerYOffset = 150;
 let eYDir = 1;
-let perksUnlocked = false;
+var perksUnlocked = false;
 if((SAVE.savedWave||1) > 20) perksUnlocked=true;
 let voidSurgeStacks = 0;
 let killStreakCount = 0;
@@ -3184,8 +3306,8 @@ let bulwarkUsedThisWave = false;
 let waveDamageTaken = false;
 let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
-let powerupDrops = [];
-let activePowerups = {};
+var powerupDrops = [];
+var activePowerups = {};
 var _prevActiveSynergies = [];
 var _prevDiscoveredSynergies = [];
 var _synNotifyQueue = [];
@@ -3267,6 +3389,9 @@ const POWERUP_DURATION = 10;
 const POWERUP_KEYS = Object.keys(POWERUP_DEFS);
 let bossEntrance = false;
 let rafId = null;
+
+// Restore cosmetic rewards for completed artifact sets (must be after SPRITE_SHIPS etc.)
+restoreArtifactRewards();
 
 // Nav stack for back buttons
 let navStack = [];
@@ -3372,6 +3497,82 @@ function drawShip(c, x, y, inv, custom, scale=1){
       c.drawImage(img,-24,-24,48,48);
       c.imageSmoothingEnabled=true;
     }
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Starborn Ship
+  if(custom.sprite==='starbornShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.5)*0.3;
+    var _sc='#00f5ff', _sg='#ffd700';
+    // Outer star aura
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.18*_pulse;
+    c.shadowBlur=30; c.shadowColor=_sc;
+    c.fillStyle=_sc;
+    c.beginPath();
+    for(var si=0;si<10;si++){ var sa=si*Math.PI/5-Math.PI/2; var sr=si%2===0?28:12; si===0?c.moveTo(Math.cos(sa)*sr,Math.sin(sa)*sr):c.lineTo(Math.cos(sa)*sr,Math.sin(sa)*sr); }
+    c.closePath(); c.fill();
+    c.restore();
+    // Main hull — crystalline diamond shape
+    c.shadowBlur=18; c.shadowColor=_sc;
+    c.fillStyle='rgba(0,245,255,0.12)'; c.strokeStyle=_sc; c.lineWidth=1.8;
+    c.beginPath();
+    c.moveTo(0,-22);        // nose
+    c.lineTo(7,-8);         // upper right facet
+    c.lineTo(16,4);         // right wing tip
+    c.lineTo(10,2);         // right wing inner
+    c.lineTo(6,10);         // lower right
+    c.lineTo(0,6);          // tail center
+    c.lineTo(-6,10);        // lower left
+    c.lineTo(-10,2);        // left wing inner
+    c.lineTo(-16,4);        // left wing tip
+    c.lineTo(-7,-8);        // upper left facet
+    c.closePath(); c.fill(); c.stroke();
+    // Inner crystal facet lines
+    c.save();
+    c.strokeStyle=_sc+'66'; c.lineWidth=0.8; c.shadowBlur=0;
+    c.beginPath(); c.moveTo(0,-22); c.lineTo(0,6); c.stroke();
+    c.beginPath(); c.moveTo(-7,-8); c.lineTo(6,10); c.stroke();
+    c.beginPath(); c.moveTo(7,-8); c.lineTo(-6,10); c.stroke();
+    c.beginPath(); c.moveTo(-16,4); c.lineTo(16,4); c.stroke();
+    c.restore();
+    // Cockpit — star-shaped
+    c.save();
+    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=14; c.shadowColor=_sg;
+    c.beginPath();
+    for(var ci=0;ci<10;ci++){ var ca=ci*Math.PI/5-Math.PI/2; var cr=ci%2===0?5:2.2; var cy2=-6+Math.sin(ca)*0; ci===0?c.moveTo(Math.cos(ca)*cr,(-6)+Math.sin(ca)*cr):c.lineTo(Math.cos(ca)*cr,(-6)+Math.sin(ca)*cr); }
+    c.closePath(); c.fill();
+    c.restore();
+    // Star gems on wing tips
+    c.save();
+    c.fillStyle=_sg; c.globalAlpha=(flash?0.4:1)*_pulse*0.9;
+    c.shadowBlur=10; c.shadowColor=_sg;
+    [[-14,4],[14,4]].forEach(function(pt){
+      c.beginPath();
+      for(var gi=0;gi<10;gi++){ var ga=gi*Math.PI/5-Math.PI/2; var gr=gi%2===0?3:1.2; gi===0?c.moveTo(pt[0]+Math.cos(ga)*gr,pt[1]+Math.sin(ga)*gr):c.lineTo(pt[0]+Math.cos(ga)*gr,pt[1]+Math.sin(ga)*gr); }
+      c.closePath(); c.fill();
+    });
+    c.restore();
+    // Nose gem
+    c.save();
+    c.fillStyle=_sc; c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.shadowBlur=12; c.shadowColor=_sc;
+    c.beginPath(); c.arc(0,-18,2,0,Math.PI*2); c.fill();
+    c.restore();
+    // Trailing stardust particles (decorative, per-frame)
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.5;
+    for(var di=0;di<4;di++){
+      var dx=(Math.sin(_t*3+di*1.7))*8;
+      var dy=10+di*4+Math.sin(_t*2+di)*2;
+      var dr=1.2-di*0.2;
+      c.fillStyle=di%2===0?_sc:_sg;
+      c.shadowBlur=6; c.shadowColor=c.fillStyle;
+      c.globalAlpha=(flash?0.4:1)*(0.5-di*0.1);
+      c.beginPath(); c.arc(dx,dy,Math.max(0.4,dr),0,Math.PI*2); c.fill();
+    }
+    c.restore();
     c.restore();
     return;
   }
@@ -4675,6 +4876,13 @@ function showSummaryAchievements(onDone) {
   });
   if (relevant.length === 0) { wrapper.style.display = 'none'; if(onDone) onDone(); return; }
   wrapper.style.display = 'block';
+  /* Echo counter element — accumulates across all celebrations */
+  var _sumEchoTotal = 0;
+  var echoCounter = document.createElement('div');
+  echoCounter.id = 'sum-echo-counter';
+  echoCounter.style.cssText = 'position:fixed;top:12px;right:12px;z-index:999999;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#aa44ff;text-shadow:0 0 12px #aa44ff88;padding:8px 14px;border-radius:10px;background:rgba(10,10,30,0.92);border:1.5px solid #aa44ff44;opacity:0;transition:opacity .3s ease,transform .15s ease;transform:scale(1);pointer-events:none;box-shadow:0 0 16px #aa44ff22';
+  echoCounter.innerHTML = '🌀 <span id="sum-echo-count">+0</span>';
+  document.body.appendChild(echoCounter);
   var celebrateRows = [];
   var slideInTime = 140;
   relevant.forEach(function(ach, i) {
@@ -4685,27 +4893,31 @@ function showSummaryAchievements(onDone) {
     var statVal = SAVE.lifetimeStats[ach.stat] || 0;
     /* If just completed this wave, show the COMPLETED tier first (bar fills to 100%) */
     var showAsCompleted = justCompleted && justCompleted.length > 0;
-    var displayTierIdx, displayGoal, displayLabel, displayPct;
+    var displayTierIdx, displayGoal, displayLabel, displayVol, displayPct;
     if (showAsCompleted) {
       var highestCompleted = justCompleted[justCompleted.length - 1];
       displayTierIdx = highestCompleted;
       displayGoal = ach.tiers[highestCompleted].goal;
       displayLabel = ach.tiers[highestCompleted].label;
+      displayVol = ach.tiers[highestCompleted].volume || 1;
       displayPct = 100;
     } else {
-      displayGoal = allMaxed ? ach.tiers[ach.tiers.length - 1].goal : ach.tiers[nextIdx].goal;
-      displayLabel = allMaxed ? 'MAX' : ach.tiers[nextIdx].label;
+      var dIdx = allMaxed ? ach.tiers.length - 1 : nextIdx;
+      displayGoal = ach.tiers[dIdx].goal;
+      displayLabel = allMaxed ? 'MAX' : ach.tiers[dIdx].label;
+      displayVol = ach.tiers[dIdx].volume || 1;
       displayPct = allMaxed ? 100 : Math.min(100, Math.floor(statVal / displayGoal * 100));
     }
+    var volTag = displayVol > 1 || showAsCompleted ? ' V'+displayVol+' ' : ' ';
     var row = document.createElement('div');
     row.className = 'ach-prog-row';
     row.setAttribute('data-ach-id', ach.id);
     row.innerHTML = '<span style="font-size:14px">' + ach.icon + '</span>' +
       '<div style="flex:1">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px">' +
-      '<span class="ach-label" style="font-size:8px;color:#aab;letter-spacing:1px;font-family:Orbitron,sans-serif">' + ach.name + ' ' + displayLabel + '</span>' +
+      '<span class="ach-label" style="font-size:8px;color:#aab;letter-spacing:1px;font-family:Orbitron,sans-serif">' + ach.name + volTag + displayLabel + '</span>' +
       '<span class="ach-val" style="font-size:8px;color:#ffd700;font-family:Orbitron,sans-serif;transition:color .4s ease,text-shadow .4s ease">' +
-      (showAsCompleted ? statVal + '/' + displayGoal : (allMaxed ? '✓ MAX' : statVal + '/' + displayGoal)) + '</span>' +
+      (showAsCompleted ? fmtGoal(statVal) + '/' + fmtGoal(displayGoal) : (allMaxed ? '✓ MAX' : fmtGoal(statVal) + '/' + fmtGoal(displayGoal))) + '</span>' +
       '</div>' +
       '<div style="font-size:9px;color:#667;margin-bottom:2px">' + (ach.desc||'') + '</div>' +
       '<div class="ach-prog-bar"><div class="ach-prog-fill" id="ach-fill-' + ach.id + '"></div><span class="ach-sparkle">✨</span></div>' +
@@ -4731,48 +4943,94 @@ function showSummaryAchievements(onDone) {
         if (valSpan) { valSpan.style.color = '#ffd700'; valSpan.style.textShadow = '0 0 8px #ffd70066'; valSpan.textContent = '✓ TIER COMPLETE'; }
         try { sfx('trophyClaim'); } catch(e){}
       });
-      /* Phase 2: transition to green + echo burst */
+      /* Phase 2: transition to green + echo particles fly to counter */
       setTimeout(function() {
+        /* Show the echo counter */
+        echoCounter.style.opacity = '1';
         celebrateRows.forEach(function(entry) {
           entry.row.classList.remove('complete-glow');
           entry.row.classList.add('complete-green');
           var valSpan = entry.row.querySelector('.ach-val');
           if (valSpan) { valSpan.style.color = '#00ff88'; valSpan.style.textShadow = '0 0 8px #00ff8844'; }
-          /* Echo reward burst */
-          var recentEntry = _recentAchievements.length === 0 ? null : null;
+          /* Calculate total echo reward for this achievement */
           var echoAmt = 0;
+          var keyAmt = 0;
           var justTiers = recentMap[entry.ach.id];
-          if (justTiers) justTiers.forEach(function(ti) { echoAmt += (entry.ach.tiers[ti].reward || 0); });
+          if (justTiers) justTiers.forEach(function(ti) { echoAmt += (entry.ach.tiers[ti].reward || 0); keyAmt += (entry.ach.tiers[ti].keyReward || 0); });
           if (echoAmt > 0) {
             var rect = entry.row.getBoundingClientRect();
-            /* Spawn echo emoji burst particles */
-            for (var _ep = 0; _ep < 6; _ep++) {
+            var counterEl = document.getElementById('sum-echo-counter');
+            var cRect = counterEl ? counterEl.getBoundingClientRect() : {left:window.innerWidth-60,top:20,width:80,height:30};
+            var targetX = cRect.left + cRect.width / 2;
+            var targetY = cRect.top + cRect.height / 2;
+            var startX = rect.left + rect.width / 2;
+            var startY = rect.top + rect.height / 2;
+            var particleCount = Math.min(8, Math.max(4, Math.ceil(echoAmt / 10)));
+            var echoPerParticle = echoAmt / particleCount;
+            /* Spawn particles that fly TO the counter */
+            for (var _ep = 0; _ep < particleCount; _ep++) {
               var echoPart = document.createElement('div');
-              var angle = (Math.PI * 2 / 6) * _ep + (Math.random() - 0.5) * 0.5;
-              var dist = 30 + Math.random() * 40;
-              var tx = Math.cos(angle) * dist;
-              var ty = Math.sin(angle) * dist;
               echoPart.textContent = '🌀';
-              echoPart.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-size:' + (10 + Math.random() * 8) + 'px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .7s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.3)';
+              var offX = (Math.random() - 0.5) * 50;
+              var offY = (Math.random() - 0.5) * 24;
+              echoPart.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-size:' + (10 + Math.random() * 8) + 'px;left:' + (startX + offX) + 'px;top:' + (startY + offY) + 'px;opacity:1;transition:all .55s cubic-bezier(.2,.7,.3,1);transform:translate(-50%,-50%) scale(0.6)';
               document.body.appendChild(echoPart);
-              (function(el, dx, dy) {
-                requestAnimationFrame(function() { requestAnimationFrame(function() {
-                  el.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px)) scale(1)';
-                  el.style.opacity = '0';
-                }); });
-                setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 800);
-              })(echoPart, tx, ty);
+              (function(el, idx) {
+                var delay = idx * 80;
+                setTimeout(function() {
+                  el.style.left = targetX + 'px';
+                  el.style.top = targetY + 'px';
+                  el.style.transform = 'translate(-50%,-50%) scale(0.25)';
+                  el.style.opacity = '0.5';
+                  /* On arrival — increment counter */
+                  setTimeout(function() {
+                    if (el.parentNode) el.parentNode.removeChild(el);
+                    _sumEchoTotal += echoPerParticle;
+                    var countSpan = document.getElementById('sum-echo-count');
+                    if (countSpan) countSpan.textContent = '+' + Math.round(_sumEchoTotal);
+                    /* Pulse the counter */
+                    if (counterEl) {
+                      counterEl.style.transform = 'scale(1.18)';
+                      counterEl.style.textShadow = '0 0 20px #aa44ff';
+                      setTimeout(function() { counterEl.style.transform = 'scale(1)'; counterEl.style.textShadow = '0 0 12px #aa44ff88'; }, 150);
+                    }
+                  }, 550);
+                }, delay);
+              })(echoPart, _ep);
             }
-            /* Echo reward label */
-            var echoLabel = document.createElement('div');
-            echoLabel.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;color:#aa44ff;text-shadow:0 0 10px #aa44ff88;letter-spacing:1px;left:' + (rect.left + rect.width / 2) + 'px;top:' + (rect.top + rect.height / 2) + 'px;opacity:1;transition:all .9s cubic-bezier(.2,.8,.3,1);transform:translate(-50%,-50%) scale(0.5)';
-            echoLabel.textContent = '+' + echoAmt + ' 🌀';
-            document.body.appendChild(echoLabel);
-            requestAnimationFrame(function() { requestAnimationFrame(function() {
-              echoLabel.style.transform = 'translate(-50%, calc(-50% - 35px)) scale(1.2)';
-              echoLabel.style.opacity = '0';
-            }); });
-            setTimeout(function() { if (echoLabel.parentNode) echoLabel.parentNode.removeChild(echoLabel); }, 1000);
+            /* If keys were earned, show key count on counter after echoes arrive */
+            if (keyAmt > 0) {
+              setTimeout(function() {
+                var countSpan = document.getElementById('sum-echo-count');
+                if (countSpan) countSpan.innerHTML = '+' + Math.round(_sumEchoTotal) + ' <span style="color:#ffcc00;font-size:11px">🔑+' + keyAmt + '</span>';
+              }, particleCount * 80 + 650);
+            }
+          }
+          /* Volume unlock flash — check if we crossed a volume boundary */
+          if (justTiers && justTiers.length > 0) {
+            var lastTier = justTiers[justTiers.length - 1];
+            var completedVol = achVolumeOf(lastTier);
+            if (entry.nextIdx < entry.ach.tiers.length) {
+              var nextVol = achVolumeOf(entry.nextIdx);
+              if (nextVol > completedVol) {
+                setTimeout(function() {
+                  var volFlash = document.createElement('div');
+                  var vc = ACH_VOL_COLORS[nextVol - 1] || '#ffd700';
+                  volFlash.style.cssText = 'position:fixed;z-index:999999;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.5);font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+vc+';text-shadow:0 0 20px '+vc+',0 0 40px '+vc+'44;letter-spacing:4px;opacity:0;transition:all .5s cubic-bezier(.17,.67,.35,1.4)';
+                  volFlash.textContent = ACH_VOL_NAMES[nextVol - 1] + ' UNLOCKED!';
+                  document.body.appendChild(volFlash);
+                  requestAnimationFrame(function() { requestAnimationFrame(function() {
+                    volFlash.style.opacity = '1';
+                    volFlash.style.transform = 'translate(-50%,-50%) scale(1)';
+                  }); });
+                  setTimeout(function() {
+                    volFlash.style.opacity = '0';
+                    volFlash.style.transform = 'translate(-50%,-50%) scale(1.3)';
+                    setTimeout(function() { if(volFlash.parentNode) volFlash.parentNode.removeChild(volFlash); }, 600);
+                  }, 1500);
+                }, 400);
+              }
+            }
           }
         });
         /* Phase 3: fade out completed, then update remaining to show next tier */
@@ -4790,17 +5048,25 @@ function showSummaryAchievements(onDone) {
               var ach = entry.ach;
               var nIdx = entry.nextIdx;
               var statVal = SAVE.lifetimeStats[ach.stat] || 0;
-              var nGoal = ach.tiers[nIdx].goal;
-              var nLabel = ach.tiers[nIdx].label;
+              var nTier = ach.tiers[nIdx];
+              var nGoal = nTier.goal;
+              var nLabel = nTier.label;
+              var nVol = nTier.volume || 1;
               var nPct = Math.min(100, Math.floor(statVal / nGoal * 100));
+              var volTag = nVol > 1 ? ' V'+nVol+' ' : ' ';
               var labelSpan = entry.row.querySelector('.ach-label');
               var valSpan = entry.row.querySelector('.ach-val');
               var fill = document.getElementById('ach-fill-' + ach.id);
-              if (labelSpan) labelSpan.textContent = ach.name + ' ' + nLabel;
-              if (valSpan) { valSpan.textContent = statVal + '/' + nGoal; valSpan.style.color = '#ffd700'; valSpan.style.textShadow = 'none'; }
+              if (labelSpan) labelSpan.textContent = ach.name + volTag + nLabel;
+              if (valSpan) { valSpan.textContent = fmtGoal(statVal) + '/' + fmtGoal(nGoal); valSpan.style.color = '#ffd700'; valSpan.style.textShadow = 'none'; }
               if (fill) { fill.classList.remove('complete'); fill.style.transition = 'width .8s cubic-bezier(.25,.46,.45,.94)'; fill.style.width = nPct + '%'; }
             }
           });
+          /* Fade out echo counter */
+          setTimeout(function() {
+            echoCounter.style.opacity = '0';
+            setTimeout(function() { if(echoCounter.parentNode) echoCounter.parentNode.removeChild(echoCounter); }, 400);
+          }, 1200);
           /* Remove fully-maxed rows after fade */
           setTimeout(function() {
             celebrateRows.forEach(function(entry) {
@@ -4813,7 +5079,11 @@ function showSummaryAchievements(onDone) {
       }, 1000);
     }, allInTime);
   } else {
-    setTimeout(function() { if(onDone) onDone(); }, allInTime);
+    setTimeout(function() {
+      /* No celebrations — clean up the counter */
+      if(echoCounter.parentNode) echoCounter.parentNode.removeChild(echoCounter);
+      if(onDone) onDone();
+    }, allInTime);
   }
   _recentAchievements = [];
 }
@@ -4838,41 +5108,77 @@ function buildAchievementsScreen() {
     var allDone = nextIdx >= ach.tiers.length;
     var statVal = SAVE.lifetimeStats[ach.stat] || 0;
     var card = document.createElement('div');
-    card.style.cssText = 'background:rgba(10,16,36,0.8);border:1px solid ' + (allDone ? '#00ff8844' : '#1a2540') + ';border-radius:8px;padding:12px;margin-bottom:10px;width:100%;box-sizing:border-box;';
+    card.style.cssText = 'background:rgba(10,16,36,0.8);border:1px solid '+(allDone?'#00ff8844':'#1a2540')+';border-radius:8px;padding:12px;margin-bottom:10px;width:100%;box-sizing:border-box;';
     var headerColor = allDone ? '#00ff88' : '#ffd700';
-    var html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
-      '<span style="font-size:22px">' + ach.icon + '</span>' +
-      '<div style="flex:1">' +
-      '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:' + headerColor + ';letter-spacing:2px">' + ach.name + '</div>' +
-      '<div style="font-size:8px;color:#556;margin-top:1px">' + ach.desc + '</div>' +
-      '</div>' +
-      (allDone ? '<span style="font-size:8px;color:#00ff88;font-family:Orbitron,sans-serif;letter-spacing:1px">✓ MAX</span>' : '') +
+    var html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+      '<span style="font-size:22px">'+ach.icon+'</span>'+
+      '<div style="flex:1">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:'+headerColor+';letter-spacing:2px">'+ach.name+'</div>'+
+      '<div style="font-size:8px;color:#556;margin-top:1px">'+ach.desc+'</div>'+
+      '</div>'+
+      '<span style="font-size:9px;color:'+(allDone?'#00ff88':'#889')+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+(completedIdx+1)+'/'+ach.tiers.length+'</span>'+
       '</div>';
-    html += '<div style="display:flex;flex-direction:column;gap:6px">';
-    ach.tiers.forEach(function(tier, idx) {
-      var isComplete = idx <= completedIdx;
-      var isCurrent = idx === nextIdx && !allDone;
-      var pct = 0;
-      if (isComplete) pct = 100;
-      else if (isCurrent) pct = Math.min(100, Math.floor(statVal / tier.goal * 100));
-      var barBg = isComplete ? 'linear-gradient(90deg,#00ff88,#44ffaa)' : 'linear-gradient(90deg,#ffd700,#ff8800)';
-      var tierColor = isComplete ? '#00ff88' : (isCurrent ? '#ffd700' : '#334');
-      var labelColor = isComplete ? '#00ff88' : (isCurrent ? '#aab' : '#334');
-      var valColor = isComplete ? '#00ff8888' : (isCurrent ? '#ffd700' : '#223');
-      html += '<div style="opacity:' + (isComplete || isCurrent ? '1' : '0.35') + '">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">' +
-        '<span style="font-size:8px;color:' + labelColor + ';font-family:Orbitron,sans-serif;letter-spacing:1px">' +
-        'TIER ' + tier.label + (isComplete ? ' ✓' : '') + '</span>' +
-        '<span style="font-size:8px;color:' + valColor + ';font-family:Orbitron,sans-serif">' +
-        (isComplete ? tier.goal + '/' + tier.goal : (isCurrent ? statVal + '/' + tier.goal : '0/' + tier.goal)) + '</span>' +
-        '</div>' +
-        '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">' +
-        '<div style="height:100%;width:' + pct + '%;border-radius:2px;background:' + barBg + ';transition:width .6s ease"></div>' +
-        '</div>' +
-        '<div style="font-size:9px;color:' + (isComplete ? '#aa44ff' : '#556') + ';margin-top:3px">' + (isComplete ? '🌀 +' + tier.reward + ' Echoes ✓' : 'Reward: 🌀 +' + tier.reward + ' Echoes') + '</div>' +
-        '</div>';
-    });
-    html += '</div>';
+    // Volume sections
+    for(var v=1;v<=3;v++){
+      var volColor = ACH_VOL_COLORS[v-1];
+      var volName = ACH_VOL_NAMES[v-1];
+      var startIdx = (v-1)*4;
+      var endIdx = v*4;
+      var volComplete = achVolumeComplete(ach.id,v);
+      var volUnlocked = achVolumeUnlocked(ach.id,v);
+      var volActive = volUnlocked && !volComplete;
+      var volTiersComplete = 0;
+      for(var ti=startIdx;ti<endIdx;ti++){
+        if(completedIdx>=ti) volTiersComplete++;
+      }
+      // Determine default expand state: active volume expanded, others collapsed
+      var expanded = volActive;
+      var volId = 'achvol-'+ach.id+'-'+v;
+      // Volume header
+      var vhColor = volComplete ? '#00ff88' : (volUnlocked ? volColor : '#334');
+      var vhBg = volComplete ? 'rgba(0,255,136,0.06)' : (volActive ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.2)');
+      html += '<div onclick="var b=document.getElementById(\''+volId+'\');if(b){b.style.display=b.style.display===\'none\'?\'flex\':\'none\';var arr=this.querySelector(\'.vol-arrow\');if(arr)arr.textContent=b.style.display===\'none\'?\'▸\':\'▾\'}" style="display:flex;align-items:center;gap:6px;padding:6px 8px;margin-top:'+(v===1?'0':'6')+'px;background:'+vhBg+';border-radius:6px;cursor:pointer;border:1px solid '+(volComplete?'#00ff8833':(volUnlocked?volColor+'33':'#1a254033'))+';-webkit-tap-highlight-color:transparent">';
+      html += '<span class="vol-arrow" style="font-size:8px;color:'+vhColor+'">'+(expanded?'▾':'▸')+'</span>';
+      html += '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;color:'+vhColor+';letter-spacing:2px">'+volName+'</span>';
+      html += '<span style="flex:1"></span>';
+      if(!volUnlocked){
+        html += '<span style="font-size:9px;opacity:0.5">🔒</span>';
+      } else {
+        html += '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+(volComplete?'#00ff88':vhColor)+';letter-spacing:1px">'+volTiersComplete+'/4'+(volComplete?' ✓':'')+'</span>';
+      }
+      html += '</div>';
+      // Volume tier rows
+      html += '<div id="'+volId+'" style="display:'+(expanded?'flex':'none')+';flex-direction:column;gap:6px;padding:6px 0 0 0">';
+      for(var ti=startIdx;ti<endIdx;ti++){
+        var tier = ach.tiers[ti];
+        var isComplete = ti<=completedIdx;
+        var isCurrent = ti===nextIdx && !allDone;
+        var pct = 0;
+        if(isComplete) pct=100;
+        else if(isCurrent) pct=Math.min(100,Math.floor(statVal/tier.goal*100));
+        var barBg = isComplete?'linear-gradient(90deg,#00ff88,#44ffaa)':'linear-gradient(90deg,'+volColor+','+volColor+'cc)';
+        var labelColor = isComplete?'#00ff88':(isCurrent?'#aab':'#334');
+        var valColor = isComplete?'#00ff8888':(isCurrent?volColor:'#223');
+        var tierOpacity = (!volUnlocked)?'0.25':((isComplete||isCurrent)?'1':'0.35');
+        var goalDisplay = fmtGoal(tier.goal);
+        var statDisplay = isComplete?goalDisplay:(isCurrent?fmtGoal(statVal):'0');
+        var rewardText = '🌀 +'+tier.reward;
+        if(tier.keyReward) rewardText += ' 🔑 +'+tier.keyReward;
+        html += '<div style="opacity:'+tierOpacity+'">'+
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">'+
+          '<span style="font-size:8px;color:'+labelColor+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+
+          'TIER '+tier.label+(isComplete?' ✓':'')+'</span>'+
+          '<span style="font-size:8px;color:'+valColor+';font-family:Orbitron,sans-serif">'+
+          statDisplay+'/'+goalDisplay+'</span>'+
+          '</div>'+
+          '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">'+
+          '<div style="height:100%;width:'+pct+'%;border-radius:2px;background:'+barBg+';transition:width .6s ease"></div>'+
+          '</div>'+
+          '<div style="font-size:9px;color:'+(isComplete?'#aa44ff':'#556')+';margin-top:3px">'+(isComplete?rewardText+' ✓':'Reward: '+rewardText)+'</div>'+
+          '</div>';
+      }
+      html += '</div>';
+    }
     card.innerHTML = html;
     list.appendChild(card);
   });
@@ -6032,7 +6338,7 @@ function showScreen(id) {
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
   const isMenu   = id==='screen-menu' || id==='screen-splash';
   const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies'||id==='screen-echoes'||id==='screen-synergies';
-  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); stopMenuMusic(false); setTrack('menu');
+  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); var _wantAlt=!!(_useMenuAlt&&menuAltBuffer); if(menuSource&&_menuPlayingAlt===_wantAlt){ /* already playing correct track */ } else { stopMenuMusic(false); setTrack('menu'); }
     if(window._showEchoesIntroAfterGameover){ window._showEchoesIntroAfterGameover=false; setTimeout(function(){ showEchoesIntro(function(){ showSynergiesIntro(); }); },500); }
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
@@ -6419,7 +6725,7 @@ function playLaunchTransition(callback) {
   }, 1100);
 }
 
-const ANNOUNCEMENTS = [
+var ANNOUNCEMENTS = [
   {
     id: 'ann_270',
     date: '2026-03-15',
@@ -6452,8 +6758,9 @@ function openAnnouncements() {
   showScreen('screen-announcements');
 }
 
-let _tickerRaf = null, _tickerX = 0, _tickerLastT = 0;
+var _tickerRaf = null, _tickerX = 0, _tickerLastT = 0;
 function updateAnnouncementBadge() {
+  if(!ANNOUNCEMENTS || !ANNOUNCEMENTS.length) return;
   const badge = document.getElementById('menu-ticker-badge');
   const hasNew = !SAVE.lastSeenAnnouncement || SAVE.lastSeenAnnouncement !== ANNOUNCEMENTS[0].id;
   if(badge) badge.style.display = hasNew ? 'block' : 'none';
@@ -6462,6 +6769,7 @@ function updateAnnouncementBadge() {
 
 function startMenuTicker() {
   if(_tickerRaf) cancelAnimationFrame(_tickerRaf);
+  if(!ANNOUNCEMENTS || !ANNOUNCEMENTS.length) return;
   const wrap = document.getElementById('menu-ticker-wrap');
   const inner = document.getElementById('menu-ticker-inner');
   if(!wrap || !inner) return;
@@ -7006,7 +7314,6 @@ function openLootBox(){
   if((SAVE.keys||0) < 1){ showToast('🔑 No keys! Earn keys from achievements, boss spins, or buy with echoes.'); return; }
   SAVE.keys--;
   SAVE.lootBoxesOpened = (SAVE.lootBoxesOpened||0) + 1;
-  sfx('crateOpen');
   var result = rollArtifact();
   var isNew = !(SAVE.artifacts||{})[result.artifact.id];
   var dupeEchoes = 0;
@@ -7401,7 +7708,7 @@ function applyDailySpinResult(result){
 
 function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, setTotal, setCompleted){
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s;pointer-events:auto;font-family:Orbitron,sans-serif';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s,backdrop-filter 1s,-webkit-backdrop-filter 1s;pointer-events:auto;font-family:Orbitron,sans-serif;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)';
   overlay.id = 'lootbox-overlay';
 
   // Canvas for particles
@@ -7523,63 +7830,155 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
 
   var cx = cvs.width/2, cy = cvs.height/2;
 
-  // ── PHASE 1: Anticipation (0-1.5s) ──
+  // ── MUSIC DUCK — fade music down for dramatic effect ──
+  var _preDuckGain = masterGain.gain.value;
+  masterGain.gain.setTargetAtTime(_preDuckGain * 0.15, AC.currentTime, 0.4);
+
+  // ── Light ray helper ──
+  var rays = [];
+  function spawnRays(cx,cy,count,color,len){
+    for(var i=0;i<count;i++){
+      var angle = (Math.PI*2/count)*i + (Math.random()-0.5)*0.3;
+      rays.push({x:cx,y:cy,angle:angle,len:0,maxLen:len+Math.random()*60,speed:3+Math.random()*4,width:1+Math.random()*2,color:color,life:1});
+    }
+  }
+
+  // Enhanced particle tick with rays
+  var origTick = tickParticles;
+  tickParticles = function(){
+    pCtx.clearRect(0,0,cvs.width,cvs.height);
+    // Draw rays
+    for(var r=rays.length-1;r>=0;r--){
+      var ray=rays[r];
+      ray.len=Math.min(ray.len+ray.speed,ray.maxLen);
+      ray.life-=0.008;
+      if(ray.life<=0){rays.splice(r,1);continue;}
+      pCtx.save();
+      pCtx.globalAlpha=ray.life*0.6;
+      pCtx.strokeStyle=ray.color;
+      pCtx.lineWidth=ray.width*ray.life;
+      pCtx.beginPath();
+      pCtx.moveTo(ray.x,ray.y);
+      pCtx.lineTo(ray.x+Math.cos(ray.angle)*ray.len,ray.y+Math.sin(ray.angle)*ray.len);
+      pCtx.stroke();
+      pCtx.restore();
+    }
+    // Draw particles
+    for(var i=parts.length-1;i>=0;i--){
+      var p=parts[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.life-=0.015; p.vx*=0.99;
+      if(p.life<=0){parts.splice(i,1);continue;}
+      pCtx.globalAlpha=p.life;
+      pCtx.fillStyle=p.color;
+      pCtx.beginPath();
+      pCtx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);
+      pCtx.fill();
+    }
+    pCtx.globalAlpha=1;
+    partRaf=requestAnimationFrame(tickParticles);
+  };
+  // Restart with enhanced tick
+  cancelAnimationFrame(partRaf);
+  partRaf=requestAnimationFrame(tickParticles);
+
+  // ── PHASE 1: Anticipation (0-1.8s) — energy buildup ──
   requestAnimationFrame(function(){
-    overlay.style.background = 'rgba(0,0,0,0.92)';
+    overlay.style.background = 'rgba(0,0,0,0.85)';
+    overlay.style.backdropFilter = 'blur(18px)';
+    overlay.style.webkitBackdropFilter = 'blur(18px)';
     crate.style.transform = 'scale(1)';
     crate.style.opacity = '1';
   });
 
-  // Build energy ring
-  var energyInterval = setInterval(function(){
-    spawnParticles(cx, cy-20, 3, '#ffcc00', 2);
-  }, 80);
+  // Charge SFX — rising tension
+  sfx('crateCharge');
 
-  // ── PHASE 2: Crack open (1.5s) ──
+  // Pulsing crate with growing intensity
+  var pulseCount = 0;
+  var energyInterval = setInterval(function(){
+    pulseCount++;
+    var intensity = Math.min(pulseCount/15, 1);
+    var pCount = 2 + Math.floor(intensity*6);
+    spawnParticles(cx, cy-20, pCount, '#ffcc00', 1.5+intensity*3);
+    if(intensity>0.3) spawnParticles(cx, cy-20, 2, rarity.color, 1+intensity*2);
+    // Crate pulse
+    var scale = 1 + Math.sin(pulseCount*0.8)*0.06*(1+intensity);
+    crate.style.transform = 'scale('+scale+')';
+    crate.style.filter = 'drop-shadow(0 0 '+(30+intensity*30)+'px '+rarity.color+')';
+    // Subtle shake buildup
+    if(intensity > 0.5){
+      var micro = intensity * 2;
+      overlay.style.transform = 'translate('+(Math.random()-0.5)*micro+'px,'+(Math.random()-0.5)*micro+'px)';
+    }
+  }, 70);
+
+  // ── PHASE 2: Crack open (1.8s) — MASSIVE explosion ──
   setTimeout(function(){
     clearInterval(energyInterval);
-    crate.style.transition = 'all 0.3s ease';
-    crate.style.transform = 'scale(1.4)';
+    overlay.style.transform = '';
+    crate.style.transition = 'all 0.2s ease';
+    crate.style.transform = 'scale(2)';
     crate.style.opacity = '0';
 
-    // Flash + shake scaled by rarity
-    if(rarity.id==='legendary'){
-      lbFlash('#ffd700',500);
-      lbShake(14,600);
-      spawnParticles(cx,cy-20,rarity.particles,'#ffd700',6);
-      spawnParticles(cx,cy-20,20,'#fff',4);
-      setTimeout(function(){ lbFlash('#fff',300); },200);
-    } else if(rarity.id==='epic'){
-      lbFlash('#cc44ff',400);
-      lbShake(8,400);
-      spawnParticles(cx,cy-20,rarity.particles,rarity.color,5);
-    } else if(rarity.id==='rare'){
-      lbFlash('#4488ff',300);
-      lbShake(4,300);
-      spawnParticles(cx,cy-20,rarity.particles,rarity.color,4);
-    } else {
-      spawnParticles(cx,cy-20,rarity.particles,rarity.color,3);
-    }
-
     sfx('crateOpen');
-  }, 1500);
 
-  // ── PHASE 3: Reveal (2.0s) ──
+    // Flash + shake + rays + particles scaled by rarity
+    if(rarity.id==='legendary'){
+      lbFlash('#ffd700',600);
+      lbShake(20,800);
+      spawnParticles(cx,cy-20,60,'#ffd700',7);
+      spawnParticles(cx,cy-20,30,'#fff',5);
+      spawnParticles(cx,cy-20,20,'#ff8800',6);
+      spawnRays(cx,cy-20,16,'#ffd700',120);
+      spawnRays(cx,cy-20,8,'#fff',80);
+      setTimeout(function(){ lbFlash('#fff',400); lbShake(10,400); },200);
+      setTimeout(function(){ lbFlash('#ffd700',300); },400);
+    } else if(rarity.id==='epic'){
+      lbFlash('#cc44ff',500);
+      lbShake(12,500);
+      spawnParticles(cx,cy-20,40,rarity.color,6);
+      spawnParticles(cx,cy-20,15,'#fff',4);
+      spawnRays(cx,cy-20,12,'#cc44ff',90);
+      setTimeout(function(){ lbFlash('#fff',250); },200);
+    } else if(rarity.id==='rare'){
+      lbFlash('#4488ff',400);
+      lbShake(6,400);
+      spawnParticles(cx,cy-20,25,rarity.color,5);
+      spawnParticles(cx,cy-20,8,'#fff',3);
+      spawnRays(cx,cy-20,8,'#4488ff',70);
+    } else {
+      lbFlash('#8899aa',250);
+      lbShake(3,250);
+      spawnParticles(cx,cy-20,12,rarity.color,3);
+      spawnRays(cx,cy-20,6,'#8899aa',50);
+    }
+  }, 1800);
+
+  // ── PHASE 3: Reveal (2.5s) — rarity label + dramatic entrance ──
   setTimeout(function(){
     rarityLabel.style.opacity = '1';
     rarityLabel.style.transform = 'scale(1)';
-    sfx('artifactReveal');
-  }, 2000);
+    if(rarity.id==='legendary') sfx('legendaryReveal');
+    else sfx('artifactReveal');
+
+    // Rarity-colored ambient glow pulse on overlay
+    overlay.style.background = 'radial-gradient(circle at 50% 45%, '+rarity.glow+' 0%, rgba(0,0,0,0.88) 60%)';
+  }, 2500);
 
   setTimeout(function(){
     artifactIcon.style.opacity = '1';
     artifactIcon.style.transform = 'scale(1)';
-    // Extra particles for legendary
+    // Extra particles for epic+
     if(rarity.id==='legendary'){
-      spawnParticles(cx,cy-10,25,'#ffd700',4);
-      spawnParticles(cx,cy-10,15,'#ff8800',3);
+      spawnParticles(cx,cy-10,35,'#ffd700',5);
+      spawnParticles(cx,cy-10,20,'#ff8800',4);
+      spawnRays(cx,cy-10,8,'#ffd700',60);
+      lbShake(4,300);
+    } else if(rarity.id==='epic'){
+      spawnParticles(cx,cy-10,20,rarity.color,4);
+      spawnParticles(cx,cy-10,8,'#fff',3);
     }
-  }, 2300);
+  }, 2900);
 
   setTimeout(function(){
     artifactName.style.opacity = '1';
@@ -7589,17 +7988,24 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
       setCompleteLine.style.opacity='1';
       setCompleteLine.style.transform='scale(1.1)';
       sfx('setComplete');
-      lbFlash('#ffd700',400);
-      lbShake(10,500);
-      spawnParticles(cx,cy,40,'#ffd700',6);
+      lbFlash('#ffd700',500);
+      lbShake(14,600);
+      spawnParticles(cx,cy,50,'#ffd700',7);
+      spawnParticles(cx,cy,20,'#fff',5);
+      spawnRays(cx,cy,12,'#ffd700',100);
     }
-  }, 2800);
+    // Begin music fade back up
+    masterGain.gain.setTargetAtTime(_preDuckGain, AC.currentTime, 0.8);
+  }, 3400);
 
-  // ── PHASE 4: Tap to dismiss (3.5s) ──
+  // ── PHASE 4: Tap to dismiss (4.2s) ──
   setTimeout(function(){
     tapHint.style.opacity = '1';
     overlay.onclick = function(){
       cancelAnimationFrame(partRaf);
+      // Ensure music fully restored
+      masterGain.gain.cancelScheduledValues(AC.currentTime);
+      masterGain.gain.setTargetAtTime(_preDuckGain, AC.currentTime, 0.1);
       overlay.style.transition = 'opacity 0.3s';
       overlay.style.opacity = '0';
       setTimeout(function(){
@@ -7607,7 +8013,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
         buildVaultScreen();
       },350);
     };
-  }, 3500);
+  }, 4200);
 }
 
 function buyEchoUpgrade(key){
@@ -7966,7 +8372,7 @@ function makeScrollable(el){
   el.addEventListener('touchmove', e=>e.stopPropagation(), {passive:true});
 }
 
-let _customizeRaf=null, _customizeThruster=[], _customizeBullets=[], _customizeLastT=0;
+var _customizeRaf=null, _customizeThruster=[], _customizeBullets=[], _customizeLastT=0;
 
 function startCustomizeAnim(){
   if(_customizeRaf) cancelAnimationFrame(_customizeRaf);
@@ -8018,7 +8424,7 @@ function stopCustomizeAnim(){
   if(_customizeRaf){ cancelAnimationFrame(_customizeRaf); _customizeRaf=null; }
 }
 
-let _menuShipRaf=null, _menuShipThruster=[], _menuShipLastT=0, _menuShipBoostTimer=0, _menuShipBullets=[], _menuShipFireTimer=0;
+var _menuShipRaf=null, _menuShipThruster=[], _menuShipLastT=0, _menuShipBoostTimer=0, _menuShipBullets=[], _menuShipFireTimer=0;
 function startMenuShipPreview(){
   if(_menuShipRaf) cancelAnimationFrame(_menuShipRaf);
   _menuShipThruster=[]; _menuShipLastT=0;
@@ -9447,7 +9853,7 @@ function _showAchievementNotification() {
   el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
     '<span style="font-size:18px">' + ach.icon + '</span>' +
     '<div>' +
-    '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ' ' + tier.label + '</div>' +
+    '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #ffd700;letter-spacing:1px">' + ach.name + ((tier.volume||1)>1?' V'+(tier.volume)+' ':' ') + tier.label + '</div>' +
     '<div style="font-size:7px;color:#ffd700;letter-spacing:2px;margin-top:1px">ACHIEVEMENT' + (tier.reward ? ' · +' + tier.reward + ' 🌀' : '') + (tier.keyReward ? ' · +' + tier.keyReward + ' 🔑' : '') + '</div>' +
     '</div></div>';
   document.body.appendChild(el);
