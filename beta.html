@@ -2458,7 +2458,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:true, synergiesUnlocked:false, discoveredSynergies:[],
   keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0,
   lastDailySpinDate:null, dailySpinStreak:0,
-  forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false,
+  forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false, notifIntroSeen:false,
   musicVolume:55, sfxVolume:70,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
   achievements:{}, notificationsOn:false };
@@ -2501,38 +2501,38 @@ const TROPHIES = [
 const ACHIEVEMENTS = [
   {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
    tiers:[
-    {goal:50,label:'I',volume:1,reward:3},{goal:250,label:'II',volume:1,reward:5},{goal:1000,label:'III',volume:1,reward:10,keyReward:1},{goal:5000,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:10000,label:'I',volume:2,reward:8},{goal:25000,label:'II',volume:2,reward:15,keyReward:1},{goal:50000,label:'III',volume:2,reward:30,keyReward:2},{goal:100000,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:50,label:'I',volume:1,reward:3,keyReward:1},{goal:250,label:'II',volume:1,reward:5,keyReward:1},{goal:1000,label:'III',volume:1,reward:10,keyReward:1},{goal:5000,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:10000,label:'I',volume:2,reward:8,keyReward:1},{goal:25000,label:'II',volume:2,reward:15,keyReward:1},{goal:50000,label:'III',volume:2,reward:30,keyReward:2},{goal:100000,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:200000,label:'I',volume:3,reward:20,keyReward:1},{goal:400000,label:'II',volume:3,reward:40,keyReward:2},{goal:750000,label:'III',volume:3,reward:80,keyReward:4},{goal:1500000,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
   {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
    tiers:[
-    {goal:5,label:'I',volume:1,reward:3},{goal:20,label:'II',volume:1,reward:5},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:200,label:'I',volume:2,reward:8},{goal:400,label:'II',volume:2,reward:15,keyReward:1},{goal:750,label:'III',volume:2,reward:30,keyReward:2},{goal:1500,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:5,label:'I',volume:1,reward:3,keyReward:1},{goal:20,label:'II',volume:1,reward:5,keyReward:1},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:200,label:'I',volume:2,reward:8,keyReward:1},{goal:400,label:'II',volume:2,reward:15,keyReward:1},{goal:750,label:'III',volume:2,reward:30,keyReward:2},{goal:1500,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:3000,label:'I',volume:3,reward:20,keyReward:1},{goal:6000,label:'II',volume:3,reward:40,keyReward:2},{goal:10000,label:'III',volume:3,reward:80,keyReward:4},{goal:20000,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
   {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
    tiers:[
-    {goal:15,label:'I',volume:1,reward:3},{goal:30,label:'II',volume:1,reward:5},{goal:60,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:120,label:'I',volume:2,reward:8},{goal:140,label:'II',volume:2,reward:15,keyReward:1},{goal:170,label:'III',volume:2,reward:30,keyReward:2},{goal:200,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:15,label:'I',volume:1,reward:3,keyReward:1},{goal:30,label:'II',volume:1,reward:5,keyReward:1},{goal:60,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:120,label:'I',volume:2,reward:8,keyReward:1},{goal:140,label:'II',volume:2,reward:15,keyReward:1},{goal:170,label:'III',volume:2,reward:30,keyReward:2},{goal:200,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:250,label:'I',volume:3,reward:20,keyReward:1},{goal:300,label:'II',volume:3,reward:40,keyReward:2},{goal:400,label:'III',volume:3,reward:80,keyReward:4},{goal:500,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
   {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
    tiers:[
-    {goal:10,label:'I',volume:1,reward:3},{goal:25,label:'II',volume:1,reward:5},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:125,label:'I',volume:2,reward:8},{goal:150,label:'II',volume:2,reward:15,keyReward:1},{goal:200,label:'III',volume:2,reward:30,keyReward:2},{goal:275,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:10,label:'I',volume:1,reward:3,keyReward:1},{goal:25,label:'II',volume:1,reward:5,keyReward:1},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:125,label:'I',volume:2,reward:8,keyReward:1},{goal:150,label:'II',volume:2,reward:15,keyReward:1},{goal:200,label:'III',volume:2,reward:30,keyReward:2},{goal:275,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:350,label:'I',volume:3,reward:20,keyReward:1},{goal:450,label:'II',volume:3,reward:40,keyReward:2},{goal:600,label:'III',volume:3,reward:80,keyReward:4},{goal:800,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
   {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
    tiers:[
-    {goal:500,label:'I',volume:1,reward:3},{goal:5000,label:'II',volume:1,reward:5},{goal:25000,label:'III',volume:1,reward:10,keyReward:1},{goal:100000,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:250000,label:'I',volume:2,reward:8},{goal:500000,label:'II',volume:2,reward:15,keyReward:1},{goal:1000000,label:'III',volume:2,reward:30,keyReward:2},{goal:2500000,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:500,label:'I',volume:1,reward:3,keyReward:1},{goal:5000,label:'II',volume:1,reward:5,keyReward:1},{goal:25000,label:'III',volume:1,reward:10,keyReward:1},{goal:100000,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:250000,label:'I',volume:2,reward:8,keyReward:1},{goal:500000,label:'II',volume:2,reward:15,keyReward:1},{goal:1000000,label:'III',volume:2,reward:30,keyReward:2},{goal:2500000,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:5000000,label:'I',volume:3,reward:20,keyReward:1},{goal:10000000,label:'II',volume:3,reward:40,keyReward:2},{goal:25000000,label:'III',volume:3,reward:80,keyReward:4},{goal:50000000,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
   {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
    tiers:[
-    {goal:3,label:'I',volume:1,reward:3},{goal:10,label:'II',volume:1,reward:5},{goal:30,label:'III',volume:1,reward:10,keyReward:1},{goal:75,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:125,label:'I',volume:2,reward:8},{goal:200,label:'II',volume:2,reward:15,keyReward:1},{goal:350,label:'III',volume:2,reward:30,keyReward:2},{goal:500,label:'IV',volume:2,reward:50,keyReward:3},
+    {goal:3,label:'I',volume:1,reward:3,keyReward:1},{goal:10,label:'II',volume:1,reward:5,keyReward:1},{goal:30,label:'III',volume:1,reward:10,keyReward:1},{goal:75,label:'IV',volume:1,reward:20,keyReward:2},
+    {goal:125,label:'I',volume:2,reward:8,keyReward:1},{goal:200,label:'II',volume:2,reward:15,keyReward:1},{goal:350,label:'III',volume:2,reward:30,keyReward:2},{goal:500,label:'IV',volume:2,reward:50,keyReward:3},
     {goal:750,label:'I',volume:3,reward:20,keyReward:1},{goal:1000,label:'II',volume:3,reward:40,keyReward:2},{goal:1500,label:'III',volume:3,reward:80,keyReward:4},{goal:2500,label:'IV',volume:3,reward:150,keyReward:6}
    ]},
 ];
@@ -2734,6 +2734,7 @@ function loadSave(){
     if(typeof s.achievementsIntroSeen!=='boolean') s.achievementsIntroSeen=false;
     if(typeof s.tutorialSeen!=='boolean') s.tutorialSeen = !!(s.lastSeenTutorialPrompt||s.hiScore>0);
     if(typeof s.customizeIntroSeen!=='boolean') s.customizeIntroSeen=false;
+    if(typeof s.notifIntroSeen!=='boolean') s.notifIntroSeen=false;
     if(s.shipCustom && !s.shipCustom.sprite) s.shipCustom.sprite='none';
     if(!isFinite(s.musicVolume)||s.musicVolume<0||s.musicVolume>100) s.musicVolume=55;
     if(!isFinite(s.sfxVolume)||s.sfxVolume<0||s.sfxVolume>100) s.sfxVolume=50;
@@ -3638,7 +3639,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
   const cockpitCol=custom.cockpitColor||'#00f5ff';
   const aura=custom.aura||'none';
   const decal=custom.decal||'none';
-  const auraColors={cyan:'#00f5ff',gold:'#ffd700',purple:'#cc44ff',red:'#ff4455'};
+  const auraColors={cyan:'#00f5ff',gold:'#ffd700',purple:'#cc44ff',red:'#ff4455',voidPulse:'#cc44ff',eternalGlow:'#ffd700'};
   const auraCol=auraColors[aura]||hullCol;
   c.save();
   c.translate(x,y);
@@ -3733,8 +3734,124 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     return;
   }
+  // Procedural sprite — Phantom Ship
+  if(custom.sprite==='phantomShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _flicker=0.6+Math.sin(_t*3)*0.15+Math.sin(_t*7.3)*0.08;
+    var _pc='#88aacc', _pg='#aaccee';
+    // Ghostly outer haze
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.12*_flicker;
+    c.shadowBlur=40; c.shadowColor=_pc;
+    c.fillStyle=_pc;
+    c.beginPath(); c.ellipse(0,0,22,26,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Main hull — spectral angular shape
+    c.shadowBlur=14; c.shadowColor=_pc;
+    c.fillStyle='rgba(136,170,204,0.08)'; c.strokeStyle=_pc+'99'; c.lineWidth=1.2;
+    c.globalAlpha=(flash?0.4:1)*_flicker;
+    c.beginPath();
+    c.moveTo(0,-22);
+    c.lineTo(5,-12); c.lineTo(14,-2); c.lineTo(18,6);
+    c.lineTo(10,4); c.lineTo(6,12); c.lineTo(2,8);
+    c.lineTo(0,14);
+    c.lineTo(-2,8); c.lineTo(-6,12); c.lineTo(-10,4);
+    c.lineTo(-18,6); c.lineTo(-14,-2); c.lineTo(-5,-12);
+    c.closePath(); c.fill(); c.stroke();
+    // Inner skeleton lines
+    c.save();
+    c.strokeStyle=_pc+'44'; c.lineWidth=0.6; c.shadowBlur=0;
+    c.beginPath(); c.moveTo(0,-22); c.lineTo(0,14); c.stroke();
+    c.beginPath(); c.moveTo(-14,-2); c.lineTo(14,-2); c.stroke();
+    c.beginPath(); c.moveTo(-6,12); c.lineTo(6,12); c.stroke();
+    c.restore();
+    // Ghostly cockpit — hollow eye
+    c.save();
+    c.strokeStyle=_pg; c.lineWidth=1; c.fillStyle='rgba(170,204,238,0.15)';
+    c.shadowBlur=12; c.shadowColor=_pg;
+    c.globalAlpha=(flash?0.4:1)*_flicker*0.8;
+    c.beginPath(); c.arc(0,-8,4,0,Math.PI*2); c.fill(); c.stroke();
+    c.restore();
+    // Wing-tip wisps
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_flicker*0.5;
+    c.strokeStyle=_pc; c.lineWidth=0.8; c.shadowBlur=8; c.shadowColor=_pc;
+    var wOff=Math.sin(_t*2)*3;
+    c.beginPath(); c.moveTo(-18,6); c.quadraticCurveTo(-20,10+wOff,-14,14+wOff); c.stroke();
+    c.beginPath(); c.moveTo(18,6); c.quadraticCurveTo(20,10-wOff,14,14-wOff); c.stroke();
+    c.restore();
+    // Trailing ectoplasm
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.35;
+    for(var ei=0;ei<5;ei++){
+      var ex=(Math.sin(_t*2.5+ei*1.3))*6;
+      var ey=14+ei*4+Math.sin(_t*1.8+ei*0.9)*2;
+      var er=1.5-ei*0.25;
+      c.fillStyle=_pc;
+      c.shadowBlur=6; c.shadowColor=_pc;
+      c.globalAlpha=(flash?0.4:1)*(0.35-ei*0.06);
+      c.beginPath(); c.arc(ex,ey,Math.max(0.3,er),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
   // Aura ring
-  if(aura!=='none'){
+  if(aura==='eternalGlow'){
+    var _at=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _ep=0.7+Math.sin(_at*2)*0.3;
+    c.save();
+    // Outer golden halo
+    c.globalAlpha=(flash?0.4:1)*0.25*_ep;
+    c.shadowBlur=30; c.shadowColor='#ffd700';
+    c.strokeStyle='#ffd700'; c.lineWidth=2;
+    c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.stroke();
+    // Crown points (5 triangles around top arc)
+    c.fillStyle='#ffd700'; c.globalAlpha=(flash?0.4:1)*0.4*_ep;
+    c.shadowBlur=16;
+    for(var ci=0;ci<5;ci++){
+      var ca=-Math.PI/2+(ci-2)*0.35;
+      var cx=Math.cos(ca)*24, cy=Math.sin(ca)*24;
+      var ox=Math.cos(ca)*32, oy=Math.sin(ca)*32;
+      c.beginPath();
+      c.moveTo(cx-3*Math.sin(ca),cy+3*Math.cos(ca));
+      c.lineTo(ox,oy);
+      c.lineTo(cx+3*Math.sin(ca),cy-3*Math.cos(ca));
+      c.closePath(); c.fill();
+    }
+    // Crown jewels at tips
+    c.fillStyle='#fff8dc'; c.globalAlpha=(flash?0.4:1)*0.6*_ep;
+    for(var ji=0;ji<5;ji++){
+      var ja=-Math.PI/2+(ji-2)*0.35;
+      c.beginPath(); c.arc(Math.cos(ja)*31,Math.sin(ja)*31,1.5,0,Math.PI*2); c.fill();
+    }
+    // Inner shimmer ring
+    c.globalAlpha=(flash?0.4:1)*0.15*_ep;
+    c.strokeStyle='#fff8dc'; c.lineWidth=0.8; c.shadowBlur=10; c.shadowColor='#fff8dc';
+    c.beginPath(); c.arc(0,0,20,0,Math.PI*2); c.stroke();
+    c.restore();
+  } else if(aura==='voidPulse'){
+    var _vt=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _vp=0.6+Math.sin(_vt*4)*0.4;
+    c.save();
+    // Pulsing purple ring
+    c.globalAlpha=(flash?0.4:1)*0.3*_vp;
+    c.shadowBlur=25; c.shadowColor='#cc44ff';
+    c.strokeStyle='#cc44ff'; c.lineWidth=2;
+    c.beginPath(); c.arc(0,0,24+Math.sin(_vt*4)*3,0,Math.PI*2); c.stroke();
+    // Inner void tendrils (rotating)
+    c.globalAlpha=(flash?0.4:1)*0.2;
+    c.strokeStyle='#9933cc'; c.lineWidth=1;
+    for(var vi=0;vi<4;vi++){
+      var va=_vt*1.5+vi*Math.PI/2;
+      var vr1=16, vr2=26+Math.sin(_vt*3+vi)*3;
+      c.beginPath();
+      c.moveTo(Math.cos(va)*vr1,Math.sin(va)*vr1);
+      c.quadraticCurveTo(Math.cos(va+0.3)*(vr1+vr2)/2,Math.sin(va+0.3)*(vr1+vr2)/2,Math.cos(va)*vr2,Math.sin(va)*vr2);
+      c.stroke();
+    }
+    c.restore();
+  } else if(aura!=='none'){
     c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
     c.globalAlpha=(flash?0.4:1)*0.35;
     c.shadowBlur=20; c.shadowColor=auraCol;
@@ -3797,6 +3914,24 @@ function drawShip(c, x, y, inv, custom, scale=1){
   } else if(decal==='camo'){
     c.save(); c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.2;
     [[-6,-6,4],[4,-4,3],[-3,2,3],[5,4,2],[-8,4,2]].forEach(([cx,cy,r])=>{ c.beginPath();c.arc(cx,cy,r,0,Math.PI*2);c.fill(); });
+    c.restore();
+  } else if(decal==='flames'){
+    var _ft=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save(); c.globalAlpha=(flash?0.4:1)*0.6;
+    // Flame tongues rising from bottom of ship
+    var flameData=[[-7,8,5,14],[0,6,6,16],[7,8,5,14],[-4,7,3,10],[4,7,3,10]];
+    flameData.forEach(function(f){
+      var fx=f[0],fy=f[1],fw=f[2],fh=f[3];
+      var flicker=Math.sin(_ft*8+fx)*1.5;
+      var grad=c.createLinearGradient(fx,fy,fx,fy-fh);
+      grad.addColorStop(0,'#ff4400'); grad.addColorStop(0.4,'#ff8800'); grad.addColorStop(0.8,'#ffcc00'); grad.addColorStop(1,'rgba(255,200,0,0)');
+      c.fillStyle=grad;
+      c.beginPath();
+      c.moveTo(fx-fw/2,fy);
+      c.quadraticCurveTo(fx-fw/4+flicker,fy-fh*0.5,fx+flicker*0.5,fy-fh+flicker);
+      c.quadraticCurveTo(fx+fw/4-flicker,fy-fh*0.5,fx+fw/2,fy);
+      c.closePath(); c.fill();
+    });
     c.restore();
   }
   c.restore();
@@ -4779,6 +4914,14 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.save(); ctx.translate(b.x,b.y); ctx.beginPath();
       for(let i=0;i<10;i++){ const a=i*Math.PI/5-Math.PI/2; const r=i%2===0?6:2.5; i===0?ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r):ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); }
       ctx.closePath(); ctx.fill(); ctx.restore();
+    } else if(bShape==='nova'){
+      ctx.save(); ctx.translate(b.x,b.y);
+      ctx.shadowBlur=8; ctx.shadowColor=bCol;
+      ctx.beginPath();
+      for(var ni=0;ni<8;ni++){ var na=ni*Math.PI/4-Math.PI/2; var nr=ni%2===0?7:3; ni===0?ctx.moveTo(Math.cos(na)*nr,Math.sin(na)*nr):ctx.lineTo(Math.cos(na)*nr,Math.sin(na)*nr); }
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
+      ctx.restore();
     } else if(bShape==='comet'){
       ctx.beginPath(); ctx.ellipse(b.x,b.y,2,9,0,0,Math.PI*2); ctx.fill();
       ctx.globalAlpha=0.3; ctx.beginPath(); ctx.ellipse(b.x,b.y+7,1,4,0,0,Math.PI*2); ctx.fill();
@@ -5659,6 +5802,7 @@ function doAscension() {
   var savedVaultIntroA = SAVE.vaultIntroSeen||false;
   var savedAchIntroA = SAVE.achievementsIntroSeen||false;
   var savedCustIntroA = SAVE.customizeIntroSeen||false;
+  var savedNotifIntroA = SAVE.notifIntroSeen||false;
   var savedTutorialA = SAVE.tutorialSeen||false;
   var savedMusicVolA = SAVE.musicVolume;
   var savedSfxVolA = SAVE.sfxVolume;
@@ -5702,6 +5846,7 @@ function doAscension() {
   SAVE.vaultIntroSeen = savedVaultIntroA;
   SAVE.achievementsIntroSeen = savedAchIntroA;
   SAVE.customizeIntroSeen = savedCustIntroA;
+  SAVE.notifIntroSeen = savedNotifIntroA;
   SAVE.tutorialSeen = savedTutorialA;
   SAVE.musicVolume = savedMusicVolA;
   SAVE.sfxVolume = savedSfxVolA;
@@ -5773,6 +5918,7 @@ function _doEndGame() {
   const savedVaultIntroE = SAVE.vaultIntroSeen||false;
   const savedAchIntroE = SAVE.achievementsIntroSeen||false;
   const savedCustIntroE = SAVE.customizeIntroSeen||false;
+  const savedNotifIntroE = SAVE.notifIntroSeen||false;
   const savedTutorialE = SAVE.tutorialSeen||false;
   const savedMusicVolE = SAVE.musicVolume;
   const savedSfxVolE = SAVE.sfxVolume;
@@ -5807,6 +5953,7 @@ function _doEndGame() {
   SAVE.vaultIntroSeen = savedVaultIntroE;
   SAVE.achievementsIntroSeen = savedAchIntroE;
   SAVE.customizeIntroSeen = savedCustIntroE;
+  SAVE.notifIntroSeen = savedNotifIntroE;
   SAVE.tutorialSeen = savedTutorialE;
   SAVE.echoes = savedEchoes + echoGain;
   SAVE.totalEchoes = savedTotalEchoes + echoGain;
@@ -6488,6 +6635,7 @@ function doReset() {
   const savedVaultIntro = SAVE.vaultIntroSeen||false;
   const savedAchIntro = SAVE.achievementsIntroSeen||false;
   const savedCustIntro = SAVE.customizeIntroSeen||false;
+  const savedNotifIntro = SAVE.notifIntroSeen||false;
   const savedTutorial = SAVE.tutorialSeen||false;
   const savedMusicVol = SAVE.musicVolume;
   const savedSfxVol = SAVE.sfxVolume;
@@ -6519,6 +6667,7 @@ function doReset() {
   SAVE.vaultIntroSeen = savedVaultIntro;
   SAVE.achievementsIntroSeen = savedAchIntro;
   SAVE.customizeIntroSeen = savedCustIntro;
+  SAVE.notifIntroSeen = savedNotifIntro;
   SAVE.tutorialSeen = savedTutorial;
   SAVE.musicVolume = savedMusicVol;
   SAVE.sfxVolume = savedSfxVol;
@@ -6575,6 +6724,7 @@ function showScreen(id) {
   if(isMenu||isShopUI) document.getElementById('music-btn').style.display='block';
   if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); var _wantAlt=!!(_useMenuAlt&&menuAltBuffer); if(menuSource&&_menuPlayingAlt===_wantAlt){ /* already playing correct track */ } else { stopMenuMusic(false); setTrack('menu'); }
     if(window._showEchoesIntroAfterGameover){ window._showEchoesIntroAfterGameover=false; setTimeout(function(){ showEchoesIntro(function(){ showSynergiesIntro(); }); },500); }
+    else if(!SAVE.notifIntroSeen && !SAVE.notificationsOn){ SAVE.notifIntroSeen=true; doSave(); setTimeout(showNotifIntro,800); }
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
@@ -7731,7 +7881,8 @@ function unlockArtifactReward(reward){
     }
   } else if(reward.type==='aura'){
     if(!AURAS.find(function(a){return a.id===reward.id;})){
-      AURAS.push({id:reward.id,label:reward.label.toUpperCase(),color:'#cc44ff'});
+      var _auraSetColor = reward.id==='eternalGlow'?'#ffd700':'#cc44ff';
+      AURAS.push({id:reward.id,label:reward.label.toUpperCase(),color:_auraSetColor});
     }
   } else if(reward.type==='decal'){
     if(!DECALS.find(function(d){return d.id===reward.id;})){
@@ -8900,6 +9051,11 @@ function startCustomizeAnim(){
         for(let i=0;i<10;i++){ const a=i*Math.PI/5-Math.PI/2; const r=i%2===0?6:3; i===0?cx.moveTo(b.x+Math.cos(a)*r,b.y+Math.sin(a)*r):cx.lineTo(b.x+Math.cos(a)*r,b.y+Math.sin(a)*r); }
         cx.closePath(); cx.fill();
       }
+      else if(b.shape==='nova'){
+        cx.save(); cx.translate(b.x,b.y); cx.shadowBlur=8; cx.shadowColor=b.col;
+        cx.beginPath(); for(var ni=0;ni<8;ni++){ var na=ni*Math.PI/4-Math.PI/2; var nr=ni%2===0?7:3; ni===0?cx.moveTo(Math.cos(na)*nr,Math.sin(na)*nr):cx.lineTo(Math.cos(na)*nr,Math.sin(na)*nr); } cx.closePath(); cx.fill();
+        cx.globalAlpha=0.4; cx.beginPath(); cx.arc(0,0,3,0,Math.PI*2); cx.fill(); cx.restore();
+      }
       else if(b.shape==='comet'){ cx.beginPath(); cx.arc(b.x,b.y,3.5,0,Math.PI*2); cx.fill(); cx.globalAlpha*=0.4; cx.fillRect(b.x-1,b.y+3,2,10); }
       else { cx.fillRect(b.x-1.5,b.y-8,3,12); }
     });
@@ -9030,6 +9186,7 @@ function updateSpriteOverrideState(){
 
 function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
+  restoreArtifactRewards();
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
@@ -10575,6 +10732,52 @@ function showAchievementsIntro(onDone){
   setTimeout(function(){ document.getElementById('ai-sub').style.opacity='1'; },500);
   setTimeout(function(){ document.getElementById('ai-steps').style.opacity='1'; },700);
   setTimeout(function(){ var btn=document.getElementById('ai-btn'); btn.style.opacity='1'; btn.onclick=function(){ el.style.transition='opacity 0.4s'; el.style.opacity='0'; setTimeout(function(){ document.body.removeChild(el); if(onDone) onDone(); },400); }; },1100);
+}
+
+function showNotifIntro(){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch';
+  var dismiss=function(){
+    el.style.transition='opacity 0.4s'; el.style.opacity='0';
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); },400);
+  };
+  el.innerHTML='<div id="ni-icon" style="font-size:56px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">&#128276;</div>'+
+    '<div id="ni-title" style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#00f5ff;letter-spacing:3px;margin-top:16px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #00f5ff">STAY IN THE LOOP</div>'+
+    '<div id="ni-sub" style="font-family:Orbitron,sans-serif;font-size:10px;color:#00f5ff88;letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.5s ease 0.5s">GET NOTIFIED WHEN NEW UPDATES DROP</div>'+
+    '<div id="ni-steps" style="width:100%;max-width:320px;margin:20px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(0,245,255,0.06);border:1px solid #00f5ff33;font-size:12px;color:#ccc;text-align:left">&#128640; <b style="color:#00f5ff">New content alerts</b> &#8212; be the first to know when updates, features & events go live</div>'+
+      '<div style="padding:10px 14px;margin-bottom:8px;border-radius:8px;background:rgba(0,245,255,0.06);border:1px solid #00f5ff33;font-size:12px;color:#ccc;text-align:left">&#128227; <b style="color:#00f5ff">No spam</b> &#8212; only major game updates, nothing else</div>'+
+      '<div style="padding:10px 14px;border-radius:8px;background:rgba(0,245,255,0.06);border:1px solid #00f5ff33;font-size:12px;color:#ccc;text-align:left">&#9881;&#65039; <b style="color:#00f5ff">Change anytime</b> &#8212; toggle notifications on or off in Settings</div>'+
+    '</div>'+
+    '<div id="ni-btns" style="margin-top:24px;display:flex;flex-direction:column;gap:10px;align-items:center;opacity:0;transition:all 0.5s ease 1.1s">'+
+      '<button id="ni-enable" style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:4px;padding:14px 36px;background:rgba(0,245,255,0.12);border:2px solid #00f5ff;color:#00f5ff;border-radius:4px;cursor:pointer;flex-shrink:0">&#128276; ENABLE</button>'+
+      '<button id="ni-later" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:10px 28px;background:none;border:1px solid #33444466;color:#556;border-radius:4px;cursor:pointer;flex-shrink:0">MAYBE LATER</button>'+
+    '</div>';
+  document.body.appendChild(el);
+  sfx('setComplete');
+  setTimeout(function(){ document.getElementById('ni-icon').style.opacity='1'; document.getElementById('ni-icon').style.transform='scale(1)'; },50);
+  setTimeout(function(){ document.getElementById('ni-title').style.opacity='1'; document.getElementById('ni-title').style.transform='translateY(0)'; },300);
+  setTimeout(function(){ document.getElementById('ni-sub').style.opacity='1'; },500);
+  setTimeout(function(){ document.getElementById('ni-steps').style.opacity='1'; },700);
+  setTimeout(function(){
+    var btns=document.getElementById('ni-btns'); btns.style.opacity='1';
+    document.getElementById('ni-later').onclick=dismiss;
+    document.getElementById('ni-enable').onclick=function(){
+      if(!('Notification' in window) || !('PushManager' in window)){
+        showToast('Notifications not supported on this device'); dismiss(); return;
+      }
+      Notification.requestPermission().then(function(perm){
+        if(perm==='granted'){
+          _subscribePush();
+          SAVE.notificationsOn=true;
+          doSave();
+          var nb=document.getElementById('notif-btn');
+          if(nb){ nb.textContent='ON'; nb.style.borderColor='#00f5ff'; nb.style.color='#00f5ff'; }
+        }
+        dismiss();
+      });
+    };
+  },1100);
 }
 
 function showSuperBossVictory(onDone){
