@@ -661,7 +661,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:6px">🔑 VOID KEYS</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#778;margin-bottom:8px">Keys open Void Crates for rare Artifacts</div>
       <div id="echoes-key-balance" style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;margin-bottom:8px">🔑 0</div>
-      <button id="echoes-buy-key-btn" onclick="buyKeyWithEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 20px;border-radius:8px;border:1.5px solid #ffcc00;background:rgba(255,204,0,0.1);color:#ffcc00;cursor:pointer;letter-spacing:1px;transition:all .15s">BUY KEY · 🌀 50</button>
+      <button id="echoes-buy-key-btn" onclick="buyKeyWithEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 20px;border-radius:8px;border:1.5px solid #ffcc00;background:rgba(255,204,0,0.1);color:#ffcc00;cursor:pointer;letter-spacing:1px;transition:all .15s">BUY KEY · 🌀 10</button>
     </div>
     <div class="shop-grid" id="echoes-grid"></div>
     <div style="height:80px;flex-shrink:0"></div>
@@ -676,7 +676,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div class="screen-title" style="color:#ffcc00">🔑 VOID VAULT</div>
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">OPEN CRATES · COLLECT ARTIFACTS</div>
-    <div id="vault-key-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffcc00;text-shadow:0 0 12px #ffcc00,0 0 30px #ffcc0044;margin:6px 0 2px">🔑 0</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 0 2px">
+      <div id="vault-key-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#ffcc00;text-shadow:0 0 12px #ffcc00,0 0 30px #ffcc0044">🔑 0</div>
+      <button id="vault-beta-gift" onclick="claimBetaGift()" style="display:none;font-size:22px;width:36px;height:36px;border-radius:10px;border:1.5px solid #ff44aa;background:rgba(255,68,170,0.1);cursor:pointer;animation:cardPulse 1.5s ease-in-out infinite;filter:drop-shadow(0 0 8px #ff44aa66);padding:0;line-height:36px">🎁</button>
+    </div>
   </div>
   <div style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div id="vault-crate-area" style="margin:16px 0;text-align:center">
@@ -2457,7 +2460,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   forgeLevels:{ damage:0, rate:0, armor:0 },
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:true, synergiesUnlocked:false, discoveredSynergies:[],
   keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0,
-  lastDailySpinDate:null, dailySpinStreak:0,
+  lastDailySpinDate:null, dailySpinStreak:0, betaGiftClaimed:false,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false, notifIntroSeen:false,
   musicVolume:55, sfxVolume:70,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
@@ -2501,39 +2504,39 @@ const TROPHIES = [
 const ACHIEVEMENTS = [
   {id:'enemySlayer',name:'ENEMY SLAYER',icon:'💀',stat:'totalKills',desc:'Total enemies destroyed',
    tiers:[
-    {goal:50,label:'I',volume:1,reward:3,keyReward:1},{goal:250,label:'II',volume:1,reward:5,keyReward:1},{goal:1000,label:'III',volume:1,reward:10,keyReward:1},{goal:5000,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:10000,label:'I',volume:2,reward:8,keyReward:1},{goal:25000,label:'II',volume:2,reward:15,keyReward:1},{goal:50000,label:'III',volume:2,reward:30,keyReward:2},{goal:100000,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:200000,label:'I',volume:3,reward:20,keyReward:1},{goal:400000,label:'II',volume:3,reward:40,keyReward:2},{goal:750000,label:'III',volume:3,reward:80,keyReward:4},{goal:1500000,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:50,label:'I',volume:1,reward:3,keyReward:1},{goal:250,label:'II',volume:1,reward:5,keyReward:2},{goal:1000,label:'III',volume:1,reward:10,keyReward:2},{goal:5000,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:10000,label:'I',volume:2,reward:8,keyReward:2},{goal:25000,label:'II',volume:2,reward:15,keyReward:2},{goal:50000,label:'III',volume:2,reward:30,keyReward:3},{goal:100000,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:200000,label:'I',volume:3,reward:20,keyReward:2},{goal:400000,label:'II',volume:3,reward:40,keyReward:3},{goal:750000,label:'III',volume:3,reward:80,keyReward:5},{goal:1500000,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
   {id:'bossHunter',name:'BOSS HUNTER',icon:'👹',stat:'totalBossKills',desc:'Bosses defeated',
    tiers:[
-    {goal:5,label:'I',volume:1,reward:3,keyReward:1},{goal:20,label:'II',volume:1,reward:5,keyReward:1},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:200,label:'I',volume:2,reward:8,keyReward:1},{goal:400,label:'II',volume:2,reward:15,keyReward:1},{goal:750,label:'III',volume:2,reward:30,keyReward:2},{goal:1500,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:3000,label:'I',volume:3,reward:20,keyReward:1},{goal:6000,label:'II',volume:3,reward:40,keyReward:2},{goal:10000,label:'III',volume:3,reward:80,keyReward:4},{goal:20000,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:5,label:'I',volume:1,reward:3,keyReward:1},{goal:20,label:'II',volume:1,reward:5,keyReward:2},{goal:50,label:'III',volume:1,reward:10,keyReward:2},{goal:100,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:200,label:'I',volume:2,reward:8,keyReward:2},{goal:400,label:'II',volume:2,reward:15,keyReward:2},{goal:750,label:'III',volume:2,reward:30,keyReward:3},{goal:1500,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:3000,label:'I',volume:3,reward:20,keyReward:2},{goal:6000,label:'II',volume:3,reward:40,keyReward:3},{goal:10000,label:'III',volume:3,reward:80,keyReward:5},{goal:20000,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
   {id:'killStreak',name:'KILL STREAK',icon:'🔥',stat:'highestKillStreak',desc:'Highest rapid kill chain',
    tiers:[
-    {goal:15,label:'I',volume:1,reward:3,keyReward:1},{goal:30,label:'II',volume:1,reward:5,keyReward:1},{goal:60,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:120,label:'I',volume:2,reward:8,keyReward:1},{goal:140,label:'II',volume:2,reward:15,keyReward:1},{goal:170,label:'III',volume:2,reward:30,keyReward:2},{goal:200,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:250,label:'I',volume:3,reward:20,keyReward:1},{goal:300,label:'II',volume:3,reward:40,keyReward:2},{goal:400,label:'III',volume:3,reward:80,keyReward:4},{goal:500,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:15,label:'I',volume:1,reward:3,keyReward:1},{goal:30,label:'II',volume:1,reward:5,keyReward:2},{goal:60,label:'III',volume:1,reward:10,keyReward:2},{goal:100,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:120,label:'I',volume:2,reward:8,keyReward:2},{goal:140,label:'II',volume:2,reward:15,keyReward:2},{goal:170,label:'III',volume:2,reward:30,keyReward:3},{goal:200,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:250,label:'I',volume:3,reward:20,keyReward:2},{goal:300,label:'II',volume:3,reward:40,keyReward:3},{goal:400,label:'III',volume:3,reward:80,keyReward:5},{goal:500,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
   {id:'explorer',name:'EXPLORER',icon:'🚀',stat:'highestWaveReached',desc:'Highest wave reached',
    tiers:[
-    {goal:10,label:'I',volume:1,reward:3,keyReward:1},{goal:25,label:'II',volume:1,reward:5,keyReward:1},{goal:50,label:'III',volume:1,reward:10,keyReward:1},{goal:100,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:125,label:'I',volume:2,reward:8,keyReward:1},{goal:150,label:'II',volume:2,reward:15,keyReward:1},{goal:200,label:'III',volume:2,reward:30,keyReward:2},{goal:275,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:350,label:'I',volume:3,reward:20,keyReward:1},{goal:450,label:'II',volume:3,reward:40,keyReward:2},{goal:600,label:'III',volume:3,reward:80,keyReward:4},{goal:800,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:10,label:'I',volume:1,reward:3,keyReward:1},{goal:25,label:'II',volume:1,reward:5,keyReward:2},{goal:50,label:'III',volume:1,reward:10,keyReward:2},{goal:100,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:125,label:'I',volume:2,reward:8,keyReward:2},{goal:150,label:'II',volume:2,reward:15,keyReward:2},{goal:200,label:'III',volume:2,reward:30,keyReward:3},{goal:275,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:350,label:'I',volume:3,reward:20,keyReward:2},{goal:450,label:'II',volume:3,reward:40,keyReward:3},{goal:600,label:'III',volume:3,reward:80,keyReward:5},{goal:800,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
   {id:'richPilot',name:'RICH PILOT',icon:'💰',stat:'totalCoinsCollected',desc:'Lifetime coins earned',
    tiers:[
-    {goal:500,label:'I',volume:1,reward:3,keyReward:1},{goal:5000,label:'II',volume:1,reward:5,keyReward:1},{goal:25000,label:'III',volume:1,reward:10,keyReward:1},{goal:100000,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:250000,label:'I',volume:2,reward:8,keyReward:1},{goal:500000,label:'II',volume:2,reward:15,keyReward:1},{goal:1000000,label:'III',volume:2,reward:30,keyReward:2},{goal:2500000,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:5000000,label:'I',volume:3,reward:20,keyReward:1},{goal:10000000,label:'II',volume:3,reward:40,keyReward:2},{goal:25000000,label:'III',volume:3,reward:80,keyReward:4},{goal:50000000,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:500,label:'I',volume:1,reward:3,keyReward:1},{goal:5000,label:'II',volume:1,reward:5,keyReward:2},{goal:25000,label:'III',volume:1,reward:10,keyReward:2},{goal:100000,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:250000,label:'I',volume:2,reward:8,keyReward:2},{goal:500000,label:'II',volume:2,reward:15,keyReward:2},{goal:1000000,label:'III',volume:2,reward:30,keyReward:3},{goal:2500000,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:5000000,label:'I',volume:3,reward:20,keyReward:2},{goal:10000000,label:'II',volume:3,reward:40,keyReward:3},{goal:25000000,label:'III',volume:3,reward:80,keyReward:5},{goal:50000000,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
   {id:'untouchable',name:'UNTOUCHABLE',icon:'🛡️',stat:'perfectWaves',desc:'Waves cleared without damage',
    tiers:[
-    {goal:3,label:'I',volume:1,reward:3,keyReward:1},{goal:10,label:'II',volume:1,reward:5,keyReward:1},{goal:30,label:'III',volume:1,reward:10,keyReward:1},{goal:75,label:'IV',volume:1,reward:20,keyReward:2},
-    {goal:125,label:'I',volume:2,reward:8,keyReward:1},{goal:200,label:'II',volume:2,reward:15,keyReward:1},{goal:350,label:'III',volume:2,reward:30,keyReward:2},{goal:500,label:'IV',volume:2,reward:50,keyReward:3},
-    {goal:750,label:'I',volume:3,reward:20,keyReward:1},{goal:1000,label:'II',volume:3,reward:40,keyReward:2},{goal:1500,label:'III',volume:3,reward:80,keyReward:4},{goal:2500,label:'IV',volume:3,reward:150,keyReward:6}
+    {goal:3,label:'I',volume:1,reward:3,keyReward:1},{goal:10,label:'II',volume:1,reward:5,keyReward:2},{goal:30,label:'III',volume:1,reward:10,keyReward:2},{goal:75,label:'IV',volume:1,reward:20,keyReward:3},
+    {goal:125,label:'I',volume:2,reward:8,keyReward:2},{goal:200,label:'II',volume:2,reward:15,keyReward:2},{goal:350,label:'III',volume:2,reward:30,keyReward:3},{goal:500,label:'IV',volume:2,reward:50,keyReward:4},
+    {goal:750,label:'I',volume:3,reward:20,keyReward:2},{goal:1000,label:'II',volume:3,reward:40,keyReward:3},{goal:1500,label:'III',volume:3,reward:80,keyReward:5},{goal:2500,label:'IV',volume:3,reward:150,keyReward:8}
    ]},
 ];
 var ACH_VOL_COLORS = ['#ffd700','#aa44ff','#ff4400'];
@@ -2618,6 +2621,31 @@ const ARTIFACT_SETS = [
       {id:'et3',name:'Divine Spark',   rarity:'epic',   icon:'✨'},
       {id:'et4',name:'Infinity Stone', rarity:'epic',   icon:'💎'},
       {id:'et5',name:'Crown of Eternity',rarity:'legendary',icon:'👑'}
+    ]},
+  { key:'arctic', name:'ARCTIC', color:'#88ddff', icon:'❄️',
+    reward:{type:'decal', id:'frostVeins', label:'Frost Veins Decal'},
+    artifacts:[
+      {id:'ar1',name:'Frozen Shard',    rarity:'common', icon:'🧊'},
+      {id:'ar2',name:'Blizzard Core',   rarity:'common', icon:'🌨️'},
+      {id:'ar3',name:'Glacier Heart',   rarity:'rare',   icon:'💠'},
+      {id:'ar4',name:'Permafrost Relic',rarity:'epic',   icon:'❄️'}
+    ]},
+  { key:'toxic', name:'TOXIC', color:'#44ff44', icon:'☢️',
+    reward:{type:'hullColor', id:'#44ff44', label:'Radioactive Green Hull'},
+    artifacts:[
+      {id:'tx1',name:'Toxic Spore',     rarity:'common', icon:'🟢'},
+      {id:'tx2',name:'Acid Drop',       rarity:'common', icon:'🧪'},
+      {id:'tx3',name:'Mutagen Core',    rarity:'rare',   icon:'☢️'},
+      {id:'tx4',name:'Biohazard Relic', rarity:'epic',   icon:'💚'},
+      {id:'tx5',name:'Plague Heart',    rarity:'legendary',icon:'🦠'}
+    ]},
+  { key:'thunder', name:'THUNDER', color:'#ffee44', icon:'⚡',
+    reward:{type:'bulletShape', id:'bolt', label:'Thunder Bolt Bullet'},
+    artifacts:[
+      {id:'th1',name:'Spark Fragment',  rarity:'common', icon:'⚡'},
+      {id:'th2',name:'Storm Cell',      rarity:'rare',   icon:'🌩️'},
+      {id:'th3',name:'Lightning Core',  rarity:'epic',   icon:'🔱'},
+      {id:'th4',name:'Mjolnir Shard',   rarity:'legendary',icon:'🔨'}
     ]}
 ];
 
@@ -3484,14 +3512,18 @@ const SHIP_SHAPES=[
 const HULL_COLORS=[
   {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
   {id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},{id:'#ffffff',label:'WHITE'},
+  {id:'#ff8800',label:'ORANGE'},{id:'#4488ff',label:'DEEP BLUE'},{id:'#ff66aa',label:'PINK'},
+  {id:'#44ddff',label:'TEMPORAL BLUE'},
 ];
 const COCKPIT_COLORS=[
   {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
   {id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},
+  {id:'#ff8800',label:'ORANGE'},{id:'#ff66aa',label:'PINK'},{id:'#ffffff',label:'WHITE'},
 ];
 const THRUSTER_COLORS=[
   {id:'#00f5ff',label:'CYAN'},{id:'#ff8800',label:'ORANGE'},{id:'#4488ff',label:'BLUE'},
   {id:'#ffffff',label:'WHITE'},{id:'rainbow',label:'RAINBOW'},
+  {id:'#ff4455',label:'RED'},{id:'#00ff88',label:'GREEN'},{id:'#cc44ff',label:'PURPLE'},
 ];
 const BULLET_COLORS=[
   {id:'#00f5ff',label:'CYAN'},{id:'#ffd700',label:'GOLD'},{id:'#ff4455',label:'RED'},
@@ -3506,17 +3538,24 @@ const AURAS=[
   {id:'none',label:'NONE',color:'#334'},{id:'cyan',label:'CYAN',color:'#00f5ff'},
   {id:'gold',label:'GOLD',color:'#ffd700'},{id:'purple',label:'VOID',color:'#cc44ff'},
   {id:'red',label:'DANGER',color:'#ff4455'},
+  {id:'plasma',label:'PLASMA',color:'#ff8800'},{id:'frost',label:'FROST',color:'#88ddff'},
+  {id:'hex',label:'HEX',color:'#00ff88'},
 ];
 const DECALS=[
   {id:'none',label:'NONE',icon:'○'},{id:'stripes',label:'STRIPES',icon:'⬌'},
   {id:'camo',label:'CAMO',icon:'⬢'},{id:'stars',label:'STARS',icon:'★'},
   {id:'scars',label:'SCARS',icon:'✕'},
+  {id:'circuits',label:'CIRCUITS',icon:'⌬'},{id:'lightning',label:'LIGHTNING',icon:'⚡'},
+  {id:'crosshair',label:'CROSSHAIR',icon:'⊕'},
 ];
 
 // ── SPRITE SHIP SKINS ──────────────────────────────
 const SPRITE_SHIPS=[
   {id:'none',label:'NONE',icon:'○'},
   {id:'pixelShip',label:'PIXEL SHIP',icon:'🚀'},
+  {id:'infernoShip',label:'INFERNO SHIP',icon:'🔥'},
+  {id:'mechShip',label:'MECH GUARDIAN',icon:'🤖'},
+  {id:'glitchShip',label:'GLITCH SHIP',icon:'💾'},
 ];
 var _spriteImages={};
 var playerSpriteState='idle';
@@ -3639,7 +3678,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
   const cockpitCol=custom.cockpitColor||'#00f5ff';
   const aura=custom.aura||'none';
   const decal=custom.decal||'none';
-  const auraColors={cyan:'#00f5ff',gold:'#ffd700',purple:'#cc44ff',red:'#ff4455',voidPulse:'#cc44ff',eternalGlow:'#ffd700'};
+  const auraColors={cyan:'#00f5ff',gold:'#ffd700',purple:'#cc44ff',red:'#ff4455',voidPulse:'#cc44ff',eternalGlow:'#ffd700',plasma:'#ff8800',frost:'#88ddff',hex:'#00ff88'};
   const auraCol=auraColors[aura]||hullCol;
   c.save();
   c.translate(x,y);
@@ -3796,6 +3835,186 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     return;
   }
+  // Procedural sprite — Inferno Ship
+  if(custom.sprite==='infernoShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _burn=0.7+Math.sin(_t*3.5)*0.3;
+    var _fc='#ff4400', _fy='#ffaa00', _fw='#ffdd44';
+    // Heat distortion haze
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.1*_burn;
+    c.shadowBlur=35; c.shadowColor=_fc;
+    c.fillStyle=_fc;
+    c.beginPath(); c.ellipse(0,2,20,24,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Main hull — aggressive angular
+    c.shadowBlur=16; c.shadowColor=_fc;
+    c.fillStyle='rgba(255,68,0,0.12)'; c.strokeStyle=_fc; c.lineWidth=1.6;
+    c.globalAlpha=(flash?0.4:1);
+    c.beginPath();
+    c.moveTo(0,-22);
+    c.lineTo(6,-10); c.lineTo(18,0); c.lineTo(14,4);
+    c.lineTo(8,2); c.lineTo(5,12); c.lineTo(0,8);
+    c.lineTo(-5,12); c.lineTo(-8,2); c.lineTo(-14,4);
+    c.lineTo(-18,0); c.lineTo(-6,-10);
+    c.closePath(); c.fill(); c.stroke();
+    // Molten veins
+    c.save();
+    c.strokeStyle=_fy+'88'; c.lineWidth=0.8; c.shadowBlur=6; c.shadowColor=_fy;
+    c.globalAlpha=(flash?0.4:1)*_burn*0.6;
+    c.beginPath(); c.moveTo(0,-22); c.lineTo(0,8); c.stroke();
+    c.beginPath(); c.moveTo(-6,-10); c.lineTo(5,12); c.stroke();
+    c.beginPath(); c.moveTo(6,-10); c.lineTo(-5,12); c.stroke();
+    c.restore();
+    // Ember cockpit
+    c.save();
+    c.fillStyle='rgba(255,170,0,0.4)'; c.shadowBlur=14; c.shadowColor=_fy;
+    c.globalAlpha=(flash?0.4:1)*_burn;
+    c.beginPath(); c.arc(0,-7,4,0,Math.PI*2); c.fill();
+    c.strokeStyle=_fw; c.lineWidth=0.8;
+    c.beginPath(); c.arc(0,-7,4,0,Math.PI*2); c.stroke();
+    c.restore();
+    // Wing embers
+    c.save();
+    c.fillStyle=_fy; c.globalAlpha=(flash?0.4:1)*_burn*0.8;
+    c.shadowBlur=10; c.shadowColor=_fy;
+    [[-16,1],[16,1]].forEach(function(pt){
+      c.beginPath(); c.arc(pt[0],pt[1],2,0,Math.PI*2); c.fill();
+    });
+    c.restore();
+    // Trailing fire
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.5;
+    for(var fi=0;fi<5;fi++){
+      var fx=(Math.sin(_t*4+fi*1.4))*7;
+      var fy=10+fi*4+Math.sin(_t*2.5+fi)*2;
+      var fr=1.8-fi*0.3;
+      c.fillStyle=fi%2===0?_fc:_fy;
+      c.shadowBlur=8; c.shadowColor=c.fillStyle;
+      c.globalAlpha=(flash?0.4:1)*(0.5-fi*0.08);
+      c.beginPath(); c.arc(fx,fy,Math.max(0.3,fr),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Mech Guardian
+  if(custom.sprite==='mechShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _mc='#aabbcc', _mg='#88ff88', _ms='#667788';
+    // Main hull — heavy angular armor plates
+    c.shadowBlur=10; c.shadowColor=_mc;
+    c.fillStyle='rgba(170,187,204,0.1)'; c.strokeStyle=_mc; c.lineWidth=2;
+    c.globalAlpha=(flash?0.4:1);
+    c.beginPath();
+    c.moveTo(0,-20);
+    c.lineTo(6,-14); c.lineTo(8,-6); c.lineTo(18,-2);
+    c.lineTo(16,4); c.lineTo(10,6); c.lineTo(8,12);
+    c.lineTo(0,8);
+    c.lineTo(-8,12); c.lineTo(-10,6); c.lineTo(-16,4);
+    c.lineTo(-18,-2); c.lineTo(-8,-6); c.lineTo(-6,-14);
+    c.closePath(); c.fill(); c.stroke();
+    // Armor plate lines
+    c.save();
+    c.strokeStyle=_ms; c.lineWidth=0.8; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.4:1)*0.5;
+    c.beginPath(); c.moveTo(-8,-6); c.lineTo(8,-6); c.stroke();
+    c.beginPath(); c.moveTo(-10,6); c.lineTo(10,6); c.stroke();
+    c.beginPath(); c.moveTo(0,-20); c.lineTo(0,8); c.stroke();
+    c.restore();
+    // Sensor eye — scanning
+    var scanAngle=Math.sin(_t*2)*0.4;
+    c.save();
+    c.fillStyle='rgba(136,255,136,0.3)'; c.strokeStyle=_mg; c.lineWidth=1;
+    c.shadowBlur=12; c.shadowColor=_mg;
+    c.globalAlpha=(flash?0.4:1)*0.8;
+    c.beginPath(); c.arc(0,-8,3.5,0,Math.PI*2); c.fill(); c.stroke();
+    // Scan beam
+    c.globalAlpha=(flash?0.4:1)*0.15;
+    c.fillStyle=_mg;
+    c.beginPath(); c.moveTo(0,-8);
+    c.lineTo(Math.cos(-Math.PI/2+scanAngle-0.3)*30,Math.sin(-Math.PI/2+scanAngle-0.3)*30);
+    c.lineTo(Math.cos(-Math.PI/2+scanAngle+0.3)*30,Math.sin(-Math.PI/2+scanAngle+0.3)*30);
+    c.closePath(); c.fill();
+    c.restore();
+    // Shoulder cannons
+    c.save();
+    c.fillStyle=_ms; c.strokeStyle=_mc; c.lineWidth=1;
+    c.globalAlpha=(flash?0.4:1);
+    [[-14,0],[14,0]].forEach(function(pt){
+      c.fillRect(pt[0]-2,pt[1]-6,4,8);
+      c.strokeRect(pt[0]-2,pt[1]-6,4,8);
+    });
+    c.restore();
+    // Status LEDs
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*(0.5+Math.sin(_t*4)*0.5);
+    c.fillStyle=_mg; c.shadowBlur=6; c.shadowColor=_mg;
+    [[-6,2],[6,2],[0,4]].forEach(function(pt){
+      c.beginPath(); c.arc(pt[0],pt[1],1,0,Math.PI*2); c.fill();
+    });
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Glitch Ship
+  if(custom.sprite==='glitchShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _gc='#00ffaa', _gm='#ff00ff', _gw='#ffffff';
+    var glitchOff=Math.sin(_t*15)>0.85?(Math.random()-0.5)*6:0;
+    // Main hull — with glitch offset
+    c.save();
+    c.translate(glitchOff,0);
+    c.shadowBlur=12; c.shadowColor=_gc;
+    c.fillStyle='rgba(0,255,170,0.08)'; c.strokeStyle=_gc; c.lineWidth=1.4;
+    c.globalAlpha=(flash?0.4:1);
+    c.beginPath();
+    c.moveTo(0,-20);
+    c.lineTo(7,-8); c.lineTo(16,2); c.lineTo(10,4);
+    c.lineTo(6,14); c.lineTo(0,10);
+    c.lineTo(-6,14); c.lineTo(-10,4); c.lineTo(-16,2);
+    c.lineTo(-7,-8);
+    c.closePath(); c.fill(); c.stroke();
+    // RGB split effect — offset copies
+    c.globalAlpha=(flash?0.4:1)*0.15;
+    c.strokeStyle=_gm; c.lineWidth=1;
+    c.save(); c.translate(-2,-1);
+    c.beginPath();
+    c.moveTo(0,-20); c.lineTo(7,-8); c.lineTo(16,2); c.lineTo(10,4);
+    c.lineTo(6,14); c.lineTo(0,10); c.lineTo(-6,14); c.lineTo(-10,4);
+    c.lineTo(-16,2); c.lineTo(-7,-8); c.closePath(); c.stroke();
+    c.restore();
+    c.strokeStyle='#4444ff';
+    c.save(); c.translate(2,1);
+    c.beginPath();
+    c.moveTo(0,-20); c.lineTo(7,-8); c.lineTo(16,2); c.lineTo(10,4);
+    c.lineTo(6,14); c.lineTo(0,10); c.lineTo(-6,14); c.lineTo(-10,4);
+    c.lineTo(-16,2); c.lineTo(-7,-8); c.closePath(); c.stroke();
+    c.restore();
+    // Scanlines
+    c.globalAlpha=(flash?0.4:1)*0.08;
+    c.fillStyle=_gw;
+    for(var sl=-20;sl<14;sl+=3){
+      c.fillRect(-18,sl,36,1);
+    }
+    // Data cockpit
+    c.globalAlpha=(flash?0.4:1)*0.7;
+    c.fillStyle=_gc; c.shadowBlur=10; c.shadowColor=_gc;
+    c.fillRect(-3,-10,6,4);
+    c.fillStyle=_gm; c.globalAlpha=(flash?0.4:1)*0.4;
+    c.fillRect(-2,-9,4,2);
+    // Glitch particles
+    c.globalAlpha=(flash?0.4:1)*0.6;
+    for(var gi=0;gi<3;gi++){
+      var gx=(Math.sin(_t*6+gi*2.2))*12;
+      var gy=(Math.cos(_t*4+gi*1.7))*12;
+      c.fillStyle=gi===0?_gc:gi===1?_gm:_gw;
+      c.fillRect(gx-1,gy-1,2,2);
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
   // Aura ring
   if(aura==='eternalGlow'){
     var _at=typeof performance!=='undefined'?performance.now()/1000:0;
@@ -3850,6 +4069,85 @@ function drawShip(c, x, y, inv, custom, scale=1){
       c.quadraticCurveTo(Math.cos(va+0.3)*(vr1+vr2)/2,Math.sin(va+0.3)*(vr1+vr2)/2,Math.cos(va)*vr2,Math.sin(va)*vr2);
       c.stroke();
     }
+    c.restore();
+  } else if(aura==='plasma'){
+    var _pt=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save();
+    // Unstable plasma bursts orbiting the ship
+    c.globalAlpha=(flash?0.4:1)*0.3;
+    c.shadowBlur=20; c.shadowColor='#ff8800';
+    for(var pi=0;pi<6;pi++){
+      var pa=_pt*2+pi*Math.PI/3;
+      var pr=22+Math.sin(_pt*5+pi*2)*4;
+      var ps=2.5+Math.sin(_pt*7+pi)*1.5;
+      c.fillStyle=pi%2===0?'#ff8800':'#ffaa44';
+      c.globalAlpha=(flash?0.4:1)*(0.25+Math.sin(_pt*4+pi)*0.1);
+      c.beginPath(); c.arc(Math.cos(pa)*pr,Math.sin(pa)*pr,Math.max(0.5,ps),0,Math.PI*2); c.fill();
+    }
+    // Connecting arcs
+    c.strokeStyle='#ff880066'; c.lineWidth=1; c.globalAlpha=(flash?0.4:1)*0.15;
+    c.beginPath(); c.arc(0,0,22,0,Math.PI*2); c.stroke();
+    c.restore();
+  } else if(aura==='frost'){
+    var _frt=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _fp=0.8+Math.sin(_frt*1.5)*0.2;
+    c.save();
+    // Icy crystalline ring
+    c.globalAlpha=(flash?0.4:1)*0.3*_fp;
+    c.shadowBlur=18; c.shadowColor='#88ddff';
+    c.strokeStyle='#88ddff'; c.lineWidth=1.5;
+    // Hexagonal frost ring
+    c.beginPath();
+    for(var fi=0;fi<6;fi++){
+      var fa=fi*Math.PI/3-Math.PI/6;
+      fi===0?c.moveTo(Math.cos(fa)*25,Math.sin(fa)*25):c.lineTo(Math.cos(fa)*25,Math.sin(fa)*25);
+    }
+    c.closePath(); c.stroke();
+    // Ice crystal spikes
+    c.fillStyle='#aaeeff'; c.globalAlpha=(flash?0.4:1)*0.35*_fp;
+    for(var si=0;si<6;si++){
+      var sa=si*Math.PI/3-Math.PI/6;
+      var sx=Math.cos(sa)*25,sy=Math.sin(sa)*25;
+      c.beginPath();
+      c.moveTo(sx-2*Math.sin(sa),sy+2*Math.cos(sa));
+      c.lineTo(Math.cos(sa)*32,Math.sin(sa)*32);
+      c.lineTo(sx+2*Math.sin(sa),sy-2*Math.cos(sa));
+      c.closePath(); c.fill();
+    }
+    // Frost particles drifting
+    c.globalAlpha=(flash?0.4:1)*0.4;
+    for(var fpi=0;fpi<4;fpi++){
+      var fpx=Math.sin(_frt*0.8+fpi*1.6)*18;
+      var fpy=Math.cos(_frt*0.6+fpi*2.1)*18;
+      c.fillStyle='#ccf0ff';
+      c.beginPath(); c.arc(fpx,fpy,1,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+  } else if(aura==='hex'){
+    var _ht=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save();
+    // Rotating hex grid fragments
+    c.globalAlpha=(flash?0.4:1)*0.25;
+    c.shadowBlur=14; c.shadowColor='#00ff88';
+    c.strokeStyle='#00ff88'; c.lineWidth=0.8;
+    for(var hi=0;hi<3;hi++){
+      c.save();
+      c.rotate(_ht*0.5+hi*Math.PI*2/3);
+      // Mini hexagon
+      c.beginPath();
+      for(var hv=0;hv<6;hv++){
+        var ha=hv*Math.PI/3; var hr=8;
+        hv===0?c.moveTo(20+Math.cos(ha)*hr,Math.sin(ha)*hr):c.lineTo(20+Math.cos(ha)*hr,Math.sin(ha)*hr);
+      }
+      c.closePath(); c.stroke();
+      c.restore();
+    }
+    // Inner data ring
+    c.globalAlpha=(flash?0.4:1)*0.2;
+    c.strokeStyle='#00ff8866'; c.lineWidth=1;
+    c.setLineDash([3,5]);
+    c.beginPath(); c.arc(0,0,16,0,Math.PI*2); c.stroke();
+    c.setLineDash([]);
     c.restore();
   } else if(aura!=='none'){
     c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
@@ -3932,6 +4230,57 @@ function drawShip(c, x, y, inv, custom, scale=1){
       c.quadraticCurveTo(fx+fw/4-flicker,fy-fh*0.5,fx+fw/2,fy);
       c.closePath(); c.fill();
     });
+    c.restore();
+  } else if(decal==='circuits'){
+    c.save(); c.strokeStyle=hullCol; c.lineWidth=0.8; c.globalAlpha=(flash?0.4:1)*0.45;
+    c.shadowBlur=4; c.shadowColor=hullCol;
+    // Circuit traces
+    c.beginPath(); c.moveTo(-8,-12); c.lineTo(-8,-4); c.lineTo(-3,-4); c.lineTo(-3,2); c.stroke();
+    c.beginPath(); c.moveTo(8,-12); c.lineTo(8,-4); c.lineTo(3,-4); c.lineTo(3,2); c.stroke();
+    c.beginPath(); c.moveTo(-5,0); c.lineTo(-10,0); c.lineTo(-10,6); c.stroke();
+    c.beginPath(); c.moveTo(5,0); c.lineTo(10,0); c.lineTo(10,6); c.stroke();
+    // Circuit nodes
+    c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.7;
+    [[-3,2],[3,2],[-10,6],[10,6],[0,-8]].forEach(function(p){ c.beginPath(); c.arc(p[0],p[1],1.2,0,Math.PI*2); c.fill(); });
+    c.restore();
+  } else if(decal==='lightning'){
+    var _lt=typeof performance!=='undefined'?performance.now()/1000:0;
+    var lFlash=Math.sin(_lt*12)>0.7?1:0.5;
+    c.save(); c.strokeStyle=hullCol; c.lineWidth=1.2; c.globalAlpha=(flash?0.4:1)*0.6*lFlash;
+    c.shadowBlur=8; c.shadowColor=hullCol;
+    // Left bolt
+    c.beginPath(); c.moveTo(-4,-14); c.lineTo(-7,-6); c.lineTo(-3,-7); c.lineTo(-6,2); c.stroke();
+    // Right bolt
+    c.beginPath(); c.moveTo(4,-14); c.lineTo(7,-6); c.lineTo(3,-7); c.lineTo(6,2); c.stroke();
+    c.restore();
+  } else if(decal==='frostVeins'){
+    var _fvt=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save(); c.strokeStyle='#88ddff'; c.lineWidth=0.7; c.globalAlpha=(flash?0.4:1)*0.5;
+    c.shadowBlur=6; c.shadowColor='#88ddff';
+    // Branching ice veins from center
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(-3,-6); c.lineTo(-8,-2); c.stroke();
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(3,-6); c.lineTo(8,-2); c.stroke();
+    c.beginPath(); c.moveTo(-3,-6); c.lineTo(-5,2); c.stroke();
+    c.beginPath(); c.moveTo(3,-6); c.lineTo(5,2); c.stroke();
+    c.beginPath(); c.moveTo(0,-6); c.lineTo(0,6); c.stroke();
+    // Frost crystals at endpoints
+    c.fillStyle='#aaeeff'; c.globalAlpha=(flash?0.4:1)*(0.4+Math.sin(_fvt*2)*0.15);
+    [[-8,-2],[8,-2],[-5,2],[5,2],[0,-14]].forEach(function(p){
+      c.beginPath(); c.arc(p[0],p[1],1.2,0,Math.PI*2); c.fill();
+    });
+    c.restore();
+  } else if(decal==='crosshair'){
+    c.save(); c.strokeStyle=hullCol; c.lineWidth=0.8; c.globalAlpha=(flash?0.4:1)*0.5;
+    c.shadowBlur=4; c.shadowColor=hullCol;
+    // Crosshair circle + lines
+    c.beginPath(); c.arc(0,-2,6,0,Math.PI*2); c.stroke();
+    c.beginPath(); c.moveTo(0,-9); c.lineTo(0,-5); c.stroke();
+    c.beginPath(); c.moveTo(0,1); c.lineTo(0,5); c.stroke();
+    c.beginPath(); c.moveTo(-7,-2); c.lineTo(-3,-2); c.stroke();
+    c.beginPath(); c.moveTo(3,-2); c.lineTo(7,-2); c.stroke();
+    // Center dot
+    c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.8;
+    c.beginPath(); c.arc(0,-2,1,0,Math.PI*2); c.fill();
     c.restore();
   }
   c.restore();
@@ -4922,6 +5271,14 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.closePath(); ctx.fill();
       ctx.globalAlpha=0.4; ctx.beginPath(); ctx.arc(0,0,3,0,Math.PI*2); ctx.fill();
       ctx.restore();
+    } else if(bShape==='bolt'){
+      ctx.save(); ctx.translate(b.x,b.y);
+      ctx.shadowBlur=10; ctx.shadowColor=bCol;
+      ctx.beginPath();
+      ctx.moveTo(-2,-8); ctx.lineTo(2,-8); ctx.lineTo(0,-3); ctx.lineTo(3,-3);
+      ctx.lineTo(-1,3); ctx.lineTo(1,0); ctx.lineTo(-3,0);
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
     } else if(bShape==='comet'){
       ctx.beginPath(); ctx.ellipse(b.x,b.y,2,9,0,0,Math.PI*2); ctx.fill();
       ctx.globalAlpha=0.3; ctx.beginPath(); ctx.ellipse(b.x,b.y+7,1,4,0,0,Math.PI*2); ctx.fill();
@@ -5816,6 +6173,7 @@ function doAscension() {
   var savedLootBoxPityA = SAVE.lootBoxPity||0;
   var savedDailySpinDateA = SAVE.lastDailySpinDate;
   var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
+  var savedBetaGiftA = SAVE.betaGiftClaimed;
   var savedNotifA = SAVE.notificationsOn||false;
   var hiScore = Math.max(score, SAVE.hiScore);
   // Clear game state
@@ -5860,6 +6218,7 @@ function doAscension() {
   SAVE.lootBoxPity = savedLootBoxPityA;
   SAVE.lastDailySpinDate = savedDailySpinDateA;
   SAVE.dailySpinStreak = savedDailySpinStreakA;
+  SAVE.betaGiftClaimed = savedBetaGiftA;
   SAVE.notificationsOn = savedNotifA;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
@@ -5936,6 +6295,7 @@ function _doEndGame() {
   const savedLootBoxPityE = SAVE.lootBoxPity||0;
   const savedDailySpinDateE = SAVE.lastDailySpinDate;
   const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
+  const savedBetaGiftE = SAVE.betaGiftClaimed;
   const savedNotifE = SAVE.notificationsOn||false;
   // Calculate echo gain for this run
   var echoGain = 0;
@@ -5980,6 +6340,7 @@ function _doEndGame() {
   SAVE.lootBoxPity = savedLootBoxPityE;
   SAVE.lastDailySpinDate = savedDailySpinDateE;
   SAVE.dailySpinStreak = savedDailySpinStreakE;
+  SAVE.betaGiftClaimed = savedBetaGiftE;
   SAVE.notificationsOn = savedNotifE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
@@ -6649,6 +7010,7 @@ function doReset() {
   const savedLootBoxPityR = SAVE.lootBoxPity||0;
   const savedDailySpinDateR = SAVE.lastDailySpinDate;
   const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
+  const savedBetaGiftR = SAVE.betaGiftClaimed;
   const savedNotifR = SAVE.notificationsOn||false;
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
@@ -6681,6 +7043,7 @@ function doReset() {
   SAVE.lootBoxPity = savedLootBoxPityR;
   SAVE.lastDailySpinDate = savedDailySpinDateR;
   SAVE.dailySpinStreak = savedDailySpinStreakR;
+  SAVE.betaGiftClaimed = savedBetaGiftR;
   SAVE.notificationsOn = savedNotifR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
@@ -7642,7 +8005,7 @@ function buyPowerupUpgrade(key){
 }
 
 function buyKeyWithEchoes(){
-  var cost = 50;
+  var cost = 10;
   if((SAVE.echoes||0) < cost){ showToast('🌀 Not enough Echoes!'); return; }
   SAVE.echoes -= cost;
   SAVE.keys = (SAVE.keys||0) + 1;
@@ -7653,9 +8016,37 @@ function buyKeyWithEchoes(){
 }
 
 // ── VAULT / LOOT BOX SYSTEM ──────────────────────────────────
+function claimBetaGift(){
+  if(SAVE.betaGiftClaimed) return;
+  // Build splash overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;opacity:0;transition:opacity 0.4s';
+  overlay.innerHTML =
+    '<div style="font-size:60px;margin-bottom:16px;animation:cardPulse 1.5s ease-in-out infinite">🎁</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ff44aa;letter-spacing:3px;text-shadow:0 0 20px #ff44aa66;margin-bottom:8px">THANK YOU!</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#aabbcc;letter-spacing:1px;text-align:center;max-width:280px;line-height:1.8;margin-bottom:24px">For being an early playtester of Void Invaders! Your feedback is shaping this game.<br><br>Enjoy this gift on us.</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#ffcc00;text-shadow:0 0 16px #ffcc00;margin-bottom:6px">🔑 15 KEYS</div>'+
+    '<div style="font-size:10px;color:#667;letter-spacing:1px;margin-bottom:24px">BETA TESTER REWARD</div>'+
+    '<button id="beta-gift-claim-btn" style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;padding:14px 40px;border-radius:12px;border:2px solid #ff44aa;background:linear-gradient(180deg,rgba(255,68,170,0.15),rgba(255,68,170,0.05));color:#ff44aa;cursor:pointer;letter-spacing:3px;box-shadow:0 0 20px #ff44aa44;transition:all .15s">CLAIM REWARD</button>';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.style.opacity='1'; });
+  overlay.querySelector('#beta-gift-claim-btn').onclick = function(){
+    SAVE.keys = (SAVE.keys||0) + 15;
+    SAVE.totalKeys = (SAVE.totalKeys||0) + 15;
+    SAVE.betaGiftClaimed = true;
+    doSave();
+    sfx('trophyClaim');
+    showToast('🎁 +15 Keys claimed! Happy testing!');
+    overlay.style.opacity = '0';
+    setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); buildVaultScreen(); }, 400);
+  };
+}
+
 function buildVaultScreen(){
   var bal = document.getElementById('vault-key-balance');
   if(bal) bal.textContent = '🔑 ' + (SAVE.keys||0);
+  var giftBtn = document.getElementById('vault-beta-gift');
+  if(giftBtn) giftBtn.style.display = SAVE.betaGiftClaimed ? 'none' : 'inline-block';
   var btn = document.getElementById('vault-open-btn');
   if(btn){
     var has = (SAVE.keys||0) >= 1;
@@ -7686,42 +8077,156 @@ function buildVaultScreen(){
   }
   var statsLine = document.getElementById('vault-stats-line');
   if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates opened · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
-  // Build artifact sets grid
+  // Build artifact sets grid — grouped by reward type
   var grid = document.getElementById('vault-sets-grid');
   if(!grid) return;
   grid.innerHTML = '';
-  ARTIFACT_SETS.forEach(function(set){
-    var owned = set.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length;
-    var total = set.artifacts.length;
-    var complete = (SAVE.artifactSetsComplete||{})[set.key];
-    var setEl = document.createElement('div');
-    setEl.style.cssText = 'border:1.5px solid '+(complete?set.color+'99':'#1a254088')+';border-radius:10px;padding:10px 12px;margin-bottom:8px;background:'+(complete?'rgba('+hexToRgb(set.color)+',0.06)':'rgba(10,15,30,0.5)')+';transition:all .2s';
-    var header = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-      '<div style="display:flex;align-items:center;gap:6px">' +
-      '<span style="font-size:16px">'+set.icon+'</span>' +
-      '<span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:'+set.color+';letter-spacing:1px">'+set.name+'</span>' +
-      '</div>' +
-      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(complete?'#00ff88':'#556')+'">'+owned+'/'+total+(complete?' ✓':'')+'</span>' +
-      '</div>';
-    // Progress bar
-    var barPct = Math.round((owned/total)*100);
-    var bar = '<div style="height:3px;background:#1a2540;border-radius:2px;margin-bottom:8px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+set.color+';border-radius:2px;transition:width .3s"></div></div>';
-    // Artifact icons
-    var icons = '<div style="display:flex;gap:6px;flex-wrap:wrap">';
-    set.artifacts.forEach(function(a){
-      var has = (SAVE.artifacts||{})[a.id];
-      var rDef = ARTIFACT_RARITIES.find(function(r){ return r.id===a.rarity; });
-      icons += '<div style="width:44px;height:44px;border-radius:8px;border:1.5px solid '+(has?rDef.color+'88':'#1a254066')+';background:'+(has?'rgba('+hexToRgb(rDef.color)+',0.08)':'rgba(10,15,30,0.4)')+';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px">' +
-        '<span style="font-size:'+(has?'16px':'14px')+';'+(has?'':'filter:grayscale(1) brightness(0.3)')+'">'+( has?a.icon:'❓')+'</span>' +
-        '<span style="font-size:6px;color:'+(has?rDef.color:'#334')+';letter-spacing:0.5px;font-family:Orbitron,sans-serif">'+rDef.name+'</span>' +
-        '</div>';
+  grid.style.cssText = '';
+  var rewardGroups = [
+    {type:'sprite', label:'SHIP SPRITES', icon:'🚀'},
+    {type:'aura', label:'AURAS', icon:'✨'},
+    {type:'decal', label:'DECALS', icon:'🎯'},
+    {type:'hullColor', label:'HULL COLORS', icon:'🎨'},
+    {type:'bulletShape', label:'BULLET SHAPES', icon:'💥'}
+  ];
+  rewardGroups.forEach(function(group){
+    var sets = ARTIFACT_SETS.filter(function(s){ return s.reward.type===group.type; });
+    if(sets.length===0) return;
+    // Group header
+    var header = document.createElement('div');
+    header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#667788;letter-spacing:2px;margin:14px 0 6px;display:flex;align-items:center;gap:6px';
+    header.innerHTML = '<span style="font-size:14px">'+group.icon+'</span>'+group.label;
+    grid.appendChild(header);
+    // Cards row
+    var row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px';
+    sets.forEach(function(set){
+      var owned = set.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length;
+      var total = set.artifacts.length;
+      var complete = (SAVE.artifactSetsComplete||{})[set.key];
+      var barPct = Math.round((owned/total)*100);
+      var setEl = document.createElement('div');
+      setEl.style.cssText = 'border:1.5px solid '+(complete?set.color:'#1a254088')+';border-radius:10px;padding:10px 8px 8px;background:'+(complete?'rgba('+hexToRgb(set.color)+',0.08)':'rgba(10,15,30,0.5)')+';cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:70px;justify-content:center'+(complete?';box-shadow:0 0 12px '+set.color+'44,inset 0 0 12px '+set.color+'11':'');
+      setEl.innerHTML =
+        '<span style="font-size:22px;'+(complete?'filter:none;text-shadow:0 0 8px '+set.color:'filter:brightness(0.7)')+'">'+set.icon+'</span>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+set.color+';letter-spacing:1px;text-align:center">'+set.name+'</span>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(complete?'#00ff88':'#8899aa')+'">'+owned+'/'+total+(complete?' ✓':'')+'</span>'+
+        '<div style="width:80%;height:3px;background:#1a2540;border-radius:2px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+set.color+';border-radius:2px"></div></div>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(complete?set.color+'cc':'#44556688')+';letter-spacing:0.5px;margin-top:2px;text-align:center">'+set.reward.label+'</span>';
+      setEl.onclick = (function(k){ return function(){ showSetPreview(k); }; })(set.key);
+      row.appendChild(setEl);
     });
-    icons += '</div>';
-    // Reward line
-    var reward = '<div style="font-size:8px;color:'+(complete?'#00ff88':set.color+'88')+';margin-top:6px;letter-spacing:1px;font-family:Orbitron,sans-serif">'+(complete?'✓ REWARD: '+set.reward.label:'Reward: '+set.reward.label)+'</div>';
-    setEl.innerHTML = header + bar + icons + reward;
-    grid.appendChild(setEl);
+    grid.appendChild(row);
   });
+}
+
+/* ── Set Preview Modal ── */
+var _setPreviewRaf = null;
+function showSetPreview(setKey){
+  var set = ARTIFACT_SETS.find(function(s){ return s.key===setKey; });
+  if(!set) return;
+  var owned = set.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length;
+  var total = set.artifacts.length;
+  var complete = !!(SAVE.artifactSetsComplete||{})[set.key];
+  var barPct = Math.round((owned/total)*100);
+  // Build overlay
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(3,6,16,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px env(safe-area-inset-bottom,16px)';
+  // Close function
+  function closePreview(){
+    if(_setPreviewRaf){ cancelAnimationFrame(_setPreviewRaf); _setPreviewRaf=null; }
+    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+  }
+  // Top section
+  var topHtml =
+    '<div style="padding:24px 0 8px;text-align:center;width:100%;max-width:340px">' +
+      '<div style="font-size:40px;margin-bottom:6px;'+(complete?'text-shadow:0 0 16px '+set.color:'')+'">'+set.icon+'</div>' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+set.color+';letter-spacing:3px;margin-bottom:4px">'+set.name+'</div>' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#8899aa;letter-spacing:1px;margin-bottom:8px">'+owned+'/'+total+' COLLECTED</div>' +
+      '<div style="height:4px;background:#1a2540;border-radius:2px;overflow:hidden;margin:0 20px 8px"><div style="height:100%;width:'+barPct+'%;background:'+set.color+';border-radius:2px;transition:width .3s"></div></div>' +
+      (complete?'<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#00ff88;letter-spacing:2px;margin-bottom:4px">✓ SET COMPLETE</div>':'') +
+    '</div>';
+  // Artifact grid
+  var artHtml = '<div style="width:100%;max-width:340px;margin-bottom:12px">';
+  set.artifacts.forEach(function(a){
+    var has = (SAVE.artifacts||{})[a.id];
+    var rDef = ARTIFACT_RARITIES.find(function(r){ return r.id===a.rarity; });
+    artHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:4px;border-radius:8px;border:1px solid '+(has?rDef.color+'55':'#1a254066')+';background:'+(has?'rgba('+hexToRgb(rDef.color)+',0.06)':'rgba(10,15,30,0.4)')+'">' +
+      '<span style="font-size:22px;width:32px;text-align:center;'+(has?'':'filter:grayscale(1) brightness(0.3)')+'">'+( has?a.icon:'❓')+'</span>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:'+(has?'#dde':'#445')+';letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.name+'</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:'+rDef.color+';letter-spacing:1px;margin-top:2px">'+rDef.name+'</div>' +
+      '</div>' +
+      '<span style="font-size:14px">'+(has?'✅':'🔒')+'</span>' +
+    '</div>';
+  });
+  artHtml += '</div>';
+  // Reward section
+  var reward = set.reward;
+  var rewardHtml =
+    '<div style="width:100%;max-width:340px;text-align:center;margin-bottom:16px">' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-bottom:10px">SET REWARD</div>' +
+      '<div id="set-preview-canvas-wrap" style="display:flex;justify-content:center;margin-bottom:10px"></div>' +
+      '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+set.color+';letter-spacing:1px;margin-bottom:4px">'+reward.label+'</div>' +
+      (complete
+        ? '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00ff88;letter-spacing:1px">✓ UNLOCKED — EQUIP IN CUSTOMIZE</div>'
+        : '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#445;letter-spacing:1px">Complete the set to unlock</div>') +
+    '</div>';
+  // Back button
+  var backHtml = '<div style="padding:8px 0 16px"><button style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;padding:12px 32px;border-radius:10px;border:1.5px solid #00f5ff44;background:rgba(0,245,255,0.06);color:#00f5ff;cursor:pointer;letter-spacing:2px" id="set-preview-back">← BACK TO VAULT</button></div>';
+  overlay.innerHTML = topHtml + artHtml + rewardHtml + backHtml;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#set-preview-back').onclick = closePreview;
+  // Canvas preview
+  var wrap = overlay.querySelector('#set-preview-canvas-wrap');
+  var cvs = document.createElement('canvas');
+  cvs.width = 160; cvs.height = 160;
+  cvs.style.cssText = 'position:static;width:160px;height:160px;border-radius:12px;border:1px solid '+set.color+'33;background:rgba(5,10,25,0.8)';
+  wrap.appendChild(cvs);
+  var pCtx = cvs.getContext('2d');
+  // Build custom object based on reward type
+  var previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
+  if(reward.type==='sprite') previewCustom.sprite = reward.id;
+  else if(reward.type==='aura') previewCustom.aura = reward.id;
+  else if(reward.type==='decal') previewCustom.decal = reward.id;
+  else if(reward.type==='hullColor'){ previewCustom.hullColor = reward.id; previewCustom.cockpitColor = reward.id; }
+  else if(reward.type==='bulletShape') previewCustom.bulletShape = reward.id;
+  // Bullet preview particles for bulletShape rewards
+  var _prevBullets = [];
+  var _prevLastFire = 0;
+  // Animation loop
+  function renderPreview(ts){
+    pCtx.clearRect(0,0,160,160);
+    // For bulletShape rewards, fire and render bullets
+    if(reward.type==='bulletShape'){
+      if(!ts) ts = performance.now();
+      if(ts - _prevLastFire > 350){ _prevBullets.push({x:80,y:65,life:1}); _prevLastFire = ts; }
+      var bCol = set.color||'#00f5ff';
+      _prevBullets.forEach(function(b){
+        b.y -= 2.5; b.life -= 0.025;
+        pCtx.save(); pCtx.globalAlpha = Math.max(0,b.life); pCtx.fillStyle = bCol;
+        pCtx.shadowBlur = 18; pCtx.shadowColor = bCol;
+        if(reward.id==='nova'){
+          pCtx.save(); pCtx.translate(b.x,b.y);
+          pCtx.beginPath(); for(var ni=0;ni<8;ni++){ var na=ni*Math.PI/4-Math.PI/2; var nr=ni%2===0?14:5; ni===0?pCtx.moveTo(Math.cos(na)*nr,Math.sin(na)*nr):pCtx.lineTo(Math.cos(na)*nr,Math.sin(na)*nr); } pCtx.closePath(); pCtx.fill(); pCtx.restore();
+        } else if(reward.id==='bolt'){
+          pCtx.save(); pCtx.translate(b.x,b.y);
+          pCtx.beginPath(); pCtx.moveTo(-4,-14); pCtx.lineTo(4,-14); pCtx.lineTo(0,-5); pCtx.lineTo(6,-5); pCtx.lineTo(-2,6); pCtx.lineTo(2,0); pCtx.lineTo(-6,0); pCtx.closePath(); pCtx.fill(); pCtx.restore();
+        } else {
+          pCtx.beginPath(); pCtx.ellipse(b.x,b.y,5,12,0,0,Math.PI*2); pCtx.fill();
+        }
+        pCtx.restore();
+      });
+      _prevBullets = _prevBullets.filter(function(b){ return b.life>0 && b.y>-20; });
+    }
+    // For hullColor rewards, also show bullet color matching
+    if(reward.type==='hullColor'){
+      previewCustom.bulletColor = reward.id;
+    }
+    drawShip(pCtx, 80, 90, 0, previewCustom, 2.5);
+    _setPreviewRaf = requestAnimationFrame(renderPreview);
+  }
+  renderPreview();
 }
 
 /* ── Vault Synthwave Background (pure CSS) ── */
@@ -7737,14 +8242,14 @@ function startVaultBg(){
   _vaultBgEl.innerHTML =
     // Base dark
     '<div style="position:absolute;inset:0;background:linear-gradient(180deg,#0a0015 0%,#0d0020 30%,#15002a 50%,#0a0015 100%)"></div>'+
-    // Upper sky gradient glow (warm sunset colors without the sun)
-    '<div style="position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(180deg,rgba(255,50,100,0.12) 0%,rgba(255,100,0,0.1) 30%,rgba(255,160,0,0.06) 55%,transparent 100%);pointer-events:none"></div>'+
+    // Upper sky gradient glow (warm sunset colors — extends to full height)
+    '<div style="position:absolute;left:0;right:0;top:0;height:68%;background:linear-gradient(180deg,rgba(80,10,60,0.2) 0%,rgba(255,50,100,0.14) 20%,rgba(255,100,0,0.12) 45%,rgba(255,160,0,0.08) 70%,transparent 100%);pointer-events:none"></div>'+
     // Horizon glow line
-    '<div style="position:absolute;left:0;right:0;top:48%;height:4px;background:linear-gradient(90deg,transparent 5%,#ff206044 30%,#ff206077 50%,#ff206044 70%,transparent 95%);box-shadow:0 0 40px #ff206044,0 0 80px #ff206022"></div>'+
+    '<div style="position:absolute;left:0;right:0;top:65%;height:4px;background:linear-gradient(90deg,transparent 5%,#ff206044 30%,#ff206077 50%,#ff206044 70%,transparent 95%);box-shadow:0 0 40px #ff206044,0 0 80px #ff206022"></div>'+
     // Warm center ambient
-    '<div style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:350px;height:250px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,80,40,0.1) 0%,rgba(255,50,100,0.04) 50%,transparent 70%);pointer-events:none"></div>'+
+    '<div style="position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:400px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,80,40,0.1) 0%,rgba(255,50,100,0.04) 50%,transparent 70%);pointer-events:none"></div>'+
     // Grid floor
-    '<div style="position:absolute;left:0;right:0;top:50%;bottom:0;overflow:hidden;perspective:200px;perspective-origin:50% 0%">'+
+    '<div style="position:absolute;left:0;right:0;top:65%;bottom:0;overflow:hidden;perspective:200px;perspective-origin:50% 0%">'+
       '<div class="vault-grid-floor" style="position:absolute;inset:0;background-image:'+
         'linear-gradient(0deg,transparent 0%,transparent calc(100% - 1px),rgba(0,200,255,0.15) 100%),'+
         'linear-gradient(90deg,transparent 0%,transparent calc(100% - 1px),rgba(255,0,120,0.12) 100%);'+
@@ -7754,7 +8259,7 @@ function startVaultBg(){
     '<div style="position:absolute;left:0;top:0;bottom:0;width:15%;background:linear-gradient(90deg,rgba(170,0,255,0.1),transparent)"></div>'+
     '<div style="position:absolute;right:0;top:0;bottom:0;width:15%;background:linear-gradient(-90deg,rgba(170,0,255,0.1),transparent)"></div>'+
     // Stars
-    '<div style="position:absolute;inset:0;bottom:50%;" class="vault-stars"></div>'+
+    '<div style="position:absolute;inset:0;bottom:35%;" class="vault-stars"></div>'+
     // Scan lines
     '<div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);pointer-events:none"></div>';
   document.body.appendChild(_vaultBgEl);
@@ -7914,14 +8419,14 @@ var DAILY_SPIN_REWARDS = [
   {label:'100 💰',     wl:'100',   type:'coins',   val:100, color:'#3070a0',bg:'#112240',weight:15},
   {label:'5 🌀',       wl:'5🌀',   type:'echoes',  val:5,   color:'#8844cc',bg:'#1a0a30',weight:15},
   {label:'15 🌀',      wl:'15🌀',  type:'echoes',  val:15,  color:'#aa55dd',bg:'#200a40',weight:10},
-  {label:'1 🔑',       wl:'1🔑',   type:'keys',    val:1,   color:'#ddaa00',bg:'#2a2200',weight:12},
-  {label:'2 🔑',       wl:'2🔑',   type:'keys',    val:2,   color:'#eebb00',bg:'#302800',weight:6},
+  {label:'2 🔑',       wl:'2🔑',   type:'keys',    val:2,   color:'#ddaa00',bg:'#2a2200',weight:15},
+  {label:'3 🔑',       wl:'3🔑',   type:'keys',    val:3,   color:'#eebb00',bg:'#302800',weight:8},
   {label:'200 💰',     wl:'200',   type:'coins',   val:200, color:'#00cccc',bg:'#0a2a3a',weight:8},
   {label:'25 🌀',      wl:'25🌀',  type:'echoes',  val:25,  color:'#cc66ff',bg:'#2a1050',weight:5},
-  {label:'3 🔑',       wl:'3🔑',   type:'keys',    val:3,   color:'#ffcc00',bg:'#3a3000',weight:3},
+  {label:'5 🔑',       wl:'5🔑',   type:'keys',    val:5,   color:'#ffcc00',bg:'#3a3000',weight:4},
   {label:'ARTIFACT!',  wl:'📦',    type:'artifact', val:1,  color:'#ff4466',bg:'#3a0a18',weight:3},
   {label:'500 💰',     wl:'500',   type:'coins',   val:500, color:'#ffd000',bg:'#3a3000',weight:2},
-  {label:'5 🔑 JACKPOT!',wl:'5🔑', type:'keys',   val:5,   color:'#ff3300',bg:'#400800',weight:1},
+  {label:'10 🔑 JACKPOT!',wl:'10🔑',type:'keys',   val:10,  color:'#ff3300',bg:'#400800',weight:1},
 ];
 
 var _dailySpinAngle = 0;
@@ -8355,7 +8860,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
 
   // ── MUSIC DUCK — fade music down for dramatic effect ──
   var _preDuckGain = masterGain.gain.value;
-  masterGain.gain.setTargetAtTime(_preDuckGain * 0.15, AC.currentTime, 0.4);
+  masterGain.gain.setTargetAtTime(_preDuckGain * 0.5, AC.currentTime, 0.4);
 
   // ── Light ray helper ──
   var rays = [];
@@ -8527,8 +9032,8 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
     masterGain.gain.setTargetAtTime(_preDuckGain, AC.currentTime, 0.8);
   }, 3400);
 
-  // ── PHASE 3.5: Set card slide-in with artifact glide (3.9s) ──
-  setTimeout(function(){
+  // ── PHASE 3.5: Set card slide-in with artifact glide (3.9s) — only for NEW artifacts ──
+  isNew && setTimeout(function(){
     var theSet = ARTIFACT_SETS.find(function(s){ return s.key===artifact.setKey; });
     if(!theSet) return;
 
@@ -8639,7 +9144,8 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
     }, 700);
   }, 3900);
 
-  // ── PHASE 4: Tap to dismiss (6.4s) ──
+  // ── PHASE 4: Tap to dismiss ──
+  var _dismissDelay = isNew ? 6400 : 4200;
   setTimeout(function(){
     tapHint.style.opacity = '1';
     overlay.onclick = function(){
@@ -8654,7 +9160,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
         buildVaultScreen();
       },350);
     };
-  }, 6400);
+  }, _dismissDelay);
 }
 
 function buyEchoUpgrade(key){
@@ -9056,6 +9562,10 @@ function startCustomizeAnim(){
         cx.beginPath(); for(var ni=0;ni<8;ni++){ var na=ni*Math.PI/4-Math.PI/2; var nr=ni%2===0?7:3; ni===0?cx.moveTo(Math.cos(na)*nr,Math.sin(na)*nr):cx.lineTo(Math.cos(na)*nr,Math.sin(na)*nr); } cx.closePath(); cx.fill();
         cx.globalAlpha=0.4; cx.beginPath(); cx.arc(0,0,3,0,Math.PI*2); cx.fill(); cx.restore();
       }
+      else if(b.shape==='bolt'){
+        cx.save(); cx.translate(b.x,b.y); cx.shadowBlur=10; cx.shadowColor=b.col;
+        cx.beginPath(); cx.moveTo(-2,-8); cx.lineTo(2,-8); cx.lineTo(0,-3); cx.lineTo(3,-3); cx.lineTo(-1,3); cx.lineTo(1,0); cx.lineTo(-3,0); cx.closePath(); cx.fill(); cx.restore();
+      }
       else if(b.shape==='comet'){ cx.beginPath(); cx.arc(b.x,b.y,3.5,0,Math.PI*2); cx.fill(); cx.globalAlpha*=0.4; cx.fillRect(b.x-1,b.y+3,2,10); }
       else { cx.fillRect(b.x-1.5,b.y-8,3,12); }
     });
@@ -9190,7 +9700,9 @@ function buildCustomize(){
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
-  if(content.hasChildNodes()){ updateSpriteOverrideState(); return; }
+  // Count expected items to detect newly unlocked rewards
+  var _expectedItems=SPRITE_SHIPS.length+AURAS.length+DECALS.length+BULLET_SHAPES.length+HULL_COLORS.length;
+  if(content.hasChildNodes() && content.dataset.itemCount==_expectedItems){ updateSpriteOverrideState(); return; }
   const sc=SAVE.shipCustom;
 
   function section(title, color, items, key, current){
@@ -9232,6 +9744,7 @@ function buildCustomize(){
   content.appendChild(section('BULLET SHAPE','#cc44ff',BULLET_SHAPES,'bulletShape',sc.bulletShape||'laser'));
   content.appendChild(section('SHIP AURA','#ffd700',AURAS,'aura',sc.aura||'none'));
   content.appendChild(section('DECALS','#00ff88',DECALS,'decal',sc.decal||'none'));
+  content.dataset.itemCount=_expectedItems;
   updateSpriteOverrideState();
 }
 
