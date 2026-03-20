@@ -1,4 +1,10 @@
-self.addEventListener('fetch', e => {});
+self.addEventListener('fetch', function(e) {
+  e.respondWith(
+    fetch(e.request).catch(function() {
+      return caches.match(e.request);
+    })
+  );
+});
 
 // ── Push Notifications ──────────────────────────────
 self.addEventListener('push', function(event) {
