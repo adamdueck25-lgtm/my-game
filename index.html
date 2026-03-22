@@ -646,7 +646,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div class="shop-grid" id="forge-grid"></div>
     </div>
-    <div style="padding:10px 0 20px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
+    <div style="padding:10px 0 60px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
       <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:16px">
         <button onclick="showPacksFromShop()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
         <button onclick="openTrophies('screen-shop')" class="nav-tab" style="--ntc:#ffaa00">🏆 Trophies</button>
@@ -11141,6 +11141,36 @@ function showCustomizeCategory(key){
   panel.appendChild(grid);
 }
 
+function initCustomizeSwipe(){
+  var panel=document.getElementById('customize-panel');
+  if(!panel||panel._swipeInit) return;
+  panel._swipeInit=true;
+  var startX=0,startY=0,tracking=false;
+  panel.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1) return;
+    startX=e.touches[0].clientX; startY=e.touches[0].clientY; tracking=true;
+  },{passive:true});
+  panel.addEventListener('touchmove',function(e){
+    if(!tracking) return;
+    var dy=Math.abs(e.touches[0].clientY-startY);
+    if(dy>30) tracking=false;
+  },{passive:true});
+  panel.addEventListener('touchend',function(e){
+    if(!tracking) return;
+    tracking=false;
+    var endX=e.changedTouches[0].clientX;
+    var dx=endX-startX;
+    if(Math.abs(dx)<50) return;
+    var available=_custCategories.filter(function(c){ return !document.querySelector('.cust-pill[data-cust-key="'+c.key+'"].overridden'); });
+    var curIdx=-1;
+    for(var i=0;i<available.length;i++){ if(available[i].key===_custActiveCategory){ curIdx=i; break; } }
+    if(curIdx===-1) return;
+    var nextIdx=dx<0?curIdx+1:curIdx-1;
+    if(nextIdx<0||nextIdx>=available.length) return;
+    showCustomizeCategory(available[nextIdx].key);
+  },{passive:true});
+}
+
 function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   restoreArtifactRewards();
@@ -11168,6 +11198,7 @@ function buildCustomize(){
   showCustomizeCategory(_custActiveCategory);
   panel.dataset.itemCount=_expectedItems;
   updateSpriteOverrideState();
+  initCustomizeSwipe();
 }
 
 function buildChangelog(){
