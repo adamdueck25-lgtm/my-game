@@ -280,7 +280,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
         🤖 ANDROID · MENU → <span style="color:#00f5ff;text-shadow:0 0 6px #00f5ff44">ADD TO HOME SCREEN</span>
       </div>
       <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,#00f5ff22,transparent)"></div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#4a8899;letter-spacing:2px;text-align:center">INSTALL FOR THE BEST EXPERIENCE</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#4a8899;letter-spacing:2px;text-align:center">INSTALL FOR THE OPTIMIZED AND INTENDED EXPERIENCE</div>
     </div>
   </div>
 </div>
@@ -302,7 +302,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
   </div>
-  <div id="splash-version">v6.0</div>
+  <div id="splash-version">v6.1</div>
   <div id="splash-flash" style="position:absolute;inset:0;background:#00f5ff;opacity:0;pointer-events:none;z-index:20"></div>
 </div>
 
@@ -422,7 +422,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:10px;color:#556;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.8.5 (BETA)</div>
+    <div id="menu-footer" style="font-size:10px;color:#556;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.9.0 (BETA)</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -683,20 +683,24 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button id="vault-beta-gift" onclick="claimBetaGift()" style="display:none;margin:8px auto 0;padding:10px 20px;border-radius:12px;border:2px solid #ff44aa;background:linear-gradient(90deg,rgba(255,68,170,0.06) 0%,rgba(255,68,170,0.16) 50%,rgba(255,68,170,0.06) 100%);cursor:pointer;animation:cardPulse 1.5s ease-in-out infinite;filter:drop-shadow(0 0 12px #ff44aa88);position:relative;overflow:hidden"><span style="font-size:18px;vertical-align:middle">🎁</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#ff44aa;letter-spacing:3px;margin-left:8px;vertical-align:middle">CLAIM FREE GIFT!</span><span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.12) 45%,rgba(255,255,255,0.22) 50%,rgba(255,255,255,0.12) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 2.5s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
   </div>
   <div style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
-    <div id="vault-crate-area" style="margin:16px 0;text-align:center">
-      <div id="vault-crate-icon" style="font-size:64px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #ffcc0066)">📦</div>
-      <button id="vault-open-btn" onclick="openLootBox()" style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;padding:14px 36px;border-radius:12px;border:2px solid #ffcc00;background:linear-gradient(90deg,rgba(255,204,0,0.08) 0%,rgba(255,204,0,0.18) 50%,rgba(255,204,0,0.08) 100%);color:#ffcc00;cursor:pointer;letter-spacing:3px;margin-top:10px;position:relative;overflow:hidden;animation:crateGlow 2.2s ease-in-out infinite">🔑 OPEN CRATE<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
-      <div style="font-size:10px;color:#778;margin-top:6px;letter-spacing:1px">Costs 1 Key per crate</div>
-      <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px">
-        <button id="vault-daily-spin-btn" onclick="openDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1.5px solid #ff8800;background:rgba(255,136,0,0.08);color:#ff8800;cursor:pointer;letter-spacing:1px;transition:all .15s">⭐ DAILY SPIN</button>
-        <button id="vault-get-keys-btn" onclick="rewardAdKey()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid #33444466;background:transparent;color:#556;cursor:pointer;letter-spacing:1px;transition:all .15s">🎬 MORE KEYS</button>
+    <div id="vault-crate-area" style="margin:16px 0;display:flex;gap:20px;align-items:flex-start;justify-content:center">
+      <div style="text-align:center">
+        <div id="vault-crate-icon" style="font-size:52px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #ffcc0066)">📦</div>
+        <button id="vault-open-btn" onclick="openLootBox()" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;padding:10px 22px;border-radius:12px;border:2px solid #ffcc00;background:linear-gradient(90deg,rgba(255,204,0,0.08) 0%,rgba(255,204,0,0.18) 50%,rgba(255,204,0,0.08) 100%);color:#ffcc00;cursor:pointer;letter-spacing:2px;margin-top:8px;position:relative;overflow:hidden;animation:crateGlow 2.2s ease-in-out infinite">🔑 OPEN<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#ffcc00;margin-top:6px;letter-spacing:1px;text-shadow:0 0 8px #ffcc0044">🔑 1</div>
       </div>
-      <div id="vault-daily-status" style="font-size:10px;color:#778;margin-top:4px;letter-spacing:1px"></div>
+      <div style="text-align:center">
+        <div style="font-size:52px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #aa44ff66)">💎</div>
+        <button id="vault-premium-btn" onclick="openPremiumCrate()" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;padding:10px 22px;border-radius:12px;border:2px solid #aa44ff;background:linear-gradient(135deg,rgba(170,68,255,0.08) 0%,rgba(255,0,100,0.06) 50%,rgba(170,68,255,0.08) 100%);color:#cc66ff;cursor:pointer;letter-spacing:2px;margin-top:8px;position:relative;overflow:hidden;box-shadow:0 0 16px #aa44ff33,inset 0 0 16px #aa44ff11">💎 PREMIUM<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#cc66ff;margin-top:6px;letter-spacing:1px;text-shadow:0 0 8px #aa44ff44">🔑 10</div>
+      </div>
     </div>
-    <div style="width:100%;max-width:380px;margin-top:8px">
-      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;text-align:center;margin-bottom:10px">ARTIFACT COLLECTION</div>
-      <div id="vault-sets-grid"></div>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:0">
+      <button id="vault-daily-spin-btn" onclick="openDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1.5px solid #ff8800;background:rgba(255,136,0,0.08);color:#ff8800;cursor:pointer;letter-spacing:1px;transition:all .15s">⭐ DAILY SPIN</button>
+      <button id="vault-get-keys-btn" onclick="rewardAdKey()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid #33444466;background:transparent;color:#556;cursor:pointer;letter-spacing:1px;transition:all .15s">🎬 MORE KEYS</button>
     </div>
+    <div id="vault-daily-status" style="font-size:10px;color:#778;margin-top:4px;letter-spacing:1px;text-align:center"></div>
+    <div id="vault-collections-area" style="width:100%;max-width:380px;margin-top:8px"></div>
     <div style="font-size:10px;color:#667;text-align:center;margin:12px 0 4px;letter-spacing:1px" id="vault-stats-line"></div>
   </div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center;position:relative;z-index:1">
@@ -1084,8 +1088,26 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <script>
 'use strict';
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/my-game/sw.js').catch(()=>{});
+  navigator.serviceWorker.register('/my-game/sw.js').then(function(reg){
+    // Force update check on each page load
+    reg.update().catch(function(){});
+  }).catch(function(e){ console.warn('SW registration failed:', e); });
 }
+
+// Global error recovery — clean up stuck crate overlays
+window.addEventListener('error', function(evt){
+  console.error('Global error:', evt.error||evt.message);
+  var stuck = document.getElementById('lootbox-overlay');
+  if(stuck && stuck.parentNode){
+    try {
+      if(typeof masterGain!=='undefined'&&masterGain&&masterGain.gain&&typeof AC!=='undefined'){
+        masterGain.gain.cancelScheduledValues(AC.currentTime);
+        masterGain.gain.setTargetAtTime(1.0, AC.currentTime, 0.1);
+      }
+    } catch(e){}
+    stuck.parentNode.removeChild(stuck);
+  }
+});
 
 // ── PUSH NOTIFICATIONS ─────────────────────────────
 var PUSH_WORKER_URL = 'https://void-push.adamdueck25.workers.dev';
@@ -2461,7 +2483,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
   forgeLevels:{ damage:0, rate:0, armor:0 },
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:true, synergiesUnlocked:false, discoveredSynergies:[],
-  keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0,
+  keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0, premiumOwned:{}, premiumCratesOpened:0,
   lastDailySpinDate:null, dailySpinStreak:0, betaGiftClaimed:false,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false, notifIntroSeen:false,
   musicVolume:55, sfxVolume:70,
@@ -2552,6 +2574,16 @@ function checkDailyChallenges() {
   if (newly.length) doSave();
   return newly;
 }
+// ── PREMIUM ITEMS ──────────────────────────────────────────
+var PREMIUM_ITEMS = [
+  {id:'celestialShip', name:'CELESTIAL TITAN', type:'sprite', label:'CELESTIAL TITAN', icon:'👼', rarity:'legendary', color:'#ffd700'},
+  {id:'cyberShip',     name:'CYBER WRAITH',   type:'sprite', label:'CYBER WRAITH',   icon:'🤖', rarity:'epic',      color:'#ff0044'},
+  {id:'voidDragonShip',name:'VOID DRAGON',    type:'sprite', label:'VOID DRAGON',    icon:'🐉', rarity:'legendary', color:'#aa00ff'},
+  {id:'phantomBladeShip', name:'PHANTOM BLADE', type:'sprite', label:'PHANTOM BLADE', icon:'⚔️', rarity:'legendary', color:'#00ffcc'},
+  {id:'solarFlareShip',   name:'SOLAR FLARE',   type:'sprite', label:'SOLAR FLARE',   icon:'☀️', rarity:'epic',      color:'#ff8800'},
+  {id:'abyssalShip',      name:'ABYSSAL LEVIATHAN', type:'sprite', label:'ABYSSAL LEVIATHAN', icon:'🌊', rarity:'legendary', color:'#0066ff'}
+];
+
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2845,6 +2877,8 @@ function loadSave(){
     if(!s.artifactSetsComplete||typeof s.artifactSetsComplete!=='object') s.artifactSetsComplete={};
     if(!isFinite(s.lootBoxesOpened)||s.lootBoxesOpened<0) s.lootBoxesOpened=0;
     if(!isFinite(s.lootBoxPity)||s.lootBoxPity<0) s.lootBoxPity=0;
+    if(!s.premiumOwned||typeof s.premiumOwned!=='object') s.premiumOwned={};
+    if(!isFinite(s.premiumCratesOpened)||s.premiumCratesOpened<0) s.premiumCratesOpened=0;
     if(s.lastDailySpinDate && typeof s.lastDailySpinDate!=='string') s.lastDailySpinDate=null;
     if(!isFinite(s.dailySpinStreak)||s.dailySpinStreak<0) s.dailySpinStreak=0;
     if(typeof s.forgeIntroSeen!=='boolean') s.forgeIntroSeen=false;
@@ -3334,9 +3368,16 @@ function devLaunch() {
   startGame();
 }
 
-var CURRENT_VERSION = '2.8.5 (BETA)';
+var CURRENT_VERSION = '2.9.0 (BETA)';
 
 const VERSION_NOTES = {
+'2.9.0 (BETA)': [
+    '💎 Premium Crates — spend 10 keys for exclusive ship sprites you can\'t get anywhere else',
+    '🚀 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon with unique procedural art',
+    '🏛️ Vault upgrade — collapsible collections, grouped by type, with ship preview modals',
+    '🛡️ Crash protection — crate animations now auto-recover from errors & refund keys if needed',
+    '🔧 Service worker overhaul — versioned caching prevents stale game versions after updates',
+  ],
 '2.8.5 (BETA)': [
     '🎨 New ship sprites, auras, decals & colors — 3 new artifact sets (Arctic, Toxic, Thunder)',
     '🔔 Push notifications — opt in to get notified when updates drop',
@@ -3700,6 +3741,7 @@ let rafId = null;
 
 // Restore cosmetic rewards for completed artifact sets (must be after SPRITE_SHIPS etc.)
 restoreArtifactRewards();
+restorePremiumRewards();
 
 // Nav stack for back buttons
 let navStack = [];
@@ -4122,6 +4164,538 @@ function drawShip(c, x, y, inv, custom, scale=1){
       c.fillStyle=gi===0?_gc:gi===1?_gm:_gw;
       c.fillRect(gx-1,gy-1,2,2);
     }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Celestial Titan Ship (Premium)
+  if(custom.sprite==='celestialShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2)*0.3;
+    var _gc1='#ffd700', _gc2='#fffbe6';
+    // Dual rotating halo rings
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.15*_pulse;
+    c.strokeStyle=_gc1; c.lineWidth=1.5; c.shadowBlur=20; c.shadowColor=_gc1;
+    for(var ri=0;ri<2;ri++){
+      c.save();
+      c.rotate(_t*(ri===0?0.8:-0.6));
+      c.beginPath(); c.ellipse(0,0,26-ri*4,14-ri*3,0,0,Math.PI*2); c.stroke();
+      c.restore();
+    }
+    c.restore();
+    // Hull — elongated diamond angel-wing shape
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_gc1;
+    var hg=c.createLinearGradient(0,-24,0,12);
+    hg.addColorStop(0,'rgba(255,251,230,0.25)'); hg.addColorStop(1,'rgba(255,215,0,0.1)');
+    c.fillStyle=hg; c.strokeStyle=_gc1; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-24);
+    c.lineTo(5,-12); c.lineTo(14,-2); c.lineTo(18,4); // right wing
+    c.lineTo(12,6); c.lineTo(6,12); c.lineTo(0,8); // right tail
+    c.lineTo(-6,12); c.lineTo(-12,6); c.lineTo(-18,4); // left wing
+    c.lineTo(-14,-2); c.lineTo(-5,-12);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Wing feathers (3 per side)
+    c.save();
+    c.strokeStyle=_gc1+'88'; c.lineWidth=0.7; c.shadowBlur=0;
+    [[-1,1],[1,-1]].forEach(function(dir){
+      for(var fi=0;fi<3;fi++){
+        var fx=dir[1]*(10+fi*3), fy=-2+fi*3;
+        var fx2=dir[1]*(16+fi*2), fy2=4+fi*4;
+        c.globalAlpha=(flash?0.3:1)*(0.6-fi*0.15);
+        c.beginPath(); c.moveTo(fx,fy); c.lineTo(fx2,fy2); c.stroke();
+      }
+    });
+    c.restore();
+    // Cockpit — radiant circle with golden cross
+    c.save();
+    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=14; c.shadowColor=_gc1;
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.beginPath(); c.arc(0,-8,4.5,0,Math.PI*2); c.fill();
+    c.strokeStyle=_gc2+'66'; c.lineWidth=0.8;
+    c.beginPath(); c.moveTo(0,-12); c.lineTo(0,-4); c.stroke();
+    c.beginPath(); c.moveTo(-3.5,-8); c.lineTo(3.5,-8); c.stroke();
+    c.restore();
+    // Nose gem
+    c.save();
+    c.fillStyle=_gc2; c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.shadowBlur=12; c.shadowColor=_gc1;
+    c.beginPath(); c.arc(0,-21,1.8,0,Math.PI*2); c.fill();
+    c.restore();
+    // Trailing light motes
+    c.save();
+    for(var mi=0;mi<5;mi++){
+      var mx=(Math.sin(_t*2.5+mi*1.3))*10;
+      var my=12+mi*4+Math.sin(_t*1.8+mi*0.9)*2;
+      c.globalAlpha=(flash?0.3:1)*(0.5-mi*0.08);
+      c.fillStyle=mi%2===0?_gc1:_gc2;
+      c.shadowBlur=8; c.shadowColor=_gc1;
+      c.beginPath(); c.arc(mx,my,Math.max(0.5,1.4-mi*0.2),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Cyber Wraith Ship (Premium)
+  if(custom.sprite==='cyberShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*3)*0.3;
+    var _cr='#ff0044', _cc='#00e5ff';
+    // Scanline overlay
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.06;
+    c.fillStyle=_cc;
+    for(var sl=0;sl<6;sl++){
+      var sy=-24+((_t*40+sl*9)%54);
+      c.fillRect(-20,sy,40,1);
+    }
+    c.restore();
+    // Hull — angular stealth-bomber
+    c.save();
+    c.shadowBlur=14; c.shadowColor=_cr;
+    c.fillStyle='rgba(20,8,30,0.7)'; c.strokeStyle=_cr; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-22);
+    c.lineTo(4,-14); c.lineTo(8,-8); c.lineTo(20,2); // right wing outer
+    c.lineTo(14,4); c.lineTo(8,6); // right wing inner
+    c.lineTo(4,14); c.lineTo(0,10); // right tail
+    c.lineTo(-4,14); c.lineTo(-8,6); // left tail
+    c.lineTo(-14,4); c.lineTo(-20,2); // left wing
+    c.lineTo(-8,-8); c.lineTo(-4,-14);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Cyan data-stream centerline
+    c.save();
+    c.strokeStyle=_cc; c.lineWidth=0.8; c.shadowBlur=8; c.shadowColor=_cc;
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.7;
+    c.setLineDash([3,3]); c.lineDashOffset=-_t*15;
+    c.beginPath(); c.moveTo(0,-20); c.lineTo(0,10); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Hull edge glow lines
+    c.save();
+    c.strokeStyle=_cr+'44'; c.lineWidth=0.6; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.5;
+    c.beginPath(); c.moveTo(-8,-8); c.lineTo(8,-8); c.stroke();
+    c.beginPath(); c.moveTo(-14,4); c.lineTo(14,4); c.stroke();
+    c.restore();
+    // Cockpit — red diamond with blinking pixel
+    c.save();
+    c.fillStyle='rgba(255,0,68,0.4)'; c.shadowBlur=12; c.shadowColor=_cr;
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.beginPath();
+    c.moveTo(0,-12); c.lineTo(3.5,-7); c.lineTo(0,-2); c.lineTo(-3.5,-7);
+    c.closePath(); c.fill();
+    // Blinking pixel
+    c.fillStyle=Math.sin(_t*8)>0?_cc:_cr;
+    c.globalAlpha=(flash?0.4:1)*0.9;
+    c.fillRect(-0.8,-7.8,1.6,1.6);
+    c.restore();
+    // Corner LEDs
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.8;
+    var _leds=[[-18,2],[18,2],[-4,13],[4,13]];
+    _leds.forEach(function(p,i){
+      c.fillStyle=(Math.sin(_t*4+i*1.5)>0)?_cr:_cc;
+      c.shadowBlur=6; c.shadowColor=c.fillStyle;
+      c.beginPath(); c.arc(p[0],p[1],1.2,0,Math.PI*2); c.fill();
+    });
+    c.restore();
+    // Trailing data fragments
+    c.save();
+    for(var di=0;di<3;di++){
+      var dx=(Math.sin(_t*3+di*2.1))*6;
+      var dy=14+di*4+Math.sin(_t*2.2+di)*1.5;
+      c.globalAlpha=(flash?0.3:1)*(0.4-di*0.1);
+      c.fillStyle=di%2===0?_cr:_cc;
+      c.shadowBlur=4; c.shadowColor=c.fillStyle;
+      c.fillRect(dx-1,dy-0.5,2,1);
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Void Dragon Ship (Premium)
+  if(custom.sprite==='voidDragonShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.2)*0.3;
+    var _vp='#aa00ff', _vm='#ff00aa', _vd='#6600cc';
+    // Outer void aura with tendrils
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.12*_pulse;
+    c.fillStyle=_vp; c.shadowBlur=30; c.shadowColor=_vp;
+    c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.fill();
+    // Tendrils
+    c.strokeStyle=_vd; c.lineWidth=1; c.globalAlpha=(flash?0.3:1)*0.15;
+    for(var ti=0;ti<4;ti++){
+      var ta=_t*1.2+ti*Math.PI/2;
+      var tx=Math.cos(ta)*22, ty=Math.sin(ta)*18;
+      c.beginPath(); c.moveTo(tx*0.4,ty*0.4); c.quadraticCurveTo(tx*0.8+Math.sin(_t+ti)*4,ty*0.8,tx,ty); c.stroke();
+    }
+    c.restore();
+    // Hull — dragon silhouette: pointed nose, swept horns, wide belly
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_vp;
+    var dg=c.createLinearGradient(0,-22,0,16);
+    dg.addColorStop(0,'rgba(102,0,204,0.2)'); dg.addColorStop(1,'rgba(170,0,255,0.08)');
+    c.fillStyle=dg; c.strokeStyle=_vp; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-22);        // nose point
+    c.lineTo(3,-14);
+    c.lineTo(10,-10);       // right horn base
+    c.lineTo(16,-14);       // right horn tip
+    c.lineTo(12,-6);        // horn return
+    c.lineTo(18,2);         // right wing
+    c.lineTo(12,6);         // right body
+    c.lineTo(6,14);         // right tail
+    c.lineTo(2,10);         // tail inner right
+    c.lineTo(0,16);         // tail tip
+    c.lineTo(-2,10);        // tail inner left
+    c.lineTo(-6,14);        // left tail
+    c.lineTo(-12,6);        // left body
+    c.lineTo(-18,2);        // left wing
+    c.lineTo(-12,-6);       // horn return
+    c.lineTo(-16,-14);      // left horn tip
+    c.lineTo(-10,-10);      // left horn base
+    c.lineTo(-3,-14);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Wing membranes (translucent purple between horns and body)
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.15*_pulse;
+    c.fillStyle=_vp;
+    // Right membrane
+    c.beginPath(); c.moveTo(10,-10); c.lineTo(16,-14); c.lineTo(12,-6); c.lineTo(18,2); c.lineTo(12,6); c.closePath(); c.fill();
+    // Left membrane
+    c.beginPath(); c.moveTo(-10,-10); c.lineTo(-16,-14); c.lineTo(-12,-6); c.lineTo(-18,2); c.lineTo(-12,6); c.closePath(); c.fill();
+    c.restore();
+    // Dragon eyes (two glowing magenta dots)
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.fillStyle=_vm; c.shadowBlur=10; c.shadowColor=_vm;
+    c.beginPath(); c.arc(-4,-10,1.5,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(4,-10,1.5,0,Math.PI*2); c.fill();
+    c.restore();
+    // Spine ridge
+    c.save();
+    c.strokeStyle=_vp+'66'; c.lineWidth=0.8; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.6;
+    c.beginPath(); c.moveTo(0,-18); c.lineTo(0,14); c.stroke();
+    // Cross ribs
+    c.beginPath(); c.moveTo(-6,0); c.lineTo(6,0); c.stroke();
+    c.beginPath(); c.moveTo(-4,6); c.lineTo(4,6); c.stroke();
+    c.restore();
+    // Purple fire exhaust
+    c.save();
+    for(var fi=0;fi<4;fi++){
+      var fx=(Math.sin(_t*4+fi*1.8))*4;
+      var fy=16+fi*3+Math.sin(_t*3+fi)*1.5;
+      c.globalAlpha=(flash?0.3:1)*(0.5-fi*0.1);
+      c.fillStyle=fi%2===0?_vp:_vm;
+      c.shadowBlur=6; c.shadowColor=_vp;
+      c.beginPath(); c.arc(fx,fy,Math.max(0.5,1.6-fi*0.3),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Phantom Blade Ship (Premium)
+  if(custom.sprite==='phantomBladeShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.5)*0.3;
+    var _pc1='#00ffcc', _pc2='#00ff88', _pc3='#004433';
+    // Spectral afterimage trail (3 fading copies behind)
+    c.save();
+    for(var gi=3;gi>=1;gi--){
+      c.globalAlpha=(flash?0.15:0.12)*(4-gi)/4;
+      var goff=gi*4+Math.sin(_t*3+gi)*1.5;
+      c.strokeStyle=_pc1; c.lineWidth=0.8; c.shadowBlur=6; c.shadowColor=_pc1;
+      c.beginPath();
+      c.moveTo(0,-20+goff); c.lineTo(6,-8+goff); c.lineTo(14,2+goff);
+      c.lineTo(8,6+goff); c.lineTo(4,14+goff); c.lineTo(0,10+goff);
+      c.lineTo(-4,14+goff); c.lineTo(-8,6+goff); c.lineTo(-14,2+goff);
+      c.lineTo(-6,-8+goff); c.closePath(); c.stroke();
+    }
+    c.restore();
+    // Main hull — katana/blade shape, sleek and angular
+    c.save();
+    c.shadowBlur=14; c.shadowColor=_pc1;
+    var bg=c.createLinearGradient(0,-22,0,16);
+    bg.addColorStop(0,_pc1+'44'); bg.addColorStop(0.5,_pc3+'88'); bg.addColorStop(1,_pc1+'22');
+    c.fillStyle=bg; c.strokeStyle=_pc1; c.lineWidth=1.4;
+    c.beginPath();
+    c.moveTo(0,-22);        // sharp nose
+    c.lineTo(4,-12);
+    c.lineTo(6,-8);
+    c.lineTo(14,2);         // right blade tip
+    c.lineTo(8,6);
+    c.lineTo(4,14);         // right tail
+    c.lineTo(0,10);         // center notch
+    c.lineTo(-4,14);        // left tail
+    c.lineTo(-8,6);
+    c.lineTo(-14,2);        // left blade tip
+    c.lineTo(-6,-8);
+    c.lineTo(-4,-12);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Energy lines running along blade edges (animated dash)
+    c.save();
+    c.strokeStyle=_pc2; c.lineWidth=0.7; c.shadowBlur=8; c.shadowColor=_pc2;
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.8;
+    c.setLineDash([3,4]); c.lineDashOffset=-_t*30;
+    // Right edge
+    c.beginPath(); c.moveTo(4,-12); c.lineTo(14,2); c.lineTo(8,6); c.stroke();
+    // Left edge
+    c.beginPath(); c.moveTo(-4,-12); c.lineTo(-14,2); c.lineTo(-8,6); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Central core — pulsing diamond cockpit
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.fillStyle=_pc1; c.shadowBlur=12; c.shadowColor=_pc1;
+    c.beginPath();
+    c.moveTo(0,-8); c.lineTo(3,-3); c.lineTo(0,2); c.lineTo(-3,-3); c.closePath();
+    c.fill();
+    // Inner bright core
+    c.fillStyle='#ffffff'; c.shadowBlur=6; c.globalAlpha=(flash?0.3:1)*0.6*_pulse;
+    c.beginPath(); c.arc(0,-3,1.2,0,Math.PI*2); c.fill();
+    c.restore();
+    // Phantom wisps — floating particle trails from wing tips
+    c.save();
+    for(var wi=0;wi<6;wi++){
+      var side=wi<3?1:-1;
+      var wt=_t*2+wi*1.1;
+      var wlife=(Math.sin(wt)*0.5+0.5);
+      var wx=side*(14-wi%3*3)+Math.sin(wt*1.5)*2;
+      var wy=2+wi%3*5+wlife*6;
+      c.globalAlpha=(flash?0.2:1)*wlife*0.4;
+      c.fillStyle=wi%2===0?_pc1:_pc2;
+      c.shadowBlur=4; c.shadowColor=_pc1;
+      c.beginPath(); c.arc(wx,wy,1+wlife,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Vertical energy slash line (animated)
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.3*(0.5+Math.sin(_t*4)*0.5);
+    c.strokeStyle=_pc1; c.lineWidth=0.5; c.shadowBlur=10; c.shadowColor=_pc1;
+    c.beginPath(); c.moveTo(0,-22); c.lineTo(0,14); c.stroke();
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Solar Flare Ship (Premium)
+  if(custom.sprite==='solarFlareShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.6+Math.sin(_t*1.8)*0.4;
+    var _sc1='#ff8800', _sc2='#ffcc00', _sc3='#ff4400';
+    // Outer corona — radiating flame tendrils
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.2*_pulse;
+    for(var ri=0;ri<12;ri++){
+      var ra=ri*Math.PI/6+_t*0.6;
+      var rlen=20+Math.sin(_t*3+ri*0.8)*6;
+      var rw=1.5+Math.sin(_t*2+ri)*0.5;
+      c.strokeStyle=ri%3===0?_sc3:ri%3===1?_sc1:_sc2;
+      c.lineWidth=rw; c.shadowBlur=8; c.shadowColor=_sc1;
+      c.beginPath();
+      c.moveTo(Math.cos(ra)*10,Math.sin(ra)*10);
+      var cp1x=Math.cos(ra+0.2)*rlen*0.6+Math.sin(_t*2+ri)*3;
+      var cp1y=Math.sin(ra+0.2)*rlen*0.6;
+      c.quadraticCurveTo(cp1x,cp1y,Math.cos(ra)*rlen,Math.sin(ra)*rlen);
+      c.stroke();
+    }
+    c.restore();
+    // Main hull — rounded solar disk with angular nacelles
+    c.save();
+    c.shadowBlur=18; c.shadowColor=_sc1;
+    var sg=c.createRadialGradient(0,-2,0,0,-2,18);
+    sg.addColorStop(0,_sc2+'66'); sg.addColorStop(0.6,_sc1+'44'); sg.addColorStop(1,_sc3+'11');
+    c.fillStyle=sg;
+    c.strokeStyle=_sc1; c.lineWidth=1.5;
+    c.beginPath();
+    c.moveTo(0,-20);        // top point
+    c.quadraticCurveTo(8,-16,12,-8);  // right upper curve
+    c.lineTo(16,-2);        // right nacelle tip
+    c.lineTo(12,4);         // right nacelle inner
+    c.quadraticCurveTo(10,10,6,14);   // right lower curve
+    c.lineTo(2,12);         // right tail
+    c.lineTo(0,16);         // tail center
+    c.lineTo(-2,12);        // left tail
+    c.lineTo(-6,14);        // left lower
+    c.quadraticCurveTo(-10,10,-12,4); // left nacelle inner
+    c.lineTo(-16,-2);       // left nacelle tip
+    c.lineTo(-12,-8);       // left nacelle outer
+    c.quadraticCurveTo(-8,-16,0,-20); // close top
+    c.fill(); c.stroke();
+    c.restore();
+    // Solar surface texture — animated convection cells
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.25;
+    c.strokeStyle=_sc2; c.lineWidth=0.6; c.shadowBlur=0;
+    for(var ci=0;ci<5;ci++){
+      var ccx=Math.cos(_t*0.4+ci*1.3)*6;
+      var ccy=-4+Math.sin(_t*0.5+ci*0.9)*5;
+      var cr=3+Math.sin(_t*1.5+ci)*1.5;
+      c.beginPath(); c.arc(ccx,ccy,cr,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Central core — blazing white-hot spot
+    c.save();
+    c.globalAlpha=(flash?0.5:1)*_pulse;
+    var cg=c.createRadialGradient(0,-4,0,0,-4,8);
+    cg.addColorStop(0,'#ffffff');
+    cg.addColorStop(0.3,_sc2);
+    cg.addColorStop(1,'rgba(255,136,0,0)');
+    c.fillStyle=cg; c.shadowBlur=16; c.shadowColor='#ffffff';
+    c.beginPath(); c.arc(0,-4,6,0,Math.PI*2); c.fill();
+    c.restore();
+    // Sunspot eyes
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.9;
+    c.fillStyle=_sc3; c.shadowBlur=4; c.shadowColor=_sc3;
+    c.beginPath(); c.arc(-3,-6,1.4,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(3,-6,1.4,0,Math.PI*2); c.fill();
+    c.restore();
+    // Solar prominences — arcing plasma loops from nacelles
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.5*_pulse;
+    c.strokeStyle=_sc2; c.lineWidth=1.2; c.shadowBlur=10; c.shadowColor=_sc2;
+    // Right loop
+    var lp1=Math.sin(_t*2)*4;
+    c.beginPath(); c.moveTo(16,-2);
+    c.quadraticCurveTo(20+lp1,-8,14,-14);
+    c.stroke();
+    // Left loop
+    c.beginPath(); c.moveTo(-16,-2);
+    c.quadraticCurveTo(-20-lp1,-8,-14,-14);
+    c.stroke();
+    c.restore();
+    // Exhaust — cascading embers
+    c.save();
+    for(var ei=0;ei<6;ei++){
+      var ex=Math.sin(_t*5+ei*1.2)*5;
+      var ey=16+ei*3+Math.sin(_t*3.5+ei*0.7)*1.5;
+      c.globalAlpha=(flash?0.2:1)*(0.6-ei*0.08);
+      c.fillStyle=ei%2===0?_sc1:_sc2;
+      c.shadowBlur=5; c.shadowColor=_sc1;
+      c.beginPath(); c.arc(ex,ey,Math.max(0.5,2-ei*0.25),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Abyssal Leviathan Ship (Premium)
+  if(custom.sprite==='abyssalShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*1.5)*0.3;
+    var _ac1='#0066ff', _ac2='#00ccff', _ac3='#003388';
+    // Deep water distortion — concentric ripple rings
+    c.save();
+    for(var rr=0;rr<3;rr++){
+      var rphase=(_t*0.8+rr*0.6)%2;
+      var rscale=10+rphase*18;
+      var ralpha=Math.max(0,0.25-rphase*0.12);
+      c.globalAlpha=(flash?0.15:1)*ralpha;
+      c.strokeStyle=_ac2; c.lineWidth=0.6; c.shadowBlur=4; c.shadowColor=_ac2;
+      c.beginPath(); c.ellipse(0,0,rscale,rscale*0.5,0,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Main hull — organic leviathan: broad head, tapered body, split tail fins
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_ac1;
+    var ag=c.createLinearGradient(0,-20,0,18);
+    ag.addColorStop(0,_ac3+'88'); ag.addColorStop(0.4,_ac1+'66'); ag.addColorStop(1,_ac3+'44');
+    c.fillStyle=ag; c.strokeStyle=_ac1; c.lineWidth=1.5;
+    c.beginPath();
+    c.moveTo(0,-20);         // snout
+    c.quadraticCurveTo(5,-16,10,-10);  // right brow
+    c.lineTo(16,-4);         // right jaw
+    c.quadraticCurveTo(18,0,16,4);     // right cheek
+    c.lineTo(12,8);          // right body
+    c.lineTo(14,14);         // right fin tip
+    c.lineTo(6,10);          // right fin inner
+    c.lineTo(2,16);          // right tail
+    c.quadraticCurveTo(0,18,-2,16);    // tail curve
+    c.lineTo(-6,10);         // left fin inner
+    c.lineTo(-14,14);        // left fin tip
+    c.lineTo(-12,8);         // left body
+    c.lineTo(-16,4);         // left cheek
+    c.quadraticCurveTo(-18,0,-16,-4);  // left jaw
+    c.lineTo(-10,-10);       // left brow
+    c.quadraticCurveTo(-5,-16,0,-20);  // close top
+    c.fill(); c.stroke();
+    c.restore();
+    // Bioluminescent patterns — animated glowing lines along hull
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.6;
+    c.strokeStyle=_ac2; c.lineWidth=0.8; c.shadowBlur=8; c.shadowColor=_ac2;
+    c.setLineDash([2,3]); c.lineDashOffset=-_t*20;
+    // Right side veins
+    c.beginPath(); c.moveTo(4,-14); c.quadraticCurveTo(10,-4,12,8); c.stroke();
+    c.beginPath(); c.moveTo(8,-8); c.quadraticCurveTo(14,0,14,6); c.stroke();
+    // Left side veins
+    c.beginPath(); c.moveTo(-4,-14); c.quadraticCurveTo(-10,-4,-12,8); c.stroke();
+    c.beginPath(); c.moveTo(-8,-8); c.quadraticCurveTo(-14,0,-14,6); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Eyes — deep glowing orbs with slit pupils
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    // Eye glow base
+    c.fillStyle=_ac2; c.shadowBlur=10; c.shadowColor=_ac2;
+    c.beginPath(); c.arc(-6,-8,2.5,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(6,-8,2.5,0,Math.PI*2); c.fill();
+    // Dark slit pupils
+    c.fillStyle=_ac3; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.5:1)*0.9;
+    c.fillRect(-6.5,-10,1,4);
+    c.fillRect(5.5,-10,1,4);
+    c.restore();
+    // Jaw ridge details
+    c.save();
+    c.strokeStyle=_ac1+'88'; c.lineWidth=0.6; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.5;
+    c.beginPath(); c.moveTo(-10,-10); c.quadraticCurveTo(0,-6,10,-10); c.stroke();
+    c.beginPath(); c.moveTo(-8,-4); c.lineTo(8,-4); c.stroke();
+    c.restore();
+    // Dorsal ridge — spine bumps along center
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.7*_pulse;
+    c.fillStyle=_ac2; c.shadowBlur=4; c.shadowColor=_ac2;
+    for(var di=0;di<5;di++){
+      var dy=-2+di*3.5;
+      var dr=1.6-di*0.2;
+      var dp=Math.sin(_t*2+di*0.5)*0.3+0.7;
+      c.globalAlpha=(flash?0.3:1)*0.5*dp;
+      c.beginPath(); c.arc(0,dy,Math.max(0.5,dr),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Bubble exhaust — rising bubbles from tail
+    c.save();
+    for(var bi=0;bi<5;bi++){
+      var bphase=(_t*1.5+bi*0.7)%3;
+      var bx=Math.sin(_t*2+bi*1.3)*4;
+      var by=16+bphase*5;
+      var br=Math.max(0.3,1.5-bphase*0.4);
+      var balpha=Math.max(0,0.5-bphase*0.15);
+      c.globalAlpha=(flash?0.2:1)*balpha;
+      c.strokeStyle=_ac2; c.lineWidth=0.6; c.shadowBlur=3; c.shadowColor=_ac2;
+      c.beginPath(); c.arc(bx,by,br,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Anglerfish lure — dangling light at nose
+    c.save();
+    var lurePulse=0.5+Math.sin(_t*4)*0.5;
+    c.globalAlpha=(flash?0.3:1)*lurePulse;
+    c.fillStyle='#ffffff'; c.shadowBlur=14; c.shadowColor=_ac2;
+    c.beginPath(); c.arc(0,-22,1.5,0,Math.PI*2); c.fill();
+    // Lure stalk
+    c.strokeStyle=_ac2+'66'; c.lineWidth=0.5; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.4;
+    c.beginPath(); c.moveTo(0,-20); c.quadraticCurveTo(Math.sin(_t*3)*2,-21,0,-22); c.stroke();
     c.restore();
     c.restore();
     return;
@@ -6403,6 +6977,8 @@ function doAscension() {
   var savedArtifactSetsA = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   var savedLootBoxesA = SAVE.lootBoxesOpened||0;
   var savedLootBoxPityA = SAVE.lootBoxPity||0;
+  var savedPremiumOwnedA = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  var savedPremiumCratesA = SAVE.premiumCratesOpened||0;
   var savedDailySpinDateA = SAVE.lastDailySpinDate;
   var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
   var savedBetaGiftA = SAVE.betaGiftClaimed;
@@ -6454,6 +7030,8 @@ function doAscension() {
   SAVE.artifactSetsComplete = savedArtifactSetsA;
   SAVE.lootBoxesOpened = savedLootBoxesA;
   SAVE.lootBoxPity = savedLootBoxPityA;
+  SAVE.premiumOwned = savedPremiumOwnedA;
+  SAVE.premiumCratesOpened = savedPremiumCratesA;
   SAVE.lastDailySpinDate = savedDailySpinDateA;
   SAVE.dailySpinStreak = savedDailySpinStreakA;
   SAVE.betaGiftClaimed = savedBetaGiftA;
@@ -6537,6 +7115,8 @@ function _doEndGame() {
   const savedArtifactSetsE = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   const savedLootBoxesE = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityE = SAVE.lootBoxPity||0;
+  const savedPremiumOwnedE = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedPremiumCratesE = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateE = SAVE.lastDailySpinDate;
   const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
   const savedBetaGiftE = SAVE.betaGiftClaimed;
@@ -6588,6 +7168,8 @@ function _doEndGame() {
   SAVE.artifactSetsComplete = savedArtifactSetsE;
   SAVE.lootBoxesOpened = savedLootBoxesE;
   SAVE.lootBoxPity = savedLootBoxPityE;
+  SAVE.premiumOwned = savedPremiumOwnedE;
+  SAVE.premiumCratesOpened = savedPremiumCratesE;
   SAVE.lastDailySpinDate = savedDailySpinDateE;
   SAVE.dailySpinStreak = savedDailySpinStreakE;
   SAVE.betaGiftClaimed = savedBetaGiftE;
@@ -7264,6 +7846,8 @@ function doReset() {
   const savedArtifactSetsR = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   const savedLootBoxesR = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityR = SAVE.lootBoxPity||0;
+  const savedPremiumOwnedR = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedPremiumCratesR = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateR = SAVE.lastDailySpinDate;
   const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
   const savedBetaGiftR = SAVE.betaGiftClaimed;
@@ -7303,6 +7887,8 @@ function doReset() {
   SAVE.artifactSetsComplete = savedArtifactSetsR;
   SAVE.lootBoxesOpened = savedLootBoxesR;
   SAVE.lootBoxPity = savedLootBoxPityR;
+  SAVE.premiumOwned = savedPremiumOwnedR;
+  SAVE.premiumCratesOpened = savedPremiumCratesR;
   SAVE.lastDailySpinDate = savedDailySpinDateR;
   SAVE.dailySpinStreak = savedDailySpinStreakR;
   SAVE.betaGiftClaimed = savedBetaGiftR;
@@ -7754,11 +8340,11 @@ function playLaunchTransition(callback) {
 
 var ANNOUNCEMENTS = [
   {
-    id: 'ann_285',
-    date: '2026-03-20',
-    title: '🚀 VERSION 2.8.5 (BETA) OUT NOW',
-    color: '#ffcc00',
-    body: 'New customization options! 3 new artifact sets (Arctic, Toxic, Thunder) with unique sprites, auras, decals & bullet shapes. Push notifications, beta gift box (15 free keys!), cheaper keys (10 echoes), redesigned Vault with preview modals, smoother music transitions, and spin wheel fixes.'
+    id: 'ann_290',
+    date: '2026-03-21',
+    title: '💎 VERSION 2.9.0 (BETA) OUT NOW',
+    color: '#cc66ff',
+    body: 'Premium Crates are here! Spend 10 keys for exclusive ship sprites — Celestial Titan, Cyber Wraith & Void Dragon — each with unique procedural art you can\'t find in standard crates. Vault collections now grouped by type with preview modals. Plus crash protection for crate animations and a service worker overhaul to prevent stale versions.'
   },
   {
     id: 'ann_welcome_261',
@@ -8335,6 +8921,15 @@ function buildVaultScreen(){
     btn.style.cursor = has ? 'pointer' : 'default';
     btn.style.animation = has ? 'crateGlow 2.2s ease-in-out infinite' : 'none';
   }
+  // Premium crate button state
+  var premBtn = document.getElementById('vault-premium-btn');
+  if(premBtn){
+    var allPremOwned = PREMIUM_ITEMS.every(function(p){ return (SAVE.premiumOwned||{})[p.id]; });
+    var hasPremKeys = (SAVE.keys||0) >= 10;
+    premBtn.style.opacity = (hasPremKeys && !allPremOwned) ? '1' : '0.4';
+    premBtn.style.cursor = (hasPremKeys && !allPremOwned) ? 'pointer' : 'default';
+    if(allPremOwned){ premBtn.innerHTML = '✓ ALL OWNED'; premBtn.onclick = null; }
+  }
   // Daily spin button status
   var dailyBtn = document.getElementById('vault-daily-spin-btn');
   var dailyStatus = document.getElementById('vault-daily-status');
@@ -8357,12 +8952,75 @@ function buildVaultScreen(){
     }
   }
   var statsLine = document.getElementById('vault-stats-line');
-  if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates opened · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
-  // Build artifact sets grid — grouped by reward type
-  var grid = document.getElementById('vault-sets-grid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  grid.style.cssText = '';
+  if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates · ' + (SAVE.premiumCratesOpened||0) + ' premium · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
+  // Build collections area
+  var collectionsArea = document.getElementById('vault-collections-area');
+  if(!collectionsArea) return;
+  collectionsArea.innerHTML = '';
+
+  // ── Premium Collection (collapsible, default open, shown first) ──
+  var premOwned = PREMIUM_ITEMS.filter(function(p){ return (SAVE.premiumOwned||{})[p.id]; }).length;
+  var premHeader = document.createElement('div');
+  premHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 10px;background:rgba(170,68,255,0.06);border:1px solid #aa44ff33;border-radius:8px;margin-bottom:6px;-webkit-tap-highlight-color:transparent';
+  premHeader.innerHTML = '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">💎</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#cc66ff;letter-spacing:2px">PREMIUM COLLECTION</span><span style="font-family:Orbitron,sans-serif;font-size:10px;color:#cc66ffaa">'+premOwned+'/'+PREMIUM_ITEMS.length+'</span></div><span id="prem-coll-arrow" style="font-size:10px;color:#cc66ff;transition:transform 0.3s ease;transform:rotate(90deg)">▶</span>';
+  collectionsArea.appendChild(premHeader);
+
+  var premWrap = document.createElement('div');
+  premWrap.style.cssText = 'display:grid;grid-template-rows:1fr;transition:grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)';
+  var premInner = document.createElement('div');
+  premInner.style.cssText = 'overflow:hidden';
+
+  var premGrid = document.createElement('div');
+  premGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0';
+  // Group premium items by type with category headers
+  var premTypeLabels = {sprite:{icon:'🚀',label:'SHIP SPRITES'},aura:{icon:'✨',label:'AURAS'},decal:{icon:'🎨',label:'DECALS'},trail:{icon:'💫',label:'TRAILS'}};
+  var premByType = {};
+  PREMIUM_ITEMS.forEach(function(item){ if(!premByType[item.type]) premByType[item.type]=[]; premByType[item.type].push(item); });
+  Object.keys(premByType).forEach(function(type){
+    var tl = premTypeLabels[type]||{icon:'📦',label:type.toUpperCase()};
+    var catLabel = document.createElement('div');
+    catLabel.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:2px;margin:14px 0 6px;display:flex;align-items:center;gap:6px;grid-column:1/-1';
+    catLabel.innerHTML = '<span style="font-size:14px">'+tl.icon+'</span>'+tl.label;
+    premGrid.appendChild(catLabel);
+  premByType[type].forEach(function(item){
+    var owned = !!(SAVE.premiumOwned||{})[item.id];
+    var card = document.createElement('div');
+    card.style.cssText = 'border:1.5px solid '+(owned?item.color+'88':'#1a254088')+';border-radius:10px;padding:12px 8px 10px;background:'+(owned?'rgba('+hexToRgb(item.color)+',0.08)':'rgba(10,15,30,0.5)')+';cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:80px;justify-content:center;position:relative'+(owned?';box-shadow:0 0 12px '+item.color+'44':'');
+    var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+    card.innerHTML =
+      '<span style="font-size:28px;'+(owned?'filter:none;text-shadow:0 0 10px '+item.color:'filter:grayscale(1) brightness(0.4)')+'">'+item.icon+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+(owned?item.color:'#556')+';letter-spacing:1px;text-align:center">'+item.name+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+rarityCol+';letter-spacing:1px;text-transform:uppercase;opacity:'+(owned?'0.8':'0.3')+'">'+item.rarity+'</span>'+
+      (owned?'<span style="font-size:8px;color:#00ff88">✓ OWNED</span>':'<span style="font-size:16px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.3">🔒</span>');
+    card.onclick = (function(id){ return function(){ showPremiumPreview(id); }; })(item.id);
+    premGrid.appendChild(card);
+  });
+  });
+  premInner.appendChild(premGrid);
+  premWrap.appendChild(premInner);
+  collectionsArea.appendChild(premWrap);
+
+  premHeader.addEventListener('click', function(){
+    var isOpen = premWrap.style.gridTemplateRows === '1fr';
+    premWrap.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+    var arr = document.getElementById('prem-coll-arrow');
+    if(arr) arr.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+  });
+
+  // ── Artifact Collection (collapsible, default open) ──
+  var artTotalOwned = Object.keys(SAVE.artifacts||{}).length;
+  var artHeader = document.createElement('div');
+  artHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 10px;background:rgba(255,204,0,0.06);border:1px solid #ffcc0033;border-radius:8px;margin-top:10px;margin-bottom:6px;-webkit-tap-highlight-color:transparent';
+  artHeader.innerHTML = '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">📦</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#ffcc00;letter-spacing:2px">ARTIFACT COLLECTION</span><span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffcc00aa">'+artTotalOwned+'/'+ALL_ARTIFACTS.length+'</span></div><span id="art-coll-arrow" style="font-size:10px;color:#ffcc00;transition:transform 0.3s ease;transform:rotate(90deg)">▶</span>';
+  collectionsArea.appendChild(artHeader);
+
+  var artWrap = document.createElement('div');
+  artWrap.style.cssText = 'display:grid;grid-template-rows:1fr;transition:grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)';
+  var artInner = document.createElement('div');
+  artInner.style.cssText = 'overflow:hidden';
+
+  // Build artifact grid inside artInner
+  var grid = document.createElement('div');
   var rewardGroups = [
     {type:'sprite', label:'SHIP SPRITES', icon:'🚀'},
     {type:'aura', label:'AURAS', icon:'✨'},
@@ -8373,12 +9031,10 @@ function buildVaultScreen(){
   rewardGroups.forEach(function(group){
     var sets = ARTIFACT_SETS.filter(function(s){ return s.reward.type===group.type; });
     if(sets.length===0) return;
-    // Group header
     var header = document.createElement('div');
     header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#667788;letter-spacing:2px;margin:14px 0 6px;display:flex;align-items:center;gap:6px';
     header.innerHTML = '<span style="font-size:14px">'+group.icon+'</span>'+group.label;
     grid.appendChild(header);
-    // Cards row
     var row = document.createElement('div');
     row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px';
     sets.forEach(function(set){
@@ -8398,6 +9054,16 @@ function buildVaultScreen(){
       row.appendChild(setEl);
     });
     grid.appendChild(row);
+  });
+  artInner.appendChild(grid);
+  artWrap.appendChild(artInner);
+  collectionsArea.appendChild(artWrap);
+
+  artHeader.addEventListener('click', function(){
+    var isOpen = artWrap.style.gridTemplateRows === '1fr';
+    artWrap.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+    var arr = document.getElementById('art-coll-arrow');
+    if(arr) arr.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
   });
 }
 
@@ -8618,6 +9284,8 @@ function rollArtifact(){
 
 function openLootBox(){
   if((SAVE.keys||0) < 1){ showToast('🔑 No keys! Earn keys from achievements, boss spins, or buy with echoes.'); return; }
+  var saveBackup = JSON.stringify(SAVE);
+  try {
   SAVE.keys--;
   SAVE.lootBoxesOpened = (SAVE.lootBoxesOpened||0) + 1;
   var result = rollArtifact();
@@ -8656,6 +9324,12 @@ function openLootBox(){
   var sOwned = aSet ? aSet.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length : 0;
   var sTotal = aSet ? aSet.artifacts.length : 0;
   showLootBoxAnimation(result.artifact, result.rarity, isNew, dupeEchoes, sOwned, sTotal, setCompleted);
+  } catch(err) {
+    console.error('openLootBox error:', err);
+    try { SAVE = JSON.parse(saveBackup); localStorage.setItem('vi2_save', saveBackup); } catch(e2){}
+    showToast('⚠️ Crate error — keys refunded');
+    buildVaultScreen();
+  }
 }
 
 function unlockArtifactReward(reward){
@@ -8689,6 +9363,291 @@ function restoreArtifactRewards(){
     if((SAVE.artifactSetsComplete||{})[set.key]){
       unlockArtifactReward(set.reward);
     }
+  });
+}
+
+function restorePremiumRewards(){
+  PREMIUM_ITEMS.forEach(function(item){
+    if((SAVE.premiumOwned||{})[item.id]){
+      if(item.type==='sprite'){
+        if(!SPRITE_SHIPS.find(function(s){return s.id===item.id;})){
+          SPRITE_SHIPS.push({id:item.id,label:item.label,icon:'💎'});
+        }
+      }
+    }
+  });
+}
+
+// ── PREMIUM CRATE ──────────────────────────────────────────
+function openPremiumCrate(){
+  if((SAVE.keys||0) < 10){ showToast('💎 Need 10 keys for a Premium Crate!'); return; }
+  var available = PREMIUM_ITEMS.filter(function(p){ return !(SAVE.premiumOwned||{})[p.id]; });
+  if(!available.length){ showToast('✓ You own all premium items!'); return; }
+  var saveBackup = JSON.stringify(SAVE);
+  try {
+  SAVE.keys -= 10;
+  SAVE.premiumCratesOpened = (SAVE.premiumCratesOpened||0) + 1;
+  var chosen = available[Math.floor(Math.random()*available.length)];
+  if(!SAVE.premiumOwned) SAVE.premiumOwned = {};
+  SAVE.premiumOwned[chosen.id] = true;
+  if(chosen.type === 'sprite'){
+    if(!SPRITE_SHIPS.find(function(s){return s.id===chosen.id;})){
+      SPRITE_SHIPS.push({id:chosen.id, label:chosen.label, icon:'💎'});
+    }
+  }
+  localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+  showPremiumRevealAnimation(chosen);
+  } catch(err) {
+    console.error('openPremiumCrate error:', err);
+    try { SAVE = JSON.parse(saveBackup); localStorage.setItem('vi2_save', saveBackup); } catch(e2){}
+    showToast('⚠️ Premium crate error — keys refunded');
+    buildVaultScreen();
+  }
+}
+
+function showPremiumRevealAnimation(item){
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s';
+  overlay.id = 'lootbox-overlay';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.style.opacity='1'; });
+
+  // Safety timeout — auto-dismiss if stuck (12s)
+  var _premSafetyTimeout = setTimeout(function(){
+    if(overlay.parentNode){
+      overlay.parentNode.removeChild(overlay);
+      buildVaultScreen();
+    }
+  }, 12000);
+
+  // Particle canvas
+  var pCanvas = document.createElement('canvas');
+  pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
+  pCanvas.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+  overlay.appendChild(pCanvas);
+  var pCtx = pCanvas.getContext('2d');
+  var particles = [];
+  var _premAnimId = null;
+
+  function spawnBurst(cx,cy,count,colors){
+    for(var i=0;i<count;i++){
+      var a=Math.random()*Math.PI*2, spd=2+Math.random()*4;
+      particles.push({x:cx,y:cy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:1,r:1.5+Math.random()*2,col:colors[Math.floor(Math.random()*colors.length)]});
+    }
+  }
+  function tickParticles(){
+    pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+    for(var i=particles.length-1;i>=0;i--){
+      var p=particles[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.life-=0.015;
+      if(p.life<=0){particles.splice(i,1);continue;}
+      pCtx.globalAlpha=p.life*0.8;
+      pCtx.shadowColor=p.col; pCtx.shadowBlur=6;
+      pCtx.fillStyle=p.col;
+      pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); pCtx.fill();
+    }
+    pCtx.globalAlpha=1; pCtx.shadowBlur=0;
+  }
+
+  // Content container
+  var content = document.createElement('div');
+  content.style.cssText = 'position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px';
+  overlay.appendChild(content);
+
+  // Phase 1: Diamond entry
+  var diamond = document.createElement('div');
+  diamond.style.cssText = 'font-size:80px;transform:scale(0);transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 30px '+item.color+')';
+  diamond.textContent = '💎';
+  content.appendChild(diamond);
+  var cx=pCanvas.width/2, cy=pCanvas.height/2;
+
+  setTimeout(function(){
+    diamond.style.transform = 'scale(1)';
+    spawnBurst(cx,cy,20,['#aa44ff','#ffd700','#cc66ff']);
+    try{sfx('crateCharge');}catch(e){}
+  }, 100);
+
+  // Phase 2: Shatter at 1s
+  setTimeout(function(){
+    diamond.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+    diamond.style.transform = 'scale(2.5)';
+    diamond.style.opacity = '0';
+    spawnBurst(cx,cy,40,['#ffd700','#aa44ff','#ff44aa','#cc66ff']);
+    try{sfx('crateOpen');}catch(e){}
+    // Flash
+    var flash = document.createElement('div');
+    flash.style.cssText = 'position:absolute;inset:0;background:radial-gradient(circle,'+item.color+'44 0%,transparent 70%);z-index:0;opacity:1;transition:opacity 0.5s';
+    overlay.insertBefore(flash, overlay.firstChild);
+    setTimeout(function(){ flash.style.opacity='0'; }, 100);
+  }, 1000);
+
+  // Phase 3: Reveal at 1.5s
+  setTimeout(function(){
+    diamond.style.display = 'none';
+    try{sfx('legendaryReveal');}catch(e){}
+
+    var label = document.createElement('div');
+    label.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:#cc66ff;letter-spacing:4px;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:all 0.4s ease-out';
+    label.textContent = 'PREMIUM UNLOCK';
+    content.appendChild(label);
+
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:64px;transform:scale(0);transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 20px '+item.color+')';
+    icon.textContent = item.icon;
+    content.appendChild(icon);
+
+    var name = document.createElement('div');
+    name.style.cssText = 'font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;color:'+item.color+';letter-spacing:3px;text-shadow:0 0 20px '+item.color+';opacity:0;transform:translateY(10px);transition:all 0.4s ease-out 0.15s';
+    name.textContent = item.name;
+    content.appendChild(name);
+
+    var rarityBadge = document.createElement('div');
+    var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+    rarityBadge.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:'+rarityCol+';letter-spacing:2px;text-transform:uppercase;border:1px solid '+rarityCol+'44;padding:3px 10px;border-radius:20px;opacity:0;transition:opacity 0.4s ease-out 0.3s';
+    rarityBadge.textContent = item.rarity;
+    content.appendChild(rarityBadge);
+
+    // Ship preview canvas
+    var shipCanvas = document.createElement('canvas');
+    shipCanvas.width = 200; shipCanvas.height = 200;
+    shipCanvas.style.cssText = 'position:static !important;width:160px;height:160px;margin-top:8px;opacity:0;transition:opacity 0.4s ease-out 0.4s;image-rendering:auto';
+    content.appendChild(shipCanvas);
+
+    var unlockText = document.createElement('div');
+    unlockText.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;opacity:0;transition:opacity 0.4s ease-out 0.5s;margin-top:4px';
+    unlockText.textContent = 'NEW SHIP UNLOCKED!';
+    content.appendChild(unlockText);
+
+    requestAnimationFrame(function(){
+      label.style.opacity='1'; label.style.transform='translateY(0)';
+      icon.style.transform='scale(1)';
+      name.style.opacity='1'; name.style.transform='translateY(0)';
+      rarityBadge.style.opacity='1';
+      shipCanvas.style.opacity='1';
+      unlockText.style.opacity='1';
+    });
+
+    spawnBurst(cx,cy,30,[item.color,'#ffd700','#ffffff']);
+
+    // Animate ship on canvas
+    var _premShipParticles = [];
+    function animPremShip(ts){
+      if(!shipCanvas.parentNode) return;
+      var sctx = shipCanvas.getContext('2d');
+      var W=200,H=200,scx=W/2,scy=H/2;
+      var t=ts/1000;
+      sctx.clearRect(0,0,W,H);
+      sctx.save();
+      sctx.beginPath(); sctx.rect(5,5,W-10,H-10); sctx.clip();
+      // Glow
+      var grad=sctx.createRadialGradient(scx,scy,0,scx,scy,70);
+      grad.addColorStop(0,item.color+'18');
+      grad.addColorStop(1,'rgba(0,5,15,0)');
+      sctx.fillStyle=grad;
+      sctx.fillRect(0,0,W,H);
+      // Bob
+      var shipY=scy+Math.sin(t*1.4)*6;
+      // Thruster particles
+      if(Math.random()>0.3){
+        _premShipParticles.push({x:scx+(-2+Math.random()*4),y:shipY+14,vx:(-0.5+Math.random())*0.8,vy:1.5+Math.random()*1.5,life:1,r:1+Math.random()*2,col:item.color});
+      }
+      for(var i=_premShipParticles.length-1;i>=0;i--){
+        var pp=_premShipParticles[i];
+        pp.x+=pp.vx;pp.y+=pp.vy;pp.life-=0.04;
+        if(pp.life<=0){_premShipParticles.splice(i,1);continue;}
+        sctx.globalAlpha=pp.life*0.7;
+        sctx.shadowColor=pp.col;sctx.shadowBlur=6;
+        sctx.fillStyle=pp.col;
+        sctx.beginPath();sctx.arc(pp.x,pp.y,pp.r*pp.life,0,Math.PI*2);sctx.fill();
+      }
+      sctx.globalAlpha=1;sctx.shadowBlur=0;
+      drawShip(sctx,scx,shipY,0,{shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id},2.0);
+      sctx.restore();
+      _premAnimId=requestAnimationFrame(animPremShip);
+    }
+    _premAnimId=requestAnimationFrame(animPremShip);
+  }, 1500);
+
+  // Phase 4: Tap to dismiss at 2.5s
+  setTimeout(function(){
+    var tap = document.createElement('div');
+    tap.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#667;letter-spacing:2px;margin-top:16px;animation:cardPulse 2s ease-in-out infinite';
+    tap.textContent = 'TAP TO CONTINUE';
+    content.appendChild(tap);
+    overlay.style.cursor = 'pointer';
+    overlay.addEventListener('click', function(){
+      clearTimeout(_premSafetyTimeout);
+      if(_premAnimId) cancelAnimationFrame(_premAnimId);
+      overlay.style.opacity='0';
+      setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); buildVaultScreen(); }, 300);
+    });
+  }, 2500);
+
+  // Particle animation loop
+  function premParticleLoop(){
+    tickParticles();
+    if(overlay.parentNode) requestAnimationFrame(premParticleLoop);
+  }
+  requestAnimationFrame(premParticleLoop);
+}
+
+function showPremiumPreview(itemId){
+  var item = PREMIUM_ITEMS.find(function(p){ return p.id===itemId; });
+  if(!item) return;
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.25s;cursor:pointer';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.style.opacity='1'; });
+
+  var label = document.createElement('div');
+  label.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#cc66ff;letter-spacing:3px';
+  label.textContent = 'PREMIUM';
+  overlay.appendChild(label);
+
+  var name = document.createElement('div');
+  name.style.cssText = 'font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+item.color+';letter-spacing:3px;text-shadow:0 0 16px '+item.color;
+  name.textContent = item.name;
+  overlay.appendChild(name);
+
+  var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+  var rarity = document.createElement('div');
+  rarity.style.cssText = 'font-family:Orbitron,sans-serif;font-size:9px;color:'+rarityCol+';letter-spacing:2px;text-transform:uppercase;border:1px solid '+rarityCol+'33;padding:2px 8px;border-radius:12px';
+  rarity.textContent = item.rarity;
+  overlay.appendChild(rarity);
+
+  var shipWrap = document.createElement('div');
+  shipWrap.style.cssText = 'width:160px;height:160px;overflow:hidden;border-radius:12px;margin-top:10px';
+  var shipCanvas = document.createElement('canvas');
+  shipCanvas.width = 240; shipCanvas.height = 240;
+  shipCanvas.style.cssText = 'position:static !important;width:240px;height:240px;margin:-40px 0 0 -40px;image-rendering:auto';
+  shipWrap.appendChild(shipCanvas);
+  overlay.appendChild(shipWrap);
+
+  var tapHint = document.createElement('div');
+  tapHint.style.cssText = 'font-family:Orbitron,sans-serif;font-size:9px;color:#445;letter-spacing:2px;margin-top:16px';
+  tapHint.textContent = 'TAP TO CLOSE';
+  overlay.appendChild(tapHint);
+
+  // Animate ship — matches artifact set preview pattern
+  var _prevAnimId = null;
+  var previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id};
+  function renderPreview(){
+    var ctx = shipCanvas.getContext('2d');
+    ctx.clearRect(0,0,240,240);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(10,10,220,220);
+    ctx.clip();
+    drawShip(ctx, 120, 120, 0, previewCustom, 2.5);
+    ctx.restore();
+    _prevAnimId = requestAnimationFrame(renderPreview);
+  }
+  _prevAnimId = requestAnimationFrame(renderPreview);
+
+  overlay.addEventListener('click', function(){
+    if(_prevAnimId) cancelAnimationFrame(_prevAnimId);
+    overlay.style.opacity='0';
+    setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 250);
   });
 }
 
@@ -9014,6 +9973,18 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s,backdrop-filter 1s,-webkit-backdrop-filter 1s;pointer-events:auto;font-family:Orbitron,sans-serif;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)';
   overlay.id = 'lootbox-overlay';
 
+  // Global error safety — if animation crashes, clean up overlay and restore audio
+  var _lootAnimCleanup = function(){
+    try {
+      if(typeof masterGain!=='undefined'&&masterGain&&masterGain.gain){
+        masterGain.gain.cancelScheduledValues(AC.currentTime);
+        masterGain.gain.setTargetAtTime(1.0, AC.currentTime, 0.1);
+      }
+    } catch(e){}
+    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    buildVaultScreen();
+  };
+
   // Canvas for particles
   var cvs = document.createElement('canvas');
   cvs.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:1';
@@ -9079,6 +10050,11 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   content.appendChild(tapHint);
 
   document.body.appendChild(overlay);
+
+  // Safety timeout — auto-dismiss if animation gets stuck (15s)
+  var _lootSafetyTimeout = setTimeout(function(){
+    if(overlay.parentNode) _lootAnimCleanup();
+  }, 15000);
 
   // Particles system
   var parts = [];
@@ -9424,6 +10400,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   setTimeout(function(){
     tapHint.style.opacity = '1';
     overlay.onclick = function(){
+      clearTimeout(_lootSafetyTimeout);
       cancelAnimationFrame(partRaf);
       // Ensure music fully restored
       masterGain.gain.cancelScheduledValues(AC.currentTime);
@@ -9811,6 +10788,9 @@ function startCustomizeAnim(){
     _customizeLastT=ts;
     const t=ts/1000;
     cx.fillStyle='#050d1f'; cx.fillRect(0,0,W,H);
+    // Clip to prevent shadowBlur black edge artifacts
+    cx.save();
+    cx.beginPath(); cx.rect(2,2,W-4,H-4); cx.clip();
     // Stars
     STARS.forEach(([sx,sy])=>{ cx.fillStyle=`rgba(255,255,255,${0.2+Math.sin(t+sx)*0.15})`; cx.fillRect(sx%W,sy,1,1); });
     const shipX=W/2, shipY=H/2+8+Math.sin(t*1.8)*5;
@@ -9847,7 +10827,8 @@ function startCustomizeAnim(){
     _customizeBullets=_customizeBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
     playerSpriteState=['idle','boost','full'][Math.floor(t*0.8)%3];
-    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2);
+    try { drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2); } catch(e){ console.error('drawShip error in customize preview:', e); }
+    cx.restore();
   }
   requestAnimationFrame(loop);
 }
@@ -9870,6 +10851,9 @@ function startMenuShipPreview(){
     _menuShipLastT=ts;
     const t=ts/1000;
     cx.clearRect(0,0,W,H);
+    // Clip to prevent shadowBlur black edge artifacts
+    cx.save();
+    cx.beginPath(); cx.rect(2,2,W-4,H-4); cx.clip();
     // Thruster particles
     const shipX=W/2, shipY=H/2+Math.sin(t*1.4)*8;
     // Occasional engine boost burst
@@ -9901,7 +10885,8 @@ function startMenuShipPreview(){
     _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
     playerSpriteState=boosting?'full':'boost';
-    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0);
+    try { drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0); } catch(e){ console.error('drawShip error in menu preview:', e); }
+    cx.restore();
   }
   requestAnimationFrame(loop);
 }
@@ -9972,6 +10957,7 @@ function updateSpriteOverrideState(){
 function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   restoreArtifactRewards();
+  restorePremiumRewards();
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
@@ -10028,6 +11014,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📱 App Store release via Capacitor</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#cc66ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.9.0 (BETA)</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Premium Crates — spend 10 keys for exclusive ship sprites<br>✅ 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon<br>✅ Unique procedural art for each premium ship<br>✅ Vault collections grouped by type with category headers<br>✅ Ship preview modals for both owned & locked premium items<br>✅ Crash protection — crate animations auto-recover & refund keys on error<br>✅ Service worker overhaul — versioned caching prevents stale game versions<br>✅ Global error recovery for stuck overlay cleanup</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.5 (BETA)</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ 3 new artifact sets — Arctic, Toxic & Thunder with unique rewards<br>✅ New ship sprites, auras, decals, hull colors & bullet shapes<br>✅ Push notifications — opt in to hear about updates<br>✅ Beta playtester gift — 15 free Void Keys<br>✅ Keys now cost 10 echoes (down from 50)<br>✅ More generous achievement key rewards<br>✅ Vault redesign — grouped collections with live preview modals<br>✅ Smoother music crossfade on wave launch<br>✅ Daily spin rewards now match what's shown on the wheel<br>✅ Synthwave vault background extends full-screen</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.0 (BETA)</div>
@@ -10225,13 +11213,15 @@ function startSplashShipAnim() {
     : { shape: 'classic', hullColor: '#00f5ff', cockpitColor: '#00f5ff', aura: 'none', decal: 'none' };
 
   function spawnExplosion(ex, ey) {
-    for (var i = 0; i < 12; i++) {
-      var a = (i / 12) * Math.PI * 2;
-      var spd = 1.5 + Math.random() * 2.5;
+    // Sparks
+    for (var i = 0; i < 6; i++) {
+      var a = Math.random() * Math.PI * 2;
+      var spd = 0.8 + Math.random() * 2.5;
       exParts.push({ x: ex, y: ey, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd,
-                     life: 1, r: 2 + Math.random() * 3, col: i % 2 === 0 ? '#ff4455' : '#ff8800', ring: false });
+                     life: 1, r: 1.5 + Math.random() * 1.5, col: '#ff4455', type: 'spark' });
     }
-    exParts.push({ x: ex, y: ey, r: 0, life: 1, col: '#ff4455', ring: true });
+    // Expanding red circle
+    exParts.push({ x: ex, y: ey, r: 0, maxR: 40, life: 1, col: '#ff4455', type: 'ring' });
   }
 
   function loop(ts) {
@@ -10242,6 +11232,8 @@ function startSplashShipAnim() {
     lastT = ts;
 
     ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(2, 2, W - 4, H - 4); ctx.clip();
 
     // Accelerate to exit after 5 s
     var targetVx = elapsed > 5 ? -520 : -90;
@@ -10326,28 +11318,33 @@ function startSplashShipAnim() {
     ctx.translate(ship.x, ship.y);
     ctx.rotate(-Math.PI / 2);
     playerSpriteState='full';
-    drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
+    try { drawShip(ctx, 0, 0, 0, shipCustom, 1.4); } catch(e){ console.error('splash drawShip error:', e); }
     ctx.restore();
 
     // Update + draw explosion particles
     for (var pi = exParts.length - 1; pi >= 0; pi--) {
       var p = exParts[pi];
-      p.life -= dt * 1.6;
+      if (p.type === 'ring') {
+        p.life -= dt * 1.8;
+        p.r += (p.maxR - p.r) * dt * 6;
+      } else {
+        p.life -= dt * 1.05;
+        p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.vx *= 0.98;
+      }
       if (p.life <= 0) { exParts.splice(pi, 1); continue; }
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.life);
-      ctx.shadowColor = p.col; ctx.shadowBlur = 8;
-      if (p.ring) {
-        p.r += dt * 90;
-        ctx.strokeStyle = p.col; ctx.lineWidth = 2;
+      if (p.type === 'ring') {
+        ctx.strokeStyle = p.col; ctx.lineWidth = 2 * (1 - p.r / p.maxR);
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
       } else {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.06;
         ctx.fillStyle = p.col;
-        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.1, p.r * p.life), 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
     }
+
+    ctx.restore(); // end clip rect
 
     // Stop when ship fully exits left
     if (ship.x < -100 && thrusterParts.length === 0 && exParts.length === 0) {
