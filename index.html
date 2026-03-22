@@ -73,6 +73,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .btn-shop{width:54px;height:54px;border-color:var(--g);color:var(--g);background:rgba(255,215,0,0.1);box-shadow:0 0 10px rgba(255,215,0,0.25);font-size:17px}
 .relic-badge{width:32px;height:32px;border-radius:50%;background:rgba(255,68,85,0.15);border:1.5px solid rgba(255,68,85,0.5);display:flex;align-items:center;justify-content:center;font-size:16px;backdrop-filter:blur(6px);}
 
+/* CUSTOMIZE PILLS */
+.cust-pill{display:inline-block;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:20px;border:1.5px solid #1a2540;background:transparent;color:#556;cursor:pointer;white-space:nowrap;margin-right:6px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.cust-pill.active{color:var(--pc,#00f5ff);border-color:var(--pc,#00f5ff);background:rgba(var(--pcr,0,245,255),0.12);box-shadow:0 0 12px rgba(var(--pcr,0,245,255),0.2)}
+.cust-pill.overridden{opacity:0.35;pointer-events:none}
+#customize-pills{touch-action:pan-x!important;overflow-x:scroll!important;overflow-y:hidden!important;width:100%!important;align-self:stretch!important}
+#customize-pills,#customize-pills *{touch-action:pan-x!important}
+#customize-pills::-webkit-scrollbar{display:none}
+@media(hover:hover){.cust-pill:hover:not(.active):not(.overridden){background:rgba(255,255,255,0.04);border-color:#334}}
+
 /* SCREENS */
 .screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);pointer-events:auto;background:rgba(3,6,16,0)}
 .screen.hidden{display:none}
@@ -637,17 +646,15 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div class="shop-grid" id="forge-grid"></div>
     </div>
-    <div style="padding:10px 0 80px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
-      <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:12px">
+    <div style="padding:10px 0 20px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
+      <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:16px">
         <button onclick="showPacksFromShop()" class="nav-tab" style="--ntc:#ff00cc">📦 Packs</button>
         <button onclick="openTrophies('screen-shop')" class="nav-tab" style="--ntc:#ffaa00">🏆 Trophies</button>
         <button id="btn-perks-shop" onclick="if(!perksUnlocked){showToast('⚡ Perks unlock after beating the Wave 20 boss!');return;}openPerks();" class="nav-tab" style="--ntc:#00ccff">⚡ Perks</button>
         <button id="btn-synergy-shop" onclick="if(!SAVE.synergiesUnlocked){showToast('🔗 Synergies unlock after reaching Wave 21!');return;}synergyPrevScreen='screen-shop';buildSynergies();showScreen('screen-synergies');" class="nav-tab" style="--ntc:#ff8800">🔗 Synergy</button>
       </div>
+      <button class="btn-main b-c btn-sm" onclick="shopBack()" style="margin-bottom:calc(env(safe-area-inset-bottom,0px) + 10px)">← BACK</button>
     </div>
-  </div>
-  <div id="shop-back-wrap" style="position:fixed;bottom:0;left:0;right:0;padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 12px);background:linear-gradient(180deg,transparent 0%,rgba(3,6,16,0.95) 30%,rgba(3,6,16,0.98) 100%);display:flex;justify-content:center;z-index:25;pointer-events:none">
-    <button class="btn-main b-c btn-sm" onclick="shopBack()" style="pointer-events:auto">← BACK</button>
   </div>
 </div>
 
@@ -3651,6 +3658,7 @@ var powerupDrops = [];
 var activePowerups = {};
 var floatTexts = [];
 var waveClearSlowmo = 0;
+var _custActiveCategory = 'sprite';
 var _prevActiveSynergies = [];
 var _prevDiscoveredSynergies = [];
 var _synNotifyQueue = [];
@@ -8017,8 +8025,6 @@ function showScreen(id) {
   document.getElementById('controls').style.display=gameVisible?'flex':'none';
   document.getElementById('bomb-counter').style.display=gameVisible?'block':'none';
   document.getElementById('combo-display').classList.add('hidden');
-  var shopBackWrap=document.getElementById('shop-back-wrap');
-  if(shopBackWrap) shopBackWrap.style.display=(id==='screen-shop')?'flex':'none';
   if(id==='__game__') return;
   const el=document.getElementById(id);
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
@@ -11040,102 +11046,127 @@ function setCustom(key,val){
   SAVE.shipCustom[key]=val;
   doSave();
   if(key==='bulletColor'||key==='bulletShape') fireCustomizePreviewBullet();
-  // Just update button border/bg without full rebuild
-  document.querySelectorAll(`[data-custom-key="${key}"]`).forEach(btn=>{
-    const isSelected = btn.dataset.customVal===val;
-    const sectionColor = btn.dataset.customColor||'#00f5ff';
-    btn.style.border=`2px solid ${isSelected?sectionColor:'#1a2540'}`;
-    btn.style.background=isSelected?sectionColor+'22':'transparent';
-    btn.style.boxShadow=isSelected?`0 0 10px ${sectionColor}44`:'none';
-  });
   if(key==='sprite') updateSpriteOverrideState();
 }
 
+var _custCategories = [
+  {key:'sprite',      label:'SPRITES',    color:'#ff8800', rgb:'255,136,0',   items:function(){return SPRITE_SHIPS;},  type:'item'},
+  {key:'shape',       label:'SHAPE',      color:'#00f5ff', rgb:'0,245,255',   items:function(){return SHIP_SHAPES;},   type:'item'},
+  {key:'hullColor',   label:'HULL',       color:'#00f5ff', rgb:'0,245,255',   items:function(){return HULL_COLORS;},   type:'color'},
+  {key:'cockpitColor',label:'COCKPIT',    color:'#88ddff', rgb:'136,221,255', items:function(){return COCKPIT_COLORS;},type:'color'},
+  {key:'thrusterColor',label:'THRUSTER',  color:'#ff8800', rgb:'255,136,0',   items:function(){return THRUSTER_COLORS;},type:'color'},
+  {key:'bulletColor', label:'BULLET CLR', color:'#ff4455', rgb:'255,68,85',   items:function(){return BULLET_COLORS;}, type:'color'},
+  {key:'bulletShape', label:'BULLET',     color:'#cc44ff', rgb:'204,68,255',  items:function(){return BULLET_SHAPES;}, type:'item'},
+  {key:'aura',        label:'AURA',       color:'#ffd700', rgb:'255,215,0',   items:function(){return AURAS;},         type:'item'},
+  {key:'decal',       label:'DECALS',     color:'#00ff88', rgb:'0,255,136',   items:function(){return DECALS;},        type:'item'}
+];
+var _custOverriddenKeys = ['shape','hullColor','cockpitColor','aura','decal'];
+
 function updateSpriteOverrideState(){
   var spriteActive=SAVE.shipCustom&&SAVE.shipCustom.sprite&&SAVE.shipCustom.sprite!=='none';
-  var overriddenKeys=['shape','hullColor','cockpitColor','aura','decal'];
-  overriddenKeys.forEach(function(key){
-    document.querySelectorAll('[data-custom-key="'+key+'"]').forEach(function(btn){
-      btn.style.opacity=spriteActive?'0.3':'1';
-      btn.style.pointerEvents=spriteActive?'none':'auto';
-    });
-  });
-  // Update section titles
-  var content=document.getElementById('customize-content');
-  if(!content) return;
-  var overriddenTitles=['SHIP SHAPE','HULL COLOR','COCKPIT COLOR','SHIP AURA','DECALS'];
-  for(var i=0;i<content.children.length;i++){
-    var titleDiv=content.children[i].querySelector('div');
-    if(!titleDiv) continue;
-    var text=titleDiv.textContent.replace(/\s*\(OVERRIDDEN BY SPRITE\)/,'');
-    if(overriddenTitles.indexOf(text)>=0){
-      titleDiv.style.opacity=spriteActive?'0.4':'1';
-      var tag=titleDiv.querySelector('.spr-tag');
-      if(spriteActive&&!tag){
-        var span=document.createElement('span');
-        span.className='spr-tag';
-        span.style.cssText='margin-left:8px;font-size:8px;color:#ff8800;opacity:1';
-        span.textContent='(OVERRIDDEN BY SPRITE)';
-        titleDiv.appendChild(span);
-      } else if(!spriteActive&&tag){
-        tag.remove();
-      }
+  var note=document.getElementById('customize-sprite-note');
+  if(note) note.style.display=spriteActive?'block':'none';
+  var pills=document.getElementById('customize-pills');
+  if(!pills) return;
+  for(var i=0;i<pills.children.length;i++){
+    var p=pills.children[i];
+    var k=p.dataset.custKey;
+    if(_custOverriddenKeys.indexOf(k)>=0){
+      if(spriteActive){ p.classList.add('overridden'); } else { p.classList.remove('overridden'); }
     }
   }
+  if(spriteActive && _custOverriddenKeys.indexOf(_custActiveCategory)>=0){
+    showCustomizeCategory('sprite');
+  }
+}
+
+function showCustomizeCategory(key){
+  _custActiveCategory=key;
+  var sc=SAVE.shipCustom||{};
+  var cat=null;
+  for(var i=0;i<_custCategories.length;i++){ if(_custCategories[i].key===key){ cat=_custCategories[i]; break; } }
+  if(!cat) return;
+  // Update pill active states
+  var pills=document.getElementById('customize-pills');
+  if(pills){
+    for(var i=0;i<pills.children.length;i++){
+      var p=pills.children[i];
+      if(p.dataset.custKey===key){ p.classList.add('active'); }
+      else { p.classList.remove('active'); }
+    }
+    // Scroll active pill into view
+    var activePill=pills.querySelector('.cust-pill.active');
+    if(activePill) activePill.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  }
+  // Build panel
+  var panel=document.getElementById('customize-panel');
+  if(!panel) return;
+  panel.innerHTML='';
+  panel.scrollTop=0;
+  var items=cat.items();
+  var color=cat.color;
+  var current=sc[key]||(key==='sprite'?'none':key==='shape'?'classic':key==='aura'?'none':key==='decal'?'none':'#00f5ff');
+  // Category title bar
+  var titleDiv=document.createElement('div');
+  titleDiv.style.cssText='font-family:Orbitron,sans-serif;font-size:10px;color:'+color+';letter-spacing:2px;margin-bottom:12px;padding:6px 10px;background:'+color+'22;border-radius:4px;border-left:3px solid '+color;
+  titleDiv.textContent=cat.label;
+  panel.appendChild(titleDiv);
+  // Grid
+  var grid=document.createElement('div');
+  if(cat.type==='color'){
+    grid.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:10px;justify-items:center';
+  } else {
+    grid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:10px';
+  }
+  items.forEach(function(item){
+    var sel=current===item.id;
+    var btn=document.createElement('button');
+    var isColor=item.id.startsWith('#')||item.id==='rainbow';
+    if(cat.type==='color'){
+      // Compact circular swatch
+      btn.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border-radius:10px;border:2px solid '+(sel?color:'transparent')+';background:'+(sel?color+'15':'transparent')+';cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent';
+      if(item.id==='rainbow'){
+        btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff4455,#ffd700,#00ff88,#00f5ff,#cc44ff);box-shadow:'+(sel?'0 0 12px '+color+'66,':'')+'0 0 6px rgba(255,255,255,0.15);border:2.5px solid '+(sel?'#fff':'#1a2540')+'"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
+      } else {
+        btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:'+item.id+';box-shadow:'+(sel?'0 0 12px '+item.id+'88,':'')+'0 0 6px '+item.id+'44;border:2.5px solid '+(sel?'#fff':'#1a2540')+'"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
+      }
+    } else {
+      // Card-style item
+      btn.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border-radius:10px;border:2px solid '+(sel?color:'#1a2540')+';background:'+(sel?color+'22':'rgba(10,15,30,0.6)')+';cursor:pointer;transition:all .15s;box-shadow:'+(sel?'0 0 12px '+color+'44':'none')+';-webkit-tap-highlight-color:transparent';
+      btn.innerHTML='<div style="font-size:24px;line-height:1">'+(item.icon||'●')+'</div><div style="font-family:Orbitron,sans-serif;font-size:8px;color:'+(sel?'#fff':'#778')+';letter-spacing:1px;text-align:center">'+item.label+'</div>';
+    }
+    btn.onclick=function(){ setCustom(key,item.id); showCustomizeCategory(key); };
+    grid.appendChild(btn);
+  });
+  panel.appendChild(grid);
 }
 
 function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   restoreArtifactRewards();
   restorePremiumRewards();
-  const content=document.getElementById('customize-content');
-  if(!content) return;
+  var pills=document.getElementById('customize-pills');
+  var panel=document.getElementById('customize-panel');
+  if(!pills||!panel) return;
   startCustomizeAnim();
   // Count expected items to detect newly unlocked rewards
   var _expectedItems=SPRITE_SHIPS.length+AURAS.length+DECALS.length+BULLET_SHAPES.length+HULL_COLORS.length;
-  if(content.hasChildNodes() && content.dataset.itemCount==_expectedItems){ updateSpriteOverrideState(); return; }
-  const sc=SAVE.shipCustom;
-
-  function section(title, color, items, key, current){
-    const div=document.createElement('div');
-    div.style.cssText='margin-bottom:20px';
-    div.innerHTML=`<div style="font-family:'Orbitron',sans-serif;font-size:10px;color:${color};letter-spacing:2px;margin-bottom:10px;padding:6px 10px;background:${color}22;border-radius:4px;border-left:3px solid ${color}">${title}</div>`;
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;flex-wrap:wrap;gap:8px;padding:0 4px';
-    items.forEach(item=>{
-      const sel=current===item.id;
-      const btn=document.createElement('button');
-      btn.style.cssText=`display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 10px;border-radius:8px;border:2px solid ${sel?color:'#1a2540'};background:${sel?color+'22':'transparent'};cursor:pointer;min-width:56px;transition:all .15s;box-shadow:${sel?`0 0 10px ${color}44`:'none'}`;
-      const isColor = item.id.startsWith('#') || item.id==='rainbow';
-      if(item.id==='rainbow'){
-        btn.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff4455,#ffd700,#00ff88,#00f5ff,#cc44ff);border:2px solid ${sel?'#fff':'transparent'}"></div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
-      } else if(isColor){
-        btn.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:${item.id};box-shadow:0 0 8px ${item.id}88;border:2px solid ${sel?'#fff':'transparent'}"></div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
-      } else {
-        btn.innerHTML=`<div style="font-size:20px;line-height:1">${item.icon||'●'}</div><div style="font-family:'Orbitron',sans-serif;font-size:7px;color:${sel?color:'#446'};letter-spacing:1px">${item.label}</div>`;
-      }
-      btn.dataset.customKey=key;
-      btn.dataset.customVal=item.id;
-      btn.dataset.customColor=color;
-      btn.onclick=()=>setCustom(key,item.id);
-      row.appendChild(btn);
-    });
-    div.appendChild(row);
-    return div;
-  }
-
-  content.innerHTML='';
-  content.appendChild(section('SPRITES','#ff8800',SPRITE_SHIPS,'sprite',sc.sprite||'none'));
-  content.appendChild(section('SHIP SHAPE','#00f5ff',SHIP_SHAPES,'shape',sc.shape||'classic'));
-  requestAnimationFrame(()=>drawCustomizePreview());
-  content.appendChild(section('HULL COLOR','#00f5ff',HULL_COLORS,'hullColor',sc.hullColor||'#00f5ff'));
-  content.appendChild(section('COCKPIT COLOR','#88ddff',COCKPIT_COLORS,'cockpitColor',sc.cockpitColor||'#00f5ff'));
-  content.appendChild(section('THRUSTER COLOR','#ff8800',THRUSTER_COLORS,'thrusterColor',sc.thrusterColor||'#00f5ff'));
-  content.appendChild(section('BULLET COLOR','#ff4455',BULLET_COLORS,'bulletColor',sc.bulletColor||'#00f5ff'));
-  content.appendChild(section('BULLET SHAPE','#cc44ff',BULLET_SHAPES,'bulletShape',sc.bulletShape||'laser'));
-  content.appendChild(section('SHIP AURA','#ffd700',AURAS,'aura',sc.aura||'none'));
-  content.appendChild(section('DECALS','#00ff88',DECALS,'decal',sc.decal||'none'));
-  content.dataset.itemCount=_expectedItems;
+  if(panel.hasChildNodes() && panel.dataset.itemCount==_expectedItems){ updateSpriteOverrideState(); return; }
+  // Build pill bar
+  pills.innerHTML='';
+  _custCategories.forEach(function(cat){
+    var pill=document.createElement('button');
+    pill.className='cust-pill';
+    pill.dataset.custKey=cat.key;
+    pill.style.setProperty('--pc',cat.color);
+    pill.style.setProperty('--pcr',cat.rgb);
+    pill.textContent=cat.label;
+    pill.onclick=function(){ showCustomizeCategory(cat.key); };
+    pills.appendChild(pill);
+  });
+  // Show active category
+  showCustomizeCategory(_custActiveCategory);
+  panel.dataset.itemCount=_expectedItems;
   updateSpriteOverrideState();
 }
 
@@ -12963,7 +12994,9 @@ setTrack('menu');
       <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:8px;color:#cc44ff66;letter-spacing:3px;white-space:nowrap">PERSONALIZE YOUR VESSEL</div>
     </div>
   </div>
-  <div id="customize-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;box-sizing:border-box;"></div>
+  <div id="customize-pills" style="flex:0 0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 4px;white-space:nowrap;scrollbar-width:none"></div>
+  <div id="customize-sprite-note" style="flex:0 0 auto;text-align:center;font-family:Orbitron,sans-serif;font-size:8px;color:#ff8800;letter-spacing:1px;padding:0 14px 6px;display:none">⚠️ 5 options overridden by sprite</div>
+  <div id="customize-panel" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;box-sizing:border-box"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
     <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
   </div>
