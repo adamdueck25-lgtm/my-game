@@ -3647,6 +3647,8 @@ let warProfiteerMult = 1.0;
 let entropyOffsets = new Map();
 var powerupDrops = [];
 var activePowerups = {};
+var floatTexts = [];
+var waveClearSlowmo = 0;
 var _prevActiveSynergies = [];
 var _prevDiscoveredSynergies = [];
 var _synNotifyQueue = [];
@@ -5039,6 +5041,7 @@ SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
   _prevActiveSynergies = computeSynergies(); _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
   _achNotifyQueue = []; _achNotifyActive = false; _dcNotifyQueue = []; _dcNotifyActive = false; _recentAchievements = []; _recentDailyChallenges = [];
+  floatTexts = []; waveClearSlowmo = 0;
   bossFight=false; boss=null;
   if((SAVE.savedWave||1) > 21) perksUnlocked=true;
   applyHandedness();
@@ -5109,7 +5112,7 @@ function spawnWave(){
       const hp=hasRelic('voidCurse') ? hpScaled*2 : hpScaled;
       const shieldHp = (wave>=6 && type===2) ? (wave>=15?3:wave>=10?2:1) : 0;
       const heavyShooter = wave>=10 && type===1 && Math.random()<0.3;
-      const splitter = wave>=8 && type===0 && Math.random()<0.25;
+      const splitter = wave>=8 && (type===0 ? Math.random()<0.15 : type===1 ? Math.random()<0.10 : Math.random()<0.05);
       const diver = wave>=12 && type===2 && Math.random()<0.35;
       const armored = wave>=15 && type===1 && !heavyShooter && Math.random()<0.3;
       const regen = wave>=20 && type===0 && !splitter && Math.random()<0.3;
@@ -5155,7 +5158,7 @@ function announceWave() {
 //  MAIN GAME LOOP
 // ═══════════════════════════════════════════════════
 function gameLoop(ts) {
-  if(gState!=='playing') return;
+  if(gState!=='playing'&&gState!=='waveclear_transition') return;
   rafId=requestAnimationFrame(gameLoop);
   const dt = Math.min((ts - lastTime) / 1000, 0.05);
   lastTime=ts;
@@ -5202,7 +5205,7 @@ let moveDx = 0;
   if(firing) playerSpriteState='full';
   else if(Math.abs(moveDx)>0.2) playerSpriteState='boost';
   else playerSpriteState='idle';
-  if(firing && fireTimer<=0) {
+  if(firing && fireTimer<=0 && gState==='playing') {
     fireTimer=safeCooldown;
     const pierce=stats.piercingShots;
     // freeTriple forces 3-way spread even without multishot upgrade
@@ -5597,6 +5600,10 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     return p.life>0;
   });
 
+  // ── FLOAT TEXTS ────────────────────────────────
+  for(var fi=floatTexts.length-1;fi>=0;fi--){var ft=floatTexts[fi];ft.y+=ft.vy;ft.life-=dt*1.2;if(ft.life<=0)floatTexts.splice(fi,1);}
+  if(floatTexts.length>15) floatTexts.splice(0,floatTexts.length-15);
+
   // ── COMBO TIMER ─────────────────────────────────
   if(comboTimer>0){ comboTimer-=dt; if(comboTimer<=0) combo=0; }
 
@@ -5604,7 +5611,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   bullets.forEach(b=>{
     if(!bossFight) {
       enemies.forEach(e=>{
-        if(!e.alive||b.hit.has(e)||e.mini) return;
+        if(!e.alive||b.hit.has(e)) return;
         if(Math.abs(b.x-e.x)<13&&Math.abs(b.y-e.y)<11){
           // Mirror modifier — reflector enemies bounce bullets back
           if(e.shield>0 && !stats.piercingShots){
@@ -5645,8 +5652,10 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('warProfiteer')) c=Math.floor(c*warProfiteerMult);
             // Scavenger — override cursedCoins and auto-collect
             if(activePowerups['goldRush']) c=Math.floor(c*5);
+            if(combo>=10) c=Math.floor(c*2.0); else if(combo>=5) c=Math.floor(c*1.5); else if(combo>=3) c=Math.floor(c*1.2);
             if(hasPerk('scavenger') || !hasRelic('cursedCoins')) { sessionCoins+=c; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.coins = (SAVE.dailyChallengeStats.coins||0) + c; }
             score+=e.scoreVal*wave;
+            floatTexts.push({x:e.x, y:e.y-8, text:'+'+e.scoreVal*wave, col:'#ffffff', life:1.0, vy:-1.5});
             coinDrops.push({x:e.x,y:e.y,val:c});
             // Powerup drop — 4% chance per kill
             if(Math.random()<0.04){
@@ -5683,7 +5692,9 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('hollowPoint') && bulletsFired%hpInterval===0){ spawnExplosion(e.x,e.y,'#00ccff',4); score+=e.scoreVal; }
             // Splitter — spawn 2 mini enemies
             if(e.splitter){
-              [-1,1].forEach(ox=>{
+              var activeMinis=enemies.filter(function(en){return en.mini&&en.alive;}).length;
+              var canSpawn=Math.min(2, 6-activeMinis);
+              if(canSpawn>0) [-1,1].slice(0,canSpawn).forEach(function(ox,idx){
                 enemies.push({
                   x:e.x+(ox*10), y:e.y, targetY:e.y+40,
                   w:12,h:10, type:0, hp:1, maxHp:1, alive:true,
@@ -5695,7 +5706,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                   armorBroken:false, armorTimer:0,
                   diveTimer:0, diving:true,
                   diveTargetX:player?player.x:e.x, diveTargetY:player?player.y:e.y,
-                  mini:true, miniVx:(ox>0?3.5:-3.5), miniVy:2.5, spawnGrace:0.5
+                  mini:true, miniVx:(ox>0?2.8:-2.8), miniVy:2.0, spawnGrace:idx===0?0.3:0.6
                 });
               });
             }
@@ -5795,6 +5806,9 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     // Mini splitter movement
     if(e.mini){
       if(e.spawnGrace>0){ e.spawnGrace-=dt; }
+      if(!e.miniTrail) e.miniTrail=[];
+      e.miniTrail.push({x:e.x,y:e.y});
+      if(e.miniTrail.length>3) e.miniTrail.shift();
       e.x+=e.miniVx; e.y+=e.miniVy||3.5;
       if(e.x<=8||e.x>=W-8){ e.miniVx*=-1; e.x=e.x<=8?8:W-8; }
       if(e.y>H+20){ e.alive=false; return; }
@@ -5876,7 +5890,17 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
   // ── WAVE CLEAR CHECK ────────────────────────────
   const allDead = bossFight ? (boss&&!boss.alive) : enemies.every(e=>!e.alive);
-  if(allDead && gState==='playing') { waveCleared(); return; }
+  if(allDead && gState==='playing') {
+    gState='waveclear_transition';
+    waveClearSlowmo=0;
+    shake(4,0.2);
+    sfx('waveClear');
+  }
+  if(gState==='waveclear_transition') {
+    waveClearSlowmo+=dt;
+    if(waveClearSlowmo>=1.0){ waveClearSlowmo=0; gState='playing'; waveCleared(); return; }
+    // Let draw section run, then overlay is drawn at end of gameLoop
+  }
 
   // ══════════ DRAW ═══════════════════════════════
 
@@ -5930,6 +5954,14 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.strokeStyle=p.col; ctx.lineWidth=2*(1-p.r/p.maxR);
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.stroke();
     }
+    ctx.restore();
+  });
+
+  // Float texts (score popups, graze, muzzle flash)
+  floatTexts.forEach(function(ft){
+    ctx.save();
+    ctx.globalAlpha=Math.max(0,ft.life);
+    ctx.fillStyle=ft.col; ctx.font='bold 10px monospace'; ctx.textAlign='center'; ctx.fillText(ft.text,ft.x,ft.y);
     ctx.restore();
   });
 
@@ -6012,8 +6044,9 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     if(!e.alive) return;
     if(e.x<-30||e.x>W+30||e.y<-30||e.y>H+30) return;
     ctx.save();
-    if(e.hitFlash>0){ ctx.globalAlpha=0.3+e.hitFlash*0.7; }
+    if(e.hitFlash>0){ ctx.filter='brightness('+(1+e.hitFlash*2)+')'; }
     if(e.mini){
+      if(e.miniTrail){ e.miniTrail.forEach(function(tp,i){ ctx.globalAlpha=(i+1)/e.miniTrail.length*0.3; ctx.fillStyle='#ff2244'; ctx.beginPath(); ctx.arc(tp.x,tp.y,3,0,Math.PI*2); ctx.fill(); }); ctx.globalAlpha=1; }
       ctx.strokeStyle='#ff2244'; ctx.fillStyle='#ff224433'; ctx.lineWidth=1;
       if(useShadow){ ctx.shadowBlur=6; ctx.shadowColor='#ff2244'; }
       ctx.beginPath(); ctx.arc(e.x,e.y,5,0,Math.PI*2); ctx.fill(); ctx.stroke();
@@ -6155,6 +6188,30 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
 
   ctx.restore(); // screen shake restore
+
+  // ── WAVE CLEAR TRANSITION OVERLAY ─────────────
+  if(gState==='waveclear_transition') {
+    var prog=Math.min(1, waveClearSlowmo/1.0);
+    ctx.save();
+    // Darken background progressively
+    ctx.globalAlpha=prog*0.7;
+    ctx.fillStyle='#000';
+    ctx.fillRect(0,0,W,H);
+    // "WAVE X" text — fade in, hold, fade out
+    var textAlpha=waveClearSlowmo<0.15?waveClearSlowmo/0.15:waveClearSlowmo>0.75?Math.max(0,1-(waveClearSlowmo-0.75)/0.25):1;
+    ctx.globalAlpha=Math.max(0,textAlpha);
+    ctx.fillStyle='#fff';
+    ctx.font='bold 28px Orbitron,sans-serif';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('WAVE '+wave,W/2,H/2-14);
+    // "CLEAR" subtitle
+    ctx.globalAlpha=Math.max(0,textAlpha)*0.8;
+    ctx.fillStyle='#00f5ff';
+    ctx.font='bold 14px Orbitron,sans-serif';
+    ctx.fillText('C L E A R',W/2,H/2+16);
+    ctx.restore();
+  }
 
   updateHUD();
   // Rift border effect — only show during active gameplay
@@ -6823,7 +6880,6 @@ function waveCleared() {
   doSave();
   gState='waveclear';
   if(rafId) cancelAnimationFrame(rafId);
-  sfx('waveClear');
   setTrack('shop');
   if(!isFinite(SAVE.coins)) SAVE.coins=0;
   var resonanceBonus = (SAVE.echoUpgrades||{}).resonance||0;
@@ -7270,7 +7326,7 @@ function nextWave() {
   useAltBattle=battleCycle!==0;
   wave++;
   sessionCoins=0;
-  bullets=[]; eBullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
+  bullets=[]; eBullets=[]; coinDrops=[]; particles=[]; thrusterParts=[]; floatTexts=[]; waveClearSlowmo=0;
   bossFight=false; boss=null; bossEntrance=false;
   eDir=1; eYDir=1; eMoveTimer=0;
   waveTimeAlive=0; killStreakCount=0;
@@ -7343,7 +7399,7 @@ function updateCombo() {
   const sizes=[,,'18px','20px','24px','28px'];
   const size=combo>=5?'32px':(sizes[Math.min(combo,5)]||'18px');
   const col=combo>=10?'#ffd700':combo>=5?'#ff00cc':'#00f5ff';
-  el.innerHTML=`<div style="font-size:${size};color:${col};text-shadow:0 0 12px ${col};letter-spacing:2px">${combo}× COMBO</div>`;
+  el.innerHTML=`<div style="font-size:${size};color:${col};text-shadow:0 0 12px ${col};letter-spacing:2px">${combo}\u00d7 COMBO</div>`;
   el.style.animation='none'; el.offsetHeight;
   el.style.animation='fadeIn 0.2s ease';
 }
@@ -8426,9 +8482,15 @@ function updateMenuVesselInfo(){
   const shapeEl = document.getElementById('menu-vessel-shape');
   const perksEl = document.getElementById('menu-vessel-perks');
   if(!shapeEl || !perksEl) return;
-  const shapeNames = {classic:'CLASSIC',arrow:'ARROW',delta:'DELTA',dualfin:'DUAL FIN',pod:'POD'};
-  const shape = (SAVE.shipCustom && SAVE.shipCustom.shape) || 'classic';
-  shapeEl.textContent = (shapeNames[shape]||shape.toUpperCase()) + ' HULL';
+  const spriteId = (SAVE.shipCustom && SAVE.shipCustom.sprite) || 'none';
+  if(spriteId !== 'none'){
+    var spriteEntry = SPRITE_SHIPS.find(function(s){ return s.id === spriteId; });
+    shapeEl.textContent = spriteEntry ? spriteEntry.label : spriteId.toUpperCase();
+  } else {
+    const shapeNames = {classic:'CLASSIC',arrow:'ARROW',delta:'DELTA',dualfin:'DUAL FIN',pod:'POD'};
+    const shape = (SAVE.shipCustom && SAVE.shipCustom.shape) || 'classic';
+    shapeEl.textContent = (shapeNames[shape]||shape.toUpperCase()) + ' HULL';
+  }
   perksEl.innerHTML = '';
   const activePerks = SAVE.activePerks || [];
   if(activePerks.length === 0){
