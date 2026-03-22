@@ -182,9 +182,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .pull-c.revealed{animation:cardIn .4s ease forwards}
 @keyframes cardIn{to{opacity:1;transform:scale(1) rotateY(0)}}
 .pull-c-i{font-size:26px}
-.pull-c-n{font-size:6px;text-align:center;font-family:'Orbitron',sans-serif;font-weight:700}
-.pull-c-s{font-size:6px;color:#778;text-align:center}
-.pull-c-b{font-size:7px;color:var(--gr);text-align:center}
+.pull-c-n{font-size:10px;text-align:center;font-family:'Orbitron',sans-serif;font-weight:700}
+.pull-c-s{font-size:10px;color:#889;text-align:center}
+.pull-c-b{font-size:10px;color:var(--gr);text-align:center}
 
 /* TOAST */
 #toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:rgba(0,20,40,0.97);border:1px solid var(--c);padding:10px 22px;border-radius:20px;font-size:13px;color:var(--c);z-index:300;transition:all .2s;pointer-events:none;white-space:normal;max-width:80vw;word-wrap:break-word;box-shadow:0 0 20px rgba(0,245,255,0.3);text-align:center;line-height:1.5}
@@ -280,7 +280,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
         🤖 ANDROID · MENU → <span style="color:#00f5ff;text-shadow:0 0 6px #00f5ff44">ADD TO HOME SCREEN</span>
       </div>
       <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,#00f5ff22,transparent)"></div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#4a8899;letter-spacing:2px;text-align:center">INSTALL FOR THE BEST EXPERIENCE</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#4a8899;letter-spacing:2px;text-align:center">INSTALL FOR THE OPTIMIZED AND INTENDED EXPERIENCE</div>
     </div>
   </div>
 </div>
@@ -302,7 +302,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
   </div>
-  <div id="splash-version">v6.0</div>
+  <div id="splash-version">v6.1</div>
   <div id="splash-flash" style="position:absolute;inset:0;background:#00f5ff;opacity:0;pointer-events:none;z-index:20"></div>
 </div>
 
@@ -328,22 +328,22 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- STATS ROW -->
     <div id="menu-stats-row" class="menu-stats-row" style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;padding:10px 12px;background:rgba(0,245,255,0.04);border-top:1px solid #0a1628;border-bottom:1px solid #0a1628;width:calc(100% + 28px);margin-left:-14px;margin-right:-14px">
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">⭐ SCORE</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#778;letter-spacing:1.5px;white-space:nowrap">⭐ SCORE</div>
         <div id="menu-hiscore" style="margin:0;font-family:'Orbitron',sans-serif;font-size:14px;color:#00f5ff;text-shadow:0 0 6px #00f5ff88;line-height:1.4">0</div>
       </div>
       <div style="width:1px;height:24px;background:#1a2540"></div>
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">💰 COINS</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#778;letter-spacing:1.5px;white-space:nowrap">💰 COINS</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffd700;text-shadow:0 0 6px #ffd70088;line-height:1.4"><span id="menu-coins">0</span></div>
       </div>
       <div style="width:1px;height:24px;background:#1a2540"></div>
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">🔑 KEYS</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#778;letter-spacing:1.5px;white-space:nowrap">🔑 KEYS</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;text-shadow:0 0 6px #ffcc0088;line-height:1.4"><span id="menu-keys">0</span></div>
       </div>
       <div style="width:1px;height:24px;background:#1a2540"></div>
       <div style="text-align:center">
-        <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#556;letter-spacing:1.5px;white-space:nowrap">🚀 WAVE</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#778;letter-spacing:1.5px;white-space:nowrap">🚀 WAVE</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#00ff88;text-shadow:0 0 6px #00ff8888;line-height:1.4"><span id="menu-wave">1</span></div>
       </div>
     </div>
@@ -383,9 +383,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">LEADER-BOARD</div>
         </div>
 
-        <div class="dock-tile" id="dock-achieve" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements')" style="--tc:#ffd700;border-color:#ffd70099">
+        <div class="dock-tile" id="dock-achieve" onclick="achievementsPrevScreen='screen-menu';buildAchievementsScreen();showScreen('screen-achievements')" style="--tc:#ffd700;border-color:#ffd70099;position:relative">
           <div class="dock-icon">🏅</div>
           <div class="dock-label">ACHIEVE</div>
+          <div id="dock-daily-badge" style="display:none;position:absolute;top:4px;right:4px;min-width:14px;height:14px;background:#ff8800;border-radius:7px;box-shadow:0 0 6px #ff8800;font-family:Orbitron,sans-serif;font-size:8px;font-weight:900;color:#000;text-align:center;line-height:14px;padding:0 3px;animation:badgePulse 1.2s ease-in-out infinite"></div>
         </div>
 
         <div class="dock-tile" id="dock-echoes" onclick="showScreen('screen-echoes')" style="--tc:#aa44ff;border-color:#aa44ff99">
@@ -415,13 +416,13 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="width:100%;padding:0 16px;box-sizing:border-box;flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:8px;position:relative">
       <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:220px;height:180px;background:radial-gradient(ellipse,rgba(0,245,255,0.07) 0%,transparent 70%);pointer-events:none;animation:breatheGlow 3s ease-in-out infinite"></div>
       <canvas id="menu-ship-preview" width="160" height="140" style="position:relative;display:block"></canvas>
-      <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#334;letter-spacing:3px;margin-top:4px">YOUR VESSEL</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#556;letter-spacing:3px;margin-top:4px">YOUR VESSEL</div>
       <div id="menu-vessel-shape" style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00f5ff66;letter-spacing:3px;margin-top:4px"></div>
       <div id="menu-vessel-perks" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:8px;max-width:320px"></div>
     </div>
 
     <!-- FOOTER -->
-    <div id="menu-footer" style="font-size:9px;color:#334;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.8.5 (BETA)</div>
+    <div id="menu-footer" style="font-size:10px;color:#556;letter-spacing:2px;padding-bottom:8px;padding-top:4px;border-top:1px solid #0a1628;width:100%;text-align:center">CREATED BY: ADAM DUECK · v2.9.0 (BETA)</div>
 
   </div>
   <div id="dev-trigger" onclick="devTap()" style="position:fixed;bottom:16px;left:16px;font-size:22px;opacity:0.15;cursor:pointer;z-index:50;user-select:none">⚙️</div>
@@ -473,12 +474,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <div id="screen-perks-intro" class="screen screen-bg hidden" style="flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center">
   <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#00ccff;letter-spacing:4px;margin-bottom:6px">NEW FEATURE UNLOCKED</div>
   <div style="font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:#00ccff;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 20px #00ccff">⚡ PERKS</div>
-  <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#00ccff88;letter-spacing:3px;margin-bottom:20px">PASSIVE ABILITIES FOR YOUR SHIP</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#00ccffbb;letter-spacing:3px;margin-bottom:20px">PASSIVE ABILITIES FOR YOUR SHIP</div>
   <div style="font-size:13px;color:#aaa;max-width:280px;line-height:1.7;margin-bottom:24px">You've proven yourself. Powerful passive abilities are now available to customize your playstyle.</div>
 
   <div id="perks-intro-steps" style="width:100%;max-width:300px;margin-bottom:28px"></div>
 
-  <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#00ccff88;padding:8px 16px;border:1px solid #00ccff33;border-radius:4px;margin-bottom:28px;max-width:280px">
+  <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#00ccffbb;padding:8px 16px;border:1px solid #00ccff33;border-radius:4px;margin-bottom:28px;max-width:280px">
     💡 Perks reset each run — unlock again by reaching Wave 20
   </div>
   <button onclick="dismissPerksIntro()" style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:rgba(0,204,255,0.1);border:2px solid #00ccff;color:#00ccff;border-radius:4px;cursor:pointer">⚡ GOT IT</button>
@@ -492,9 +493,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   </div>
   <div id="ei-icon" style="font-size:36px;margin-bottom:8px"></div>
   <div id="ei-name" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:8px;text-shadow:0 0 20px currentColor"></div>
-  <div id="ei-threat" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:3px;margin-bottom:16px"></div>
+  <div id="ei-threat" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;margin-bottom:16px"></div>
   <div id="ei-desc" style="font-size:13px;color:#88a;max-width:280px;line-height:1.6;margin-bottom:24px"></div>
-  <div id="ei-tip" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#446;letter-spacing:2px;padding:8px 16px;border:1px solid #1a2540;border-radius:4px;margin-bottom:28px;max-width:280px"></div>
+  <div id="ei-tip" style="font-family:'Orbitron',sans-serif;font-size:10px;color:#667;letter-spacing:2px;padding:8px 16px;border:1px solid #1a2540;border-radius:4px;margin-bottom:28px;max-width:280px"></div>
   <button onclick="dismissEnemyIntro()" style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:4px;padding:14px 40px;background:transparent;border:2px solid #00f5ff;color:#00f5ff;border-radius:4px;cursor:pointer">▶ ENGAGE</button>
 </div>
 
@@ -532,7 +533,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
     <div id="sum-trophy-notif" style="display:none;width:100%;max-width:340px"></div>
     <div id="sum-achievements" style="display:none;width:100%;max-width:340px;margin-top:8px">
-      <div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffd700;letter-spacing:3px;text-align:center;margin-bottom:4px;text-shadow:0 0 8px #ffd70044">ACHIEVEMENT PROGRESS</div>
+      <div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffd700;letter-spacing:3px;text-align:center;margin-bottom:4px;text-shadow:0 0 8px #ffd70044">ACHIEVEMENT PROGRESS</div>
       <div id="sum-ach-list"></div>
     </div>
     <div id="sum-btns" style="opacity:0;transition:opacity .5s;margin-top:10px;width:100%;display:flex;flex-direction:column;align-items:center;gap:0">
@@ -553,7 +554,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
     <div style="font-size:28px;margin-bottom:4px">🏅</div>
     <div class="screen-title" style="color:#ffd700;text-shadow:0 0 20px #ffd70066;margin-bottom:4px;font-size:18px">ACHIEVEMENTS</div>
-    <div style="font-size:9px;color:#556;letter-spacing:2px" id="ach-screen-subtitle"></div>
+    <div style="font-size:10px;color:#778;letter-spacing:2px" id="ach-screen-subtitle"></div>
   </div>
   <div id="ach-screen-list" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
@@ -654,12 +655,12 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="screen-title" style="color:#aa44ff">🌀 VOID ECHOES</div>
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">PERMANENT PRESTIGE UPGRADES</div>
     <div id="echoes-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#aa44ff;text-shadow:0 0 12px #aa44ff,0 0 30px #aa44ff44;margin:6px 0 2px">🌀 0</div>
-    <div id="echoes-title" style="font-size:10px;color:#aa44ff88;letter-spacing:2px;margin-bottom:4px">PILOT</div>
+    <div id="echoes-title" style="font-size:10px;color:#aa44ffcc;letter-spacing:2px;margin-bottom:4px">PILOT</div>
   </div>
   <div style="height:calc(100vh - 150px);overflow-y:scroll;-webkit-overflow-scrolling:touch;padding:8px 14px 0;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
     <div id="echoes-key-shop" style="width:100%;max-width:340px;margin:0 auto 12px;padding:12px;border-radius:10px;border:1.5px solid #ffcc0044;background:rgba(255,204,0,0.04);text-align:center">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:6px">🔑 VOID KEYS</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:9px;color:#778;margin-bottom:8px">Keys open Void Crates for rare Artifacts</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#889;margin-bottom:8px">Keys open Void Crates for rare Artifacts</div>
       <div id="echoes-key-balance" style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;margin-bottom:8px">🔑 0</div>
       <button id="echoes-buy-key-btn" onclick="buyKeyWithEchoes()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 20px;border-radius:8px;border:1.5px solid #ffcc00;background:rgba(255,204,0,0.1);color:#ffcc00;cursor:pointer;letter-spacing:1px;transition:all .15s">BUY KEY · 🌀 10</button>
     </div>
@@ -682,21 +683,25 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <button id="vault-beta-gift" onclick="claimBetaGift()" style="display:none;margin:8px auto 0;padding:10px 20px;border-radius:12px;border:2px solid #ff44aa;background:linear-gradient(90deg,rgba(255,68,170,0.06) 0%,rgba(255,68,170,0.16) 50%,rgba(255,68,170,0.06) 100%);cursor:pointer;animation:cardPulse 1.5s ease-in-out infinite;filter:drop-shadow(0 0 12px #ff44aa88);position:relative;overflow:hidden"><span style="font-size:18px;vertical-align:middle">🎁</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#ff44aa;letter-spacing:3px;margin-left:8px;vertical-align:middle">CLAIM FREE GIFT!</span><span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.12) 45%,rgba(255,255,255,0.22) 50%,rgba(255,255,255,0.12) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 2.5s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
   </div>
   <div style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
-    <div id="vault-crate-area" style="margin:16px 0;text-align:center">
-      <div id="vault-crate-icon" style="font-size:64px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #ffcc0066)">📦</div>
-      <button id="vault-open-btn" onclick="openLootBox()" style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;padding:14px 36px;border-radius:12px;border:2px solid #ffcc00;background:linear-gradient(90deg,rgba(255,204,0,0.08) 0%,rgba(255,204,0,0.18) 50%,rgba(255,204,0,0.08) 100%);color:#ffcc00;cursor:pointer;letter-spacing:3px;margin-top:10px;position:relative;overflow:hidden;animation:crateGlow 2.2s ease-in-out infinite">🔑 OPEN CRATE<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
-      <div style="font-size:9px;color:#556;margin-top:6px;letter-spacing:1px">Costs 1 Key per crate</div>
-      <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px">
-        <button id="vault-daily-spin-btn" onclick="openDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1.5px solid #ff8800;background:rgba(255,136,0,0.08);color:#ff8800;cursor:pointer;letter-spacing:1px;transition:all .15s">⭐ DAILY SPIN</button>
-        <button id="vault-get-keys-btn" onclick="rewardAdKey()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid #33444466;background:transparent;color:#556;cursor:pointer;letter-spacing:1px;transition:all .15s">🎬 MORE KEYS</button>
+    <div id="vault-crate-area" style="margin:16px 0;display:flex;gap:20px;align-items:flex-start;justify-content:center">
+      <div style="text-align:center">
+        <div id="vault-crate-icon" style="font-size:52px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #ffcc0066)">📦</div>
+        <button id="vault-open-btn" onclick="openLootBox()" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;padding:10px 22px;border-radius:12px;border:2px solid #ffcc00;background:linear-gradient(90deg,rgba(255,204,0,0.08) 0%,rgba(255,204,0,0.18) 50%,rgba(255,204,0,0.08) 100%);color:#ffcc00;cursor:pointer;letter-spacing:2px;margin-top:8px;position:relative;overflow:hidden;animation:crateGlow 2.2s ease-in-out infinite">🔑 OPEN<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#ffcc00;margin-top:6px;letter-spacing:1px;text-shadow:0 0 8px #ffcc0044">🔑 1</div>
       </div>
-      <div id="vault-daily-status" style="font-size:8px;color:#556;margin-top:4px;letter-spacing:1px"></div>
+      <div style="text-align:center">
+        <div style="font-size:52px;animation:cardPulse 2s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 0 20px #aa44ff66)">💎</div>
+        <button id="vault-premium-btn" onclick="openPremiumCrate()" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;padding:10px 22px;border-radius:12px;border:2px solid #aa44ff;background:linear-gradient(135deg,rgba(170,68,255,0.08) 0%,rgba(255,0,100,0.06) 50%,rgba(170,68,255,0.08) 100%);color:#cc66ff;cursor:pointer;letter-spacing:2px;margin-top:8px;position:relative;overflow:hidden;box-shadow:0 0 16px #aa44ff33,inset 0 0 16px #aa44ff11">💎 PREMIUM<span style="position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.15) 45%,rgba(255,255,255,0.25) 50%,rgba(255,255,255,0.15) 55%,transparent 70%);background-size:200% 100%;animation:crateShimmer 3s ease-in-out infinite;pointer-events:none;border-radius:12px"></span></button>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#cc66ff;margin-top:6px;letter-spacing:1px;text-shadow:0 0 8px #aa44ff44">🔑 10</div>
+      </div>
     </div>
-    <div style="width:100%;max-width:380px;margin-top:8px">
-      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;text-align:center;margin-bottom:10px">ARTIFACT COLLECTION</div>
-      <div id="vault-sets-grid"></div>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:0">
+      <button id="vault-daily-spin-btn" onclick="openDailySpin()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1.5px solid #ff8800;background:rgba(255,136,0,0.08);color:#ff8800;cursor:pointer;letter-spacing:1px;transition:all .15s">⭐ DAILY SPIN</button>
+      <button id="vault-get-keys-btn" onclick="rewardAdKey()" style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid #33444466;background:transparent;color:#556;cursor:pointer;letter-spacing:1px;transition:all .15s">🎬 MORE KEYS</button>
     </div>
-    <div style="font-size:9px;color:#445;text-align:center;margin:12px 0 4px;letter-spacing:1px" id="vault-stats-line"></div>
+    <div id="vault-daily-status" style="font-size:10px;color:#778;margin-top:4px;letter-spacing:1px;text-align:center"></div>
+    <div id="vault-collections-area" style="width:100%;max-width:380px;margin-top:8px"></div>
+    <div style="font-size:10px;color:#667;text-align:center;margin:12px 0 4px;letter-spacing:1px" id="vault-stats-line"></div>
   </div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center;position:relative;z-index:1">
     <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
@@ -706,7 +711,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <!-- DAILY SPIN -->
 <div id="screen-daily-spin" class="screen screen-bg hidden" style="flex-direction:column;align-items:center;justify-content:center;padding:20px;">
   <div style="font-family:'Orbitron',sans-serif;font-size:14px;color:#ffcc00;letter-spacing:5px;margin-bottom:2px;text-shadow:0 0 12px #ffcc0066">⭐ DAILY SPIN ⭐</div>
-  <div id="daily-streak-display" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#ff880088;letter-spacing:2px;margin-bottom:12px"></div>
+  <div id="daily-streak-display" style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ff8800cc;letter-spacing:2px;margin-bottom:12px"></div>
   <div style="position:relative;width:320px;height:340px;margin-bottom:14px">
     <canvas id="daily-spin-canvas" width="320" height="340"></canvas>
   </div>
@@ -743,9 +748,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <button onclick="const b=this.parentElement.querySelector('.howto-body');const open=b.style.display==='none';b.style.display=open?'block':'none';this.querySelector('.howto-arrow').textContent=open?'HIDE ▲':'SHOW ▼';" style="width:100%;padding:10px 12px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:6px">
           <span style="font-size:11px">❓</span>
-          <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:#aaa;letter-spacing:2px">HOW DO CARD PACKS WORK?</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#aaa;letter-spacing:2px">HOW DO CARD PACKS WORK?</div>
         </div>
-        <span class="howto-arrow" style="font-size:9px;color:#aaa;border:1px solid #334;padding:2px 6px;border-radius:3px">SHOW ▼</span>
+        <span class="howto-arrow" style="font-size:10px;color:#aaa;border:1px solid #334;padding:2px 6px;border-radius:3px">SHOW ▼</span>
       </button>
       <div class="howto-body" style="display:none;padding:0 12px 10px">
         <div style="font-size:10px;color:#aaa;line-height:1.5">
@@ -760,7 +765,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div class="pack-grid" id="pack-grid"></div>
     <div style="padding:10px 0 80px;display:flex;flex-direction:column;align-items:center;width:100%;margin-top:8px">
       <div style="display:flex;gap:0;justify-content:center;padding:0;border-top:1px solid #1a2540;border-bottom:1px solid #1a2540;width:100%;max-width:340px;margin-bottom:12px">
-        <button onclick="openCardsFromPacks()" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;color:#cc44ff;background:transparent;border:none;cursor:pointer;padding:10px 16px;-webkit-tap-highlight-color:transparent">🃏 Collection</button>
+        <button onclick="openCardsFromPacks()" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:1px;color:#cc44ff;background:transparent;border:none;cursor:pointer;padding:10px 16px;-webkit-tap-highlight-color:transparent">🃏 Collection</button>
       </div>
       <button class="btn-main b-c btn-sm" onclick="packsBack()">← BACK</button>
     </div>
@@ -782,7 +787,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <div id="screen-cards" class="screen screen-bg hidden screen-cards-layout">
   <div style="flex:0 0 auto;padding:14px 14px 8px;text-align:center">
     <div class="screen-title" style="color:var(--g)">🃏 COLLECTION</div>
-    <div class="screen-sub" style="font-size:9px;margin-bottom:0">COMPLETE SETS FOR BONUS POWERS</div>
+    <div class="screen-sub" style="font-size:10px;margin-bottom:0">COMPLETE SETS FOR BONUS POWERS</div>
   </div>
   <div id="cards-content" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
@@ -897,7 +902,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div id="go-echo-gain" style="display:none;color:#aa44ff;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;text-shadow:0 0 10px #aa44ff;margin-bottom:16px;letter-spacing:2px">🌀 +<span id="go-echo-count">0</span> ECHOES</div>
   <div id="go-submit-area" style="width:100%;max-width:320px;margin-bottom:16px;border:1px solid #ffd70066;border-radius:8px;padding:12px;background:rgba(255,215,0,0.04);box-shadow:0 0 20px rgba(255,215,0,0.1);animation:pulseGlow 2s ease-in-out infinite">
     <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;margin-bottom:4px;text-align:center">🏆 SUBMIT TO LEADERBOARD</div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:8px;color:#aa8800;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:10px;color:#cc9900;letter-spacing:1px;margin-bottom:10px;text-align:center">DON'T MISS YOUR CHANCE TO CLAIM YOUR SPOT</div>
     <div style="display:flex;gap:8px;align-items:center;justify-content:center">
       <input id="go-name-input" maxlength="16" placeholder="ENTER NAME" style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:2px;padding:10px 12px;background:rgba(0,20,40,0.8);border:1px solid #ffd70066;border-radius:4px;color:#ffd700;width:180px;text-transform:uppercase;outline:none"/>
       <button id="go-submit-btn" onclick="submitLeaderboardScore()" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;padding:10px 14px;background:rgba(255,215,0,0.12);border:1px solid #ffd700;color:#ffd700;border-radius:4px;cursor:pointer;font-weight:700">▶ SUBMIT</button>
@@ -916,6 +921,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 @keyframes glitchSlide{0%{clip-path:inset(40% 0 60% 0)}25%{clip-path:inset(10% 0 80% 0)}50%{clip-path:inset(60% 0 20% 0)}100%{clip-path:inset(40% 0 60% 0)}}
 @keyframes screenSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes cardSlideUp{from{opacity:0;transform:translateY(60px) scale(0.92)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes coinSpin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 @keyframes itemPop{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
@@ -1082,8 +1088,26 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 <script>
 'use strict';
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/my-game/sw.js').catch(()=>{});
+  navigator.serviceWorker.register('/my-game/sw.js').then(function(reg){
+    // Force update check on each page load
+    reg.update().catch(function(){});
+  }).catch(function(e){ console.warn('SW registration failed:', e); });
 }
+
+// Global error recovery — clean up stuck crate overlays
+window.addEventListener('error', function(evt){
+  console.error('Global error:', evt.error||evt.message);
+  var stuck = document.getElementById('lootbox-overlay');
+  if(stuck && stuck.parentNode){
+    try {
+      if(typeof masterGain!=='undefined'&&masterGain&&masterGain.gain&&typeof AC!=='undefined'){
+        masterGain.gain.cancelScheduledValues(AC.currentTime);
+        masterGain.gain.setTargetAtTime(1.0, AC.currentTime, 0.1);
+      }
+    } catch(e){}
+    stuck.parentNode.removeChild(stuck);
+  }
+});
 
 // ── PUSH NOTIFICATIONS ─────────────────────────────
 var PUSH_WORKER_URL = 'https://void-push.adamdueck25.workers.dev';
@@ -2459,12 +2483,107 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   shipCustom:{ shape:'classic', hullColor:'#00f5ff', cockpitColor:'#00f5ff', thrusterColor:'#00f5ff', bulletColor:'#00f5ff', bulletShape:'laser', aura:'none', decal:'none', sprite:'none' },
   forgeLevels:{ damage:0, rate:0, armor:0 },
   echoes:0, totalEchoes:0, echoUpgrades:{}, ascensionCount:0, echoesUnlocked:true, synergiesUnlocked:false, discoveredSynergies:[],
-  keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0,
+  keys:0, totalKeys:0, artifacts:{}, artifactSetsComplete:{}, lootBoxesOpened:0, lootBoxPity:0, premiumOwned:{}, premiumCratesOpened:0,
   lastDailySpinDate:null, dailySpinStreak:0, betaGiftClaimed:false,
   forgeIntroSeen:false, echoesIntroSeen:false, synergiesIntroSeen:false, vaultIntroSeen:false, achievementsIntroSeen:false, customizeIntroSeen:false, notifIntroSeen:false,
   musicVolume:55, sfxVolume:70,
   lifetimeStats:{totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0},
-  achievements:{}, notificationsOn:false };
+  achievements:{}, notificationsOn:false,
+  dailyChallenges:[], dailyChallengeProgress:{}, dailyChallengeComplete:{}, dailyChallengeAllClaimed:false,
+  lastDailyChallengeReset:null, dailyChallengeStats:{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0} };
+
+// ── DAILY CHALLENGE POOL ──────────────────────────────────────
+var DAILY_CHALLENGE_POOL = [
+  {id:'dk_kills',    name:'EXTERMINATOR',  icon:'💀', desc:'Defeat enemies',        stat:'kills',       goal:60,  reward:3, keyReward:1},
+  {id:'dk_coins',    name:'COIN RUSH',     icon:'💰', desc:'Collect coins',          stat:'coins',       goal:300, reward:2, keyReward:1},
+  {id:'dk_wave',     name:'DEEP DIVE',     icon:'🚀', desc:'Reach a wave',           stat:'waveReached', goal:8,   reward:3, keyReward:1},
+  {id:'dk_boss',     name:'BOSS SLAYER',   icon:'👹', desc:'Defeat bosses',          stat:'bossKills',   goal:2,   reward:4, keyReward:1},
+  {id:'dk_streak',   name:'CHAIN MASTER',  icon:'🔥', desc:'Get a kill streak',      stat:'killStreak',  goal:15,  reward:3, keyReward:1},
+  {id:'dk_perfect',  name:'UNTOUCHED',     icon:'🛡️', desc:'Clear waves untouched',  stat:'perfectWaves',goal:2,   reward:4, keyReward:1},
+  {id:'dk_kills50',  name:'MASSACRE',       icon:'☠️', desc:'Defeat enemies',        stat:'kills',       goal:120, reward:5, keyReward:1},
+  {id:'dk_coins300', name:'GOLD RUSH',     icon:'🤑', desc:'Collect coins',          stat:'coins',       goal:600, reward:4, keyReward:1},
+  {id:'dk_wave8',    name:'EXPLORER',       icon:'🌌', desc:'Reach a wave',           stat:'waveReached', goal:15,  reward:5, keyReward:1},
+  {id:'dk_boss3',    name:'HUNTER',         icon:'🎯', desc:'Defeat bosses',          stat:'bossKills',   goal:5,   reward:5, keyReward:2},
+  {id:'dk_streak15', name:'RAMPAGE',        icon:'⚡', desc:'Get a kill streak',      stat:'killStreak',  goal:25,  reward:5, keyReward:1},
+  {id:'dk_nodmg2',   name:'GHOST PILOT',   icon:'👻', desc:'Clear waves untouched',  stat:'perfectWaves',goal:4,   reward:5, keyReward:2}
+];
+
+function seededRandom(seed) {
+  var s = seed|0;
+  return function() {
+    s = (s + 0x6D2B79F5)|0;
+    var t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function getDailyChallengeEpoch() {
+  return Math.floor(Date.now() / (12*60*60*1000));
+}
+
+function refreshDailyChallenges() {
+  var epoch = getDailyChallengeEpoch();
+  if (SAVE.lastDailyChallengeReset === epoch) return;
+  var pool = DAILY_CHALLENGE_POOL.slice();
+  var rng = seededRandom(epoch);
+  var picked = [];
+  for (var i = 0; i < 4 && pool.length; i++) {
+    var idx = Math.floor(rng() * pool.length);
+    picked.push(JSON.parse(JSON.stringify(pool[idx])));
+    pool.splice(idx, 1);
+  }
+  SAVE.dailyChallenges = picked;
+  SAVE.dailyChallengeProgress = {};
+  SAVE.dailyChallengeComplete = {};
+  SAVE.dailyChallengeAllClaimed = false;
+  SAVE.lastDailyChallengeReset = epoch;
+  SAVE.dailyChallengeStats = {kills:0, coins:0, waveReached:0, bossKills:0, killStreak:0, perfectWaves:0};
+  doSave();
+}
+
+var _recentDailyChallenges = [];
+function checkDailyChallenges() {
+  refreshDailyChallenges();
+  if (!SAVE.dailyChallenges || !SAVE.dailyChallenges.length) return [];
+  var newly = [];
+  SAVE.dailyChallenges.forEach(function(ch) {
+    if (SAVE.dailyChallengeComplete[ch.id]) return;
+    var val = SAVE.dailyChallengeStats[ch.stat] || 0;
+    SAVE.dailyChallengeProgress[ch.id] = val;
+    if (val >= ch.goal) {
+      SAVE.dailyChallengeComplete[ch.id] = true;
+      SAVE.echoes = (SAVE.echoes||0) + ch.reward;
+      SAVE.totalEchoes = (SAVE.totalEchoes||0) + ch.reward;
+      SAVE.keys = (SAVE.keys||0) + ch.keyReward;
+      SAVE.totalKeys = (SAVE.totalKeys||0) + ch.keyReward;
+      newly.push(ch);
+      _recentDailyChallenges.push(ch);
+    }
+  });
+  if (!SAVE.dailyChallengeAllClaimed) {
+    var allDone = SAVE.dailyChallenges.every(function(ch) { return SAVE.dailyChallengeComplete[ch.id]; });
+    if (allDone && SAVE.dailyChallenges.length === 4) {
+      SAVE.dailyChallengeAllClaimed = true;
+      SAVE.echoes = (SAVE.echoes||0) + 5;
+      SAVE.totalEchoes = (SAVE.totalEchoes||0) + 5;
+      SAVE.keys = (SAVE.keys||0) + 2;
+      SAVE.totalKeys = (SAVE.totalKeys||0) + 2;
+    }
+  }
+  if (newly.length) doSave();
+  return newly;
+}
+// ── PREMIUM ITEMS ──────────────────────────────────────────
+var PREMIUM_ITEMS = [
+  {id:'celestialShip', name:'CELESTIAL TITAN', type:'sprite', label:'CELESTIAL TITAN', icon:'👼', rarity:'legendary', color:'#ffd700'},
+  {id:'cyberShip',     name:'CYBER WRAITH',   type:'sprite', label:'CYBER WRAITH',   icon:'🤖', rarity:'epic',      color:'#ff0044'},
+  {id:'voidDragonShip',name:'VOID DRAGON',    type:'sprite', label:'VOID DRAGON',    icon:'🐉', rarity:'legendary', color:'#aa00ff'},
+  {id:'phantomBladeShip', name:'PHANTOM BLADE', type:'sprite', label:'PHANTOM BLADE', icon:'⚔️', rarity:'legendary', color:'#00ffcc'},
+  {id:'solarFlareShip',   name:'SOLAR FLARE',   type:'sprite', label:'SOLAR FLARE',   icon:'☀️', rarity:'epic',      color:'#ff8800'},
+  {id:'abyssalShip',      name:'ABYSSAL LEVIATHAN', type:'sprite', label:'ABYSSAL LEVIATHAN', icon:'🌊', rarity:'legendary', color:'#0066ff'}
+];
+
 // ── TROPHY MILESTONES ─────────────────────────────────────────
 const TROPHIES = [
   { id:'t1',  pts:500,       icon:'🥉', name:'CADET',           reward:'+1 Bomb',            type:'bomb',  val:1   },
@@ -2747,12 +2866,19 @@ function loadSave(){
     if(!s.lifetimeStats||typeof s.lifetimeStats!=='object') s.lifetimeStats={totalKills:0,totalBossKills:0,highestKillStreak:0,perfectWaves:0,totalCoinsCollected:0,highestWaveReached:0};
     ['totalKills','totalBossKills','highestKillStreak','perfectWaves','totalCoinsCollected','highestWaveReached'].forEach(function(k){if(!isFinite(s.lifetimeStats[k])||s.lifetimeStats[k]<0)s.lifetimeStats[k]=0;});
     if(!s.achievements||typeof s.achievements!=='object') s.achievements={};
+    if(!Array.isArray(s.dailyChallenges)) s.dailyChallenges=[];
+    if(!s.dailyChallengeProgress||typeof s.dailyChallengeProgress!=='object') s.dailyChallengeProgress={};
+    if(!s.dailyChallengeComplete||typeof s.dailyChallengeComplete!=='object') s.dailyChallengeComplete={};
+    if(typeof s.dailyChallengeAllClaimed!=='boolean') s.dailyChallengeAllClaimed=false;
+    if(!s.dailyChallengeStats||typeof s.dailyChallengeStats!=='object') s.dailyChallengeStats={kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0};
     if(!isFinite(s.keys)||s.keys<0) s.keys=0;
     if(!isFinite(s.totalKeys)||s.totalKeys<0) s.totalKeys=0;
     if(!s.artifacts||typeof s.artifacts!=='object') s.artifacts={};
     if(!s.artifactSetsComplete||typeof s.artifactSetsComplete!=='object') s.artifactSetsComplete={};
     if(!isFinite(s.lootBoxesOpened)||s.lootBoxesOpened<0) s.lootBoxesOpened=0;
     if(!isFinite(s.lootBoxPity)||s.lootBoxPity<0) s.lootBoxPity=0;
+    if(!s.premiumOwned||typeof s.premiumOwned!=='object') s.premiumOwned={};
+    if(!isFinite(s.premiumCratesOpened)||s.premiumCratesOpened<0) s.premiumCratesOpened=0;
     if(s.lastDailySpinDate && typeof s.lastDailySpinDate!=='string') s.lastDailySpinDate=null;
     if(!isFinite(s.dailySpinStreak)||s.dailySpinStreak<0) s.dailySpinStreak=0;
     if(typeof s.forgeIntroSeen!=='boolean') s.forgeIntroSeen=false;
@@ -3242,9 +3368,16 @@ function devLaunch() {
   startGame();
 }
 
-var CURRENT_VERSION = '2.8.5 (BETA)';
+var CURRENT_VERSION = '2.9.0 (BETA)';
 
 const VERSION_NOTES = {
+'2.9.0 (BETA)': [
+    '💎 Premium Crates — spend 10 keys for exclusive ship sprites you can\'t get anywhere else',
+    '🚀 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon with unique procedural art',
+    '🏛️ Vault upgrade — collapsible collections, grouped by type, with ship preview modals',
+    '🛡️ Crash protection — crate animations now auto-recover from errors & refund keys if needed',
+    '🔧 Service worker overhaul — versioned caching prevents stale game versions after updates',
+  ],
 '2.8.5 (BETA)': [
     '🎨 New ship sprites, auras, decals & colors — 3 new artifact sets (Arctic, Toxic, Thunder)',
     '🔔 Push notifications — opt in to get notified when updates drop',
@@ -3487,7 +3620,7 @@ if(window.visualViewport) window.visualViewport.addEventListener('resize', resiz
 var gState = 'menu'; // menu|playing|waveclear|gameover
 var player, bullets, eBullets, enemies, coinDrops, particles;
 let wave, score, sessionCoins, sessionBombs;
-let fireTimer, eMoveTimer, eFireTimer, eDir, killCount;
+let fireTimer, eMoveTimer, eFireTimer, eDir, killCount, totalRunKills;
 let screenShake = {x:0,y:0,dur:0,mag:0};
 let lastTime = 0;
 let combo = 0, comboTimer = 0, waveStartScore = 0;
@@ -3520,6 +3653,8 @@ var _synNotifyQueue = [];
 var _synNotifyActive = false;
 var _achNotifyQueue = [];
 var _achNotifyActive = false;
+var _dcNotifyQueue = [];
+var _dcNotifyActive = false;
 var _recentAchievements = [];
 var _launchFromMenu = false;
 const SHIP_SHAPES=[
@@ -3608,6 +3743,7 @@ let rafId = null;
 
 // Restore cosmetic rewards for completed artifact sets (must be after SPRITE_SHIPS etc.)
 restoreArtifactRewards();
+restorePremiumRewards();
 
 // Nav stack for back buttons
 let navStack = [];
@@ -4034,6 +4170,538 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     return;
   }
+  // Procedural sprite — Celestial Titan Ship (Premium)
+  if(custom.sprite==='celestialShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2)*0.3;
+    var _gc1='#ffd700', _gc2='#fffbe6';
+    // Dual rotating halo rings
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.15*_pulse;
+    c.strokeStyle=_gc1; c.lineWidth=1.5; c.shadowBlur=20; c.shadowColor=_gc1;
+    for(var ri=0;ri<2;ri++){
+      c.save();
+      c.rotate(_t*(ri===0?0.8:-0.6));
+      c.beginPath(); c.ellipse(0,0,26-ri*4,14-ri*3,0,0,Math.PI*2); c.stroke();
+      c.restore();
+    }
+    c.restore();
+    // Hull — elongated diamond angel-wing shape
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_gc1;
+    var hg=c.createLinearGradient(0,-24,0,12);
+    hg.addColorStop(0,'rgba(255,251,230,0.25)'); hg.addColorStop(1,'rgba(255,215,0,0.1)');
+    c.fillStyle=hg; c.strokeStyle=_gc1; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-24);
+    c.lineTo(5,-12); c.lineTo(14,-2); c.lineTo(18,4); // right wing
+    c.lineTo(12,6); c.lineTo(6,12); c.lineTo(0,8); // right tail
+    c.lineTo(-6,12); c.lineTo(-12,6); c.lineTo(-18,4); // left wing
+    c.lineTo(-14,-2); c.lineTo(-5,-12);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Wing feathers (3 per side)
+    c.save();
+    c.strokeStyle=_gc1+'88'; c.lineWidth=0.7; c.shadowBlur=0;
+    [[-1,1],[1,-1]].forEach(function(dir){
+      for(var fi=0;fi<3;fi++){
+        var fx=dir[1]*(10+fi*3), fy=-2+fi*3;
+        var fx2=dir[1]*(16+fi*2), fy2=4+fi*4;
+        c.globalAlpha=(flash?0.3:1)*(0.6-fi*0.15);
+        c.beginPath(); c.moveTo(fx,fy); c.lineTo(fx2,fy2); c.stroke();
+      }
+    });
+    c.restore();
+    // Cockpit — radiant circle with golden cross
+    c.save();
+    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=14; c.shadowColor=_gc1;
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.beginPath(); c.arc(0,-8,4.5,0,Math.PI*2); c.fill();
+    c.strokeStyle=_gc2+'66'; c.lineWidth=0.8;
+    c.beginPath(); c.moveTo(0,-12); c.lineTo(0,-4); c.stroke();
+    c.beginPath(); c.moveTo(-3.5,-8); c.lineTo(3.5,-8); c.stroke();
+    c.restore();
+    // Nose gem
+    c.save();
+    c.fillStyle=_gc2; c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.shadowBlur=12; c.shadowColor=_gc1;
+    c.beginPath(); c.arc(0,-21,1.8,0,Math.PI*2); c.fill();
+    c.restore();
+    // Trailing light motes
+    c.save();
+    for(var mi=0;mi<5;mi++){
+      var mx=(Math.sin(_t*2.5+mi*1.3))*10;
+      var my=12+mi*4+Math.sin(_t*1.8+mi*0.9)*2;
+      c.globalAlpha=(flash?0.3:1)*(0.5-mi*0.08);
+      c.fillStyle=mi%2===0?_gc1:_gc2;
+      c.shadowBlur=8; c.shadowColor=_gc1;
+      c.beginPath(); c.arc(mx,my,Math.max(0.5,1.4-mi*0.2),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Cyber Wraith Ship (Premium)
+  if(custom.sprite==='cyberShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*3)*0.3;
+    var _cr='#ff0044', _cc='#00e5ff';
+    // Scanline overlay
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.06;
+    c.fillStyle=_cc;
+    for(var sl=0;sl<6;sl++){
+      var sy=-24+((_t*40+sl*9)%54);
+      c.fillRect(-20,sy,40,1);
+    }
+    c.restore();
+    // Hull — angular stealth-bomber
+    c.save();
+    c.shadowBlur=14; c.shadowColor=_cr;
+    c.fillStyle='rgba(20,8,30,0.7)'; c.strokeStyle=_cr; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-22);
+    c.lineTo(4,-14); c.lineTo(8,-8); c.lineTo(20,2); // right wing outer
+    c.lineTo(14,4); c.lineTo(8,6); // right wing inner
+    c.lineTo(4,14); c.lineTo(0,10); // right tail
+    c.lineTo(-4,14); c.lineTo(-8,6); // left tail
+    c.lineTo(-14,4); c.lineTo(-20,2); // left wing
+    c.lineTo(-8,-8); c.lineTo(-4,-14);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Cyan data-stream centerline
+    c.save();
+    c.strokeStyle=_cc; c.lineWidth=0.8; c.shadowBlur=8; c.shadowColor=_cc;
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.7;
+    c.setLineDash([3,3]); c.lineDashOffset=-_t*15;
+    c.beginPath(); c.moveTo(0,-20); c.lineTo(0,10); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Hull edge glow lines
+    c.save();
+    c.strokeStyle=_cr+'44'; c.lineWidth=0.6; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.5;
+    c.beginPath(); c.moveTo(-8,-8); c.lineTo(8,-8); c.stroke();
+    c.beginPath(); c.moveTo(-14,4); c.lineTo(14,4); c.stroke();
+    c.restore();
+    // Cockpit — red diamond with blinking pixel
+    c.save();
+    c.fillStyle='rgba(255,0,68,0.4)'; c.shadowBlur=12; c.shadowColor=_cr;
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.beginPath();
+    c.moveTo(0,-12); c.lineTo(3.5,-7); c.lineTo(0,-2); c.lineTo(-3.5,-7);
+    c.closePath(); c.fill();
+    // Blinking pixel
+    c.fillStyle=Math.sin(_t*8)>0?_cc:_cr;
+    c.globalAlpha=(flash?0.4:1)*0.9;
+    c.fillRect(-0.8,-7.8,1.6,1.6);
+    c.restore();
+    // Corner LEDs
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.8;
+    var _leds=[[-18,2],[18,2],[-4,13],[4,13]];
+    _leds.forEach(function(p,i){
+      c.fillStyle=(Math.sin(_t*4+i*1.5)>0)?_cr:_cc;
+      c.shadowBlur=6; c.shadowColor=c.fillStyle;
+      c.beginPath(); c.arc(p[0],p[1],1.2,0,Math.PI*2); c.fill();
+    });
+    c.restore();
+    // Trailing data fragments
+    c.save();
+    for(var di=0;di<3;di++){
+      var dx=(Math.sin(_t*3+di*2.1))*6;
+      var dy=14+di*4+Math.sin(_t*2.2+di)*1.5;
+      c.globalAlpha=(flash?0.3:1)*(0.4-di*0.1);
+      c.fillStyle=di%2===0?_cr:_cc;
+      c.shadowBlur=4; c.shadowColor=c.fillStyle;
+      c.fillRect(dx-1,dy-0.5,2,1);
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Void Dragon Ship (Premium)
+  if(custom.sprite==='voidDragonShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.2)*0.3;
+    var _vp='#aa00ff', _vm='#ff00aa', _vd='#6600cc';
+    // Outer void aura with tendrils
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.12*_pulse;
+    c.fillStyle=_vp; c.shadowBlur=30; c.shadowColor=_vp;
+    c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.fill();
+    // Tendrils
+    c.strokeStyle=_vd; c.lineWidth=1; c.globalAlpha=(flash?0.3:1)*0.15;
+    for(var ti=0;ti<4;ti++){
+      var ta=_t*1.2+ti*Math.PI/2;
+      var tx=Math.cos(ta)*22, ty=Math.sin(ta)*18;
+      c.beginPath(); c.moveTo(tx*0.4,ty*0.4); c.quadraticCurveTo(tx*0.8+Math.sin(_t+ti)*4,ty*0.8,tx,ty); c.stroke();
+    }
+    c.restore();
+    // Hull — dragon silhouette: pointed nose, swept horns, wide belly
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_vp;
+    var dg=c.createLinearGradient(0,-22,0,16);
+    dg.addColorStop(0,'rgba(102,0,204,0.2)'); dg.addColorStop(1,'rgba(170,0,255,0.08)');
+    c.fillStyle=dg; c.strokeStyle=_vp; c.lineWidth=1.6;
+    c.beginPath();
+    c.moveTo(0,-22);        // nose point
+    c.lineTo(3,-14);
+    c.lineTo(10,-10);       // right horn base
+    c.lineTo(16,-14);       // right horn tip
+    c.lineTo(12,-6);        // horn return
+    c.lineTo(18,2);         // right wing
+    c.lineTo(12,6);         // right body
+    c.lineTo(6,14);         // right tail
+    c.lineTo(2,10);         // tail inner right
+    c.lineTo(0,16);         // tail tip
+    c.lineTo(-2,10);        // tail inner left
+    c.lineTo(-6,14);        // left tail
+    c.lineTo(-12,6);        // left body
+    c.lineTo(-18,2);        // left wing
+    c.lineTo(-12,-6);       // horn return
+    c.lineTo(-16,-14);      // left horn tip
+    c.lineTo(-10,-10);      // left horn base
+    c.lineTo(-3,-14);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Wing membranes (translucent purple between horns and body)
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.15*_pulse;
+    c.fillStyle=_vp;
+    // Right membrane
+    c.beginPath(); c.moveTo(10,-10); c.lineTo(16,-14); c.lineTo(12,-6); c.lineTo(18,2); c.lineTo(12,6); c.closePath(); c.fill();
+    // Left membrane
+    c.beginPath(); c.moveTo(-10,-10); c.lineTo(-16,-14); c.lineTo(-12,-6); c.lineTo(-18,2); c.lineTo(-12,6); c.closePath(); c.fill();
+    c.restore();
+    // Dragon eyes (two glowing magenta dots)
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.fillStyle=_vm; c.shadowBlur=10; c.shadowColor=_vm;
+    c.beginPath(); c.arc(-4,-10,1.5,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(4,-10,1.5,0,Math.PI*2); c.fill();
+    c.restore();
+    // Spine ridge
+    c.save();
+    c.strokeStyle=_vp+'66'; c.lineWidth=0.8; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.6;
+    c.beginPath(); c.moveTo(0,-18); c.lineTo(0,14); c.stroke();
+    // Cross ribs
+    c.beginPath(); c.moveTo(-6,0); c.lineTo(6,0); c.stroke();
+    c.beginPath(); c.moveTo(-4,6); c.lineTo(4,6); c.stroke();
+    c.restore();
+    // Purple fire exhaust
+    c.save();
+    for(var fi=0;fi<4;fi++){
+      var fx=(Math.sin(_t*4+fi*1.8))*4;
+      var fy=16+fi*3+Math.sin(_t*3+fi)*1.5;
+      c.globalAlpha=(flash?0.3:1)*(0.5-fi*0.1);
+      c.fillStyle=fi%2===0?_vp:_vm;
+      c.shadowBlur=6; c.shadowColor=_vp;
+      c.beginPath(); c.arc(fx,fy,Math.max(0.5,1.6-fi*0.3),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Phantom Blade Ship (Premium)
+  if(custom.sprite==='phantomBladeShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.5)*0.3;
+    var _pc1='#00ffcc', _pc2='#00ff88', _pc3='#004433';
+    // Spectral afterimage trail (3 fading copies behind)
+    c.save();
+    for(var gi=3;gi>=1;gi--){
+      c.globalAlpha=(flash?0.15:0.12)*(4-gi)/4;
+      var goff=gi*4+Math.sin(_t*3+gi)*1.5;
+      c.strokeStyle=_pc1; c.lineWidth=0.8; c.shadowBlur=6; c.shadowColor=_pc1;
+      c.beginPath();
+      c.moveTo(0,-20+goff); c.lineTo(6,-8+goff); c.lineTo(14,2+goff);
+      c.lineTo(8,6+goff); c.lineTo(4,14+goff); c.lineTo(0,10+goff);
+      c.lineTo(-4,14+goff); c.lineTo(-8,6+goff); c.lineTo(-14,2+goff);
+      c.lineTo(-6,-8+goff); c.closePath(); c.stroke();
+    }
+    c.restore();
+    // Main hull — katana/blade shape, sleek and angular
+    c.save();
+    c.shadowBlur=14; c.shadowColor=_pc1;
+    var bg=c.createLinearGradient(0,-22,0,16);
+    bg.addColorStop(0,_pc1+'44'); bg.addColorStop(0.5,_pc3+'88'); bg.addColorStop(1,_pc1+'22');
+    c.fillStyle=bg; c.strokeStyle=_pc1; c.lineWidth=1.4;
+    c.beginPath();
+    c.moveTo(0,-22);        // sharp nose
+    c.lineTo(4,-12);
+    c.lineTo(6,-8);
+    c.lineTo(14,2);         // right blade tip
+    c.lineTo(8,6);
+    c.lineTo(4,14);         // right tail
+    c.lineTo(0,10);         // center notch
+    c.lineTo(-4,14);        // left tail
+    c.lineTo(-8,6);
+    c.lineTo(-14,2);        // left blade tip
+    c.lineTo(-6,-8);
+    c.lineTo(-4,-12);
+    c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Energy lines running along blade edges (animated dash)
+    c.save();
+    c.strokeStyle=_pc2; c.lineWidth=0.7; c.shadowBlur=8; c.shadowColor=_pc2;
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.8;
+    c.setLineDash([3,4]); c.lineDashOffset=-_t*30;
+    // Right edge
+    c.beginPath(); c.moveTo(4,-12); c.lineTo(14,2); c.lineTo(8,6); c.stroke();
+    // Left edge
+    c.beginPath(); c.moveTo(-4,-12); c.lineTo(-14,2); c.lineTo(-8,6); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Central core — pulsing diamond cockpit
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    c.fillStyle=_pc1; c.shadowBlur=12; c.shadowColor=_pc1;
+    c.beginPath();
+    c.moveTo(0,-8); c.lineTo(3,-3); c.lineTo(0,2); c.lineTo(-3,-3); c.closePath();
+    c.fill();
+    // Inner bright core
+    c.fillStyle='#ffffff'; c.shadowBlur=6; c.globalAlpha=(flash?0.3:1)*0.6*_pulse;
+    c.beginPath(); c.arc(0,-3,1.2,0,Math.PI*2); c.fill();
+    c.restore();
+    // Phantom wisps — floating particle trails from wing tips
+    c.save();
+    for(var wi=0;wi<6;wi++){
+      var side=wi<3?1:-1;
+      var wt=_t*2+wi*1.1;
+      var wlife=(Math.sin(wt)*0.5+0.5);
+      var wx=side*(14-wi%3*3)+Math.sin(wt*1.5)*2;
+      var wy=2+wi%3*5+wlife*6;
+      c.globalAlpha=(flash?0.2:1)*wlife*0.4;
+      c.fillStyle=wi%2===0?_pc1:_pc2;
+      c.shadowBlur=4; c.shadowColor=_pc1;
+      c.beginPath(); c.arc(wx,wy,1+wlife,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Vertical energy slash line (animated)
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.3*(0.5+Math.sin(_t*4)*0.5);
+    c.strokeStyle=_pc1; c.lineWidth=0.5; c.shadowBlur=10; c.shadowColor=_pc1;
+    c.beginPath(); c.moveTo(0,-22); c.lineTo(0,14); c.stroke();
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Solar Flare Ship (Premium)
+  if(custom.sprite==='solarFlareShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.6+Math.sin(_t*1.8)*0.4;
+    var _sc1='#ff8800', _sc2='#ffcc00', _sc3='#ff4400';
+    // Outer corona — radiating flame tendrils
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.2*_pulse;
+    for(var ri=0;ri<12;ri++){
+      var ra=ri*Math.PI/6+_t*0.6;
+      var rlen=20+Math.sin(_t*3+ri*0.8)*6;
+      var rw=1.5+Math.sin(_t*2+ri)*0.5;
+      c.strokeStyle=ri%3===0?_sc3:ri%3===1?_sc1:_sc2;
+      c.lineWidth=rw; c.shadowBlur=8; c.shadowColor=_sc1;
+      c.beginPath();
+      c.moveTo(Math.cos(ra)*10,Math.sin(ra)*10);
+      var cp1x=Math.cos(ra+0.2)*rlen*0.6+Math.sin(_t*2+ri)*3;
+      var cp1y=Math.sin(ra+0.2)*rlen*0.6;
+      c.quadraticCurveTo(cp1x,cp1y,Math.cos(ra)*rlen,Math.sin(ra)*rlen);
+      c.stroke();
+    }
+    c.restore();
+    // Main hull — rounded solar disk with angular nacelles
+    c.save();
+    c.shadowBlur=18; c.shadowColor=_sc1;
+    var sg=c.createRadialGradient(0,-2,0,0,-2,18);
+    sg.addColorStop(0,_sc2+'66'); sg.addColorStop(0.6,_sc1+'44'); sg.addColorStop(1,_sc3+'11');
+    c.fillStyle=sg;
+    c.strokeStyle=_sc1; c.lineWidth=1.5;
+    c.beginPath();
+    c.moveTo(0,-20);        // top point
+    c.quadraticCurveTo(8,-16,12,-8);  // right upper curve
+    c.lineTo(16,-2);        // right nacelle tip
+    c.lineTo(12,4);         // right nacelle inner
+    c.quadraticCurveTo(10,10,6,14);   // right lower curve
+    c.lineTo(2,12);         // right tail
+    c.lineTo(0,16);         // tail center
+    c.lineTo(-2,12);        // left tail
+    c.lineTo(-6,14);        // left lower
+    c.quadraticCurveTo(-10,10,-12,4); // left nacelle inner
+    c.lineTo(-16,-2);       // left nacelle tip
+    c.lineTo(-12,-8);       // left nacelle outer
+    c.quadraticCurveTo(-8,-16,0,-20); // close top
+    c.fill(); c.stroke();
+    c.restore();
+    // Solar surface texture — animated convection cells
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.25;
+    c.strokeStyle=_sc2; c.lineWidth=0.6; c.shadowBlur=0;
+    for(var ci=0;ci<5;ci++){
+      var ccx=Math.cos(_t*0.4+ci*1.3)*6;
+      var ccy=-4+Math.sin(_t*0.5+ci*0.9)*5;
+      var cr=3+Math.sin(_t*1.5+ci)*1.5;
+      c.beginPath(); c.arc(ccx,ccy,cr,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Central core — blazing white-hot spot
+    c.save();
+    c.globalAlpha=(flash?0.5:1)*_pulse;
+    var cg=c.createRadialGradient(0,-4,0,0,-4,8);
+    cg.addColorStop(0,'#ffffff');
+    cg.addColorStop(0.3,_sc2);
+    cg.addColorStop(1,'rgba(255,136,0,0)');
+    c.fillStyle=cg; c.shadowBlur=16; c.shadowColor='#ffffff';
+    c.beginPath(); c.arc(0,-4,6,0,Math.PI*2); c.fill();
+    c.restore();
+    // Sunspot eyes
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*0.9;
+    c.fillStyle=_sc3; c.shadowBlur=4; c.shadowColor=_sc3;
+    c.beginPath(); c.arc(-3,-6,1.4,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(3,-6,1.4,0,Math.PI*2); c.fill();
+    c.restore();
+    // Solar prominences — arcing plasma loops from nacelles
+    c.save();
+    c.globalAlpha=(flash?0.2:1)*0.5*_pulse;
+    c.strokeStyle=_sc2; c.lineWidth=1.2; c.shadowBlur=10; c.shadowColor=_sc2;
+    // Right loop
+    var lp1=Math.sin(_t*2)*4;
+    c.beginPath(); c.moveTo(16,-2);
+    c.quadraticCurveTo(20+lp1,-8,14,-14);
+    c.stroke();
+    // Left loop
+    c.beginPath(); c.moveTo(-16,-2);
+    c.quadraticCurveTo(-20-lp1,-8,-14,-14);
+    c.stroke();
+    c.restore();
+    // Exhaust — cascading embers
+    c.save();
+    for(var ei=0;ei<6;ei++){
+      var ex=Math.sin(_t*5+ei*1.2)*5;
+      var ey=16+ei*3+Math.sin(_t*3.5+ei*0.7)*1.5;
+      c.globalAlpha=(flash?0.2:1)*(0.6-ei*0.08);
+      c.fillStyle=ei%2===0?_sc1:_sc2;
+      c.shadowBlur=5; c.shadowColor=_sc1;
+      c.beginPath(); c.arc(ex,ey,Math.max(0.5,2-ei*0.25),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+  // Procedural sprite — Abyssal Leviathan Ship (Premium)
+  if(custom.sprite==='abyssalShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*1.5)*0.3;
+    var _ac1='#0066ff', _ac2='#00ccff', _ac3='#003388';
+    // Deep water distortion — concentric ripple rings
+    c.save();
+    for(var rr=0;rr<3;rr++){
+      var rphase=(_t*0.8+rr*0.6)%2;
+      var rscale=10+rphase*18;
+      var ralpha=Math.max(0,0.25-rphase*0.12);
+      c.globalAlpha=(flash?0.15:1)*ralpha;
+      c.strokeStyle=_ac2; c.lineWidth=0.6; c.shadowBlur=4; c.shadowColor=_ac2;
+      c.beginPath(); c.ellipse(0,0,rscale,rscale*0.5,0,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Main hull — organic leviathan: broad head, tapered body, split tail fins
+    c.save();
+    c.shadowBlur=16; c.shadowColor=_ac1;
+    var ag=c.createLinearGradient(0,-20,0,18);
+    ag.addColorStop(0,_ac3+'88'); ag.addColorStop(0.4,_ac1+'66'); ag.addColorStop(1,_ac3+'44');
+    c.fillStyle=ag; c.strokeStyle=_ac1; c.lineWidth=1.5;
+    c.beginPath();
+    c.moveTo(0,-20);         // snout
+    c.quadraticCurveTo(5,-16,10,-10);  // right brow
+    c.lineTo(16,-4);         // right jaw
+    c.quadraticCurveTo(18,0,16,4);     // right cheek
+    c.lineTo(12,8);          // right body
+    c.lineTo(14,14);         // right fin tip
+    c.lineTo(6,10);          // right fin inner
+    c.lineTo(2,16);          // right tail
+    c.quadraticCurveTo(0,18,-2,16);    // tail curve
+    c.lineTo(-6,10);         // left fin inner
+    c.lineTo(-14,14);        // left fin tip
+    c.lineTo(-12,8);         // left body
+    c.lineTo(-16,4);         // left cheek
+    c.quadraticCurveTo(-18,0,-16,-4);  // left jaw
+    c.lineTo(-10,-10);       // left brow
+    c.quadraticCurveTo(-5,-16,0,-20);  // close top
+    c.fill(); c.stroke();
+    c.restore();
+    // Bioluminescent patterns — animated glowing lines along hull
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*_pulse*0.6;
+    c.strokeStyle=_ac2; c.lineWidth=0.8; c.shadowBlur=8; c.shadowColor=_ac2;
+    c.setLineDash([2,3]); c.lineDashOffset=-_t*20;
+    // Right side veins
+    c.beginPath(); c.moveTo(4,-14); c.quadraticCurveTo(10,-4,12,8); c.stroke();
+    c.beginPath(); c.moveTo(8,-8); c.quadraticCurveTo(14,0,14,6); c.stroke();
+    // Left side veins
+    c.beginPath(); c.moveTo(-4,-14); c.quadraticCurveTo(-10,-4,-12,8); c.stroke();
+    c.beginPath(); c.moveTo(-8,-8); c.quadraticCurveTo(-14,0,-14,6); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    // Eyes — deep glowing orbs with slit pupils
+    c.save();
+    c.globalAlpha=(flash?0.4:1)*_pulse;
+    // Eye glow base
+    c.fillStyle=_ac2; c.shadowBlur=10; c.shadowColor=_ac2;
+    c.beginPath(); c.arc(-6,-8,2.5,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(6,-8,2.5,0,Math.PI*2); c.fill();
+    // Dark slit pupils
+    c.fillStyle=_ac3; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.5:1)*0.9;
+    c.fillRect(-6.5,-10,1,4);
+    c.fillRect(5.5,-10,1,4);
+    c.restore();
+    // Jaw ridge details
+    c.save();
+    c.strokeStyle=_ac1+'88'; c.lineWidth=0.6; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.5;
+    c.beginPath(); c.moveTo(-10,-10); c.quadraticCurveTo(0,-6,10,-10); c.stroke();
+    c.beginPath(); c.moveTo(-8,-4); c.lineTo(8,-4); c.stroke();
+    c.restore();
+    // Dorsal ridge — spine bumps along center
+    c.save();
+    c.globalAlpha=(flash?0.3:1)*0.7*_pulse;
+    c.fillStyle=_ac2; c.shadowBlur=4; c.shadowColor=_ac2;
+    for(var di=0;di<5;di++){
+      var dy=-2+di*3.5;
+      var dr=1.6-di*0.2;
+      var dp=Math.sin(_t*2+di*0.5)*0.3+0.7;
+      c.globalAlpha=(flash?0.3:1)*0.5*dp;
+      c.beginPath(); c.arc(0,dy,Math.max(0.5,dr),0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Bubble exhaust — rising bubbles from tail
+    c.save();
+    for(var bi=0;bi<5;bi++){
+      var bphase=(_t*1.5+bi*0.7)%3;
+      var bx=Math.sin(_t*2+bi*1.3)*4;
+      var by=16+bphase*5;
+      var br=Math.max(0.3,1.5-bphase*0.4);
+      var balpha=Math.max(0,0.5-bphase*0.15);
+      c.globalAlpha=(flash?0.2:1)*balpha;
+      c.strokeStyle=_ac2; c.lineWidth=0.6; c.shadowBlur=3; c.shadowColor=_ac2;
+      c.beginPath(); c.arc(bx,by,br,0,Math.PI*2); c.stroke();
+    }
+    c.restore();
+    // Anglerfish lure — dangling light at nose
+    c.save();
+    var lurePulse=0.5+Math.sin(_t*4)*0.5;
+    c.globalAlpha=(flash?0.3:1)*lurePulse;
+    c.fillStyle='#ffffff'; c.shadowBlur=14; c.shadowColor=_ac2;
+    c.beginPath(); c.arc(0,-22,1.5,0,Math.PI*2); c.fill();
+    // Lure stalk
+    c.strokeStyle=_ac2+'66'; c.lineWidth=0.5; c.shadowBlur=0;
+    c.globalAlpha=(flash?0.3:1)*0.4;
+    c.beginPath(); c.moveTo(0,-20); c.quadraticCurveTo(Math.sin(_t*3)*2,-21,0,-22); c.stroke();
+    c.restore();
+    c.restore();
+    return;
+  }
   // Aura ring
   if(aura==='eternalGlow'){
     var _at=typeof performance!=='undefined'?performance.now()/1000:0;
@@ -4352,6 +5020,7 @@ function initGame() {
   const hasActiveRelics = (SAVE.activeRelics||[]).length > 0;
   sessionBombs = hasActiveRelics ? 0 : Math.min(5, SAVE.savedBombs !== undefined ? SAVE.savedBombs : stats.bombs);
   SAVE.savedBombs = undefined;
+  SAVE.savedTotalKills = undefined;
   const restoredLives = SAVE.savedLives !== undefined ? SAVE.savedLives : stats.maxLives;
 SAVE.savedLives = undefined;
 resizeCanvas();
@@ -4366,10 +5035,10 @@ if(dangerLine) dangerLine.style.bottom = playerYOffset + 'px';
   wave=SAVE.savedWave||1; score=SAVE.savedScore||0; sessionCoins=SAVE.savedSessionCoins||0;
 waveStartScore=score;
 SAVE.savedScore=undefined; SAVE.savedSessionCoins=undefined;
-  fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0;
+  fireTimer=0; eMoveTimer=0; eFireTimer=0; eDir=1; killCount=0; totalRunKills=SAVE.savedTotalKills||0;
   combo=0; comboTimer=0; autoRepairCount=0; resurrected=false; temporalRiftTimer=0;
   _prevActiveSynergies = computeSynergies(); _prevDiscoveredSynergies = (SAVE.discoveredSynergies||[]).slice(); _synNotifyQueue = []; _synNotifyActive = false;
-  _achNotifyQueue = []; _achNotifyActive = false; _recentAchievements = [];
+  _achNotifyQueue = []; _achNotifyActive = false; _dcNotifyQueue = []; _dcNotifyActive = false; _recentAchievements = []; _recentDailyChallenges = [];
   bossFight=false; boss=null;
   if((SAVE.savedWave||1) > 21) perksUnlocked=true;
   applyHandedness();
@@ -4909,6 +5578,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       const coinMult = hasRelic('cursedCoins') ? 3 : 1;
       sessionCoins+=5*coinMult;
       score+=5*coinMult;
+      if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.coins = (SAVE.dailyChallengeStats.coins||0) + 5*coinMult;
       console.log('coin pickup! sessionCoins now:', sessionCoins);
       spawnExplosion(c.x,c.y,'#ffd700',2);
       sfx('coinGet');
@@ -4961,7 +5631,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.hypot(n.x-e.x,n.y-e.y)<splashR).forEach(n=>{
                 n.hp-=stats.damage*splashDmg; n.hitFlash=1;
                 spawnExplosion(n.x,n.y,'#ff8800',2);
-                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
               });
             }
           }
@@ -4975,7 +5645,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(hasPerk('warProfiteer')) c=Math.floor(c*warProfiteerMult);
             // Scavenger — override cursedCoins and auto-collect
             if(activePowerups['goldRush']) c=Math.floor(c*5);
-            if(hasPerk('scavenger') || !hasRelic('cursedCoins')) sessionCoins+=c;
+            if(hasPerk('scavenger') || !hasRelic('cursedCoins')) { sessionCoins+=c; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.coins = (SAVE.dailyChallengeStats.coins||0) + c; }
             score+=e.scoreVal*wave;
             coinDrops.push({x:e.x,y:e.y,val:c});
             // Powerup drop — 4% chance per kill
@@ -4984,11 +5654,11 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               powerupDrops.push({x:e.x, y:e.y, id:pid, pulse:0});
             }
             spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],5);
-            sfx('enemyDie'); killCount++; SAVE.lifetimeStats.totalKills++;
+            sfx('enemyDie'); killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.kills++;
             // Chain lightning
             if(activePowerups['chainLightning']){
               const nearby=enemies.filter(n=>n.alive&&n!==e&&!n.mini).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,2);
-              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
+              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
             }
             // CHAIN REACTION
             if(hasPerk('chainReaction')){
@@ -4997,7 +5667,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                 enemies.filter(n=>n.alive&&n!==e&&!n.mini&&Math.abs(n.x-e.x)<60&&Math.abs(n.y-e.y)<60).forEach(n=>{
                   n.hp-=stats.damage*2; n.hitFlash=1;
                   spawnExplosion(n.x,n.y,['#ff00cc','#00f5ff','#ff6600'][n.type],3);
-                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
+                  if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); }
                 });
               }
             }
@@ -5006,6 +5676,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             // KILL STREAK
             killStreakCount++;
             if(killStreakCount > (SAVE.lifetimeStats.highestKillStreak||0)) SAVE.lifetimeStats.highestKillStreak = killStreakCount;
+            if(SAVE.dailyChallengeStats && killStreakCount > (SAVE.dailyChallengeStats.killStreak||0)) SAVE.dailyChallengeStats.killStreak = killStreakCount;
             // HOLLOW POINT
             bulletsFired++;
             const hpInterval=[5,5,4,3][perkLevel('hollowPoint')-1];
@@ -5035,7 +5706,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(stats.chainKill){
               const near=enemies.filter(en=>en.alive&&en!==e)
                 .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y))[0];
-              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; SAVE.lifetimeStats.totalKills++; } }
+              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; } }
             }
           }
         }
@@ -5050,7 +5721,8 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         if(boss.hp<=0){
           boss.alive=false;
           SAVE.lifetimeStats.totalBossKills++;
-          score+=500*wave; sessionCoins+=80;
+          if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.bossKills = (SAVE.dailyChallengeStats.bossKills||0) + 1;
+          score+=500*wave; sessionCoins+=80; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.coins = (SAVE.dailyChallengeStats.coins||0) + 80;
           if(hasPerk('voidSurge')){ voidSurgeStacks++; showToast(`⚡ Void Surge! Damage +${Math.round(voidSurgeStacks*([0.05,0.08,0.12,0.15][perkLevel('voidSurge')-1])*100)}%`); }
           if(wave>=20 && !perksUnlocked){ perksUnlocked=true; showToast('⚡ PERKS UNLOCKED! Visit the shop to access them!'); }
           spawnExplosion(boss.x,boss.y,'#ff6600',8,true);
@@ -5200,7 +5872,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   // ── LIVE ACHIEVEMENT CHECK (throttled ~1/sec) ───
   if(!gameLoop._achTimer) gameLoop._achTimer=0;
   gameLoop._achTimer+=dt;
-  if(gameLoop._achTimer>=1.0){ gameLoop._achTimer=0; checkAchievements(); }
+  if(gameLoop._achTimer>=1.0){ gameLoop._achTimer=0; checkAchievements(); var _dcNewly=checkDailyChallenges(); if(_dcNewly&&_dcNewly.length){ _dcNewly.forEach(function(ch){_dcNotifyQueue.push(ch);}); if(!_dcNotifyActive)_showDailyChallengeNotification(); } }
 
   // ── WAVE CLEAR CHECK ────────────────────────────
   const allDead = bossFight ? (boss&&!boss.alive) : enemies.every(e=>!e.alive);
@@ -5613,7 +6285,27 @@ function showSummaryAchievements(onDone) {
       if (fill) fill.style.width = displayPct + '%';
     }, i * slideInTime);
   });
-  var allInTime = relevant.length * slideInTime + 600;
+  // Daily challenge completions this wave
+  if (_recentDailyChallenges.length > 0) {
+    _recentDailyChallenges.forEach(function(ch, i) {
+      var drow = document.createElement('div');
+      drow.className = 'ach-prog-row';
+      drow.innerHTML = '<span style="font-size:14px">' + ch.icon + '</span>' +
+        '<div style="flex:1">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px">' +
+        '<span class="ach-label" style="font-size:8px;color:#ff8800;letter-spacing:1px;font-family:Orbitron,sans-serif">DAILY: ' + ch.name + '</span>' +
+        '<span class="ach-val" style="font-size:8px;color:#00ff88;font-family:Orbitron,sans-serif">✓ COMPLETE</span>' +
+        '</div>' +
+        '<div style="font-size:9px;color:#99aabb;margin-bottom:2px">' + ch.desc + '</div>' +
+        '<div class="ach-prog-bar"><div class="ach-prog-fill" style="width:100%;background:linear-gradient(90deg,#ff8800,#ffcc00)"></div><span class="ach-sparkle">✨</span></div>' +
+        '</div>';
+      container.appendChild(drow);
+      setTimeout(function() { drow.classList.add('show'); }, (relevant.length + i) * slideInTime);
+    });
+  }
+  var _dcCount = _recentDailyChallenges.length;
+  _recentDailyChallenges = [];
+  var allInTime = (relevant.length + _dcCount) * slideInTime + 600;
   if (celebrateRows.length > 0) {
     /* Phase 1: gold glow + bar shimmer on completed rows */
     setTimeout(function() {
@@ -5820,6 +6512,101 @@ function buildAchievementsScreen() {
     completedTiers += completedIdx + 1;
   });
   if (subtitle) subtitle.textContent = completedTiers + ' / ' + totalTiers + ' TIERS COMPLETED';
+
+  // ── DAILY CHALLENGES SECTION (collapsible) ──
+  refreshDailyChallenges();
+  if (SAVE.dailyChallenges && SAVE.dailyChallenges.length) {
+    var dcCard = document.createElement('div');
+    dcCard.style.cssText = 'background:rgba(15,10,5,0.85);border:1.5px solid #ff880066;border-radius:10px;padding:14px;margin-bottom:14px;width:100%;box-sizing:border-box;cursor:pointer;';
+    // Countdown timer
+    var epoch = getDailyChallengeEpoch();
+    var nextReset = (epoch + 1) * 12 * 60 * 60 * 1000;
+    var msLeft = nextReset - Date.now();
+    var hrsLeft = Math.floor(msLeft / 3600000);
+    var minsLeft = Math.floor((msLeft % 3600000) / 60000);
+    var timerStr = hrsLeft + 'h ' + minsLeft + 'm';
+    var dcCompleted = 0;
+    SAVE.dailyChallenges.forEach(function(ch) { if (SAVE.dailyChallengeComplete[ch.id]) dcCompleted++; });
+    // Header (always visible)
+    var dcHtml = '<div id="dc-header" style="display:flex;align-items:center;justify-content:space-between">' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+      '<span style="font-size:18px">⏰</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;color:#ff8800;letter-spacing:2px;text-shadow:0 0 10px #ff880044">DAILY CHALLENGES</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff8800aa">' + dcCompleted + '/4</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff8800aa;letter-spacing:1px">RESETS IN ' + timerStr + '</span>' +
+      '<span id="dc-arrow" style="font-size:10px;color:#ff8800;transition:transform 0.3s ease">▶</span>' +
+      '</div>' +
+      '</div>';
+    // Details (hidden by default)
+    dcHtml += '<div id="dc-details" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)">';
+    dcHtml += '<div style="overflow:hidden"><div style="padding-top:10px">';
+    SAVE.dailyChallenges.forEach(function(ch) {
+      var done = SAVE.dailyChallengeComplete[ch.id];
+      var val = SAVE.dailyChallengeStats[ch.stat] || 0;
+      var pct = Math.min(100, Math.floor(val / ch.goal * 100));
+      var barColor = done ? '#00ff88' : '#ff8800';
+      var barBg = done ? 'rgba(0,255,136,0.12)' : 'rgba(255,136,0,0.12)';
+      dcHtml += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;opacity:' + (done ? '0.65' : '1') + '">' +
+        '<span style="font-size:18px;width:26px;text-align:center">' + ch.icon + '</span>' +
+        '<div style="flex:1">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">' +
+        '<span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:' + (done ? '#00ff88' : '#ff8800') + ';letter-spacing:1.5px">' + ch.name + '</span>' +
+        '<span style="font-size:10px;color:#99aabb;font-family:Orbitron,sans-serif">' + (done ? '✓' : Math.min(val, ch.goal) + '/' + ch.goal) + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;color:#99aabb;margin-bottom:3px">' + ch.desc + (ch.goal > 1 ? ' (' + ch.goal + ')' : '') + '</div>' +
+        '<div style="height:5px;background:' + barBg + ';border-radius:3px;overflow:hidden">' +
+        '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:3px;transition:width 0.4s ease;box-shadow:0 0 6px ' + barColor + '44"></div>' +
+        '</div>' +
+        '</div>' +
+        '<div style="text-align:right;min-width:44px">' +
+        '<span style="font-size:10px;color:#aa44ff;font-family:Orbitron,sans-serif">+' + ch.reward + '🌀</span><br>' +
+        '<span style="font-size:10px;color:#ffcc00;font-family:Orbitron,sans-serif">+' + ch.keyReward + '🔑</span>' +
+        '</div>' +
+        '</div>';
+    });
+    // All-complete bonus row
+    var allDone = dcCompleted === SAVE.dailyChallenges.length;
+    var bonusClaimed = SAVE.dailyChallengeAllClaimed;
+    dcHtml += '<div style="margin-top:6px;padding-top:8px;border-top:1px solid #ff880033;display:flex;align-items:center;justify-content:space-between;opacity:' + (bonusClaimed ? '0.6' : '1') + '">' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+      '<span style="font-size:16px">' + (allDone ? '🏆' : '🔒') + '</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:' + (allDone ? '#ffd700' : '#556') + ';letter-spacing:1.5px">ALL COMPLETE BONUS</span>' +
+      '</div>' +
+      '<div style="text-align:right">' +
+      '<span style="font-size:10px;color:#aa44ff;font-family:Orbitron,sans-serif">+5🌀</span> ' +
+      '<span style="font-size:10px;color:#ffcc00;font-family:Orbitron,sans-serif">+2🔑</span>' +
+      (bonusClaimed ? ' <span style="font-size:10px;color:#00ff88">✓</span>' : '') +
+      '</div>' +
+      '</div>';
+    dcHtml += '</div></div></div>'; // close padding div, overflow div, and dc-details grid
+    dcCard.innerHTML = dcHtml;
+    list.appendChild(dcCard);
+    // Toggle expand/collapse on tap
+    dcCard.addEventListener('click', function() {
+      var details = document.getElementById('dc-details');
+      var arrow = document.getElementById('dc-arrow');
+      if (!details) return;
+      var isOpen = details.style.gridTemplateRows === '1fr';
+      details.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+      if (arrow) arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+    });
+    // Live countdown timer update
+    dcCard.setAttribute('data-dc-timer', '1');
+    if (window._dcTimerInterval) clearInterval(window._dcTimerInterval);
+    window._dcTimerInterval = setInterval(function() {
+      var el = document.querySelector('[data-dc-timer]');
+      if (!el) { clearInterval(window._dcTimerInterval); return; }
+      var nr = (getDailyChallengeEpoch() + 1) * 12 * 60 * 60 * 1000;
+      var ml = nr - Date.now();
+      if (ml <= 0) { clearInterval(window._dcTimerInterval); buildAchievementsScreen(); return; }
+      var h = Math.floor(ml / 3600000);
+      var m = Math.floor((ml % 3600000) / 60000);
+    }, 60000);
+  }
+
+  // ── LIFETIME ACHIEVEMENTS ──
   ACHIEVEMENTS.forEach(function(ach) {
     var currentTier = SAVE.achievements[ach.id];
     var completedIdx = (currentTier === undefined) ? -1 : currentTier;
@@ -5832,10 +6619,10 @@ function buildAchievementsScreen() {
     var html = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
       '<span style="font-size:22px">'+ach.icon+'</span>'+
       '<div style="flex:1">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:'+headerColor+';letter-spacing:2px">'+ach.name+'</div>'+
-      '<div style="font-size:8px;color:#556;margin-top:1px">'+ach.desc+'</div>'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;color:'+headerColor+';letter-spacing:2px">'+ach.name+'</div>'+
+      '<div style="font-size:13px;color:#99aabb;margin-top:1px">'+ach.desc+'</div>'+
       '</div>'+
-      '<span style="font-size:9px;color:'+(allDone?'#00ff88':'#889')+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+(completedIdx+1)+'/'+ach.tiers.length+'</span>'+
+      '<span style="font-size:10px;color:'+(allDone?'#00ff88':'#889')+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+(completedIdx+1)+'/'+ach.tiers.length+'</span>'+
       '</div>';
     // Volume sections
     for(var v=1;v<=3;v++){
@@ -5857,13 +6644,13 @@ function buildAchievementsScreen() {
       var vhColor = volComplete ? '#00ff88' : (volUnlocked ? volColor : '#334');
       var vhBg = volComplete ? 'rgba(0,255,136,0.06)' : (volActive ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.2)');
       html += '<div onclick="var b=document.getElementById(\''+volId+'\');if(b){b.style.display=b.style.display===\'none\'?\'flex\':\'none\';var arr=this.querySelector(\'.vol-arrow\');if(arr)arr.textContent=b.style.display===\'none\'?\'▸\':\'▾\'}" style="display:flex;align-items:center;gap:6px;padding:6px 8px;margin-top:'+(v===1?'0':'6')+'px;background:'+vhBg+';border-radius:6px;cursor:pointer;border:1px solid '+(volComplete?'#00ff8833':(volUnlocked?volColor+'33':'#1a254033'))+';-webkit-tap-highlight-color:transparent">';
-      html += '<span class="vol-arrow" style="font-size:8px;color:'+vhColor+'">'+(expanded?'▾':'▸')+'</span>';
-      html += '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;color:'+vhColor+';letter-spacing:2px">'+volName+'</span>';
+      html += '<span class="vol-arrow" style="font-size:10px;color:'+vhColor+'">'+(expanded?'▾':'▸')+'</span>';
+      html += '<span style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;color:'+vhColor+';letter-spacing:2px">'+volName+'</span>';
       html += '<span style="flex:1"></span>';
       if(!volUnlocked){
         html += '<span style="font-size:9px;opacity:0.5">🔒</span>';
       } else {
-        html += '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+(volComplete?'#00ff88':vhColor)+';letter-spacing:1px">'+volTiersComplete+'/4'+(volComplete?' ✓':'')+'</span>';
+        html += '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(volComplete?'#00ff88':vhColor)+';letter-spacing:1px">'+volTiersComplete+'/4'+(volComplete?' ✓':'')+'</span>';
       }
       html += '</div>';
       // Volume tier rows
@@ -5885,15 +6672,15 @@ function buildAchievementsScreen() {
         if(tier.keyReward) rewardText += ' 🔑 +'+tier.keyReward;
         html += '<div style="opacity:'+tierOpacity+'">'+
           '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">'+
-          '<span style="font-size:8px;color:'+labelColor+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+
+          '<span style="font-size:12px;color:'+labelColor+';font-family:Orbitron,sans-serif;letter-spacing:1px">'+
           'TIER '+tier.label+(isComplete?' ✓':'')+'</span>'+
-          '<span style="font-size:8px;color:'+valColor+';font-family:Orbitron,sans-serif">'+
+          '<span style="font-size:12px;color:'+valColor+';font-family:Orbitron,sans-serif">'+
           statDisplay+'/'+goalDisplay+'</span>'+
           '</div>'+
           '<div style="height:4px;background:#0d1a33;border-radius:2px;overflow:hidden">'+
           '<div style="height:100%;width:'+pct+'%;border-radius:2px;background:'+barBg+';transition:width .6s ease"></div>'+
           '</div>'+
-          '<div style="font-size:9px;color:'+(isComplete?'#aa44ff':'#556')+';margin-top:3px">'+(isComplete?rewardText+' ✓':'Reward: '+rewardText)+'</div>'+
+          '<div style="font-size:13px;color:'+(isComplete?'#aa44ff':'#99aabb')+';margin-top:3px">'+(isComplete?rewardText+' ✓':'Reward: '+rewardText)+'</div>'+
           '</div>';
       }
       html += '</div>';
@@ -6025,9 +6812,10 @@ function waveCleared() {
   bulwarkUsedThisWave=false;
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
-  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs;
+  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; SAVE.savedTotalKills=totalRunKills;
   if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
-  if(!waveDamageTaken) SAVE.lifetimeStats.perfectWaves = (SAVE.lifetimeStats.perfectWaves||0) + 1;
+  if(SAVE.dailyChallengeStats && wave > (SAVE.dailyChallengeStats.waveReached||0)) SAVE.dailyChallengeStats.waveReached = wave;
+  if(!waveDamageTaken) { SAVE.lifetimeStats.perfectWaves = (SAVE.lifetimeStats.perfectWaves||0) + 1; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.perfectWaves = (SAVE.dailyChallengeStats.perfectWaves||0) + 1; }
   // Unlock synergies as soon as wave 21 is reached (even before death/quit)
   if(wave >= 21 && !SAVE.synergiesUnlocked){ SAVE.synergiesUnlocked = true; }
   // Unlock echoes as soon as wave 35 is reached
@@ -6052,6 +6840,7 @@ function waveCleared() {
   SAVE.savedScore = score;
   doSave();
   var newAchievements = checkAchievements();
+  checkDailyChallenges();
   const newTrophies = checkNewTrophies(prevTotal);
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('hud').style.display='none';
@@ -6158,7 +6947,7 @@ function doAscension() {
     forgeLevels: JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0})),
     ascensionCount: SAVE.ascensionCount||0,
     activeSynergies: computeSynergies(),
-    kills: killCount
+    kills: totalRunKills
   };
   // Update final lifetime stats from this run
   if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
@@ -6190,10 +6979,18 @@ function doAscension() {
   var savedArtifactSetsA = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   var savedLootBoxesA = SAVE.lootBoxesOpened||0;
   var savedLootBoxPityA = SAVE.lootBoxPity||0;
+  var savedPremiumOwnedA = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  var savedPremiumCratesA = SAVE.premiumCratesOpened||0;
   var savedDailySpinDateA = SAVE.lastDailySpinDate;
   var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
   var savedBetaGiftA = SAVE.betaGiftClaimed;
   var savedNotifA = SAVE.notificationsOn||false;
+  var savedDailyChallengesA = JSON.parse(JSON.stringify(SAVE.dailyChallenges||[]));
+  var savedDailyChallengeProgressA = JSON.parse(JSON.stringify(SAVE.dailyChallengeProgress||{}));
+  var savedDailyChallengeCompleteA = JSON.parse(JSON.stringify(SAVE.dailyChallengeComplete||{}));
+  var savedDailyChallengeAllClaimedA = SAVE.dailyChallengeAllClaimed||false;
+  var savedLastDailyChallengeResetA = SAVE.lastDailyChallengeReset;
+  var savedDailyChallengeStatsA = JSON.parse(JSON.stringify(SAVE.dailyChallengeStats||{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0}));
   var hiScore = Math.max(score, SAVE.hiScore);
   // Clear game state
   powerupDrops=[]; activePowerups={}; enemies=[]; eBullets=[]; bullets=[]; coinDrops=[]; particles=[]; thrusterParts=[];
@@ -6235,10 +7032,18 @@ function doAscension() {
   SAVE.artifactSetsComplete = savedArtifactSetsA;
   SAVE.lootBoxesOpened = savedLootBoxesA;
   SAVE.lootBoxPity = savedLootBoxPityA;
+  SAVE.premiumOwned = savedPremiumOwnedA;
+  SAVE.premiumCratesOpened = savedPremiumCratesA;
   SAVE.lastDailySpinDate = savedDailySpinDateA;
   SAVE.dailySpinStreak = savedDailySpinStreakA;
   SAVE.betaGiftClaimed = savedBetaGiftA;
   SAVE.notificationsOn = savedNotifA;
+  SAVE.dailyChallenges = savedDailyChallengesA;
+  SAVE.dailyChallengeProgress = savedDailyChallengeProgressA;
+  SAVE.dailyChallengeComplete = savedDailyChallengeCompleteA;
+  SAVE.dailyChallengeAllClaimed = savedDailyChallengeAllClaimedA;
+  SAVE.lastDailyChallengeReset = savedLastDailyChallengeResetA;
+  SAVE.dailyChallengeStats = savedDailyChallengeStatsA;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
   // Show ascension overlay
@@ -6267,7 +7072,7 @@ function _doEndGame() {
   const finalScore = score;
   const finalWave = wave;
   const finalCoins = sessionCoins;
-  const finalKills = killCount;
+  const finalKills = totalRunKills;
   // Snapshot run data for leaderboard submission (before SAVE reset)
   window._lbSnapshot = {
     shipCustom: JSON.parse(JSON.stringify(SAVE.shipCustom||{})),
@@ -6276,7 +7081,7 @@ function _doEndGame() {
     forgeLevels: JSON.parse(JSON.stringify(SAVE.forgeLevels||{damage:0,rate:0,armor:0})),
     ascensionCount: SAVE.ascensionCount||0,
     activeSynergies: computeSynergies(),
-    kills: killCount
+    kills: totalRunKills
   };
   const hiScore = Math.max(finalScore, SAVE.hiScore);
   const earnedLegendary = finalScore >= 1000000;
@@ -6312,10 +7117,18 @@ function _doEndGame() {
   const savedArtifactSetsE = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   const savedLootBoxesE = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityE = SAVE.lootBoxPity||0;
+  const savedPremiumOwnedE = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedPremiumCratesE = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateE = SAVE.lastDailySpinDate;
   const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
   const savedBetaGiftE = SAVE.betaGiftClaimed;
   const savedNotifE = SAVE.notificationsOn||false;
+  const savedDailyChallengesE = JSON.parse(JSON.stringify(SAVE.dailyChallenges||[]));
+  const savedDailyChallengeProgressE = JSON.parse(JSON.stringify(SAVE.dailyChallengeProgress||{}));
+  const savedDailyChallengeCompleteE = JSON.parse(JSON.stringify(SAVE.dailyChallengeComplete||{}));
+  const savedDailyChallengeAllClaimedE = SAVE.dailyChallengeAllClaimed||false;
+  const savedLastDailyChallengeResetE = SAVE.lastDailyChallengeReset;
+  const savedDailyChallengeStatsE = JSON.parse(JSON.stringify(SAVE.dailyChallengeStats||{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0}));
   // Calculate echo gain for this run
   var echoGain = 0;
   if(finalWave >= 35) {
@@ -6357,10 +7170,18 @@ function _doEndGame() {
   SAVE.artifactSetsComplete = savedArtifactSetsE;
   SAVE.lootBoxesOpened = savedLootBoxesE;
   SAVE.lootBoxPity = savedLootBoxPityE;
+  SAVE.premiumOwned = savedPremiumOwnedE;
+  SAVE.premiumCratesOpened = savedPremiumCratesE;
   SAVE.lastDailySpinDate = savedDailySpinDateE;
   SAVE.dailySpinStreak = savedDailySpinStreakE;
   SAVE.betaGiftClaimed = savedBetaGiftE;
   SAVE.notificationsOn = savedNotifE;
+  SAVE.dailyChallenges = savedDailyChallengesE;
+  SAVE.dailyChallengeProgress = savedDailyChallengeProgressE;
+  SAVE.dailyChallengeComplete = savedDailyChallengeCompleteE;
+  SAVE.dailyChallengeAllClaimed = savedDailyChallengeAllClaimedE;
+  SAVE.lastDailyChallengeReset = savedLastDailyChallengeResetE;
+  SAVE.dailyChallengeStats = savedDailyChallengeStatsE;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   SAVE.activeRelics = savedRelics; // preserved for Try Again only
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -7027,10 +7848,18 @@ function doReset() {
   const savedArtifactSetsR = JSON.parse(JSON.stringify(SAVE.artifactSetsComplete||{}));
   const savedLootBoxesR = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityR = SAVE.lootBoxPity||0;
+  const savedPremiumOwnedR = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedPremiumCratesR = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateR = SAVE.lastDailySpinDate;
   const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
   const savedBetaGiftR = SAVE.betaGiftClaimed;
   const savedNotifR = SAVE.notificationsOn||false;
+  const savedDailyChallengesR = JSON.parse(JSON.stringify(SAVE.dailyChallenges||[]));
+  const savedDailyChallengeProgressR = JSON.parse(JSON.stringify(SAVE.dailyChallengeProgress||{}));
+  const savedDailyChallengeCompleteR = JSON.parse(JSON.stringify(SAVE.dailyChallengeComplete||{}));
+  const savedDailyChallengeAllClaimedR = SAVE.dailyChallengeAllClaimed||false;
+  const savedLastDailyChallengeResetR = SAVE.lastDailyChallengeReset;
+  const savedDailyChallengeStatsR = JSON.parse(JSON.stringify(SAVE.dailyChallengeStats||{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0}));
   SAVE = JSON.parse(JSON.stringify(DEFAULT_SAVE));
   SAVE.hiScore = savedHi;
   SAVE.shipCustom = savedCustom2;
@@ -7060,10 +7889,18 @@ function doReset() {
   SAVE.artifactSetsComplete = savedArtifactSetsR;
   SAVE.lootBoxesOpened = savedLootBoxesR;
   SAVE.lootBoxPity = savedLootBoxPityR;
+  SAVE.premiumOwned = savedPremiumOwnedR;
+  SAVE.premiumCratesOpened = savedPremiumCratesR;
   SAVE.lastDailySpinDate = savedDailySpinDateR;
   SAVE.dailySpinStreak = savedDailySpinStreakR;
   SAVE.betaGiftClaimed = savedBetaGiftR;
   SAVE.notificationsOn = savedNotifR;
+  SAVE.dailyChallenges = savedDailyChallengesR;
+  SAVE.dailyChallengeProgress = savedDailyChallengeProgressR;
+  SAVE.dailyChallengeComplete = savedDailyChallengeCompleteR;
+  SAVE.dailyChallengeAllClaimed = savedDailyChallengeAllClaimedR;
+  SAVE.lastDailyChallengeReset = savedLastDailyChallengeResetR;
+  SAVE.dailyChallengeStats = savedDailyChallengeStatsR;
   SAVE.lastSeenVersion = CURRENT_VERSION;
   doSave();
   closeResetModal();
@@ -7505,11 +8342,11 @@ function playLaunchTransition(callback) {
 
 var ANNOUNCEMENTS = [
   {
-    id: 'ann_285',
-    date: '2026-03-20',
-    title: '🚀 VERSION 2.8.5 (BETA) OUT NOW',
-    color: '#ffcc00',
-    body: 'New customization options! 3 new artifact sets (Arctic, Toxic, Thunder) with unique sprites, auras, decals & bullet shapes. Push notifications, beta gift box (15 free keys!), cheaper keys (10 echoes), redesigned Vault with preview modals, smoother music transitions, and spin wheel fixes.'
+    id: 'ann_290',
+    date: '2026-03-21',
+    title: '💎 VERSION 2.9.0 (BETA) OUT NOW',
+    color: '#cc66ff',
+    body: 'Premium Crates are here! Spend 10 keys for exclusive ship sprites — Celestial Titan, Cyber Wraith & Void Dragon — each with unique procedural art you can\'t find in standard crates. Vault collections now grouped by type with preview modals. Plus crash protection for crate animations and a service worker overhaul to prevent stale versions.'
   },
   {
     id: 'ann_welcome_261',
@@ -7673,6 +8510,16 @@ function updateMenuCoins(){
   // Vault daily-spin badge
   var vaultBadge = document.getElementById('dock-vault-badge');
   if(vaultBadge) vaultBadge.style.display = isDailySpinAvailable() ? 'block' : 'none';
+
+  // Daily challenge badge on ACHIEVE dock
+  var dailyBadge = document.getElementById('dock-daily-badge');
+  if(dailyBadge) {
+    refreshDailyChallenges();
+    var dcIncomplete = 0;
+    if(SAVE.dailyChallenges) SAVE.dailyChallenges.forEach(function(ch){ if(!SAVE.dailyChallengeComplete[ch.id]) dcIncomplete++; });
+    if(dcIncomplete > 0) { dailyBadge.textContent = dcIncomplete; dailyBadge.style.display = 'block'; }
+    else dailyBadge.style.display = 'none';
+  }
 
   // Updates badge
   const badge = document.getElementById('updates-badge');
@@ -8076,6 +8923,15 @@ function buildVaultScreen(){
     btn.style.cursor = has ? 'pointer' : 'default';
     btn.style.animation = has ? 'crateGlow 2.2s ease-in-out infinite' : 'none';
   }
+  // Premium crate button state
+  var premBtn = document.getElementById('vault-premium-btn');
+  if(premBtn){
+    var allPremOwned = PREMIUM_ITEMS.every(function(p){ return (SAVE.premiumOwned||{})[p.id]; });
+    var hasPremKeys = (SAVE.keys||0) >= 10;
+    premBtn.style.opacity = (hasPremKeys && !allPremOwned) ? '1' : '0.4';
+    premBtn.style.cursor = (hasPremKeys && !allPremOwned) ? 'pointer' : 'default';
+    if(allPremOwned){ premBtn.innerHTML = '✓ ALL OWNED'; premBtn.onclick = null; }
+  }
   // Daily spin button status
   var dailyBtn = document.getElementById('vault-daily-spin-btn');
   var dailyStatus = document.getElementById('vault-daily-status');
@@ -8098,12 +8954,75 @@ function buildVaultScreen(){
     }
   }
   var statsLine = document.getElementById('vault-stats-line');
-  if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates opened · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
-  // Build artifact sets grid — grouped by reward type
-  var grid = document.getElementById('vault-sets-grid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  grid.style.cssText = '';
+  if(statsLine) statsLine.textContent = (SAVE.lootBoxesOpened||0) + ' crates · ' + (SAVE.premiumCratesOpened||0) + ' premium · ' + Object.keys(SAVE.artifacts||{}).length + '/' + ALL_ARTIFACTS.length + ' artifacts';
+  // Build collections area
+  var collectionsArea = document.getElementById('vault-collections-area');
+  if(!collectionsArea) return;
+  collectionsArea.innerHTML = '';
+
+  // ── Premium Collection (collapsible, default open, shown first) ──
+  var premOwned = PREMIUM_ITEMS.filter(function(p){ return (SAVE.premiumOwned||{})[p.id]; }).length;
+  var premHeader = document.createElement('div');
+  premHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 10px;background:rgba(170,68,255,0.06);border:1px solid #aa44ff33;border-radius:8px;margin-bottom:6px;-webkit-tap-highlight-color:transparent';
+  premHeader.innerHTML = '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">💎</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#cc66ff;letter-spacing:2px">PREMIUM COLLECTION</span><span style="font-family:Orbitron,sans-serif;font-size:10px;color:#cc66ffaa">'+premOwned+'/'+PREMIUM_ITEMS.length+'</span></div><span id="prem-coll-arrow" style="font-size:10px;color:#cc66ff;transition:transform 0.3s ease;transform:rotate(90deg)">▶</span>';
+  collectionsArea.appendChild(premHeader);
+
+  var premWrap = document.createElement('div');
+  premWrap.style.cssText = 'display:grid;grid-template-rows:1fr;transition:grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)';
+  var premInner = document.createElement('div');
+  premInner.style.cssText = 'overflow:hidden';
+
+  var premGrid = document.createElement('div');
+  premGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0';
+  // Group premium items by type with category headers
+  var premTypeLabels = {sprite:{icon:'🚀',label:'SHIP SPRITES'},aura:{icon:'✨',label:'AURAS'},decal:{icon:'🎨',label:'DECALS'},trail:{icon:'💫',label:'TRAILS'}};
+  var premByType = {};
+  PREMIUM_ITEMS.forEach(function(item){ if(!premByType[item.type]) premByType[item.type]=[]; premByType[item.type].push(item); });
+  Object.keys(premByType).forEach(function(type){
+    var tl = premTypeLabels[type]||{icon:'📦',label:type.toUpperCase()};
+    var catLabel = document.createElement('div');
+    catLabel.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:2px;margin:14px 0 6px;display:flex;align-items:center;gap:6px;grid-column:1/-1';
+    catLabel.innerHTML = '<span style="font-size:14px">'+tl.icon+'</span>'+tl.label;
+    premGrid.appendChild(catLabel);
+  premByType[type].forEach(function(item){
+    var owned = !!(SAVE.premiumOwned||{})[item.id];
+    var card = document.createElement('div');
+    card.style.cssText = 'border:1.5px solid '+(owned?item.color+'88':'#1a254088')+';border-radius:10px;padding:12px 8px 10px;background:'+(owned?'rgba('+hexToRgb(item.color)+',0.08)':'rgba(10,15,30,0.5)')+';cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:80px;justify-content:center;position:relative'+(owned?';box-shadow:0 0 12px '+item.color+'44':'');
+    var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+    card.innerHTML =
+      '<span style="font-size:28px;'+(owned?'filter:none;text-shadow:0 0 10px '+item.color:'filter:grayscale(1) brightness(0.4)')+'">'+item.icon+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+(owned?item.color:'#556')+';letter-spacing:1px;text-align:center">'+item.name+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+rarityCol+';letter-spacing:1px;text-transform:uppercase;opacity:'+(owned?'0.8':'0.3')+'">'+item.rarity+'</span>'+
+      (owned?'<span style="font-size:8px;color:#00ff88">✓ OWNED</span>':'<span style="font-size:16px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.3">🔒</span>');
+    card.onclick = (function(id){ return function(){ showPremiumPreview(id); }; })(item.id);
+    premGrid.appendChild(card);
+  });
+  });
+  premInner.appendChild(premGrid);
+  premWrap.appendChild(premInner);
+  collectionsArea.appendChild(premWrap);
+
+  premHeader.addEventListener('click', function(){
+    var isOpen = premWrap.style.gridTemplateRows === '1fr';
+    premWrap.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+    var arr = document.getElementById('prem-coll-arrow');
+    if(arr) arr.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+  });
+
+  // ── Artifact Collection (collapsible, default open) ──
+  var artTotalOwned = Object.keys(SAVE.artifacts||{}).length;
+  var artHeader = document.createElement('div');
+  artHeader.style.cssText = 'display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 10px;background:rgba(255,204,0,0.06);border:1px solid #ffcc0033;border-radius:8px;margin-top:10px;margin-bottom:6px;-webkit-tap-highlight-color:transparent';
+  artHeader.innerHTML = '<div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px">📦</span><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#ffcc00;letter-spacing:2px">ARTIFACT COLLECTION</span><span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffcc00aa">'+artTotalOwned+'/'+ALL_ARTIFACTS.length+'</span></div><span id="art-coll-arrow" style="font-size:10px;color:#ffcc00;transition:transform 0.3s ease;transform:rotate(90deg)">▶</span>';
+  collectionsArea.appendChild(artHeader);
+
+  var artWrap = document.createElement('div');
+  artWrap.style.cssText = 'display:grid;grid-template-rows:1fr;transition:grid-template-rows 0.35s cubic-bezier(0.4,0,0.2,1)';
+  var artInner = document.createElement('div');
+  artInner.style.cssText = 'overflow:hidden';
+
+  // Build artifact grid inside artInner
+  var grid = document.createElement('div');
   var rewardGroups = [
     {type:'sprite', label:'SHIP SPRITES', icon:'🚀'},
     {type:'aura', label:'AURAS', icon:'✨'},
@@ -8114,12 +9033,10 @@ function buildVaultScreen(){
   rewardGroups.forEach(function(group){
     var sets = ARTIFACT_SETS.filter(function(s){ return s.reward.type===group.type; });
     if(sets.length===0) return;
-    // Group header
     var header = document.createElement('div');
     header.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#667788;letter-spacing:2px;margin:14px 0 6px;display:flex;align-items:center;gap:6px';
     header.innerHTML = '<span style="font-size:14px">'+group.icon+'</span>'+group.label;
     grid.appendChild(header);
-    // Cards row
     var row = document.createElement('div');
     row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px';
     sets.forEach(function(set){
@@ -8134,11 +9051,21 @@ function buildVaultScreen(){
         '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+set.color+';letter-spacing:1px;text-align:center">'+set.name+'</span>'+
         '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(complete?'#00ff88':'#8899aa')+'">'+owned+'/'+total+(complete?' ✓':'')+'</span>'+
         '<div style="width:80%;height:3px;background:#1a2540;border-radius:2px;overflow:hidden"><div style="height:100%;width:'+barPct+'%;background:'+set.color+';border-radius:2px"></div></div>'+
-        '<span style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(complete?set.color+'cc':'#44556688')+';letter-spacing:0.5px;margin-top:2px;text-align:center">'+set.reward.label+'</span>';
+        '<span style="font-family:Orbitron,sans-serif;font-size:11px;color:'+(complete?set.color:'#8899aa')+';letter-spacing:0.5px;margin-top:2px;text-align:center">'+set.reward.label+'</span>';
       setEl.onclick = (function(k){ return function(){ showSetPreview(k); }; })(set.key);
       row.appendChild(setEl);
     });
     grid.appendChild(row);
+  });
+  artInner.appendChild(grid);
+  artWrap.appendChild(artInner);
+  collectionsArea.appendChild(artWrap);
+
+  artHeader.addEventListener('click', function(){
+    var isOpen = artWrap.style.gridTemplateRows === '1fr';
+    artWrap.style.gridTemplateRows = isOpen ? '0fr' : '1fr';
+    var arr = document.getElementById('art-coll-arrow');
+    if(arr) arr.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
   });
 }
 
@@ -8359,6 +9286,8 @@ function rollArtifact(){
 
 function openLootBox(){
   if((SAVE.keys||0) < 1){ showToast('🔑 No keys! Earn keys from achievements, boss spins, or buy with echoes.'); return; }
+  var saveBackup = JSON.stringify(SAVE);
+  try {
   SAVE.keys--;
   SAVE.lootBoxesOpened = (SAVE.lootBoxesOpened||0) + 1;
   var result = rollArtifact();
@@ -8397,6 +9326,12 @@ function openLootBox(){
   var sOwned = aSet ? aSet.artifacts.filter(function(a){ return (SAVE.artifacts||{})[a.id]; }).length : 0;
   var sTotal = aSet ? aSet.artifacts.length : 0;
   showLootBoxAnimation(result.artifact, result.rarity, isNew, dupeEchoes, sOwned, sTotal, setCompleted);
+  } catch(err) {
+    console.error('openLootBox error:', err);
+    try { SAVE = JSON.parse(saveBackup); localStorage.setItem('vi2_save', saveBackup); } catch(e2){}
+    showToast('⚠️ Crate error — keys refunded');
+    buildVaultScreen();
+  }
 }
 
 function unlockArtifactReward(reward){
@@ -8433,19 +9368,304 @@ function restoreArtifactRewards(){
   });
 }
 
+function restorePremiumRewards(){
+  PREMIUM_ITEMS.forEach(function(item){
+    if((SAVE.premiumOwned||{})[item.id]){
+      if(item.type==='sprite'){
+        if(!SPRITE_SHIPS.find(function(s){return s.id===item.id;})){
+          SPRITE_SHIPS.push({id:item.id,label:item.label,icon:'💎'});
+        }
+      }
+    }
+  });
+}
+
+// ── PREMIUM CRATE ──────────────────────────────────────────
+function openPremiumCrate(){
+  if((SAVE.keys||0) < 10){ showToast('💎 Need 10 keys for a Premium Crate!'); return; }
+  var available = PREMIUM_ITEMS.filter(function(p){ return !(SAVE.premiumOwned||{})[p.id]; });
+  if(!available.length){ showToast('✓ You own all premium items!'); return; }
+  var saveBackup = JSON.stringify(SAVE);
+  try {
+  SAVE.keys -= 10;
+  SAVE.premiumCratesOpened = (SAVE.premiumCratesOpened||0) + 1;
+  var chosen = available[Math.floor(Math.random()*available.length)];
+  if(!SAVE.premiumOwned) SAVE.premiumOwned = {};
+  SAVE.premiumOwned[chosen.id] = true;
+  if(chosen.type === 'sprite'){
+    if(!SPRITE_SHIPS.find(function(s){return s.id===chosen.id;})){
+      SPRITE_SHIPS.push({id:chosen.id, label:chosen.label, icon:'💎'});
+    }
+  }
+  localStorage.setItem('vi2_save', JSON.stringify(SAVE));
+  showPremiumRevealAnimation(chosen);
+  } catch(err) {
+    console.error('openPremiumCrate error:', err);
+    try { SAVE = JSON.parse(saveBackup); localStorage.setItem('vi2_save', saveBackup); } catch(e2){}
+    showToast('⚠️ Premium crate error — keys refunded');
+    buildVaultScreen();
+  }
+}
+
+function showPremiumRevealAnimation(item){
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s';
+  overlay.id = 'lootbox-overlay';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.style.opacity='1'; });
+
+  // Safety timeout — auto-dismiss if stuck (12s)
+  var _premSafetyTimeout = setTimeout(function(){
+    if(overlay.parentNode){
+      overlay.parentNode.removeChild(overlay);
+      buildVaultScreen();
+    }
+  }, 12000);
+
+  // Particle canvas
+  var pCanvas = document.createElement('canvas');
+  pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight;
+  pCanvas.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+  overlay.appendChild(pCanvas);
+  var pCtx = pCanvas.getContext('2d');
+  var particles = [];
+  var _premAnimId = null;
+
+  function spawnBurst(cx,cy,count,colors){
+    for(var i=0;i<count;i++){
+      var a=Math.random()*Math.PI*2, spd=2+Math.random()*4;
+      particles.push({x:cx,y:cy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:1,r:1.5+Math.random()*2,col:colors[Math.floor(Math.random()*colors.length)]});
+    }
+  }
+  function tickParticles(){
+    pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+    for(var i=particles.length-1;i>=0;i--){
+      var p=particles[i];
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.06; p.life-=0.015;
+      if(p.life<=0){particles.splice(i,1);continue;}
+      pCtx.globalAlpha=p.life*0.8;
+      pCtx.shadowColor=p.col; pCtx.shadowBlur=6;
+      pCtx.fillStyle=p.col;
+      pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); pCtx.fill();
+    }
+    pCtx.globalAlpha=1; pCtx.shadowBlur=0;
+  }
+
+  // Content container
+  var content = document.createElement('div');
+  content.style.cssText = 'position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px';
+  overlay.appendChild(content);
+
+  // Phase 1: Diamond entry
+  var diamond = document.createElement('div');
+  diamond.style.cssText = 'font-size:80px;transform:scale(0);transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 30px '+item.color+')';
+  diamond.textContent = '💎';
+  content.appendChild(diamond);
+  var cx=pCanvas.width/2, cy=pCanvas.height/2;
+
+  setTimeout(function(){
+    diamond.style.transform = 'scale(1)';
+    spawnBurst(cx,cy,20,['#aa44ff','#ffd700','#cc66ff']);
+    try{sfx('crateCharge');}catch(e){}
+  }, 100);
+
+  // Phase 2: Shatter at 1s
+  setTimeout(function(){
+    diamond.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+    diamond.style.transform = 'scale(2.5)';
+    diamond.style.opacity = '0';
+    spawnBurst(cx,cy,40,['#ffd700','#aa44ff','#ff44aa','#cc66ff']);
+    try{sfx('crateOpen');}catch(e){}
+    // Flash
+    var flash = document.createElement('div');
+    flash.style.cssText = 'position:absolute;inset:0;background:radial-gradient(circle,'+item.color+'44 0%,transparent 70%);z-index:0;opacity:1;transition:opacity 0.5s';
+    overlay.insertBefore(flash, overlay.firstChild);
+    setTimeout(function(){ flash.style.opacity='0'; }, 100);
+  }, 1000);
+
+  // Phase 3: Reveal at 1.5s
+  setTimeout(function(){
+    diamond.style.display = 'none';
+    try{sfx('legendaryReveal');}catch(e){}
+
+    var label = document.createElement('div');
+    label.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:#cc66ff;letter-spacing:4px;text-transform:uppercase;opacity:0;transform:translateY(10px);transition:all 0.4s ease-out';
+    label.textContent = 'PREMIUM UNLOCK';
+    content.appendChild(label);
+
+    var icon = document.createElement('div');
+    icon.style.cssText = 'font-size:64px;transform:scale(0);transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 0 20px '+item.color+')';
+    icon.textContent = item.icon;
+    content.appendChild(icon);
+
+    var name = document.createElement('div');
+    name.style.cssText = 'font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;color:'+item.color+';letter-spacing:3px;text-shadow:0 0 20px '+item.color+';opacity:0;transform:translateY(10px);transition:all 0.4s ease-out 0.15s';
+    name.textContent = item.name;
+    content.appendChild(name);
+
+    var rarityBadge = document.createElement('div');
+    var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+    rarityBadge.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:'+rarityCol+';letter-spacing:2px;text-transform:uppercase;border:1px solid '+rarityCol+'44;padding:3px 10px;border-radius:20px;opacity:0;transition:opacity 0.4s ease-out 0.3s';
+    rarityBadge.textContent = item.rarity;
+    content.appendChild(rarityBadge);
+
+    // Ship preview canvas
+    var shipCanvas = document.createElement('canvas');
+    shipCanvas.width = 200; shipCanvas.height = 200;
+    shipCanvas.style.cssText = 'position:static !important;width:160px;height:160px;margin-top:8px;opacity:0;transition:opacity 0.4s ease-out 0.4s;image-rendering:auto';
+    content.appendChild(shipCanvas);
+
+    var unlockText = document.createElement('div');
+    unlockText.style.cssText = 'font-family:Orbitron,sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;opacity:0;transition:opacity 0.4s ease-out 0.5s;margin-top:4px';
+    unlockText.textContent = 'NEW SHIP UNLOCKED!';
+    content.appendChild(unlockText);
+
+    requestAnimationFrame(function(){
+      label.style.opacity='1'; label.style.transform='translateY(0)';
+      icon.style.transform='scale(1)';
+      name.style.opacity='1'; name.style.transform='translateY(0)';
+      rarityBadge.style.opacity='1';
+      shipCanvas.style.opacity='1';
+      unlockText.style.opacity='1';
+    });
+
+    spawnBurst(cx,cy,30,[item.color,'#ffd700','#ffffff']);
+
+    // Animate ship on canvas
+    var _premShipParticles = [];
+    function animPremShip(ts){
+      if(!shipCanvas.parentNode) return;
+      var sctx = shipCanvas.getContext('2d');
+      var W=200,H=200,scx=W/2,scy=H/2;
+      var t=ts/1000;
+      sctx.clearRect(0,0,W,H);
+      sctx.save();
+      sctx.beginPath(); sctx.rect(5,5,W-10,H-10); sctx.clip();
+      // Glow
+      var grad=sctx.createRadialGradient(scx,scy,0,scx,scy,70);
+      grad.addColorStop(0,item.color+'18');
+      grad.addColorStop(1,'rgba(0,5,15,0)');
+      sctx.fillStyle=grad;
+      sctx.fillRect(0,0,W,H);
+      // Bob
+      var shipY=scy+Math.sin(t*1.4)*6;
+      // Thruster particles
+      if(Math.random()>0.3){
+        _premShipParticles.push({x:scx+(-2+Math.random()*4),y:shipY+14,vx:(-0.5+Math.random())*0.8,vy:1.5+Math.random()*1.5,life:1,r:1+Math.random()*2,col:item.color});
+      }
+      for(var i=_premShipParticles.length-1;i>=0;i--){
+        var pp=_premShipParticles[i];
+        pp.x+=pp.vx;pp.y+=pp.vy;pp.life-=0.04;
+        if(pp.life<=0){_premShipParticles.splice(i,1);continue;}
+        sctx.globalAlpha=pp.life*0.7;
+        sctx.shadowColor=pp.col;sctx.shadowBlur=6;
+        sctx.fillStyle=pp.col;
+        sctx.beginPath();sctx.arc(pp.x,pp.y,pp.r*pp.life,0,Math.PI*2);sctx.fill();
+      }
+      sctx.globalAlpha=1;sctx.shadowBlur=0;
+      drawShip(sctx,scx,shipY,0,{shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id},2.0);
+      sctx.restore();
+      _premAnimId=requestAnimationFrame(animPremShip);
+    }
+    _premAnimId=requestAnimationFrame(animPremShip);
+  }, 1500);
+
+  // Phase 4: Tap to dismiss at 2.5s
+  setTimeout(function(){
+    var tap = document.createElement('div');
+    tap.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#667;letter-spacing:2px;margin-top:16px;animation:cardPulse 2s ease-in-out infinite';
+    tap.textContent = 'TAP TO CONTINUE';
+    content.appendChild(tap);
+    overlay.style.cursor = 'pointer';
+    overlay.addEventListener('click', function(){
+      clearTimeout(_premSafetyTimeout);
+      if(_premAnimId) cancelAnimationFrame(_premAnimId);
+      overlay.style.opacity='0';
+      setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); buildVaultScreen(); }, 300);
+    });
+  }, 2500);
+
+  // Particle animation loop
+  function premParticleLoop(){
+    tickParticles();
+    if(overlay.parentNode) requestAnimationFrame(premParticleLoop);
+  }
+  requestAnimationFrame(premParticleLoop);
+}
+
+function showPremiumPreview(itemId){
+  var item = PREMIUM_ITEMS.find(function(p){ return p.id===itemId; });
+  if(!item) return;
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.25s;cursor:pointer';
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ overlay.style.opacity='1'; });
+
+  var label = document.createElement('div');
+  label.style.cssText = 'font-family:Orbitron,sans-serif;font-size:10px;color:#cc66ff;letter-spacing:3px';
+  label.textContent = 'PREMIUM';
+  overlay.appendChild(label);
+
+  var name = document.createElement('div');
+  name.style.cssText = 'font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+item.color+';letter-spacing:3px;text-shadow:0 0 16px '+item.color;
+  name.textContent = item.name;
+  overlay.appendChild(name);
+
+  var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
+  var rarity = document.createElement('div');
+  rarity.style.cssText = 'font-family:Orbitron,sans-serif;font-size:9px;color:'+rarityCol+';letter-spacing:2px;text-transform:uppercase;border:1px solid '+rarityCol+'33;padding:2px 8px;border-radius:12px';
+  rarity.textContent = item.rarity;
+  overlay.appendChild(rarity);
+
+  var shipWrap = document.createElement('div');
+  shipWrap.style.cssText = 'width:160px;height:160px;overflow:hidden;border-radius:12px;margin-top:10px';
+  var shipCanvas = document.createElement('canvas');
+  shipCanvas.width = 240; shipCanvas.height = 240;
+  shipCanvas.style.cssText = 'position:static !important;width:240px;height:240px;margin:-40px 0 0 -40px;image-rendering:auto';
+  shipWrap.appendChild(shipCanvas);
+  overlay.appendChild(shipWrap);
+
+  var tapHint = document.createElement('div');
+  tapHint.style.cssText = 'font-family:Orbitron,sans-serif;font-size:9px;color:#445;letter-spacing:2px;margin-top:16px';
+  tapHint.textContent = 'TAP TO CLOSE';
+  overlay.appendChild(tapHint);
+
+  // Animate ship — matches artifact set preview pattern
+  var _prevAnimId = null;
+  var previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id};
+  function renderPreview(){
+    var ctx = shipCanvas.getContext('2d');
+    ctx.clearRect(0,0,240,240);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(10,10,220,220);
+    ctx.clip();
+    drawShip(ctx, 120, 120, 0, previewCustom, 2.5);
+    ctx.restore();
+    _prevAnimId = requestAnimationFrame(renderPreview);
+  }
+  _prevAnimId = requestAnimationFrame(renderPreview);
+
+  overlay.addEventListener('click', function(){
+    if(_prevAnimId) cancelAnimationFrame(_prevAnimId);
+    overlay.style.opacity='0';
+    setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 250);
+  });
+}
+
 // ── DAILY SPIN WHEEL ────────────────────────────────────────
 var DAILY_SPIN_REWARDS = [
-  {label:'50 💰',      wl:'50',    type:'coins',   val:50,  color:'#2a5080',bg:'#0c1a2e',weight:20},
-  {label:'100 💰',     wl:'100',   type:'coins',   val:100, color:'#3070a0',bg:'#112240',weight:15},
+  {label:'3 🌀',       wl:'3🌀',   type:'echoes',  val:3,   color:'#7733bb',bg:'#140828',weight:20},
+  {label:'1 🔑',       wl:'1🔑',   type:'keys',    val:1,   color:'#cc9900',bg:'#221a00',weight:18},
   {label:'5 🌀',       wl:'5🌀',   type:'echoes',  val:5,   color:'#8844cc',bg:'#1a0a30',weight:15},
   {label:'15 🌀',      wl:'15🌀',  type:'echoes',  val:15,  color:'#aa55dd',bg:'#200a40',weight:10},
-  {label:'2 🔑',       wl:'2🔑',   type:'keys',    val:2,   color:'#ddaa00',bg:'#2a2200',weight:15},
+  {label:'2 🔑',       wl:'2🔑',   type:'keys',    val:2,   color:'#ddaa00',bg:'#2a2200',weight:12},
   {label:'3 🔑',       wl:'3🔑',   type:'keys',    val:3,   color:'#eebb00',bg:'#302800',weight:8},
-  {label:'200 💰',     wl:'200',   type:'coins',   val:200, color:'#00cccc',bg:'#0a2a3a',weight:8},
+  {label:'10 🌀',      wl:'10🌀',  type:'echoes',  val:10,  color:'#9955dd',bg:'#220c3a',weight:8},
   {label:'25 🌀',      wl:'25🌀',  type:'echoes',  val:25,  color:'#cc66ff',bg:'#2a1050',weight:5},
   {label:'5 🔑',       wl:'5🔑',   type:'keys',    val:5,   color:'#ffcc00',bg:'#3a3000',weight:4},
   {label:'ARTIFACT!',  wl:'📦',    type:'artifact', val:1,  color:'#ff4466',bg:'#3a0a18',weight:3},
-  {label:'500 💰',     wl:'500',   type:'coins',   val:500, color:'#ffd000',bg:'#3a3000',weight:2},
+  {label:'50 🌀',      wl:'50🌀',  type:'echoes',  val:50,  color:'#dd88ff',bg:'#351560',weight:2},
   {label:'10 🔑 JACKPOT!',wl:'10🔑',type:'keys',   val:10,  color:'#ff3300',bg:'#400800',weight:1},
 ];
 
@@ -8690,13 +9910,23 @@ function applyDailySpinResult(result){
     rewardText = '🔑 +'+result.val+' Key'+(result.val>1?'s':'')+'!';
     sfx('keyEarn'); showToast(rewardText);
   } else if(result.type==='artifact'){
-    // Roll a random artifact directly
+    // Roll artifact and play full crate animation
     var artResult = rollArtifact();
     var isNew = !(SAVE.artifacts||{})[artResult.artifact.id];
+    var dupeE = 0;
     if(isNew){
       if(!SAVE.artifacts) SAVE.artifacts={};
       SAVE.artifacts[artResult.artifact.id]=true;
-      // Check set completion
+      if(artResult.rarity.id==='epic'||artResult.rarity.id==='legendary') SAVE.lootBoxPity=0;
+      else SAVE.lootBoxPity = (SAVE.lootBoxPity||0)+1;
+    } else {
+      dupeE = artResult.rarity.dupeEchoes||3;
+      SAVE.echoes=(SAVE.echoes||0)+dupeE;
+      SAVE.totalEchoes=(SAVE.totalEchoes||0)+dupeE;
+      SAVE.lootBoxPity = (SAVE.lootBoxPity||0)+1;
+    }
+    var setCompleted = null;
+    if(isNew){
       var set = ARTIFACT_SETS.find(function(s){return s.key===artResult.artifact.setKey;});
       if(set && !(SAVE.artifactSetsComplete||{})[set.key]){
         var allOwned=set.artifacts.every(function(a){return (SAVE.artifacts||{})[a.id];});
@@ -8704,16 +9934,15 @@ function applyDailySpinResult(result){
           if(!SAVE.artifactSetsComplete) SAVE.artifactSetsComplete={};
           SAVE.artifactSetsComplete[set.key]=true;
           unlockArtifactReward(set.reward);
+          setCompleted = set;
         }
       }
-    } else {
-      var rDef = ARTIFACT_RARITIES.find(function(r){return r.id===artResult.rarity.id;});
-      var dupeE = rDef?rDef.dupeEchoes:3;
-      SAVE.echoes=(SAVE.echoes||0)+dupeE;
-      SAVE.totalEchoes=(SAVE.totalEchoes||0)+dupeE;
     }
-    rewardText = isNew ? '📦 '+artResult.artifact.icon+' '+artResult.artifact.name+'!' : '📦 Duplicate → +'+( ARTIFACT_RARITIES.find(function(r){return r.id===artResult.rarity.id;})||{}).dupeEchoes+' 🌀';
-    showToast(rewardText);
+    var aSet = ARTIFACT_SETS.find(function(s){return s.key===artResult.artifact.setKey;});
+    var sOwned = aSet ? aSet.artifacts.filter(function(a){return (SAVE.artifacts||{})[a.id];}).length : 0;
+    var sTotal = aSet ? aSet.artifacts.length : 0;
+    rewardText = '📦 Opening crate...';
+    setTimeout(function(){ showLootBoxAnimation(artResult.artifact, artResult.rarity, isNew, dupeE, sOwned, sTotal, setCompleted); }, 800);
   }
 
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
@@ -8754,6 +9983,18 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   var overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s,backdrop-filter 1s,-webkit-backdrop-filter 1s;pointer-events:auto;font-family:Orbitron,sans-serif;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)';
   overlay.id = 'lootbox-overlay';
+
+  // Global error safety — if animation crashes, clean up overlay and restore audio
+  var _lootAnimCleanup = function(){
+    try {
+      if(typeof masterGain!=='undefined'&&masterGain&&masterGain.gain){
+        masterGain.gain.cancelScheduledValues(AC.currentTime);
+        masterGain.gain.setTargetAtTime(1.0, AC.currentTime, 0.1);
+      }
+    } catch(e){}
+    if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    buildVaultScreen();
+  };
 
   // Canvas for particles
   var cvs = document.createElement('canvas');
@@ -8820,6 +10061,11 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   content.appendChild(tapHint);
 
   document.body.appendChild(overlay);
+
+  // Safety timeout — auto-dismiss if animation gets stuck (15s)
+  var _lootSafetyTimeout = setTimeout(function(){
+    if(overlay.parentNode) _lootAnimCleanup();
+  }, 15000);
 
   // Particles system
   var parts = [];
@@ -9165,6 +10411,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   setTimeout(function(){
     tapHint.style.opacity = '1';
     overlay.onclick = function(){
+      clearTimeout(_lootSafetyTimeout);
       cancelAnimationFrame(partRaf);
       // Ensure music fully restored
       masterGain.gain.cancelScheduledValues(AC.currentTime);
@@ -9227,7 +10474,7 @@ function buildSynergies(){
         }).join('');
         el.innerHTML = '<div style="font-size:20px;text-align:center;opacity:0.5;margin-bottom:2px">❓</div>'+
           '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#8899aa;text-align:center;letter-spacing:2px">UNDISCOVERED</div>'+
-          '<div style="font-size:10px;color:#667788;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
+          '<div style="font-size:11px;color:#8899aa;text-align:center;margin:4px 0 6px">Meet at least 1 condition to discover:</div>'+
           '<div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center">'+hintHtml+'</div>';
       } else {
         var condHtml = syn.conditions.map(function(c){
@@ -9552,6 +10799,9 @@ function startCustomizeAnim(){
     _customizeLastT=ts;
     const t=ts/1000;
     cx.fillStyle='#050d1f'; cx.fillRect(0,0,W,H);
+    // Clip to prevent shadowBlur black edge artifacts
+    cx.save();
+    cx.beginPath(); cx.rect(2,2,W-4,H-4); cx.clip();
     // Stars
     STARS.forEach(([sx,sy])=>{ cx.fillStyle=`rgba(255,255,255,${0.2+Math.sin(t+sx)*0.15})`; cx.fillRect(sx%W,sy,1,1); });
     const shipX=W/2, shipY=H/2+8+Math.sin(t*1.8)*5;
@@ -9588,7 +10838,8 @@ function startCustomizeAnim(){
     _customizeBullets=_customizeBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
     playerSpriteState=['idle','boost','full'][Math.floor(t*0.8)%3];
-    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2);
+    try { drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2); } catch(e){ console.error('drawShip error in customize preview:', e); }
+    cx.restore();
   }
   requestAnimationFrame(loop);
 }
@@ -9611,6 +10862,9 @@ function startMenuShipPreview(){
     _menuShipLastT=ts;
     const t=ts/1000;
     cx.clearRect(0,0,W,H);
+    // Clip to prevent shadowBlur black edge artifacts
+    cx.save();
+    cx.beginPath(); cx.rect(2,2,W-4,H-4); cx.clip();
     // Thruster particles
     const shipX=W/2, shipY=H/2+Math.sin(t*1.4)*8;
     // Occasional engine boost burst
@@ -9642,7 +10896,8 @@ function startMenuShipPreview(){
     _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
     cx.globalAlpha=1; cx.shadowBlur=0;
     playerSpriteState=boosting?'full':'boost';
-    drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0);
+    try { drawShip(cx,shipX,shipY,0,SAVE.shipCustom||{},2.0); } catch(e){ console.error('drawShip error in menu preview:', e); }
+    cx.restore();
   }
   requestAnimationFrame(loop);
 }
@@ -9713,6 +10968,7 @@ function updateSpriteOverrideState(){
 function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   restoreArtifactRewards();
+  restorePremiumRewards();
   const content=document.getElementById('customize-content');
   if(!content) return;
   startCustomizeAnim();
@@ -9769,6 +11025,8 @@ function buildChangelog(){
     <div style="max-width:500px;margin:0 auto;padding-bottom:20px">
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📱 App Store release via Capacitor</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#cc66ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.9.0 (BETA)</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Premium Crates — spend 10 keys for exclusive ship sprites<br>✅ 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon<br>✅ Unique procedural art for each premium ship<br>✅ Vault collections grouped by type with category headers<br>✅ Ship preview modals for both owned & locked premium items<br>✅ Crash protection — crate animations auto-recover & refund keys on error<br>✅ Service worker overhaul — versioned caching prevents stale game versions<br>✅ Global error recovery for stuck overlay cleanup</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.5 (BETA)</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ 3 new artifact sets — Arctic, Toxic & Thunder with unique rewards<br>✅ New ship sprites, auras, decals, hull colors & bullet shapes<br>✅ Push notifications — opt in to hear about updates<br>✅ Beta playtester gift — 15 free Void Keys<br>✅ Keys now cost 10 echoes (down from 50)<br>✅ More generous achievement key rewards<br>✅ Vault redesign — grouped collections with live preview modals<br>✅ Smoother music crossfade on wave launch<br>✅ Daily spin rewards now match what's shown on the wheel<br>✅ Synthwave vault background extends full-screen</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.0 (BETA)</div>
@@ -9966,13 +11224,15 @@ function startSplashShipAnim() {
     : { shape: 'classic', hullColor: '#00f5ff', cockpitColor: '#00f5ff', aura: 'none', decal: 'none' };
 
   function spawnExplosion(ex, ey) {
-    for (var i = 0; i < 12; i++) {
-      var a = (i / 12) * Math.PI * 2;
-      var spd = 1.5 + Math.random() * 2.5;
+    // Sparks
+    for (var i = 0; i < 6; i++) {
+      var a = Math.random() * Math.PI * 2;
+      var spd = 0.8 + Math.random() * 2.5;
       exParts.push({ x: ex, y: ey, vx: Math.cos(a)*spd, vy: Math.sin(a)*spd,
-                     life: 1, r: 2 + Math.random() * 3, col: i % 2 === 0 ? '#ff4455' : '#ff8800', ring: false });
+                     life: 1, r: 1.5 + Math.random() * 1.5, col: '#ff4455', type: 'spark' });
     }
-    exParts.push({ x: ex, y: ey, r: 0, life: 1, col: '#ff4455', ring: true });
+    // Expanding red circle
+    exParts.push({ x: ex, y: ey, r: 0, maxR: 40, life: 1, col: '#ff4455', type: 'ring' });
   }
 
   function loop(ts) {
@@ -9983,6 +11243,8 @@ function startSplashShipAnim() {
     lastT = ts;
 
     ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(2, 2, W - 4, H - 4); ctx.clip();
 
     // Accelerate to exit after 5 s
     var targetVx = elapsed > 5 ? -520 : -90;
@@ -10067,28 +11329,33 @@ function startSplashShipAnim() {
     ctx.translate(ship.x, ship.y);
     ctx.rotate(-Math.PI / 2);
     playerSpriteState='full';
-    drawShip(ctx, 0, 0, 0, shipCustom, 1.4);
+    try { drawShip(ctx, 0, 0, 0, shipCustom, 1.4); } catch(e){ console.error('splash drawShip error:', e); }
     ctx.restore();
 
     // Update + draw explosion particles
     for (var pi = exParts.length - 1; pi >= 0; pi--) {
       var p = exParts[pi];
-      p.life -= dt * 1.6;
+      if (p.type === 'ring') {
+        p.life -= dt * 1.8;
+        p.r += (p.maxR - p.r) * dt * 6;
+      } else {
+        p.life -= dt * 1.05;
+        p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.vx *= 0.98;
+      }
       if (p.life <= 0) { exParts.splice(pi, 1); continue; }
       ctx.save();
       ctx.globalAlpha = Math.max(0, p.life);
-      ctx.shadowColor = p.col; ctx.shadowBlur = 8;
-      if (p.ring) {
-        p.r += dt * 90;
-        ctx.strokeStyle = p.col; ctx.lineWidth = 2;
+      if (p.type === 'ring') {
+        ctx.strokeStyle = p.col; ctx.lineWidth = 2 * (1 - p.r / p.maxR);
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
       } else {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.06;
         ctx.fillStyle = p.col;
-        ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.1, p.r * p.life), 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
     }
+
+    ctx.restore(); // end clip rect
 
     // Stop when ship fully exits left
     if (ship.x < -100 && thrusterParts.length === 0 && exParts.length === 0) {
@@ -10320,116 +11587,137 @@ function showPlayerCard(entry, rank) {
   var overlay = document.createElement('div');
   overlay.id = 'lb-player-card';
   overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease';
-  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  var _lbAnimId = null;
+  overlay.addEventListener('click', function(e){ if(e.target===overlay){ if(_lbAnimId) cancelAnimationFrame(_lbAnimId); overlay.remove(); } });
   var medals = ['🥇','🥈','🥉'];
   var rankBadge = rank < 3 ? medals[rank] : '#'+(rank+1);
   var sc = entry.shipCustom || {};
   var hullCol = sc.hullColor || '#00f5ff';
 
-  var naSpan = '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:#334;letter-spacing:1px;font-style:italic">NONE</span>';
+  var naSpan = '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#556;letter-spacing:1px;font-style:italic">NONE</span>';
 
   // Perk section — always show
   var perksHTML = '<div style="margin-top:14px">' +
-    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00ccff;letter-spacing:2px;margin-bottom:6px">⚡ PERKS</div>';
+    '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#00ccff;letter-spacing:2px;margin-bottom:6px">⚡ PERKS</div>';
   if(entry.perks && entry.perks.length) {
     perksHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.perks.map(function(p){
       return '<div style="background:rgba(0,204,255,0.08);border:1px solid #00ccff33;border-radius:4px;padding:3px 7px;font-size:11px">' +
-        '<span>'+p.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+p.name+'</span>' +
-        '<span style="font-family:Orbitron,sans-serif;font-size:7px;color:#00ccff;margin-left:2px">LV'+p.level+'</span></div>';
+        '<span>'+p.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ccc;letter-spacing:1px">'+p.name+'</span>' +
+        '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#00ccff;margin-left:2px">LV'+p.level+'</span></div>';
     }).join('') + '</div>';
   } else { perksHTML += naSpan; }
   perksHTML += '</div>';
 
   // Synergies section — always show
   var synHTML = '<div style="margin-top:14px">' +
-    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff8800;letter-spacing:2px;margin-bottom:6px">🔗 SYNERGIES</div>';
+    '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff8800;letter-spacing:2px;margin-bottom:6px">🔗 SYNERGIES</div>';
   if(entry.synergies && entry.synergies.length) {
     synHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.synergies.map(function(s){
       return '<div style="background:rgba(255,136,0,0.08);border:1px solid #ff880033;border-radius:4px;padding:3px 7px;font-size:11px">' +
-        '<span>'+s.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+s.name+'</span></div>';
+        '<span>'+s.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:10px;color:#ccc;letter-spacing:1px">'+s.name+'</span></div>';
     }).join('') + '</div>';
   } else { synHTML += naSpan; }
   synHTML += '</div>';
 
-  // Relics section — always show
-  var relicsHTML = '<div style="margin-top:14px">' +
-    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff4455;letter-spacing:2px;margin-bottom:6px">⚠ RELICS</div>';
-  if(entry.relicIds && entry.relicIds.length) {
-    relicsHTML += '<div style="display:flex;flex-wrap:wrap;gap:5px">' + entry.relicIds.map(function(id){
-      var r = RELICS.find(function(x){return x.id===id;});
-      return r ? '<div style="background:rgba(255,68,85,0.08);border:1px solid #ff445533;border-radius:4px;padding:3px 7px;font-size:11px">' +
-        '<span>'+r.icon+'</span> <span style="font-family:Orbitron,sans-serif;font-size:8px;color:#ccc;letter-spacing:1px">'+r.name+'</span></div>' : '';
-    }).join('') + '</div>';
-  } else if(entry.relics && entry.relics.length) {
-    relicsHTML += '<div style="font-size:16px;letter-spacing:4px">'+entry.relics+'</div>';
-  } else { relicsHTML += naSpan; }
-  relicsHTML += '</div>';
-
   // Forge section — always show
   var fl = entry.forgeLevels || {damage:0,rate:0,armor:0};
-  var hasForge = fl.damage||fl.rate||fl.armor;
   var forgeBar = function(label, icon, val, color) {
     var pct = Math.min(val/40*100, 100);
     return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
       '<span style="font-size:12px;width:20px;text-align:center">'+icon+'</span>' +
-      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;width:44px;letter-spacing:1px">'+label+'</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#778;width:44px;letter-spacing:1px">'+label+'</span>' +
       '<div style="flex:1;height:5px;background:#0a1525;border-radius:3px;overflow:hidden">' +
       '<div style="width:'+pct+'%;height:100%;background:'+color+';border-radius:3px"></div></div>' +
-      '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:'+color+';width:24px;text-align:right">'+val+'</span></div>';
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+color+';width:24px;text-align:right">'+val+'</span></div>';
   };
   var forgeHTML = '<div style="margin-top:14px">' +
-    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff4444;letter-spacing:2px;margin-bottom:6px">🔥 STAR FORGE</div>';
+    '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff4444;letter-spacing:2px;margin-bottom:6px">🔥 STAR FORGE</div>';
+  var hasForge = fl.damage||fl.rate;
   if(hasForge) {
     forgeHTML += forgeBar('DMG','🔥',fl.damage||0,'#ff4444') +
-      forgeBar('RATE','⚡',fl.rate||0,'#ff8c00') +
-      forgeBar('ARMOR','🛡️',fl.armor||0,'#00ccff');
+      forgeBar('RATE','⚡',fl.rate||0,'#ff8c00');
   } else { forgeHTML += naSpan; }
   forgeHTML += '</div>';
 
-  // Ascension badge — always show
-  var ascHTML = '<div style="margin-top:14px;text-align:center">' +
-    '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:'+(entry.ascensionCount > 0 ? '#aa44ff' : '#334')+';letter-spacing:2px">🌀 ASCENSION ×'+(entry.ascensionCount||0)+'</span></div>';
-
   var card = document.createElement('div');
-  card.style.cssText = 'width:100%;max-width:360px;background:linear-gradient(180deg,rgba(5,10,25,0.98),rgba(10,20,40,0.98));border:1px solid '+hullCol+'44;border-radius:12px;padding:20px;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px '+hullCol+'22';
+  card.style.cssText = 'width:100%;max-width:360px;background:linear-gradient(180deg,rgba(5,10,25,0.98),rgba(10,20,40,0.98));border:1px solid '+hullCol+'44;border-radius:12px;padding:20px;max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 0 40px '+hullCol+'22;animation:cardSlideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both';
   card.innerHTML =
     '<div style="display:flex;flex-direction:column;align-items:center;margin-bottom:16px">' +
-      '<canvas id="lb-card-ship" width="100" height="100" style="position:static;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,'+hullCol+'18 0%,rgba(0,5,15,0.7) 70%);border:1px solid '+hullCol+'33;margin-bottom:10px"></canvas>' +
+      '<canvas id="lb-card-ship" width="120" height="120" style="position:static;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,'+hullCol+'18 0%,rgba(0,5,15,0.7) 70%);border:1px solid '+hullCol+'33;margin-bottom:10px"></canvas>' +
       '<div style="font-family:Orbitron,sans-serif;font-size:16px;color:'+hullCol+';letter-spacing:2px;font-weight:700;text-align:center">'+entry.name+'</div>' +
       '<div style="font-family:Orbitron,sans-serif;font-size:12px;color:#ffd700;margin-top:4px">'+rankBadge+'</div>' +
     '</div>' +
     '<div style="display:flex;gap:0;justify-content:center;margin-bottom:8px">' +
       '<div style="text-align:center;flex:1">' +
-        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">SCORE</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:1px">SCORE</div>' +
         '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:var(--c)">'+entry.score.toLocaleString()+'</div>' +
       '</div>' +
       '<div style="text-align:center;flex:1">' +
-        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">WAVE</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:1px">WAVE</div>' +
         '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:#4af">'+entry.wave+'</div>' +
       '</div>' +
       (entry.kills ? '<div style="text-align:center;flex:1">' +
-        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:1px">KILLS</div>' +
+        '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:1px">KILLS</div>' +
         '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:#ff4455">'+entry.kills+'</div>' +
       '</div>' : '') +
     '</div>' +
     '<div style="text-align:center;margin-bottom:4px">' +
-      '<span style="font-family:Orbitron,sans-serif;font-size:9px;color:#334;letter-spacing:1px">'+(entry.date||'')+'</span>' +
+      '<span style="font-family:Orbitron,sans-serif;font-size:10px;color:#556;letter-spacing:1px">'+(entry.date||'')+'</span>' +
     '</div>' +
     '<div style="height:1px;background:linear-gradient(90deg,transparent,#1a2540,transparent);margin:12px 0"></div>' +
-    perksHTML + synHTML + relicsHTML + forgeHTML + ascHTML +
+    perksHTML + synHTML + forgeHTML +
     '<div style="text-align:center;margin-top:18px">' +
-      '<button onclick="this.closest(\'#lb-player-card\').remove()" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:8px 28px;background:transparent;border:1px solid #334;color:#556;border-radius:4px;cursor:pointer">✕ CLOSE</button>' +
+      '<button onclick="var o=this.closest(\'#lb-player-card\');if(window._lbCardAnimId)cancelAnimationFrame(window._lbCardAnimId);o.remove()" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:8px 28px;background:transparent;border:1px solid #334;color:#778;border-radius:4px;cursor:pointer">✕ CLOSE</button>' +
     '</div>';
 
   overlay.appendChild(card);
   document.body.appendChild(overlay);
 
-  // Draw ship on the card canvas
+  // Animated ship preview on the card canvas
   var shipCanvas = document.getElementById('lb-card-ship');
-  if(shipCanvas && entry.shipCustom) {
-    var ctx = shipCanvas.getContext('2d');
-    playerSpriteState='idle';
-    drawShip(ctx, 50, 54, 0, entry.shipCustom, 2.2);
+  if(shipCanvas) {
+    var _lbParticles = [];
+    var shipCustom = entry.shipCustom || {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#00f5ff',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
+    var lbCtx = shipCanvas.getContext('2d');
+    function _animLbShip(ts) {
+      if(!document.getElementById('lb-card-ship')) return;
+      var W=120, H=120, cx=W/2, cy=H/2;
+      var t = ts/1000;
+      lbCtx.clearRect(0,0,W,H);
+      // Background glow
+      var grad = lbCtx.createRadialGradient(cx,cy,0,cx,cy,55);
+      grad.addColorStop(0, (shipCustom.hullColor||'#00f5ff')+'18');
+      grad.addColorStop(1, 'rgba(0,5,15,0)');
+      lbCtx.fillStyle = grad;
+      lbCtx.fillRect(0,0,W,H);
+      // Ship bob
+      var shipY = cy + Math.sin(t*1.4)*6;
+      // Thruster particles
+      var tc = shipCustom.thrusterColor||'#00f5ff';
+      if(tc==='rainbow') tc = 'hsl('+(t*120%360)+',100%,60%)';
+      if(Math.random()>0.3) {
+        _lbParticles.push({x:cx+(-3+Math.random()*6), y:shipY+16,
+          vx:(-0.5+Math.random())*0.8, vy:1.2+Math.random()*1.8,
+          life:1, r:1+Math.random()*2.5, col:tc});
+      }
+      for(var i=_lbParticles.length-1;i>=0;i--) {
+        var p=_lbParticles[i];
+        p.x+=p.vx; p.y+=p.vy; p.life-=0.035;
+        if(p.life<=0||p.y>H){_lbParticles.splice(i,1);continue;}
+        lbCtx.globalAlpha=Math.max(0,p.life*0.7);
+        lbCtx.shadowColor=p.col; lbCtx.shadowBlur=6;
+        lbCtx.fillStyle=p.col;
+        lbCtx.beginPath();lbCtx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2);lbCtx.fill();
+      }
+      lbCtx.globalAlpha=1; lbCtx.shadowBlur=0;
+      // Cycle sprite state
+      var states=['idle','boost','full'];
+      playerSpriteState = states[Math.floor(t*0.8)%3];
+      drawShip(lbCtx, cx, shipY, 0, shipCustom, 2.0);
+      _lbAnimId = requestAnimationFrame(_animLbShip);
+    }
+    _lbAnimId = requestAnimationFrame(_animLbShip);
+    window._lbCardAnimId = _lbAnimId;
   }
 }
 
@@ -11055,6 +12343,42 @@ function _showAchievementNotification() {
   }, 3500);
 }
 
+function _showDailyChallengeNotification() {
+  if (_dcNotifyQueue.length === 0) { _dcNotifyActive = false; return; }
+  _dcNotifyActive = true;
+  var ch = _dcNotifyQueue.shift();
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:12px;left:12px;z-index:999999;pointer-events:none;' +
+    'padding:8px 14px;border-radius:8px;' +
+    'background:rgba(10,10,30,0.94);border:2px solid #00ccff;' +
+    'box-shadow:0 0 20px #00ccff44,0 0 40px #00ccff22;' +
+    'font-family:Orbitron,sans-serif;' +
+    'transform:translateX(-300px);opacity:0;' +
+    'transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.3s ease';
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:6px">' +
+    '<span style="font-size:18px">' + ch.icon + '</span>' +
+    '<div>' +
+    '<div style="font-size:10px;font-weight:900;color:#fff;text-shadow:0 0 10px #00ccff;letter-spacing:1px">' + ch.name + '</div>' +
+    '<div style="font-size:7px;color:#00ccff;letter-spacing:2px;margin-top:1px">DAILY CHALLENGE' + (ch.reward ? ' · +' + ch.reward + ' 🌀' : '') + (ch.keyReward ? ' · +' + ch.keyReward + ' 🔑' : '') + '</div>' +
+    '</div></div>';
+  document.body.appendChild(el);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.style.transform = 'translateX(0)';
+      el.style.opacity = '1';
+    });
+  });
+  sfx('trophyClaim');
+  setTimeout(function() {
+    el.style.transform = 'translateX(-300px)';
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      _showDailyChallengeNotification();
+    }, 450);
+  }, 3500);
+}
+
 function dismissPerksIntro() {
   document.getElementById('screen-perks-intro').classList.add('hidden');
   if(window._perksIntroDone){ window._perksIntroDone(); window._perksIntroDone=null; }
@@ -11085,7 +12409,21 @@ function spinnerContinue() {
       pulled.push(pool[Math.floor(Math.random()*pool.length)]);
     }
     pulled.forEach(c=>{SAVE.cards[c.id]=(SAVE.cards[c.id]||0)+1;});
-    doSave(); showToast('📦 Free pack added to collection!');
+    var newSets=[];
+    Object.entries(SETS).forEach(function(e){var k=e[0],s=e[1];
+      if(SAVE.setsComplete[k]) return;
+      if(s.cards.every(function(c){return (SAVE.cards[c.id]||0)>0;})){ SAVE.setsComplete[k]=true; newSets.push(s.name); }
+    });
+    doSave(); sfx('packOpen');
+    // Show card reveal overlay
+    _showBossPackReveal(pulled, newSets, function(){
+      document.getElementById('screen-spinner').classList.add('hidden');
+      if(spinnerPendingWaveData){
+        var d=spinnerPendingWaveData; spinnerPendingWaveData=null;
+        showPerksIntro(function(){ document.getElementById('screen-summary').classList.remove('hidden'); runSummarySequence(d.kills,d.preBonus,d.waveNum,d.coins,d.newTrophies); });
+      }
+    });
+    return;
   }
   // Proceed to wave summary
   document.getElementById('screen-spinner').classList.add('hidden');
@@ -11097,6 +12435,67 @@ function spinnerContinue() {
       runSummarySequence(kills,preBonus,waveNum,coins,newTrophies);
     });
   }
+}
+
+function _showBossPackReveal(pulled, newSets, onDone){
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:Orbitron,sans-serif;transition:background 0.4s;pointer-events:auto';
+  // Title
+  var title = document.createElement('div');
+  title.style.cssText = 'font-size:14px;font-weight:900;color:#cc55ff;text-shadow:0 0 20px #cc55ff88;letter-spacing:3px;opacity:0;transform:translateY(-20px);transition:opacity 0.4s,transform 0.4s';
+  title.textContent = '📦 FREE PACK';
+  overlay.appendChild(title);
+  // Card container
+  var cardRow = document.createElement('div');
+  cardRow.style.cssText = 'display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 20px';
+  pulled.forEach(function(card, i){
+    var s = SETS[card.setKey] || {color:'#888',bg:'rgba(128,128,128,0.1)',name:'?'};
+    var el = document.createElement('div');
+    el.style.cssText = 'width:90px;padding:12px 8px;border-radius:10px;text-align:center;border:2px solid '+s.color+'80;background:'+s.bg+';box-shadow:0 0 15px '+s.color+'33;opacity:0;transform:scale(0.3) rotateY(90deg);transition:opacity 0.4s,transform 0.5s cubic-bezier(.17,.67,.35,1.2)';
+    el.innerHTML = '<div style="font-size:28px;margin-bottom:6px">'+card.icon+'</div>'+
+      '<div style="font-size:9px;font-weight:700;color:'+s.color+';letter-spacing:1px;margin-bottom:4px">'+card.name+'</div>'+
+      '<div style="font-size:7px;color:#778;letter-spacing:1px;margin-bottom:4px">'+s.name+'</div>'+
+      '<div style="font-size:7px;color:#aab;line-height:1.3">'+card.bonus+'</div>';
+    cardRow.appendChild(el);
+    setTimeout(function(){ el.style.opacity='1'; el.style.transform='scale(1) rotateY(0deg)'; sfx('navTap'); }, 400 + i * 200);
+  });
+  overlay.appendChild(cardRow);
+  // Set complete note
+  if(newSets.length){
+    var setNote = document.createElement('div');
+    setNote.style.cssText = 'font-size:11px;color:#ffd700;text-shadow:0 0 15px #ffd70088;letter-spacing:2px;margin-top:8px;opacity:0;transition:opacity 0.5s';
+    setNote.textContent = '🏆 ' + newSets.join(' & ') + ' COMPLETE!';
+    overlay.appendChild(setNote);
+    setTimeout(function(){ setNote.style.opacity='1'; sfx('setComplete'); }, 400 + pulled.length * 200 + 300);
+  }
+  // Tap to continue
+  var tap = document.createElement('div');
+  tap.style.cssText = 'font-size:9px;color:#556;letter-spacing:2px;margin-top:16px;opacity:0;transition:opacity 0.5s';
+  tap.textContent = 'TAP TO CONTINUE';
+  overlay.appendChild(tap);
+  var tapReady = false;
+  setTimeout(function(){ tap.style.opacity='1'; tapReady = true; }, 400 + pulled.length * 200 + 500);
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    overlay.style.background = 'rgba(0,0,0,0.92)';
+    title.style.opacity = '1'; title.style.transform = 'translateY(0)';
+  }); });
+  overlay.addEventListener('click', function(){
+    if(!tapReady) return;
+    overlay.style.opacity = '0';
+    overlay.style.transition = 'opacity 0.3s';
+    setTimeout(function(){
+      if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      if(onDone) onDone();
+    }, 300);
+  });
+  // Safety timeout
+  setTimeout(function(){
+    if(overlay.parentNode){
+      overlay.parentNode.removeChild(overlay);
+      if(onDone) onDone();
+    }
+  }, 15000);
 }
 
 function showWildSlotIntro(onDone){
@@ -11569,13 +12968,13 @@ setTrack('menu');
     <div style="text-align:left;margin-bottom:16px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#aab;letter-spacing:2px">♪ MUSIC</span>
-        <button id="settings-music-toggle" onclick="toggleMusicFromSettings()" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 10px;border-radius:3px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;letter-spacing:1px">ON</button>
+        <button id="settings-music-toggle" onclick="toggleMusicFromSettings()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:3px 10px;border-radius:3px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;letter-spacing:1px">ON</button>
       </div>
       <input type="range" id="settings-music-vol" min="0" max="100" value="55" oninput="onMusicVolChange(this.value)" style="width:100%;accent-color:#00f5ff;height:6px;cursor:pointer">
       <div style="display:flex;justify-content:space-between;margin-top:2px">
-        <span style="font-size:9px;color:#556">0%</span>
-        <span id="settings-music-val" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#889">55%</span>
-        <span style="font-size:9px;color:#556">100%</span>
+        <span style="font-size:10px;color:#778">0%</span>
+        <span id="settings-music-val" style="font-family:'Orbitron',sans-serif;font-size:10px;color:#889">55%</span>
+        <span style="font-size:10px;color:#778">100%</span>
       </div>
     </div>
 
@@ -11585,22 +12984,22 @@ setTrack('menu');
       </div>
       <input type="range" id="settings-sfx-vol" min="0" max="100" value="50" oninput="onSfxVolChange(this.value)" style="width:100%;accent-color:#ff8800;height:6px;cursor:pointer">
       <div style="display:flex;justify-content:space-between;margin-top:2px">
-        <span style="font-size:9px;color:#556">0%</span>
-        <span id="settings-sfx-val" style="font-family:'Orbitron',sans-serif;font-size:9px;color:#889">50%</span>
-        <span style="font-size:9px;color:#556">100%</span>
+        <span style="font-size:10px;color:#778">0%</span>
+        <span id="settings-sfx-val" style="font-family:'Orbitron',sans-serif;font-size:10px;color:#889">50%</span>
+        <span style="font-size:10px;color:#778">100%</span>
       </div>
     </div>
 
     <div style="text-align:left;margin-bottom:20px;padding-top:16px;border-top:1px solid #223">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:#aab;letter-spacing:2px">🔔 NOTIFICATIONS</span>
-        <button id="settings-notif-toggle" onclick="toggleNotifications()" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 10px;border-radius:3px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#556;cursor:pointer;letter-spacing:1px">OFF</button>
+        <button id="settings-notif-toggle" onclick="toggleNotifications()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:3px 10px;border-radius:3px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#556;cursor:pointer;letter-spacing:1px">OFF</button>
       </div>
-      <div style="font-size:9px;color:#445;margin-top:4px">Get notified about updates & events</div>
+      <div style="font-size:10px;color:#667;margin-top:4px">Get notified about updates & events</div>
     </div>
 
     <div style="text-align:center;margin:12px 0 4px">
-      <button onclick="revertSettingsDefaults()" style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;padding:6px 14px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#889;border-radius:4px;cursor:pointer">↺ REVERT TO DEFAULT</button>
+      <button onclick="revertSettingsDefaults()" style="font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;padding:6px 14px;border:1px solid #556;background:rgba(255,255,255,0.04);color:#889;border-radius:4px;cursor:pointer">↺ REVERT TO DEFAULT</button>
     </div>
     <button onclick="closeSettings()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;padding:10px 30px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer">✕ CLOSE</button>
   </div>
