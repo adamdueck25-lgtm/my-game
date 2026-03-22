@@ -646,7 +646,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
   </div>
-  <div style="position:absolute;bottom:0;left:0;right:0;padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 10px);background:linear-gradient(180deg,transparent 0%,rgba(3,6,16,0.95) 20%,rgba(3,6,16,0.98) 100%);display:flex;justify-content:center;z-index:3;pointer-events:none">
+  <div id="shop-back-wrap" style="position:fixed;bottom:0;left:0;right:0;padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 12px);background:linear-gradient(180deg,transparent 0%,rgba(3,6,16,0.95) 30%,rgba(3,6,16,0.98) 100%);display:flex;justify-content:center;z-index:25;pointer-events:none">
     <button class="btn-main b-c btn-sm" onclick="shopBack()" style="pointer-events:auto">← BACK</button>
   </div>
 </div>
@@ -8017,6 +8017,8 @@ function showScreen(id) {
   document.getElementById('controls').style.display=gameVisible?'flex':'none';
   document.getElementById('bomb-counter').style.display=gameVisible?'block':'none';
   document.getElementById('combo-display').classList.add('hidden');
+  var shopBackWrap=document.getElementById('shop-back-wrap');
+  if(shopBackWrap) shopBackWrap.style.display=(id==='screen-shop')?'flex':'none';
   if(id==='__game__') return;
   const el=document.getElementById(id);
   if(el){ el.classList.remove('hidden'); el.style.animation='screenSlideIn .25s ease'; }
