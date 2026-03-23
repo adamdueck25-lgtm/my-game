@@ -74,13 +74,23 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 .relic-badge{width:32px;height:32px;border-radius:50%;background:rgba(255,68,85,0.15);border:1.5px solid rgba(255,68,85,0.5);display:flex;align-items:center;justify-content:center;font-size:16px;backdrop-filter:blur(6px);}
 
 /* CUSTOMIZE PILLS */
-.cust-pill{display:inline-block;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;padding:7px 14px;border-radius:20px;border:1.5px solid #1a2540;background:transparent;color:#556;cursor:pointer;white-space:nowrap;margin-right:6px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.cust-pill{display:inline-block;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;padding:10px 16px;border-radius:22px;border:1.5px solid #1a2540;background:transparent;color:#556;cursor:pointer;white-space:nowrap;margin-right:6px;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .cust-pill.active{color:var(--pc,#00f5ff);border-color:var(--pc,#00f5ff);background:rgba(var(--pcr,0,245,255),0.12);box-shadow:0 0 12px rgba(var(--pcr,0,245,255),0.2)}
 .cust-pill.overridden{opacity:0.35;pointer-events:none}
 #customize-pills{touch-action:pan-x!important;overflow-x:scroll!important;overflow-y:hidden!important;width:100%!important;align-self:stretch!important}
 #customize-pills,#customize-pills *{touch-action:pan-x!important}
 #customize-pills::-webkit-scrollbar{display:none}
 @media(hover:hover){.cust-pill:hover:not(.active):not(.overridden){background:rgba(255,255,255,0.04);border-color:#334}}
+/* SWIPE HINT ARROWS */
+.cust-swipe-hint{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:80px;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:5;opacity:0;transition:opacity 0.3s;background:linear-gradient(90deg,rgba(204,68,255,0.08),transparent);border-radius:0 8px 8px 0}
+.cust-swipe-hint.visible{opacity:1}
+.cust-swipe-hint.left{left:0}
+.cust-swipe-hint.right{right:0;background:linear-gradient(270deg,rgba(204,68,255,0.08),transparent);border-radius:8px 0 0 8px}
+.cust-swipe-hint svg{width:28px;height:28px;filter:drop-shadow(0 0 6px rgba(204,68,255,0.6))}
+@keyframes swipeHintLeft{0%,100%{transform:translateY(-50%) translateX(0);opacity:0.4}50%{transform:translateY(-50%) translateX(-8px);opacity:1}}
+@keyframes swipeHintRight{0%,100%{transform:translateY(-50%) translateX(0);opacity:0.4}50%{transform:translateY(-50%) translateX(8px);opacity:1}}
+.cust-swipe-hint.left.visible{animation:swipeHintLeft 1.8s ease-in-out infinite}
+.cust-swipe-hint.right.visible{animation:swipeHintRight 1.8s ease-in-out infinite}
 
 /* SCREENS */
 .screen{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(env(safe-area-inset-bottom,0px) + 16px);pointer-events:auto;background:rgba(3,6,16,0)}
@@ -311,7 +321,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
   </div>
-  <div id="splash-version">v6.1</div>
+  <div id="splash-version">v2.9.0</div>
   <div id="splash-flash" style="position:absolute;inset:0;background:#00f5ff;opacity:0;pointer-events:none;z-index:20"></div>
 </div>
 
@@ -2181,6 +2191,22 @@ function sfx(type) {
     case 'waveStart':
       osc(220,'sawtooth',0.1,0.6,0,440); osc(440,'square',0.06,0.4,0.1);
       break;
+    case 'hyperspace':
+      sfxGain.gain.value = 0.30;
+      /* Rising warp sweep — builds from deep bass to high screech */
+      osc(60,'sawtooth',0.9,0.7,0,2400);
+      osc(80,'sawtooth',0.85,0.5,0.05,3200);
+      osc(120,'sine',0.7,0.4,0.1,1800);
+      /* Layered noise rush — simulates wind/space distortion */
+      noise(0.8,0.6,'bandpass',1200,0.1);
+      noise(0.6,0.4,'highpass',4000,0.2);
+      noise(0.3,0.3,'lowpass',400,0);
+      /* Deep bass thump at start */
+      osc(40,'sine',0.3,0.8,0,20);
+      /* High-end shimmer at peak */
+      osc(2000,'sine',0.15,0.3,0.6,4000);
+      osc(3000,'triangle',0.12,0.2,0.65,6000);
+      break;
     case 'enemyHeal':
       sfxGain.gain.value = 0.35;
       osc(440,'sine',0.15,0.5,0,880);
@@ -2590,7 +2616,13 @@ var PREMIUM_ITEMS = [
   {id:'voidDragonShip',name:'VOID DRAGON',    type:'sprite', label:'VOID DRAGON',    icon:'🐉', rarity:'legendary', color:'#aa00ff'},
   {id:'phantomBladeShip', name:'PHANTOM BLADE', type:'sprite', label:'PHANTOM BLADE', icon:'⚔️', rarity:'legendary', color:'#00ffcc'},
   {id:'solarFlareShip',   name:'SOLAR FLARE',   type:'sprite', label:'SOLAR FLARE',   icon:'☀️', rarity:'epic',      color:'#ff8800'},
-  {id:'abyssalShip',      name:'ABYSSAL LEVIATHAN', type:'sprite', label:'ABYSSAL LEVIATHAN', icon:'🌊', rarity:'legendary', color:'#0066ff'}
+  {id:'abyssalShip',      name:'ABYSSAL LEVIATHAN', type:'sprite', label:'ABYSSAL LEVIATHAN', icon:'🌊', rarity:'legendary', color:'#0066ff'},
+  {id:'frostWraithShip',  name:'FROST WRAITH',      type:'sprite', label:'FROST WRAITH',    icon:'❄️', rarity:'epic',      color:'#88ddff'},
+  {id:'infernoTitanShip', name:'INFERNO TITAN',     type:'sprite', label:'INFERNO TITAN',   icon:'🌋', rarity:'legendary', color:'#ff4400'},
+  {id:'plasmaPulse',      name:'PLASMA PULSE',      type:'thruster', label:'PLASMA PULSE', icon:'🔮', rarity:'epic',      color:'#ff00cc'},
+  {id:'goldDust',         name:'GOLD DUST',         type:'thruster', label:'GOLD DUST',    icon:'✨', rarity:'legendary', color:'#ffd700'},
+  {id:'glitchCode',       name:'GLITCH CODE',       type:'decal',    label:'GLITCH CODE',  icon:'▓', rarity:'epic',      color:'#00ff88'},
+  {id:'dragonScale',      name:'DRAGON SCALES',     type:'decal',    label:'DRAGON SCALES',icon:'🐲', rarity:'legendary', color:'#ff8800'}
 ];
 
 // ── TROPHY MILESTONES ─────────────────────────────────────────
@@ -3382,7 +3414,7 @@ var CURRENT_VERSION = '2.9.0 (BETA)';
 const VERSION_NOTES = {
 '2.9.0 (BETA)': [
     '💎 Premium Crates — spend 10 keys for exclusive ship sprites you can\'t get anywhere else',
-    '🚀 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon with unique procedural art',
+    '🚀 8 premium ships — unique procedural sprites with animated effects you can\'t get anywhere else',
     '🏛️ Vault upgrade — collapsible collections, grouped by type, with ship preview modals',
     '🛡️ Crash protection — crate animations now auto-recover from errors & refund keys if needed',
     '🔧 Service worker overhaul — versioned caching prevents stale game versions after updates',
@@ -4714,6 +4746,190 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     return;
   }
+
+  // ── FROST WRAITH ──────────────────────────────────────────
+  if(custom.sprite==='frostWraithShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.8+Math.sin(_t*2)*0.2;
+    // Frost aura — swirling ice mist
+    c.save();
+    c.globalAlpha=0.12*_pulse;
+    c.fillStyle='#88ddff';
+    c.beginPath(); c.arc(0,0,22+Math.sin(_t*1.8)*3,0,Math.PI*2); c.fill();
+    c.restore();
+    // Ice crystal shards — 6 rotating crystalline spikes around ship
+    c.save();
+    c.globalAlpha=0.25+Math.sin(_t*2.5)*0.1;
+    c.strokeStyle='#aaeeff';
+    c.lineWidth=1;
+    for(var _ci=0;_ci<6;_ci++){
+      var _ca=(_ci/6)*Math.PI*2+_t*0.4;
+      var _cr=18+Math.sin(_t*3+_ci)*3;
+      var _cx=Math.cos(_ca)*_cr, _cy=Math.sin(_ca)*_cr;
+      c.beginPath();
+      c.moveTo(_cx-2,_cy); c.lineTo(_cx,_cy-5); c.lineTo(_cx+2,_cy); c.lineTo(_cx,_cy+2);
+      c.closePath(); c.stroke();
+    }
+    c.restore();
+    // Hull — angular stealth shape, icy blue
+    c.save();
+    var _iceGrad=c.createLinearGradient(0,-16,0,16);
+    _iceGrad.addColorStop(0,'#ccefff'); _iceGrad.addColorStop(0.5,'#5599cc'); _iceGrad.addColorStop(1,'#224466');
+    c.fillStyle=_iceGrad;
+    c.beginPath();
+    c.moveTo(0,-18);
+    c.lineTo(7,-8); c.lineTo(14,-2); c.lineTo(12,10);
+    c.lineTo(4,16); c.lineTo(-4,16); c.lineTo(-12,10);
+    c.lineTo(-14,-2); c.lineTo(-7,-8);
+    c.closePath(); c.fill();
+    c.strokeStyle='#aaeeff'; c.lineWidth=1; c.globalAlpha=0.6; c.stroke();
+    c.restore();
+    // Frost crack veins on hull
+    c.save();
+    c.strokeStyle='#ccefff'; c.lineWidth=0.8; c.globalAlpha=0.4+Math.sin(_t*3)*0.15;
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(-3,-6); c.lineTo(-7,-1); c.stroke();
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(3,-6); c.lineTo(7,-1); c.stroke();
+    c.beginPath(); c.moveTo(0,-8); c.lineTo(0,4); c.stroke();
+    c.beginPath(); c.moveTo(-3,2); c.lineTo(-8,8); c.stroke();
+    c.beginPath(); c.moveTo(3,2); c.lineTo(8,8); c.stroke();
+    c.restore();
+    // Wing ice fins — jagged crystalline extensions
+    c.save();
+    c.fillStyle='#88ccee'; c.globalAlpha=0.5+Math.sin(_t*2.2)*0.15;
+    // Left wing
+    c.beginPath(); c.moveTo(-14,-2); c.lineTo(-20,-6); c.lineTo(-18,2); c.lineTo(-14,4); c.closePath(); c.fill();
+    // Right wing
+    c.beginPath(); c.moveTo(14,-2); c.lineTo(20,-6); c.lineTo(18,2); c.lineTo(14,4); c.closePath(); c.fill();
+    c.restore();
+    // Cockpit — diamond shape with inner glow
+    c.save();
+    c.fillStyle='#ffffff';
+    c.shadowColor='#88ddff'; c.shadowBlur=10;
+    c.beginPath(); c.moveTo(0,-10); c.lineTo(3,-5); c.lineTo(0,0); c.lineTo(-3,-5); c.closePath(); c.fill();
+    c.restore();
+    // Snowflake particles drifting down
+    c.save();
+    c.fillStyle='#ffffff';
+    for(var _si=0;_si<5;_si++){
+      var _sx=Math.sin(_t*1.3+_si*1.8)*10;
+      var _sy=((_t*20+_si*15)%40)-10;
+      var _sa=0.3-(_sy+10)/50;
+      if(_sa>0){ c.globalAlpha=_sa*0.6; c.beginPath(); c.arc(_sx,_sy,1,0,Math.PI*2); c.fill(); }
+    }
+    c.restore();
+    // Exhaust — frozen mist trail
+    c.save();
+    c.globalAlpha=0.35;
+    for(var _ei=0;_ei<3;_ei++){
+      var _ey=16+_ei*5+Math.sin(_t*4+_ei)*2;
+      var _er=2.5-_ei*0.5;
+      c.fillStyle=_ei===0?'#aaeeff':'#6699bb';
+      c.globalAlpha=0.35-_ei*0.1;
+      c.beginPath(); c.arc(Math.sin(_t*3+_ei*2)*2,_ey,_er,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── INFERNO TITAN ─────────────────────────────────────────
+  if(custom.sprite==='infernoTitanShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.5)*0.3;
+    // Heat aura — pulsing orange glow
+    c.save();
+    c.globalAlpha=0.15*_pulse;
+    var _heatGrad=c.createRadialGradient(0,0,5,0,0,24);
+    _heatGrad.addColorStop(0,'#ff8800'); _heatGrad.addColorStop(1,'#ff220000');
+    c.fillStyle=_heatGrad;
+    c.beginPath(); c.arc(0,0,24,0,Math.PI*2); c.fill();
+    c.restore();
+    // Ember particles rising around ship
+    c.save();
+    c.fillStyle='#ffaa00';
+    for(var _ei=0;_ei<8;_ei++){
+      var _ea=(_ei/8)*Math.PI*2+_t*0.6;
+      var _er=15+Math.sin(_t*2.5+_ei*1.3)*4;
+      var _ex=Math.cos(_ea)*_er, _ey=Math.sin(_ea)*_er;
+      var _eLife=(Math.sin(_t*3+_ei*0.9)+1)/2;
+      c.globalAlpha=_eLife*0.5;
+      c.fillStyle=_ei%2===0?'#ffcc00':'#ff6600';
+      c.beginPath(); c.arc(_ex,_ey,1+_eLife,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Hull — heavy armored shape, dark with magma gradient
+    c.save();
+    var _magmaGrad=c.createLinearGradient(0,-18,0,16);
+    _magmaGrad.addColorStop(0,'#661100'); _magmaGrad.addColorStop(0.4,'#441100'); _magmaGrad.addColorStop(0.7,'#331100'); _magmaGrad.addColorStop(1,'#220800');
+    c.fillStyle=_magmaGrad;
+    c.beginPath();
+    c.moveTo(0,-18);
+    c.lineTo(6,-12); c.lineTo(10,-4); c.lineTo(16,0);
+    c.lineTo(14,8); c.lineTo(8,16); c.lineTo(3,17);
+    c.lineTo(-3,17); c.lineTo(-8,16); c.lineTo(-14,8);
+    c.lineTo(-16,0); c.lineTo(-10,-4); c.lineTo(-6,-12);
+    c.closePath(); c.fill();
+    c.strokeStyle='#ff440088'; c.lineWidth=1.5; c.stroke();
+    c.restore();
+    // Magma crack lines — glowing fissures across hull
+    c.save();
+    c.strokeStyle='#ff6600'; c.lineWidth=1.2;
+    c.shadowColor='#ff4400'; c.shadowBlur=6;
+    c.globalAlpha=0.6+Math.sin(_t*3)*0.2;
+    // Center crack
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(-1,-8); c.lineTo(1,-3); c.lineTo(-1,4); c.lineTo(0,12); c.stroke();
+    // Left cracks
+    c.beginPath(); c.moveTo(-2,-6); c.lineTo(-8,-2); c.lineTo(-12,3); c.stroke();
+    c.beginPath(); c.moveTo(-1,4); c.lineTo(-6,9); c.stroke();
+    // Right cracks
+    c.beginPath(); c.moveTo(2,-6); c.lineTo(8,-2); c.lineTo(12,3); c.stroke();
+    c.beginPath(); c.moveTo(1,4); c.lineTo(6,9); c.stroke();
+    c.restore();
+    // Lava pools at crack intersections
+    c.save();
+    c.globalAlpha=0.5+Math.sin(_t*4)*0.2;
+    c.fillStyle='#ff8800';
+    c.shadowColor='#ff4400'; c.shadowBlur=4;
+    c.beginPath(); c.arc(-1,-3,2,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(0,4,1.8,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(-8,-2,1.5,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(8,-2,1.5,0,Math.PI*2); c.fill();
+    c.restore();
+    // Armored shoulder plates
+    c.save();
+    c.fillStyle='#552200';
+    c.strokeStyle='#ff440066'; c.lineWidth=1;
+    // Left plate
+    c.beginPath(); c.moveTo(-10,-4); c.lineTo(-16,0); c.lineTo(-14,5); c.lineTo(-10,2); c.closePath(); c.fill(); c.stroke();
+    // Right plate
+    c.beginPath(); c.moveTo(10,-4); c.lineTo(16,0); c.lineTo(14,5); c.lineTo(10,2); c.closePath(); c.fill(); c.stroke();
+    c.restore();
+    // Cockpit — angry red eye
+    c.save();
+    c.fillStyle='#ff2200';
+    c.shadowColor='#ff4400'; c.shadowBlur=12;
+    c.beginPath(); c.ellipse(0,-10,4,2.5,0,0,Math.PI*2); c.fill();
+    // Pupil slit
+    c.fillStyle='#000';
+    c.shadowBlur=0;
+    c.beginPath(); c.ellipse(0,-10,1,2,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Exhaust — volcanic fire plume
+    c.save();
+    for(var _fi=0;_fi<5;_fi++){
+      var _fy=17+_fi*4+Math.sin(_t*6+_fi*1.5)*2;
+      var _fr=3.5-_fi*0.6;
+      var _fAlpha=0.6-_fi*0.12;
+      c.globalAlpha=Math.max(0,_fAlpha);
+      c.fillStyle=_fi<2?'#ffcc00':_fi<4?'#ff6600':'#ff2200';
+      c.shadowColor=c.fillStyle; c.shadowBlur=8;
+      c.beginPath(); c.arc(Math.sin(_t*5+_fi*2)*3,_fy,_fr,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
   // Aura ring
   if(aura==='eternalGlow'){
     var _at=typeof performance!=='undefined'?performance.now()/1000:0;
@@ -4981,6 +5197,63 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.fillStyle=hullCol; c.globalAlpha=(flash?0.4:1)*0.8;
     c.beginPath(); c.arc(0,-2,1,0,Math.PI*2); c.fill();
     c.restore();
+  } else if(decal==='glitchCode'){
+    var _gt=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save(); c.globalAlpha=(flash?0.4:1)*0.55;
+    c.font='bold 5px monospace';
+    // Scrolling glitch text fragments
+    var glyphs=['0','1','█','▓','░','A','F','x','⟨','⟩','::','>_','//','&&','{}'];
+    for(var _gi=0;_gi<8;_gi++){
+      var gx=-9+(_gi%3)*7+Math.sin(_gt*4+_gi)*1.5;
+      var gy=-12+Math.floor(_gi/3)*6+((_gt*15+_gi*7)%24);
+      if(gy>10) gy-=24;
+      var glyph=glyphs[Math.floor((_gt*3+_gi*2.7)%glyphs.length)];
+      // Alternating neon colors
+      c.fillStyle=_gi%3===0?'#00ff88':_gi%3===1?'#ff00cc':'#00f5ff';
+      c.globalAlpha=(flash?0.4:1)*(0.3+Math.sin(_gt*6+_gi)*0.2);
+      c.fillText(glyph,gx,gy);
+    }
+    // Glitch scanline
+    var scanY=((_gt*30)%30)-15;
+    c.globalAlpha=(flash?0.4:1)*0.15;
+    c.fillStyle='#00ff88';
+    c.fillRect(-12,scanY,24,1.5);
+    c.restore();
+  } else if(decal==='dragonScale'){
+    var _dst=typeof performance!=='undefined'?performance.now()/1000:0;
+    c.save();
+    // Overlapping scale pattern — bold arcs with fill + stroke
+    for(var _sr=-2;_sr<=2;_sr++){
+      for(var _sc=-1;_sc<=1;_sc++){
+        var sx=_sc*7+(_sr%2)*3.5;
+        var sy=_sr*5.5-2;
+        var shimmer=0.7+Math.sin(_dst*2.5+_sr+_sc*1.5)*0.3;
+        c.globalAlpha=(flash?0.4:1)*0.35*shimmer;
+        c.fillStyle=_sr%2===0?'#cc5500':'#994400';
+        c.beginPath();
+        c.arc(sx,sy,4,Math.PI*0.1,Math.PI*0.9);
+        c.lineTo(sx-3.9,sy); c.closePath(); c.fill();
+        c.globalAlpha=(flash?0.4:1)*0.7*shimmer;
+        c.strokeStyle=_sr%2===0?'#ff8800':'#ffaa44';
+        c.lineWidth=1.2;
+        c.shadowBlur=3; c.shadowColor='#ff880088';
+        c.beginPath();
+        c.arc(sx,sy,4,Math.PI*0.1,Math.PI*0.9);
+        c.stroke();
+      }
+    }
+    // Highlight ridge down center
+    c.strokeStyle='#ffd700'; c.lineWidth=1;
+    c.globalAlpha=(flash?0.4:1)*(0.5+Math.sin(_dst*3)*0.15);
+    c.shadowBlur=6; c.shadowColor='#ff8800';
+    c.beginPath(); c.moveTo(0,-14); c.lineTo(0,8); c.stroke();
+    // Gold dots at scale tips
+    c.fillStyle='#ffd700'; c.shadowBlur=4;
+    c.globalAlpha=(flash?0.4:1)*(0.4+Math.sin(_dst*2)*0.15);
+    [[-7,-2],[7,-2],[0,-7.5],[-3.5,3],[3.5,3]].forEach(function(p){
+      c.beginPath(); c.arc(p[0],p[1],1,0,Math.PI*2); c.fill();
+    });
+    c.restore();
   }
   c.restore();
 }
@@ -5010,11 +5283,17 @@ function shake(mag, dur) {
 
 function spawnThruster() {
   const spread = (Math.random()-.5)*6;
+  const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600';
+  var col, extra=null;
+  if(tc==='rainbow'){ const cols=['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff']; col=cols[Math.floor(Math.random()*cols.length)]; }
+  else if(tc==='plasmaPulse'){ col=Math.random()<0.5?'#ff00cc':'#00ccff'; extra='plasma'; }
+  else if(tc==='goldDust'){ col=Math.random()<0.3?'#ffffff':'#ffd700'; extra='gold'; }
+  else { col=Math.random()<.6?tc:tc+'cc'; }
   thrusterParts.push({
     x: player.x + spread, y: player.y + 10,
     vy: Math.random()*2+1.5, vx:(Math.random()-.5)*0.5,
     life: 1, r: Math.random()*3+1.5,
-    col: (()=>{ const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600'; if(tc==='rainbow'){ const cols=['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff']; return cols[Math.floor(Math.random()*cols.length)]; } return Math.random()<.6 ? tc : tc+'cc'; })()
+    col: col, thrusterFx: extra
   });
 }
 
@@ -5917,10 +6196,33 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   // Thruster particles
   thrusterParts.forEach(p=>{
     ctx.save();
-    ctx.globalAlpha=p.life*0.7;
-    ctx.shadowBlur=6; ctx.shadowColor=p.col;
-    ctx.fillStyle=p.col;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); ctx.fill();
+    if(p.thrusterFx==='plasma'){
+      // Plasma pulse — pulsing size + stronger glow
+      var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
+      ctx.globalAlpha=p.life*0.85;
+      ctx.shadowBlur=12; ctx.shadowColor=p.col;
+      ctx.fillStyle=p.col;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life*_pp,0,Math.PI*2); ctx.fill();
+    } else if(p.thrusterFx==='gold'){
+      // Gold dust — sparkle twinkle effect
+      ctx.globalAlpha=p.life*0.8;
+      ctx.shadowBlur=8; ctx.shadowColor='#ffd700';
+      ctx.fillStyle=p.col;
+      var _gr=p.r*p.life;
+      if(p.col==='#ffffff'){ _gr*=1.5; ctx.shadowBlur=14; }
+      ctx.beginPath(); ctx.arc(p.x,p.y,_gr,0,Math.PI*2); ctx.fill();
+      // Occasional sparkle cross on white particles
+      if(p.col==='#ffffff'&&p.life>0.6){
+        ctx.strokeStyle='#ffd700'; ctx.lineWidth=0.8; ctx.globalAlpha=p.life*0.5;
+        ctx.beginPath(); ctx.moveTo(p.x-3,p.y); ctx.lineTo(p.x+3,p.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(p.x,p.y-3); ctx.lineTo(p.x,p.y+3); ctx.stroke();
+      }
+    } else {
+      ctx.globalAlpha=p.life*0.7;
+      ctx.shadowBlur=6; ctx.shadowColor=p.col;
+      ctx.fillStyle=p.col;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life,0,Math.PI*2); ctx.fill();
+    }
     ctx.restore();
   });
 
@@ -8388,12 +8690,14 @@ function playLaunchTransition(callback) {
   }
   requestAnimationFrame(drawStreaks);
 
-  /* Flash at peak */
+  /* Flash at peak — white flash, then fade through to black for clean handoff */
   setTimeout(function() { flash.style.opacity = '0.7'; }, 500);
-  setTimeout(function() { flash.style.transition = 'opacity 0.4s ease'; flash.style.opacity = '0'; }, 650);
+  setTimeout(function() { flash.style.transition = 'opacity 0.3s ease'; flash.style.opacity = '0'; }, 650);
+  /* Fade to black before the game switch */
+  setTimeout(function() { flash.style.background = '#000'; flash.style.transition = 'opacity 0.25s ease'; flash.style.opacity = '1'; }, 950);
 
-  /* Play launch sound */
-  try { sfx('waveStart'); } catch(e){}
+  /* Play hyperspace warp sound */
+  try { sfx('hyperspace'); } catch(e){}
 
   /* Cleanup and callback */
   setTimeout(function() {
@@ -8405,28 +8709,47 @@ function playLaunchTransition(callback) {
     if (livesEl) { livesEl.style.transform = 'translateX(-80px)'; livesEl.style.opacity = '0'; livesEl.style.transition = 'none'; }
     if (ctrlBtns) { ctrlBtns.style.transform = 'translateX(80px)'; ctrlBtns.style.opacity = '0'; ctrlBtns.style.transition = 'none'; }
     if (bombCounter) bombCounter.style.display = 'none';
-    /* Call callback — showScreen('__game__') hides menu & shows HUD behind overlay */
-    callback();
-    /* Now reset menu element styles (menu is already hidden by showScreen) */
+
+    /* Reset menu element styles BEFORE showing game screen */
     animEls.forEach(function(a) {
       if (a.el) { a.el.style.transition = ''; a.el.style.transform = ''; a.el.style.opacity = ''; }
     });
     tiles.forEach(function(tile) { tile.style.transition = ''; tile.style.transform = ''; tile.style.opacity = ''; tile.style.transitionDelay = ''; });
     utilBtns.forEach(function(btn) { btn.style.transition = ''; btn.style.transform = ''; btn.style.opacity = ''; });
     if (shipCanvas) { shipCanvas.style.transition = ''; shipCanvas.style.transform = ''; shipCanvas.style.opacity = ''; }
-    /* Remove overlay — game is fully set up underneath */
-    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-    /* Animate game HUD elements in */
-    requestAnimationFrame(function() { requestAnimationFrame(function() {
-      if (livesEl) { livesEl.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; livesEl.style.transform = 'translateX(0)'; livesEl.style.opacity = '1'; }
-      if (ctrlBtns) { ctrlBtns.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; ctrlBtns.style.transform = 'translateX(0)'; ctrlBtns.style.opacity = '1'; }
-      /* Update bomb counter position after controls are visible */
+
+    /* Star streaks finished, black cover already faded in at 950ms — ensure solid */
+    sCtx.clearRect(0, 0, streakCanvas.width, streakCanvas.height);
+    flash.style.transition = 'none';
+    flash.style.opacity = '1';
+    overlay.style.pointerEvents = 'none';
+
+    /* Call callback — showScreen('__game__') sets up game behind black cover */
+    callback();
+
+    /* Pre-render first game frame behind the black cover to warm up canvas */
+    requestAnimationFrame(function() {
+      /* Fade from black to reveal the running game */
+      flash.style.transition = 'opacity 0.45s ease-out';
+      flash.style.opacity = '0';
+
+      /* Remove overlay after fade completes */
       setTimeout(function() {
-        updateBombDisplay();
-        if (livesEl) { livesEl.style.transition = ''; livesEl.style.transform = ''; livesEl.style.opacity = ''; }
-        if (ctrlBtns) { ctrlBtns.style.transition = ''; ctrlBtns.style.transform = ''; ctrlBtns.style.opacity = ''; }
-      }, 550);
-    }); });
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      }, 500);
+
+      /* Animate game HUD elements in */
+      requestAnimationFrame(function() {
+        if (livesEl) { livesEl.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; livesEl.style.transform = 'translateX(0)'; livesEl.style.opacity = '1'; }
+        if (ctrlBtns) { ctrlBtns.style.transition = 'transform 0.5s cubic-bezier(.17,.67,.35,1.2), opacity 0.4s ease'; ctrlBtns.style.transform = 'translateX(0)'; ctrlBtns.style.opacity = '1'; }
+        /* Update bomb counter position after controls are visible */
+        setTimeout(function() {
+          updateBombDisplay();
+          if (livesEl) { livesEl.style.transition = ''; livesEl.style.transform = ''; livesEl.style.opacity = ''; }
+          if (ctrlBtns) { ctrlBtns.style.transition = ''; ctrlBtns.style.transform = ''; ctrlBtns.style.opacity = ''; }
+        }, 550);
+      });
+    });
   }, 1100);
 }
 
@@ -9071,7 +9394,7 @@ function buildVaultScreen(){
   var premGrid = document.createElement('div');
   premGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 0';
   // Group premium items by type with category headers
-  var premTypeLabels = {sprite:{icon:'🚀',label:'SHIP SPRITES'},aura:{icon:'✨',label:'AURAS'},decal:{icon:'🎨',label:'DECALS'},trail:{icon:'💫',label:'TRAILS'}};
+  var premTypeLabels = {sprite:{icon:'🚀',label:'SHIP SPRITES'},thruster:{icon:'🔥',label:'THRUSTERS'},aura:{icon:'✨',label:'AURAS'},decal:{icon:'🎨',label:'DECALS'},trail:{icon:'💫',label:'TRAILS'}};
   var premByType = {};
   PREMIUM_ITEMS.forEach(function(item){ if(!premByType[item.type]) premByType[item.type]=[]; premByType[item.type].push(item); });
   Object.keys(premByType).forEach(function(type){
@@ -9083,13 +9406,13 @@ function buildVaultScreen(){
   premByType[type].forEach(function(item){
     var owned = !!(SAVE.premiumOwned||{})[item.id];
     var card = document.createElement('div');
-    card.style.cssText = 'border:1.5px solid '+(owned?item.color+'88':'#1a254088')+';border-radius:10px;padding:12px 8px 10px;background:'+(owned?'rgba('+hexToRgb(item.color)+',0.08)':'rgba(10,15,30,0.5)')+';cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:80px;justify-content:center;position:relative'+(owned?';box-shadow:0 0 12px '+item.color+'44':'');
+    card.style.cssText = 'border:1.5px solid '+(owned?item.color+'88':'#334466')+';border-radius:10px;padding:12px 8px 10px;background:'+(owned?'rgba('+hexToRgb(item.color)+',0.08)':'rgba(15,22,40,0.7)')+';cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:80px;justify-content:center;position:relative'+(owned?';box-shadow:0 0 12px '+item.color+'44':'');
     var rarityCol = item.rarity==='legendary'?'#ffd700':'#cc66ff';
     card.innerHTML =
-      '<span style="font-size:28px;'+(owned?'filter:none;text-shadow:0 0 10px '+item.color:'filter:grayscale(1) brightness(0.4)')+'">'+item.icon+'</span>'+
-      '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+(owned?item.color:'#556')+';letter-spacing:1px;text-align:center">'+item.name+'</span>'+
-      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+rarityCol+';letter-spacing:1px;text-transform:uppercase;opacity:'+(owned?'0.8':'0.3')+'">'+item.rarity+'</span>'+
-      (owned?'<span style="font-size:8px;color:#00ff88">✓ OWNED</span>':'<span style="font-size:16px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.3">🔒</span>');
+      '<span style="font-size:28px;'+(owned?'filter:none;text-shadow:0 0 10px '+item.color:'filter:grayscale(0.8) brightness(0.6)')+'">'+item.icon+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+(owned?item.color:'#778899')+';letter-spacing:1px;text-align:center">'+item.name+'</span>'+
+      '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:'+rarityCol+';letter-spacing:1px;text-transform:uppercase;opacity:'+(owned?'0.8':'0.5')+'">'+item.rarity+'</span>'+
+      (owned?'<span style="font-size:8px;color:#00ff88">✓ OWNED</span>':'<span style="font-size:12px;color:#556;position:absolute;top:6px;right:8px">🔒</span>');
     card.onclick = (function(id){ return function(){ showPremiumPreview(id); }; })(item.id);
     premGrid.appendChild(card);
   });
@@ -9471,6 +9794,14 @@ function restorePremiumRewards(){
         if(!SPRITE_SHIPS.find(function(s){return s.id===item.id;})){
           SPRITE_SHIPS.push({id:item.id,label:item.label,icon:'💎'});
         }
+      } else if(item.type==='thruster'){
+        if(!THRUSTER_COLORS.find(function(s){return s.id===item.id;})){
+          THRUSTER_COLORS.push({id:item.id,label:item.label,icon:'💎'});
+        }
+      } else if(item.type==='decal'){
+        if(!DECALS.find(function(s){return s.id===item.id;})){
+          DECALS.push({id:item.id,label:item.label,icon:'💎'});
+        }
       }
     }
   });
@@ -9491,6 +9822,14 @@ function openPremiumCrate(){
   if(chosen.type === 'sprite'){
     if(!SPRITE_SHIPS.find(function(s){return s.id===chosen.id;})){
       SPRITE_SHIPS.push({id:chosen.id, label:chosen.label, icon:'💎'});
+    }
+  } else if(chosen.type === 'thruster'){
+    if(!THRUSTER_COLORS.find(function(s){return s.id===chosen.id;})){
+      THRUSTER_COLORS.push({id:chosen.id, label:chosen.label, icon:'💎'});
+    }
+  } else if(chosen.type === 'decal'){
+    if(!DECALS.find(function(s){return s.id===chosen.id;})){
+      DECALS.push({id:chosen.id, label:chosen.label, icon:'💎'});
     }
   }
   localStorage.setItem('vi2_save', JSON.stringify(SAVE));
@@ -9728,15 +10067,60 @@ function showPremiumPreview(itemId){
 
   // Animate ship — matches artifact set preview pattern
   var _prevAnimId = null;
-  var previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id};
-  function renderPreview(){
+  var previewCustom;
+  if(item.type==='thruster'){
+    previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.id,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
+  } else if(item.type==='decal'){
+    previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#00f5ff',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:item.id,sprite:'none'};
+  } else {
+    previewCustom = {shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:item.color,bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:item.id};
+  }
+  var _prevThruster = [];
+  var _prevLastT = 0;
+  function renderPreview(ts){
     var ctx = shipCanvas.getContext('2d');
+    var dt = Math.min((_prevLastT ? ts - _prevLastT : 16)/1000, 0.05);
+    _prevLastT = ts;
+    var t = ts/1000;
     ctx.clearRect(0,0,240,240);
     ctx.save();
     ctx.beginPath();
     ctx.rect(10,10,220,220);
     ctx.clip();
-    drawShip(ctx, 120, 120, 0, previewCustom, 2.5);
+    var shipY = 115 + Math.sin(t*1.6)*6;
+    // Thruster particles for thruster-type previews
+    if(item.type==='thruster'){
+      var tc = item.id;
+      if(Math.random()<0.7){
+        var col,tfx=null;
+        if(tc==='plasmaPulse'){ col=Math.random()<0.5?'#ff00cc':'#00ccff'; tfx='plasma'; }
+        else if(tc==='goldDust'){ col=Math.random()<0.3?'#ffffff':'#ffd700'; tfx='gold'; }
+        else { col=tc; }
+        _prevThruster.push({x:120+(Math.random()-.5)*10,y:shipY+25,vx:(Math.random()-.5)*0.5,vy:Math.random()*2.5+1.5,life:1,r:Math.random()*5+2.5,col:col,thrusterFx:tfx});
+      }
+      for(var pi=_prevThruster.length-1;pi>=0;pi--){
+        var p=_prevThruster[pi];
+        p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*2;
+        if(p.life<=0||p.y>240){ _prevThruster.splice(pi,1); continue; }
+        ctx.save();
+        if(p.thrusterFx==='plasma'){
+          var pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
+          ctx.globalAlpha=Math.max(0,p.life*0.85); ctx.fillStyle=p.col; ctx.shadowBlur=14; ctx.shadowColor=p.col;
+          ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life*pp),0,Math.PI*2); ctx.fill();
+        } else if(p.thrusterFx==='gold'){
+          ctx.globalAlpha=Math.max(0,p.life*0.85); ctx.fillStyle=p.col; ctx.shadowBlur=p.col==='#ffffff'?16:10; ctx.shadowColor='#ffd700';
+          ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life*(p.col==='#ffffff'?1.5:1)),0,Math.PI*2); ctx.fill();
+          if(p.col==='#ffffff'&&p.life>0.5){ ctx.strokeStyle='#ffd700'; ctx.lineWidth=1; ctx.globalAlpha=p.life*0.5;
+            ctx.beginPath(); ctx.moveTo(p.x-5,p.y); ctx.lineTo(p.x+5,p.y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(p.x,p.y-5); ctx.lineTo(p.x,p.y+5); ctx.stroke(); }
+        } else {
+          ctx.globalAlpha=Math.max(0,p.life*0.8); ctx.fillStyle=p.col; ctx.shadowBlur=10; ctx.shadowColor=p.col;
+          ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+    try { drawShip(ctx, 120, shipY, 0, previewCustom, 2.5); } catch(e){}
     ctx.restore();
     _prevAnimId = requestAnimationFrame(renderPreview);
   }
@@ -10933,10 +11317,30 @@ function startCustomizeAnim(){
     // Thruster particles
     const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600';
     if(Math.random()<0.6){
-      const col=tc==='rainbow'?['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff'][Math.floor(Math.random()*5)]:tc;
-      _customizeThruster.push({x:shipX+(Math.random()-.5)*6,y:shipY+14,vx:(Math.random()-.5)*0.4,vy:Math.random()*1.5+1,life:1,r:Math.random()*3+1.5,col});
+      var col,_tfx=null;
+      if(tc==='rainbow'){ col=['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff'][Math.floor(Math.random()*5)]; }
+      else if(tc==='plasmaPulse'){ col=Math.random()<0.5?'#ff00cc':'#00ccff'; _tfx='plasma'; }
+      else if(tc==='goldDust'){ col=Math.random()<0.3?'#ffffff':'#ffd700'; _tfx='gold'; }
+      else { col=tc; }
+      _customizeThruster.push({x:shipX+(Math.random()-.5)*6,y:shipY+14,vx:(Math.random()-.5)*0.4,vy:Math.random()*1.5+1,life:1,r:Math.random()*3+1.5,col:col,thrusterFx:_tfx});
     }
-    _customizeThruster.forEach(p=>{ p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*3; cx.globalAlpha=Math.max(0,p.life*0.8); cx.fillStyle=p.col; cx.shadowBlur=8; cx.shadowColor=p.col; cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill(); });
+    _customizeThruster.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*3;
+      if(p.thrusterFx==='plasma'){
+        var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
+        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=12; cx.shadowColor=p.col;
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*_pp),0,Math.PI*2); cx.fill();
+      } else if(p.thrusterFx==='gold'){
+        cx.globalAlpha=Math.max(0,p.life*0.8); cx.fillStyle=p.col; cx.shadowBlur=p.col==='#ffffff'?14:8; cx.shadowColor='#ffd700';
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*(p.col==='#ffffff'?1.5:1)),0,Math.PI*2); cx.fill();
+        if(p.col==='#ffffff'&&p.life>0.6){ cx.strokeStyle='#ffd700'; cx.lineWidth=0.8; cx.globalAlpha=p.life*0.5;
+          cx.beginPath(); cx.moveTo(p.x-3,p.y); cx.lineTo(p.x+3,p.y); cx.stroke();
+          cx.beginPath(); cx.moveTo(p.x,p.y-3); cx.lineTo(p.x,p.y+3); cx.stroke(); }
+      } else {
+        cx.globalAlpha=Math.max(0,p.life*0.8); cx.fillStyle=p.col; cx.shadowBlur=8; cx.shadowColor=p.col;
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill();
+      }
+    });
     _customizeThruster=_customizeThruster.filter(p=>p.life>0&&p.y<H+10);
     // Preview bullets
     _customizeBullets.forEach(b=>{ b.y-=dt*200; b.life-=dt*1.2;
@@ -11000,12 +11404,28 @@ function startMenuShipPreview(){
     const tc=(SAVE.shipCustom?.thrusterColor)||'#ff6600';
     const thrusterRate = boosting ? 1.0 : 0.7;
     if(Math.random()<thrusterRate){
-      const col=tc==='rainbow'?['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff'][Math.floor(Math.random()*5)]:tc;
-      _menuShipThruster.push({x:shipX+(Math.random()-.5)*8,y:shipY+18,vx:(Math.random()-.5)*0.5,vy:Math.random()*2+1,life:1,r:Math.random()*4+2,col});
+      var col,_mtfx=null;
+      if(tc==='rainbow'){ col=['#ff4455','#ffd700','#00ff88','#00f5ff','#cc44ff'][Math.floor(Math.random()*5)]; }
+      else if(tc==='plasmaPulse'){ col=Math.random()<0.5?'#ff00cc':'#00ccff'; _mtfx='plasma'; }
+      else if(tc==='goldDust'){ col=Math.random()<0.3?'#ffffff':'#ffd700'; _mtfx='gold'; }
+      else { col=tc; }
+      _menuShipThruster.push({x:shipX+(Math.random()-.5)*8,y:shipY+18,vx:(Math.random()-.5)*0.5,vy:Math.random()*2+1,life:1,r:Math.random()*4+2,col:col,thrusterFx:_mtfx});
     }
     _menuShipThruster.forEach(p=>{ p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*2.5;
-      cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=12; cx.shadowColor=p.col;
-      cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill();
+      if(p.thrusterFx==='plasma'){
+        var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
+        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=14; cx.shadowColor=p.col;
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*_pp),0,Math.PI*2); cx.fill();
+      } else if(p.thrusterFx==='gold'){
+        cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=p.col==='#ffffff'?16:10; cx.shadowColor='#ffd700';
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*(p.col==='#ffffff'?1.4:1)),0,Math.PI*2); cx.fill();
+        if(p.col==='#ffffff'&&p.life>0.5){ cx.strokeStyle='#ffd700'; cx.lineWidth=0.8; cx.globalAlpha=p.life*0.4;
+          cx.beginPath(); cx.moveTo(p.x-4,p.y); cx.lineTo(p.x+4,p.y); cx.stroke();
+          cx.beginPath(); cx.moveTo(p.x,p.y-4); cx.lineTo(p.x,p.y+4); cx.stroke(); }
+      } else {
+        cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=12; cx.shadowColor=p.col;
+        cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill();
+      }
     });
     _menuShipThruster=_menuShipThruster.filter(p=>p.life>0&&p.y<H+20);
     // Occasional bullet fire
@@ -11080,7 +11500,8 @@ function updateSpriteOverrideState(){
   }
 }
 
-function showCustomizeCategory(key){
+function showCustomizeCategory(key, swipeDir){
+  var prevKey=_custActiveCategory;
   _custActiveCategory=key;
   var sc=SAVE.shipCustom||{};
   var cat=null;
@@ -11101,8 +11522,63 @@ function showCustomizeCategory(key){
   // Build panel
   var panel=document.getElementById('customize-panel');
   if(!panel) return;
+  // Slide animation if swiping between different categories
+  if(swipeDir && prevKey !== key && panel.children.length > 0){
+    var exitX = swipeDir==='left' ? '-40%' : '40%';
+    var enterX = swipeDir==='left' ? '40%' : '-40%';
+    // Wrap existing content for slide-out
+    var oldWrap=document.createElement('div');
+    oldWrap.style.cssText='transition:transform 0.22s ease-out,opacity 0.22s ease-out;will-change:transform,opacity';
+    while(panel.firstChild) oldWrap.appendChild(panel.firstChild);
+    panel.appendChild(oldWrap);
+    panel.style.overflow='hidden';
+    requestAnimationFrame(function(){
+      oldWrap.style.transform='translateX('+exitX+')';
+      oldWrap.style.opacity='0';
+    });
+    setTimeout(function(){
+      if(oldWrap.parentNode) oldWrap.parentNode.removeChild(oldWrap);
+      // Build new content inside a wrapper for slide-in
+      var newWrap=document.createElement('div');
+      newWrap.style.cssText='transition:transform 0.22s ease-out,opacity 0.22s ease-out;transform:translateX('+enterX+');opacity:0;will-change:transform,opacity';
+      _buildCustContent(newWrap,cat,sc,key);
+      panel.appendChild(newWrap);
+      panel.scrollTop=0;
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        newWrap.style.transform='translateX(0)';
+        newWrap.style.opacity='1';
+      });});
+      setTimeout(function(){
+        // Unwrap — move children directly into panel
+        while(newWrap.firstChild) panel.insertBefore(newWrap.firstChild,newWrap);
+        if(newWrap.parentNode) newWrap.parentNode.removeChild(newWrap);
+        panel.style.overflow='';
+      },240);
+    },220);
+    _updateSwipeHints();
+    return;
+  }
   panel.innerHTML='';
   panel.scrollTop=0;
+  _buildCustContent(panel,cat,sc,key);
+  _updateSwipeHints();
+}
+
+function _updateSwipeHints(){
+  var available=_custCategories.filter(function(c){ return !document.querySelector('.cust-pill[data-cust-key="'+c.key+'"].overridden'); });
+  var curIdx=-1;
+  for(var i=0;i<available.length;i++){ if(available[i].key===_custActiveCategory){ curIdx=i; break; } }
+  var leftEl=document.getElementById('cust-swipe-left');
+  var rightEl=document.getElementById('cust-swipe-right');
+  if(leftEl){
+    if(curIdx>0) leftEl.classList.add('visible'); else leftEl.classList.remove('visible');
+  }
+  if(rightEl){
+    if(curIdx>=0 && curIdx<available.length-1) rightEl.classList.add('visible'); else rightEl.classList.remove('visible');
+  }
+}
+
+function _buildCustContent(container,cat,sc,key){
   var items=cat.items();
   var color=cat.color;
   var current=sc[key]||(key==='sprite'?'none':key==='shape'?'classic':key==='aura'?'none':key==='decal'?'none':'#00f5ff');
@@ -11110,7 +11586,7 @@ function showCustomizeCategory(key){
   var titleDiv=document.createElement('div');
   titleDiv.style.cssText='font-family:Orbitron,sans-serif;font-size:10px;color:'+color+';letter-spacing:2px;margin-bottom:12px;padding:6px 10px;background:'+color+'22;border-radius:4px;border-left:3px solid '+color;
   titleDiv.textContent=cat.label;
-  panel.appendChild(titleDiv);
+  container.appendChild(titleDiv);
   // Grid
   var grid=document.createElement('div');
   if(cat.type==='color'){
@@ -11127,6 +11603,10 @@ function showCustomizeCategory(key){
       btn.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border-radius:10px;border:2px solid '+(sel?color:'transparent')+';background:'+(sel?color+'15':'transparent')+';cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent';
       if(item.id==='rainbow'){
         btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff4455,#ffd700,#00ff88,#00f5ff,#cc44ff);box-shadow:'+(sel?'0 0 12px '+color+'66,':'')+'0 0 6px rgba(255,255,255,0.15);border:2.5px solid '+(sel?'#fff':'#1a2540')+'"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
+      } else if(item.id==='plasmaPulse'){
+        btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff00cc,#00ccff);box-shadow:'+(sel?'0 0 12px #ff00cc66,':'')+'0 0 6px #ff00cc44;border:2.5px solid '+(sel?'#fff':'#1a2540')+';animation:cardPulse 2s ease infinite"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
+      } else if(item.id==='goldDust'){
+        btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#ffd700 40%,#cc9900);box-shadow:'+(sel?'0 0 12px #ffd70066,':'')+'0 0 6px #ffd70044;border:2.5px solid '+(sel?'#fff':'#1a2540')+'"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
       } else {
         btn.innerHTML='<div style="width:36px;height:36px;border-radius:50%;background:'+item.id+';box-shadow:'+(sel?'0 0 12px '+item.id+'88,':'')+'0 0 6px '+item.id+'44;border:2.5px solid '+(sel?'#fff':'#1a2540')+'"></div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(sel?color:'#556')+';letter-spacing:1px">'+item.label+'</div>';
       }
@@ -11138,7 +11618,7 @@ function showCustomizeCategory(key){
     btn.onclick=function(){ setCustom(key,item.id); showCustomizeCategory(key); };
     grid.appendChild(btn);
   });
-  panel.appendChild(grid);
+  container.appendChild(grid);
 }
 
 function initCustomizeSwipe(){
@@ -11167,7 +11647,7 @@ function initCustomizeSwipe(){
     if(curIdx===-1) return;
     var nextIdx=dx<0?curIdx+1:curIdx-1;
     if(nextIdx<0||nextIdx>=available.length) return;
-    showCustomizeCategory(available[nextIdx].key);
+    showCustomizeCategory(available[nextIdx].key, dx<0?'left':'right');
   },{passive:true});
 }
 
@@ -11207,7 +11687,7 @@ function buildChangelog(){
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#00ff88;letter-spacing:2px;margin-bottom:8px">✦ COMING SOON</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">🌌 Additional card sets with unique powers<br>⚡ More perk categories and effects<br>📱 App Store release via Capacitor</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#cc66ff;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.9.0 (BETA)</div>
-      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Premium Crates — spend 10 keys for exclusive ship sprites<br>✅ 3 new premium ships — Celestial Titan, Cyber Wraith & Void Dragon<br>✅ Unique procedural art for each premium ship<br>✅ Vault collections grouped by type with category headers<br>✅ Ship preview modals for both owned & locked premium items<br>✅ Crash protection — crate animations auto-recover & refund keys on error<br>✅ Service worker overhaul — versioned caching prevents stale game versions<br>✅ Global error recovery for stuck overlay cleanup</div>
+      <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ Premium Crates — spend 10 keys for exclusive ship sprites<br>✅ 8 premium ships with unique procedural art & animated effects<br>✅ Frost Wraith & Inferno Titan join the premium roster<br>✅ Vault collections grouped by type with category headers<br>✅ Ship preview modals for both owned & locked premium items<br>✅ Crash protection — crate animations auto-recover & refund keys on error<br>✅ Service worker overhaul — versioned caching prevents stale game versions<br>✅ Global error recovery for stuck overlay cleanup</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.5 (BETA)</div>
       <div style="font-size:12px;color:#aaa;line-height:2;margin-bottom:20px">✅ 3 new artifact sets — Arctic, Toxic & Thunder with unique rewards<br>✅ New ship sprites, auras, decals, hull colors & bullet shapes<br>✅ Push notifications — opt in to hear about updates<br>✅ Beta playtester gift — 15 free Void Keys<br>✅ Keys now cost 10 echoes (down from 50)<br>✅ More generous achievement key rewards<br>✅ Vault redesign — grouped collections with live preview modals<br>✅ Smoother music crossfade on wave launch<br>✅ Daily spin rewards now match what's shown on the wheel<br>✅ Synthwave vault background extends full-screen</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:11px;color:#ffcc00;letter-spacing:2px;margin-bottom:8px">✦ VERSION 2.8.0 (BETA)</div>
@@ -13022,12 +13502,16 @@ setTrack('menu');
     <div class="screen-title" style="color:#cc44ff;margin-bottom:4px">🚀 CUSTOMIZE SHIP</div>
     <div style="position:relative;margin:0 auto;max-width:320px;border-radius:12px;overflow:hidden;border:1px solid #cc44ff33;box-shadow:0 0 24px rgba(204,68,255,0.15)">
       <canvas id="customize-preview" width="320" height="150" style="display:block;width:100%;background:#050d1f;position:relative"></canvas>
-      <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:8px;color:#cc44ff66;letter-spacing:3px;white-space:nowrap">PERSONALIZE YOUR VESSEL</div>
+      <div style="position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:10px;color:#cc44ff88;letter-spacing:3px;white-space:nowrap">PERSONALIZE YOUR VESSEL</div>
     </div>
   </div>
-  <div id="customize-pills" style="flex:0 0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 4px;white-space:nowrap;scrollbar-width:none"></div>
-  <div id="customize-sprite-note" style="flex:0 0 auto;text-align:center;font-family:Orbitron,sans-serif;font-size:8px;color:#ff8800;letter-spacing:1px;padding:0 14px 6px;display:none">⚠️ 5 options overridden by sprite</div>
-  <div id="customize-panel" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;box-sizing:border-box"></div>
+  <div id="customize-pills" style="flex:0 0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 14px 8px;white-space:nowrap;scrollbar-width:none"></div>
+  <div id="customize-sprite-note" style="flex:0 0 auto;text-align:center;font-family:Orbitron,sans-serif;font-size:11px;color:#ff8800;letter-spacing:1.5px;padding:2px 14px 8px;display:none">⚠️ 5 options overridden by sprite</div>
+  <div style="flex:1 1 0;position:relative;overflow:hidden;min-height:0">
+    <div id="cust-swipe-left" class="cust-swipe-hint left"><svg viewBox="0 0 24 24" fill="none" stroke="#cc44ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div id="cust-swipe-right" class="cust-swipe-hint right"><svg viewBox="0 0 24 24" fill="none" stroke="#cc44ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+    <div id="customize-panel" style="height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;box-sizing:border-box"></div>
+  </div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
     <button class="btn-main b-c btn-sm" onclick="showScreen('screen-menu')">← BACK</button>
   </div>
