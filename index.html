@@ -1685,7 +1685,7 @@ loadAudioFile('menu.mp3').then(buf=>{
   const btn = document.getElementById('pregate-btn');
   document.querySelectorAll('#pregate-loading').forEach(el=>{ el.style.transition='opacity 0.3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); });
   /* Browser gate — block mobile browsers, require home screen install */
-  var _gateStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  var _gateStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: minimal-ui)').matches;
   var _gateMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if(_gateMobile && !_gateStandalone){
     if(btn) btn.style.display='none';
@@ -5371,7 +5371,7 @@ function initGame() {
   const restoredLives = SAVE.savedLives !== undefined ? SAVE.savedLives : stats.maxLives;
 SAVE.savedLives = undefined;
 resizeCanvas();
-  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: minimal-ui)').matches;
   const browserBarHeight = window.innerHeight - (window.visualViewport ? window.visualViewport.height : window.innerHeight);
   playerYOffset = isStandalone ? 150 : 150 + Math.max(0, browserBarHeight) + 60;
 player = { x:W/2, y:H-playerYOffset, lives:restoredLives, maxLives:stats.maxLives, inv:0, shieldFlash:0 };
@@ -11863,7 +11863,7 @@ function initPregate() {
 
 function pregateLaunch() {
   // Browser gate safety net — block mobile browsers
-  var _gs = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  var _gs = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: minimal-ui)').matches;
   if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && !_gs) return;
   // Start music immediately on user tap — works on all devices
   resumeAC();
