@@ -1773,7 +1773,9 @@ var _cwMusicCurrentKey='';
     {key:'ocean',       file:'water.mp3'},
     {key:'ocean-alt',   file:'water-alt.mp3'},
     {key:'volcanic',    file:'lava.mp3'},
-    {key:'volcanic-alt',file:'lava-alt.mp3'}
+    {key:'volcanic-alt',file:'lava-alt.mp3'},
+    {key:'funkytown',    file:'funkytown.mp3'},
+    {key:'funkytown-alt',file:'funkytown-alt.mp3'}
   ];
   tracks.forEach(function(t){
     loadAudioFile(t.file).then(function(buf){ if(buf) _cwMusicBuffers[t.key]=buf; });
@@ -1823,7 +1825,7 @@ function getCampaignWorldMusicKey(waveNum){
   var altSuffix=isAlt?'-alt':'';
   var key=wid+altSuffix;
   // Return key for worlds that have defined campaign music tracks
-  var _cwDefinedWorlds={'asteroid':1,'asteroid-alt':1,'ocean':1,'ocean-alt':1,'volcanic':1,'volcanic-alt':1};
+  var _cwDefinedWorlds={'asteroid':1,'asteroid-alt':1,'ocean':1,'ocean-alt':1,'volcanic':1,'volcanic-alt':1,'funkytown':1,'funkytown-alt':1};
   if(_cwDefinedWorlds[key]) return key;
   return null; // fall back to default battle tracks
 }
@@ -2612,6 +2614,13 @@ function _cwMakeParticles(worldId,W,H){
     for(var i=0;i<3;i++) p.push({t:'lavaPool',x:W*(0.15+i*0.3)+Math.random()*W*0.1,y:H,w:60+Math.random()*80,a:0.15+Math.random()*0.1,pulse:Math.random()*Math.PI*2,bubbleTimer:0});
     for(var i=0;i<8;i++) p.push({t:'magmaBubble',x:Math.random()*W,y:H+10,r:3+Math.random()*5,spd:0.2+Math.random()*0.3,a:0,life:0,delay:Math.random()*200});
     for(var i=0;i<6;i++){var rx=Math.random()*W;p.push({t:'rockSil',x:rx,y:H-Math.random()*30,w:15+Math.random()*30,h:20+Math.random()*40,a:0.2+Math.random()*0.15,shape:Math.floor(Math.random()*3)});}
+  } else if(worldId==='funkytown'){
+    // Disco ball, equalizer bars, music notes, neon rings, sparkles
+    p.push({t:'discoball',rot:0});
+    var barCount=16;for(var i=0;i<barCount;i++) p.push({t:'eqBar',x:i*(W/barCount),w:W/barCount-2,maxH:30+Math.random()*50,phase:Math.random()*Math.PI*2,phaseSpd:0.04+Math.random()*0.03,freq:1.5+Math.random()*2,hue:i*(360/barCount)});
+    var noteSymbols=['\u266A','\u266B','\u2669','\u266C'];for(var i=0;i<18;i++) p.push({t:'note',x:Math.random()*W,y:Math.random()*H,spd:0.3+Math.random()*0.5,drift:(Math.random()-0.5)*0.3,sway:Math.random()*Math.PI*2,rot:Math.random()*Math.PI*2,rotSpd:(Math.random()-0.5)*0.01,pulse:Math.random()*Math.PI*2,a:0.2+Math.random()*0.3,hue:Math.random()*360,symbol:noteSymbols[Math.floor(Math.random()*noteSymbols.length)],size:12+Math.random()*14});
+    for(var i=0;i<6;i++) p.push({t:'neonRing',x:Math.random()*W,y:H*0.2+Math.random()*H*0.5,r:15+Math.random()*25,a:0.15+Math.random()*0.15,hue:Math.random()*360,pulse:Math.random()*Math.PI*2});
+    for(var i=0;i<25;i++) p.push({t:'sparkle',x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2,spd:(Math.random()-0.5)*0.3,drift:(Math.random()-0.5)*0.2,pulse:Math.random()*Math.PI*2,a:0.2+Math.random()*0.3,hue:Math.random()*360});
   } else if(worldId==='frozen'){
     // Aurora borealis + blizzard + ice crystals + frost mist
     for(var i=0;i<5;i++) p.push({t:'aurora',y:H*0.05+Math.random()*H*0.25,a:0.06+Math.random()*0.04,hue:120+Math.random()*160,waveOff:Math.random()*Math.PI*2,speed:0.002+Math.random()*0.003,thickness:30+Math.random()*50});
@@ -2813,6 +2822,116 @@ function _drawWorldLayer(c,W,H,parts,wid){
       }
     });
     c.globalAlpha=0.06*Math.abs(Math.sin(t*0.8));c.fillStyle='#ff4400';c.fillRect(0,0,W,H);
+  } else if(wid==='funkytown'){
+    // ═══ FUNKY TOWN — disco floor, neon lights, music visualization ═══
+    // Pulsing dark purple base
+    var beatPhase=t*2.5;
+    var beatPulse=Math.pow(Math.max(0,Math.sin(beatPhase)),4);
+    c.globalAlpha=0.15+0.08*beatPulse;
+    var funkyGrad=c.createLinearGradient(0,0,0,H);
+    funkyGrad.addColorStop(0,'#1a0033');funkyGrad.addColorStop(0.5,'#0d001a');funkyGrad.addColorStop(1,'#1a0033');
+    c.fillStyle=funkyGrad;c.fillRect(0,0,W,H);
+    // Disco floor tiles at bottom
+    var tileRows=5,tileCols=8,tileH=20,floorY=H-tileRows*tileH;
+    for(var tr=0;tr<tileRows;tr++){
+      for(var tc=0;tc<tileCols;tc++){
+        var tw=W/tileCols,tx=tc*tw,ty=floorY+tr*tileH;
+        var tileHue=((tc+tr)*47+t*60+Math.sin(tc*1.3+tr*0.7+t*3)*30)%360;
+        var tileBright=0.12+0.15*Math.pow(Math.max(0,Math.sin(t*3+tc*0.9+tr*1.1)),3);
+        c.globalAlpha=tileBright;
+        c.fillStyle='hsl('+tileHue+',85%,55%)';c.fillRect(tx+1,ty+1,tw-2,tileH-2);
+        c.globalAlpha=tileBright*0.5;c.strokeStyle='hsl('+tileHue+',90%,75%)';c.lineWidth=0.5;c.strokeRect(tx+1,ty+1,tw-2,tileH-2);
+      }
+    }
+    // Floor glow
+    c.globalAlpha=0.15+0.1*beatPulse;
+    var floorGlow=c.createLinearGradient(0,floorY-40,0,H);
+    floorGlow.addColorStop(0,'transparent');floorGlow.addColorStop(0.3,'rgba(255,0,200,0.08)');floorGlow.addColorStop(1,'rgba(255,100,0,0.12)');
+    c.fillStyle=floorGlow;c.fillRect(0,floorY-40,W,H-floorY+40);
+    parts.forEach(function(p){
+      if(p.t==='discoball'){
+        // Big spinning disco ball at top center
+        var bx=W/2,by=H*0.12,br=22;
+        p.rot+=0.015;
+        // String
+        c.globalAlpha=0.5;c.strokeStyle='#888';c.lineWidth=1;c.beginPath();c.moveTo(bx,0);c.lineTo(bx,by-br);c.stroke();
+        // Ball
+        c.globalAlpha=0.6;
+        var ballGrad=c.createRadialGradient(bx-5,by-5,2,bx,by,br);
+        ballGrad.addColorStop(0,'#ffffff');ballGrad.addColorStop(0.3,'#ddddee');ballGrad.addColorStop(1,'#666688');
+        c.fillStyle=ballGrad;c.beginPath();c.arc(bx,by,br,0,Math.PI*2);c.fill();
+        // Mirror facets
+        for(var fi=0;fi<12;fi++){
+          var fa=fi*Math.PI*2/12+p.rot;
+          var fx=bx+Math.cos(fa)*br*0.65,fy=by+Math.sin(fa)*br*0.65;
+          c.globalAlpha=0.3+0.3*Math.sin(t*4+fi*1.5);
+          c.fillStyle='#fff';c.beginPath();c.arc(fx,fy,2.5,0,Math.PI*2);c.fill();
+        }
+        // Light beams from disco ball
+        for(var bi=0;bi<8;bi++){
+          var ba=bi*Math.PI*2/8+p.rot*3+t*0.8;
+          var beamHue=(bi*45+t*40)%360;
+          var bLen=H*0.7+Math.sin(t*2+bi*1.1)*60;
+          var bEndX=bx+Math.cos(ba)*bLen,bEndY=by+Math.sin(ba)*bLen;
+          c.globalAlpha=0.06+0.04*Math.sin(t*3+bi*0.7);
+          c.save();c.beginPath();c.moveTo(bx+Math.cos(ba-0.03)*br,by+Math.sin(ba-0.03)*br);
+          c.lineTo(bEndX-20,bEndY-20);c.lineTo(bEndX+20,bEndY+20);
+          c.lineTo(bx+Math.cos(ba+0.03)*br,by+Math.sin(ba+0.03)*br);c.closePath();
+          c.fillStyle='hsla('+beamHue+',100%,70%,0.4)';c.fill();c.restore();
+        }
+      } else if(p.t==='eqBar'){
+        // Equalizer bars along bottom edges
+        p.phase+=p.phaseSpd;
+        var barH=p.maxH*(0.3+0.7*Math.pow(Math.max(0,Math.sin(p.phase+t*p.freq)),1.5));
+        var barHue=(p.hue+t*15)%360;
+        c.globalAlpha=0.3+0.15*Math.sin(p.phase);
+        c.fillStyle='hsl('+barHue+',90%,55%)';c.fillRect(p.x,H-barH-2,p.w,barH);
+        c.globalAlpha=0.15;
+        var eqGlow=c.createLinearGradient(0,H-barH-20,0,H-barH);
+        eqGlow.addColorStop(0,'transparent');eqGlow.addColorStop(1,'hsl('+barHue+',100%,65%)');
+        c.fillStyle=eqGlow;c.fillRect(p.x,H-barH-20,p.w,20);
+      } else if(p.t==='note'){
+        // Floating music notes
+        p.y-=p.spd;p.x+=p.drift+Math.sin(p.sway+=0.02)*0.6;p.rot+=p.rotSpd;p.pulse+=0.04;
+        if(p.y<-20){p.y=H+20;p.x=Math.random()*W;p.hue=Math.random()*360;}
+        var na=p.a*(0.5+0.5*Math.sin(p.pulse));
+        c.save();c.translate(p.x,p.y);c.rotate(Math.sin(p.rot)*0.3);
+        c.globalAlpha=na*1.5;
+        c.font=p.size+'px serif';c.textAlign='center';c.textBaseline='middle';
+        c.shadowColor='hsl('+p.hue+',100%,60%)';c.shadowBlur=8;
+        c.fillStyle='hsl('+p.hue+',85%,70%)';c.fillText(p.symbol,0,0);
+        c.shadowBlur=0;c.restore();
+      } else if(p.t==='neonRing'){
+        // Pulsing neon rings
+        p.pulse+=0.025;p.hue+=0.3;if(p.hue>360)p.hue-=360;
+        var ringA=p.a*(0.3+0.7*Math.pow(Math.max(0,Math.sin(p.pulse+t*1.5)),2));
+        c.globalAlpha=ringA;
+        c.strokeStyle='hsla('+p.hue+',100%,65%,0.7)';c.lineWidth=2;
+        c.beginPath();c.arc(p.x,p.y,p.r+Math.sin(p.pulse*2)*3,0,Math.PI*2);c.stroke();
+        c.globalAlpha=ringA*0.4;
+        var rGlow=c.createRadialGradient(p.x,p.y,p.r-4,p.x,p.y,p.r+10);
+        rGlow.addColorStop(0,'transparent');rGlow.addColorStop(0.5,'hsla('+p.hue+',100%,60%,0.2)');rGlow.addColorStop(1,'transparent');
+        c.fillStyle=rGlow;c.beginPath();c.arc(p.x,p.y,p.r+10,0,Math.PI*2);c.fill();
+      } else if(p.t==='sparkle'){
+        p.y+=p.spd;p.x+=p.drift;p.pulse+=0.06;p.hue+=0.8;if(p.hue>360)p.hue-=360;
+        if(p.y>H+5){p.y=-5;p.x=Math.random()*W;}
+        if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}
+        var sa=p.a*(0.3+0.7*Math.sin(p.pulse));
+        c.globalAlpha=sa;
+        c.fillStyle='hsl('+p.hue+',100%,80%)';
+        // 4-point star sparkle
+        c.save();c.translate(p.x,p.y);c.rotate(t*2);
+        c.beginPath();
+        for(var si=0;si<4;si++){
+          var sAngle=si*Math.PI/2;
+          c.lineTo(Math.cos(sAngle)*p.r*2.5,Math.sin(sAngle)*p.r*2.5);
+          c.lineTo(Math.cos(sAngle+Math.PI/4)*p.r*0.5,Math.sin(sAngle+Math.PI/4)*p.r*0.5);
+        }
+        c.closePath();c.fill();c.restore();
+      }
+    });
+    // Global beat flash overlay
+    c.globalAlpha=0.03*beatPulse;c.fillStyle='#ff00cc';c.fillRect(0,0,W,H);
   } else if(wid==='frozen'){
     // ═══ FROZEN AURORA — bright auroras, heavy blizzard ═══
     c.globalAlpha=0.06;c.fillStyle='#0a1830';c.fillRect(0,0,W,H);
@@ -3192,15 +3311,19 @@ var CAMPAIGN_WORLDS = [
     starHues:[{hue:15,weight:0.4},{hue:30,weight:0.3},{hue:0,weight:0.3}],
     enemyColors:['#ff2244','#ff6600','#ff4400'],
     announceColor:'#ff4455', desc:'The furnace at the heart of a dying world'},
-  {id:'frozen', name:'FROZEN AURORA', emoji:'❄️', waves:[31,40],
+  {id:'funkytown', name:'FUNKY TOWN', emoji:'🎷', waves:[31,40],
+    starHues:[{hue:300,weight:0.3},{hue:270,weight:0.3},{hue:330,weight:0.2},{hue:50,weight:0.2}],
+    enemyColors:['#ff44ff','#ffaa00','#44ffdd','#ff6699'],
+    announceColor:'#ff44ff', desc:'The bass drops. The lights never stop.'},
+  {id:'frozen', name:'FROZEN AURORA', emoji:'❄️', waves:[41,50],
     starHues:[{hue:200,weight:0.3},{hue:160,weight:0.3},{hue:280,weight:0.2},{hue:0,weight:0.2}],
     enemyColors:['#88ddff','#aaeeff','#44aacc'],
     announceColor:'#88ddff', desc:'The aurora dances over endless ice'},
-  {id:'jungle', name:'CURSED JUNGLE', emoji:'🌿', waves:[41,50],
+  {id:'jungle', name:'CURSED JUNGLE', emoji:'🌿', waves:[51,60],
     starHues:[{hue:120,weight:0.4},{hue:80,weight:0.3},{hue:60,weight:0.2},{hue:0,weight:0.1}],
     enemyColors:['#44ff44','#88cc00','#00cc66'],
     announceColor:'#44ff88', desc:'Ancient vines hide watching eyes'},
-  {id:'abyss', name:'THE VOID', emoji:'🌀', waves:[51,Infinity],
+  {id:'abyss', name:'THE VOID', emoji:'🌀', waves:[61,Infinity],
     starHues:[{hue:-1,weight:1.0}],
     enemyColors:['#ff0044','#00ff88','#ffcc00','#aa44ff','#00f5ff'],
     announceColor:'#ffffff', desc:'Reality unravels. Nothing is real.'}
@@ -3222,9 +3345,6 @@ var CAMPAIGN_UPGRADES = [
   {id:'bulletSpdUp',name:'RAIL ACCELERATOR',icon:'▶',rarity:'common',color:'#ffffff',
     desc:'+25% Bullet Speed',stackable:true,maxStack:4,
     apply:function(b){b.bulletSpdMult=(b.bulletSpdMult||1)*1.25;}},
-  {id:'ricochet',name:'RICOCHET ROUNDS',icon:'🪃',rarity:'common',color:'#ffffff',
-    desc:'Bullets bounce off screen edges once',stackable:false,
-    apply:function(b){b.ricochet=true;}},
   {id:'scrapCollect',name:'SCRAP COLLECTOR',icon:'♻️',rarity:'common',color:'#ffffff',
     desc:'Kills have 20% chance to drop a heal',stackable:true,maxStack:3,
     apply:function(b){b.scrapHealChance=Math.min(0.50,(b.scrapHealChance||0)+0.20);}},
@@ -3259,9 +3379,6 @@ var CAMPAIGN_UPGRADES = [
   {id:'overcharge',name:'OVERCHARGE',icon:'🔥',rarity:'rare',color:'#4488ff',
     desc:'Every 10th shot fires a 5x piercing beam',stackable:false,
     apply:function(b){b.overcharge=true;}},
-  {id:'afterburn',name:'AFTERBURN',icon:'🌠',rarity:'rare',color:'#4488ff',
-    desc:'Bullets leave damaging trails',stackable:false,
-    apply:function(b){b.afterburn=true;}},
   // ── EPIC ──
   {id:'pierce',name:'PIERCING BOLTS',icon:'🗡',rarity:'epic',color:'#aa44ff',
     desc:'Bullets pierce through enemies',stackable:false,
@@ -6157,10 +6274,11 @@ function spawnWave(){
   if(bossFight) {
     // BOSS
     const isSuperBoss = wave%10===0;
-    const baseHp = wave>=35?Math.floor((120+wave*20)*Math.pow(1.08,wave-35)*Math.pow(1.2,20)):
-                   wave>=30?Math.floor((120+wave*20)*Math.pow(1.12,wave-30)*Math.pow(1.2,15)):
-                   wave>=15?Math.floor((120+wave*20)*Math.pow(1.2,wave-15)):
-                   wave>=10?(140+wave*18):(80+wave*10);
+    const baseHp = wave>=45?Math.floor((160+wave*25)*Math.pow(1.12,wave-45)*Math.pow(1.25,20)*Math.pow(1.2,10)):
+                   wave>=35?Math.floor((160+wave*25)*Math.pow(1.10,wave-35)*Math.pow(1.25,20)):
+                   wave>=30?Math.floor((140+wave*22)*Math.pow(1.15,wave-30)*Math.pow(1.25,15)):
+                   wave>=15?Math.floor((140+wave*22)*Math.pow(1.25,wave-15)):
+                   wave>=10?(160+wave*20):(80+wave*12);
     const superHp = wave===10 ? Math.floor(baseHp*1.6) : Math.floor(baseHp*1.5);
     const bossHp = isSuperBoss ? superHp : baseHp;
     boss = {
@@ -6187,9 +6305,11 @@ function spawnWave(){
     for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) {
       const type=r===0?2:r<=2?1:0;
       const hpBase=1+(type===2?3:type===1?2:1)+Math.floor(wave/2);
-      const hpScaled = wave>=35 ? Math.floor(hpBase*Math.pow(1.06,wave-35)*Math.pow(1.18,10)+(hpBase*0.8)) :
-                       wave>=30 ? Math.floor(hpBase*Math.pow(1.10,wave-30)*Math.pow(1.18,5)+(hpBase*0.6)) :
-                       wave>=25 ? Math.floor(hpBase*Math.pow(1.18,wave-25)+hpBase) :
+      const hpScaled = wave>=45 ? Math.floor(hpBase*Math.pow(1.10,wave-45)*Math.pow(1.22,10)*Math.pow(1.18,10)+(hpBase*1.5)) :
+                       wave>=35 ? Math.floor(hpBase*Math.pow(1.08,wave-35)*Math.pow(1.22,10)+(hpBase*1.2)) :
+                       wave>=30 ? Math.floor(hpBase*Math.pow(1.14,wave-30)*Math.pow(1.22,5)+(hpBase*0.8)) :
+                       wave>=25 ? Math.floor(hpBase*Math.pow(1.22,wave-25)+hpBase*1.2) :
+                       wave>=15 ? Math.floor(hpBase*(1+(wave-15)*0.22)+(hpBase*0.3)) :
                        wave>=10 ? Math.floor(hpBase*(1+(wave-10)*0.18)) : hpBase;
       const hp=hasRelic('voidCurse') ? hpScaled*2 : hpScaled;
       const shieldHp = (wave>=6 && type===2) ? (wave>=15?3:wave>=10?2:1) : 0;
@@ -6198,7 +6318,7 @@ function spawnWave(){
       const diver = wave>=12 && type===2 && Math.random()<0.35;
       const armored = wave>=15 && type===1 && !heavyShooter && Math.random()<0.3;
       const regen = wave>=20 && type===0 && !splitter && Math.random()<0.3;
-      const specialMult = wave>=35 ? 1.5 : wave>=30 ? 1.45 : wave>=25 ? 1.4 : wave>=10 ? 1.2 : 1.0;
+      const specialMult = wave>=45 ? 1.7 : wave>=35 ? 1.6 : wave>=30 ? 1.5 : wave>=25 ? 1.4 : wave>=10 ? 1.2 : 1.0;
       const finalHp = diver ? Math.floor((hp*3+8)*specialMult*1.1) :
                       armored ? Math.floor((hp+2)*specialMult*1.6) :
                       regen ? Math.floor(hp*specialMult*1.5) :
@@ -14853,9 +14973,151 @@ function announceCampaignWave(){
   waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.7)';
   waOuter.style.transition='opacity 0.3s,transform 0.3s';
   setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
+  // Themed particle burst across the announcement
+  _spawnWaveAnnounceParticles(world.id,1800);
   setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.1)';
     setTimeout(function(){waOuter.style.display='none';},300);
   },1800);
+}
+
+// ── THEMED WAVE ANNOUNCEMENT PARTICLES ─────────────────────
+var _waveAnnounceParticles=[];
+var _waveAnnounceRafId=null;
+
+function _getWorldParticleConfig(worldId){
+  var configs={
+    asteroid:{
+      symbols:['☄️','🪨','💫','✨','🌑'],
+      colors:['#ffaa44','#cc8833','#ffcc66','#ff8800','#aa6622'],
+      trail:true, glow:'#ffaa4466', count:18
+    },
+    ocean:{
+      symbols:['🫧','🐠','🐚','💧','🌊','🦑'],
+      colors:['#00f5ff','#0088ff','#44ddaa','#00aaff','#66ccff'],
+      trail:true, glow:'#00aaff44', count:20
+    },
+    volcanic:{
+      symbols:['🔥','🌋','💥','☄️','🪨'],
+      colors:['#ff4400','#ff6600','#ff2244','#ffaa00','#ff8800'],
+      trail:true, glow:'#ff440066', count:22
+    },
+    funkytown:{
+      symbols:['🎵','🎶','🎷','🎸','🎤','✨','💿','🪩'],
+      colors:['#ff44ff','#ffaa00','#44ffdd','#ff6699','#aa44ff','#00f5ff'],
+      trail:true, glow:'#ff44ff44', count:22
+    },
+    frozen:{
+      symbols:['❄️','🧊','💎','✨','🌨️','⭐'],
+      colors:['#88ddff','#aaeeff','#44aacc','#ffffff','#ccddff'],
+      trail:true, glow:'#88ddff44', count:20
+    },
+    jungle:{
+      symbols:['🍃','🌿','🍂','🌺','🦎','🪲'],
+      colors:['#44ff44','#88cc00','#00cc66','#22aa44','#66ff66'],
+      trail:true, glow:'#44ff8844', count:20
+    },
+    abyss:{
+      symbols:['👁️','💀','🌀','⚡','👻','🔮'],
+      colors:['#ff0044','#00ff88','#ffcc00','#aa44ff','#00f5ff','#ff44ff'],
+      trail:true, glow:'#aa44ff44', count:24
+    }
+  };
+  return configs[worldId]||configs.asteroid;
+}
+
+function _spawnWaveAnnounceParticles(worldId,duration){
+  var cfg=_getWorldParticleConfig(worldId);
+  var vw=window.innerWidth,vh=window.innerHeight;
+  var cy=vh/2;
+  // Create canvas overlay for particles
+  var cvs=document.createElement('canvas');
+  cvs.id='wave-announce-particles';
+  cvs.width=vw;cvs.height=vh;
+  cvs.style.cssText='position:fixed;inset:0;z-index:99998;pointer-events:none';
+  document.body.appendChild(cvs);
+  var ctx=cvs.getContext('2d');
+  var parts=[];
+  // Spawn particles in staggered waves from the left
+  var spawnCount=cfg.count;
+  var spawnInterval=duration*0.4/spawnCount;
+  for(var i=0;i<spawnCount;i++){
+    (function(idx){
+      setTimeout(function(){
+        var sym=cfg.symbols[Math.floor(Math.random()*cfg.symbols.length)];
+        var col=cfg.colors[Math.floor(Math.random()*cfg.colors.length)];
+        var yOff=(Math.random()-0.5)*vh*0.5;
+        parts.push({
+          x:-20-Math.random()*40,
+          y:cy+yOff,
+          vx:2.5+Math.random()*3.5,
+          vy:(Math.random()-0.5)*1.2,
+          symbol:sym,
+          color:col,
+          size:14+Math.random()*16,
+          rot:0,
+          rotSpd:(Math.random()-0.5)*0.08,
+          alpha:0.7+Math.random()*0.3,
+          wobblePhase:Math.random()*Math.PI*2,
+          wobbleSpd:0.04+Math.random()*0.03,
+          wobbleAmp:0.4+Math.random()*0.6,
+          trail:cfg.trail?[]:null,
+          life:1.0
+        });
+      },idx*spawnInterval);
+    })(i);
+  }
+  var startTime=performance.now();
+  var fadeStart=duration*0.7;
+  function drawParticles(){
+    var elapsed=performance.now()-startTime;
+    var globalFade=elapsed>fadeStart?Math.max(0,1-(elapsed-fadeStart)/(duration-fadeStart)):1;
+    ctx.clearRect(0,0,vw,vh);
+    if(elapsed>duration+200){
+      cvs.remove();
+      return;
+    }
+    for(var i=0;i<parts.length;i++){
+      var p=parts[i];
+      p.wobblePhase+=p.wobbleSpd;
+      p.vy+=Math.sin(p.wobblePhase)*p.wobbleAmp*0.05;
+      p.vy*=0.97;
+      p.x+=p.vx;
+      p.y+=p.vy;
+      p.rot+=p.rotSpd;
+      // Fade out as it leaves screen
+      if(p.x>vw+30) p.life=Math.max(0,p.life-0.05);
+      var a=p.alpha*p.life*globalFade;
+      if(a<0.01) continue;
+      // Trail
+      if(p.trail){
+        p.trail.push({x:p.x,y:p.y,a:a*0.5});
+        if(p.trail.length>8) p.trail.shift();
+        for(var ti=0;ti<p.trail.length;ti++){
+          var tr=p.trail[ti];
+          var ta=tr.a*(ti/p.trail.length)*0.3*globalFade;
+          ctx.globalAlpha=ta;
+          ctx.fillStyle=p.color;
+          ctx.beginPath();ctx.arc(tr.x,tr.y,3+ti*0.3,0,Math.PI*2);ctx.fill();
+        }
+      }
+      // Glow
+      ctx.globalAlpha=a*0.3;
+      ctx.shadowColor=p.color;ctx.shadowBlur=12;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size*0.4,0,Math.PI*2);ctx.fill();
+      ctx.shadowBlur=0;
+      // Symbol
+      ctx.globalAlpha=a;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+      ctx.font=p.size+'px serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(p.symbol,0,0);
+      ctx.restore();
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(drawParticles);
+  }
+  requestAnimationFrame(drawParticles);
 }
 
 // ── CAMPAIGN WAVE CLEAR ──────────────────────────────────
@@ -15471,6 +15733,8 @@ function showCampaignWorldTransition(newWorldIdx,onDone){
   setTimeout(function(){var e=document.getElementById('cwt-entering');if(e)e.style.opacity='1';},300);
   setTimeout(function(){var e=document.getElementById('cwt-name');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},500);
   setTimeout(function(){var e=document.getElementById('cwt-desc');if(e)e.style.opacity='1';},800);
+  // Themed particle burst during world transition
+  setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2200);},400);
   setTimeout(function(){
     overlay.style.transition='opacity 0.5s';overlay.style.opacity='0';
     setTimeout(function(){overlay.remove();if(onDone)onDone();},500);
