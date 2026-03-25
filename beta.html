@@ -1265,6 +1265,21 @@ let masterGain, reverbNode;
 
 function resumeAC(){ if(AC.state==='suspended') AC.resume(); }
 
+// ── Visibility change handler — prevent music overlap on Android ──
+// Android Chrome suspends AudioContext when backgrounded. On resume,
+// stale sources can restart via onended callbacks causing overlapping tracks.
+var _audioWasSuspended=false;
+document.addEventListener('visibilitychange',function(){
+  if(document.hidden){
+    // Tab hidden — suspend audio context to freeze all sources
+    if(AC.state==='running'){ AC.suspend(); _audioWasSuspended=true; }
+  } else if(_audioWasSuspended){
+    // Tab visible again — resume context; sources continue from where they froze
+    _audioWasSuspended=false;
+    AC.resume();
+  }
+});
+
 // Master chain
 masterGain = AC.createGain();
 masterGain.gain.value = 0.55;
@@ -1774,8 +1789,12 @@ var _cwMusicCurrentKey='';
     {key:'ocean-alt',   file:'water-alt.mp3'},
     {key:'volcanic',    file:'lava.mp3'},
     {key:'volcanic-alt',file:'lava-alt.mp3'},
-    {key:'funkytown',    file:'funkytown.mp3'},
-    {key:'funkytown-alt',file:'funkytown-alt.mp3'}
+    {key:'funkytown',    file:'funk.mp3'},
+    {key:'funkytown-alt',file:'funk-alt.mp3'},
+    {key:'frozen',       file:'ice.mp3'},
+    {key:'frozen-alt',   file:'ice-alt.mp3'},
+    {key:'jungle',       file:'jungle.mp3'},
+    {key:'jungle-alt',   file:'jungle-alt.mp3'}
   ];
   tracks.forEach(function(t){
     loadAudioFile(t.file).then(function(buf){ if(buf) _cwMusicBuffers[t.key]=buf; });
@@ -1784,6 +1803,8 @@ var _cwMusicCurrentKey='';
 
 function playCampaignMusic(key,fromStart){
   stopCampaignMusic(false);
+  // Stop all other music systems to prevent overlap (Android Web Audio bug)
+  stopBattleAudio(false);stopBossTheme(false);stopShopMusic(false);stopMenuMusic(false);stopMusic();
   var buf=_cwMusicBuffers[key];
   if(!buf||!musicOn) return false;
   resumeAC();
@@ -1817,15 +1838,15 @@ function getCampaignWorldMusicKey(waveNum){
   var waveInWorld=waveNum-world.waves[0];
   var worldSize=world.waves[1]-world.waves[0]+1;
   if(world.waves[1]===Infinity) worldSize=10;
-  // Boss waves (5, 10) use default boss music
+  // Boss waves (every 5th) use default boss music
   if(waveNum%5===0) return null;
-  // First half of world (waves 1-4 within world) = primary track
-  // Second half (waves 6-9 within world) = alt track
-  var isAlt=waveInWorld>=5;
+  // First half of world = primary track, second half = alt track
+  var halfWorld=Math.floor(worldSize/2);
+  var isAlt=waveInWorld>=halfWorld;
   var altSuffix=isAlt?'-alt':'';
   var key=wid+altSuffix;
   // Return key for worlds that have defined campaign music tracks
-  var _cwDefinedWorlds={'asteroid':1,'asteroid-alt':1,'ocean':1,'ocean-alt':1,'volcanic':1,'volcanic-alt':1,'funkytown':1,'funkytown-alt':1};
+  var _cwDefinedWorlds={'asteroid':1,'asteroid-alt':1,'ocean':1,'ocean-alt':1,'volcanic':1,'volcanic-alt':1,'funkytown':1,'funkytown-alt':1,'frozen':1,'frozen-alt':1,'jungle':1,'jungle-alt':1};
   if(_cwDefinedWorlds[key]) return key;
   return null; // fall back to default battle tracks
 }
@@ -2045,6 +2066,9 @@ function setTrack(name) {
     if(!isBoss && !isBattle && !isShop && seqActive) return;
   }
   currentTrackName = name;
+
+  // Always stop campaign music when switching via setTrack (prevents overlap on Android)
+  stopCampaignMusic(false);
 
   if(isBoss) {
     stopMusic(); stopShopMusic(false); stopBattleAudio(false); stopMenuMusic(false);
@@ -3213,7 +3237,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   achievements:{}, notificationsOn:false,
   dailyChallenges:[], dailyChallengeProgress:{}, dailyChallengeComplete:{}, dailyChallengeAllClaimed:false,
   lastDailyChallengeReset:null, dailyChallengeStats:{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0},
-  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false} };
+  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{}} };
 
 // ── DAILY CHALLENGE POOL ──────────────────────────────────────
 var DAILY_CHALLENGE_POOL = [
@@ -3299,31 +3323,31 @@ function checkDailyChallenges() {
 }
 // ── CAMPAIGN MODE DATA ─────────────────────────────────────
 var CAMPAIGN_WORLDS = [
-  {id:'asteroid', name:'ASTEROID BELT', emoji:'☄️', waves:[1,10],
+  {id:'asteroid', name:'ASTEROID BELT', emoji:'☄️', waves:[1,25],
     starHues:[{hue:40,weight:0.3},{hue:0,weight:0.7}],
     enemyColors:['#ff9944','#ffcc66','#cc8833'],
     announceColor:'#ffaa44', desc:'The remnants of a shattered world'},
-  {id:'ocean', name:'ABYSSAL OCEAN', emoji:'🌊', waves:[11,20],
+  {id:'ocean', name:'ABYSSAL OCEAN', emoji:'🌊', waves:[26,50],
     starHues:[{hue:200,weight:0.4},{hue:180,weight:0.4},{hue:160,weight:0.2}],
     enemyColors:['#00f5ff','#0088ff','#44ddaa'],
     announceColor:'#00aaff', desc:'The crushing depths stir with ancient life'},
-  {id:'volcanic', name:'MOLTEN CORE', emoji:'🌋', waves:[21,30],
+  {id:'volcanic', name:'MOLTEN CORE', emoji:'🌋', waves:[51,75],
     starHues:[{hue:15,weight:0.4},{hue:30,weight:0.3},{hue:0,weight:0.3}],
     enemyColors:['#ff2244','#ff6600','#ff4400'],
     announceColor:'#ff4455', desc:'The furnace at the heart of a dying world'},
-  {id:'funkytown', name:'FUNKY TOWN', emoji:'🎷', waves:[31,40],
+  {id:'funkytown', name:'FUNKY TOWN', emoji:'🎷', waves:[76,100],
     starHues:[{hue:300,weight:0.3},{hue:270,weight:0.3},{hue:330,weight:0.2},{hue:50,weight:0.2}],
     enemyColors:['#ff44ff','#ffaa00','#44ffdd','#ff6699'],
     announceColor:'#ff44ff', desc:'The bass drops. The lights never stop.'},
-  {id:'frozen', name:'FROZEN AURORA', emoji:'❄️', waves:[41,50],
+  {id:'frozen', name:'FROZEN AURORA', emoji:'❄️', waves:[101,125],
     starHues:[{hue:200,weight:0.3},{hue:160,weight:0.3},{hue:280,weight:0.2},{hue:0,weight:0.2}],
     enemyColors:['#88ddff','#aaeeff','#44aacc'],
     announceColor:'#88ddff', desc:'The aurora dances over endless ice'},
-  {id:'jungle', name:'CURSED JUNGLE', emoji:'🌿', waves:[51,60],
+  {id:'jungle', name:'CURSED JUNGLE', emoji:'🌿', waves:[126,150],
     starHues:[{hue:120,weight:0.4},{hue:80,weight:0.3},{hue:60,weight:0.2},{hue:0,weight:0.1}],
     enemyColors:['#44ff44','#88cc00','#00cc66'],
     announceColor:'#44ff88', desc:'Ancient vines hide watching eyes'},
-  {id:'abyss', name:'THE VOID', emoji:'🌀', waves:[61,Infinity],
+  {id:'abyss', name:'THE VOID', emoji:'🌀', waves:[151,Infinity],
     starHues:[{hue:-1,weight:1.0}],
     enemyColors:['#ff0044','#00ff88','#ffcc00','#aa44ff','#00f5ff'],
     announceColor:'#ffffff', desc:'Reality unravels. Nothing is real.'}
@@ -3816,6 +3840,9 @@ function loadSave(){
     if(typeof s.tutorialSeen!=='boolean') s.tutorialSeen = !!(s.lastSeenTutorialPrompt||s.hiScore>0);
     if(typeof s.customizeIntroSeen!=='boolean') s.customizeIntroSeen=false;
     if(typeof s.notifIntroSeen!=='boolean') s.notifIntroSeen=false;
+    if(!s.campaignData||typeof s.campaignData!=='object') s.campaignData={highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{}};
+    if(!Array.isArray(s.campaignData.worldsCleared)) s.campaignData.worldsCleared=[];
+    if(!s.campaignData.worldStats||typeof s.campaignData.worldStats!=='object') s.campaignData.worldStats={};
     if(s.shipCustom && !s.shipCustom.sprite) s.shipCustom.sprite='none';
     if(!isFinite(s.musicVolume)||s.musicVolume<0||s.musicVolume>100) s.musicVolume=55;
     if(!isFinite(s.sfxVolume)||s.sfxVolume<0||s.sfxVolume>100) s.sfxVolume=50;
@@ -4577,8 +4604,11 @@ var powerupDrops = [];
 var activePowerups = {};
 var floatTexts = [];
 var waveClearSlowmo = 0;
+var _ROGUE_MODE_ENABLED = true; // Feature flag: set true to enable Rogue Mode
 var _campaignMode = false;
 var _campaignWave = 0;
+var _woSelectedWorld = 0;
+var _woBgInitialized = false;
 var _campaignWorld = 0;
 var _campaignBuffs = {};
 var _campaignPickedUpgrades = [];
@@ -14654,6 +14684,7 @@ function launchMenuAction(){
 }
 
 function toggleMenuMode(){
+  if(!_ROGUE_MODE_ENABLED) return;
   sfx('navTap');
   _menuCampaignMode = !_menuCampaignMode;
   applyMenuModeStyle();
@@ -14666,10 +14697,18 @@ function applyMenuModeStyle(){
   var toggleIcon = document.getElementById('btn-mode-icon');
   if(!lb||!lbText||!toggle||!toggleIcon) return;
 
+  // Hide Rogue Mode toggle when feature is disabled
+  if(!_ROGUE_MODE_ENABLED){
+    toggle.style.display='none';
+    _menuCampaignMode=false;
+  } else {
+    toggle.style.display='flex';
+  }
+
   // Flip the toggle icon with a little spin
   toggleIcon.style.transform = 'rotateY(90deg)';
   setTimeout(function(){
-    toggleIcon.textContent = _menuCampaignMode ? '🚀' : '⚔️';
+    toggleIcon.textContent = _menuCampaignMode ? '⚔️' : '🚀';
     toggleIcon.style.transform = 'rotateY(0deg)';
   }, 150);
 
@@ -14704,10 +14743,529 @@ function openCampaign(){
     if(!SAVE.campaignData) SAVE.campaignData={};
     SAVE.campaignData.campaignIntroSeen=true;
     doSave();
-    showCampaignIntro(function(){startCampaignRun();});
+    showCampaignIntro(function(){showWorldOverview();});
     return;
   }
-  startCampaignRun();
+  showWorldOverview();
+}
+
+// ── WORLD OVERVIEW SCREEN ─────────────────────────────────
+function showWorldOverview(){
+  // Remove any existing overlay
+  var old=document.getElementById('wo-overlay');if(old)old.remove();
+  var cd=SAVE.campaignData||{};
+  if(!Array.isArray(cd.worldsCleared)) cd.worldsCleared=[];
+  if(!cd.worldStats) cd.worldStats={};
+
+  // Hide menu content so it doesn't show through transparent overlay
+  var menuScreen=document.getElementById('screen-menu');
+  if(menuScreen) menuScreen.style.visibility='hidden';
+  if(menuCanvas) menuCanvas.style.visibility='hidden';
+  var _woSplashCvs=document.getElementById('splash-canvas');
+  if(_woSplashCvs) _woSplashCvs.style.visibility='hidden';
+  var _woUi=document.getElementById('ui');
+  if(_woUi) _woUi.style.visibility='hidden';
+  var _woResetBtn=document.getElementById('reset-btn');
+  if(_woResetBtn) _woResetBtn.style.visibility='hidden';
+  var _woMusicBtn=document.getElementById('music-btn');
+  if(_woMusicBtn) _woMusicBtn.style.visibility='hidden';
+
+  // Determine which worlds are unlocked
+  function isWorldUnlocked(idx){
+    if(idx===0) return true;
+    return cd.worldsCleared.indexOf(idx-1)>=0;
+  }
+  function isWorldCleared(idx){ return cd.worldsCleared.indexOf(idx)>=0; }
+
+  // Default selected world: highest unlocked but uncleared, or 0
+  _woSelectedWorld=0;
+  for(var i=0;i<CAMPAIGN_WORLDS.length;i++){
+    if(isWorldUnlocked(i)&&!isWorldCleared(i)){_woSelectedWorld=i;break;}
+    if(isWorldUnlocked(i)) _woSelectedWorld=i;
+  }
+
+  // Initialize background for selected world
+  var selWorld=CAMPAIGN_WORLDS[_woSelectedWorld];
+  _campaignMode=true; // needed for bg rendering
+  transitionCampaignStars(selWorld,0);
+  initCampaignWorldBg(selWorld.id);
+  _woBgInitialized=true;
+
+  // Build overlay
+  var overlay=document.createElement('div');
+  overlay.id='wo-overlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:transparent;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px calc(env(safe-area-inset-bottom,0px) + 12px)';
+
+  // Header
+  var header='<div id="wo-header" style="text-align:center;opacity:0;transform:scale(0.8);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">'+
+    '<div style="font-size:40px;margin-bottom:8px;filter:drop-shadow(0 0 12px #ff8800)">⚔️</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ff8800;letter-spacing:5px;text-shadow:0 0 20px #ff8800,0 0 40px #ff880044">ROGUE MODE</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff880088;letter-spacing:3px;margin-top:4px">WORLD OVERVIEW</div>'+
+  '</div>';
+
+  // World info (updates on selection)
+  var worldInfo='<div id="wo-world-info" style="text-align:center;margin:16px 0 8px;opacity:0;transition:opacity 0.3s ease,transform 0.3s ease">'+
+    '<div id="wo-world-emoji" style="font-size:64px;margin-bottom:8px;filter:drop-shadow(0 0 16px '+selWorld.announceColor+')">'+selWorld.emoji+'</div>'+
+    '<div id="wo-world-name" style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:'+selWorld.announceColor+';letter-spacing:4px;text-shadow:0 0 20px '+selWorld.announceColor+',0 0 40px '+selWorld.announceColor+'44">'+selWorld.name+'</div>'+
+    '<div id="wo-world-desc" style="font-family:Orbitron,sans-serif;font-size:10px;color:#aaa;letter-spacing:1px;margin-top:8px;line-height:1.5;max-width:300px;margin-left:auto;margin-right:auto;text-shadow:0 1px 4px #000">'+selWorld.desc+'</div>'+
+    '<div id="wo-world-waves" style="font-family:Orbitron,sans-serif;font-size:9px;color:#778;letter-spacing:3px;margin-top:8px;text-shadow:0 1px 4px #000">WAVES '+(selWorld.waves[0])+' — '+(selWorld.waves[1]===Infinity?'∞':selWorld.waves[1])+'</div>'+
+  '</div>';
+
+  // World path (horizontal scroll)
+  var pathHtml='<div id="wo-path-container" style="width:100%;max-width:400px;opacity:0;transition:all 0.5s ease 0.3s;margin:8px 0">'+
+    '<div id="wo-path" style="display:flex;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:12px 8px;gap:0;scrollbar-width:none">';
+  for(var i=0;i<CAMPAIGN_WORLDS.length;i++){
+    var w=CAMPAIGN_WORLDS[i];
+    var unlocked=isWorldUnlocked(i);
+    var cleared=isWorldCleared(i);
+    var selected=i===_woSelectedWorld;
+    var nodeColor=unlocked?w.announceColor:'#333';
+    var opacity=unlocked?'1':'0.3';
+    var cursor=unlocked?'pointer':'default';
+    var glow=selected?'box-shadow:0 0 16px '+w.announceColor+',0 0 4px '+w.announceColor+';':'';
+    var badge=cleared?'<div style="position:absolute;bottom:-2px;right:-2px;width:16px;height:16px;background:#00ff88;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;border:2px solid #000">✓</div>':'';
+    var lockBadge=(!unlocked)?'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(0,0,0,0.5);border-radius:50%">🔒</div>':'';
+    // Connector line (not before first)
+    if(i>0) pathHtml+='<div style="width:20px;height:2px;background:linear-gradient(90deg,'+(isWorldUnlocked(i)?CAMPAIGN_WORLDS[i-1].announceColor+'88':'#33333388')+','+(unlocked?w.announceColor+'88':'#33333388')+');flex-shrink:0;border-radius:1px"></div>';
+    pathHtml+='<div class="wo-node" data-idx="'+i+'" style="position:relative;width:58px;height:58px;min-width:58px;border-radius:50%;border:2px solid '+nodeColor+';display:flex;align-items:center;justify-content:center;font-size:26px;cursor:'+cursor+';opacity:'+opacity+';'+glow+'background:rgba(0,0,0,0.5);transition:all 0.3s;-webkit-tap-highlight-color:transparent">'+
+      w.emoji+badge+lockBadge+'</div>';
+  }
+  pathHtml+='</div></div>';
+
+  // Stats
+  var statBox=function(label,value,color){
+    return '<div style="padding:10px;border-radius:8px;background:rgba(0,0,0,0.45);border:1px solid '+color+'33;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#889;letter-spacing:2px">'+label+'</div>'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:700;color:'+color+';margin-top:4px;text-shadow:0 0 10px '+color+'44">'+(value||'0')+'</div></div>';
+  };
+  var stats='<div id="wo-stats" style="width:100%;max-width:340px;opacity:0;transition:all 0.5s ease 0.6s;margin:12px 0">'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+      statBox('BEST WAVE',cd.highestWave||'—','#00f5ff')+
+      statBox('BEST SCORE',(cd.bestRunScore||0).toLocaleString(),'#ffd700')+
+      statBox('TOTAL RUNS',cd.totalRuns||'0','#ff8800')+
+      statBox('TOTAL KILLS',(cd.totalCampaignKills||0).toLocaleString(),'#aa44ff')+
+    '</div></div>';
+
+  // Buttons
+  var startWave=selWorld.waves[0];
+  var launchText=selWorld.waves[1]===Infinity?'⚔ ENTER THE VOID':'⚔ LAUNCH WORLD';
+  var buttons='<div id="wo-buttons" style="width:100%;max-width:340px;opacity:0;transition:all 0.5s ease 0.8s;margin-top:20px;display:flex;flex-direction:column;gap:10px">'+
+    '<button id="wo-launch-btn" style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;letter-spacing:4px;padding:16px 20px;background:rgba(255,136,0,0.15);border:2px solid #ff8800;color:#ff8800;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-shadow:0 0 12px #ff880088;box-shadow:0 0 20px rgba(255,136,0,0.15),inset 0 0 20px rgba(255,136,0,0.06);transition:all 0.2s;animation:campaignPulse 1.8s ease-in-out infinite">'+launchText+'</button>'+
+    '<button id="wo-back-btn" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:3px;padding:12px 20px;background:rgba(0,0,0,0.3);border:1px solid #445;color:#778;border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.2s">⌂ BACK</button>'+
+  '</div>';
+
+  // Dark scrim layer to dim world bg (but not fully opaque — lets animated bg show through)
+  var scrim='<div style="position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.35) 40%,rgba(0,0,0,0.45) 70%,rgba(0,0,0,0.65) 100%);pointer-events:none;z-index:-1;transition:opacity 0.5s" id="wo-scrim"></div>';
+  overlay.innerHTML=scrim+header+worldInfo+pathHtml+stats+buttons;
+  document.body.appendChild(overlay);
+
+  // Entrance animations
+  setTimeout(function(){var h=document.getElementById('wo-header');if(h){h.style.opacity='1';h.style.transform='scale(1)';}},50);
+  setTimeout(function(){var wi=document.getElementById('wo-world-info');if(wi)wi.style.opacity='1';},200);
+  setTimeout(function(){var pc=document.getElementById('wo-path-container');if(pc)pc.style.opacity='1';},300);
+  setTimeout(function(){var s=document.getElementById('wo-stats');if(s)s.style.opacity='1';},600);
+  setTimeout(function(){var b=document.getElementById('wo-buttons');if(b)b.style.opacity='1';},800);
+
+  // World node click handlers
+  var nodes=overlay.querySelectorAll('.wo-node');
+  nodes.forEach(function(node){
+    node.onclick=function(){
+      var idx=parseInt(node.getAttribute('data-idx'));
+      if(!isWorldUnlocked(idx)) return;
+      sfx('navTap');
+      _woSelectedWorld=idx;
+      var w=CAMPAIGN_WORLDS[idx];
+      // Update world info with transition
+      var woInfo=document.getElementById('wo-world-info');
+      if(woInfo){woInfo.style.opacity='0';woInfo.style.transform='translateY(8px)';}
+      setTimeout(function(){
+      document.getElementById('wo-world-emoji').textContent=w.emoji;
+      document.getElementById('wo-world-emoji').style.filter='drop-shadow(0 0 16px '+w.announceColor+')';
+      document.getElementById('wo-world-name').textContent=w.name;
+      document.getElementById('wo-world-name').style.color=w.announceColor;
+      document.getElementById('wo-world-name').style.textShadow='0 0 20px '+w.announceColor+',0 0 40px '+w.announceColor+'44';
+      document.getElementById('wo-world-desc').textContent=w.desc;
+      document.getElementById('wo-world-waves').textContent='WAVES '+w.waves[0]+' — '+(w.waves[1]===Infinity?'∞':w.waves[1]);
+      // Update launch button
+      var lb=document.getElementById('wo-launch-btn');
+      if(lb) lb.textContent=w.waves[1]===Infinity?'⚔ ENTER THE VOID':'⚔ LAUNCH WORLD';
+      // Fade info back in
+      if(woInfo){woInfo.style.opacity='1';woInfo.style.transform='translateY(0)';}
+      },200);
+      // Update node selection glow
+      nodes.forEach(function(n){
+        var ni=parseInt(n.getAttribute('data-idx'));
+        if(ni===idx) n.style.boxShadow='0 0 16px '+w.announceColor+',0 0 4px '+w.announceColor;
+        else n.style.boxShadow='none';
+      });
+      // Crossfade background
+      transitionCampaignStars(w,2500);
+      initCampaignWorldBg(w.id,true);
+    };
+  });
+
+  // Auto-scroll path to selected world
+  setTimeout(function(){
+    var path=document.getElementById('wo-path');
+    var selNode=overlay.querySelector('.wo-node[data-idx="'+_woSelectedWorld+'"]');
+    if(path&&selNode){
+      var scrollTo=selNode.offsetLeft-path.clientWidth/2+selNode.clientWidth/2;
+      path.scrollTo({left:Math.max(0,scrollTo),behavior:'smooth'});
+    }
+  },400);
+
+  // Launch button
+  document.getElementById('wo-launch-btn').onclick=function(){
+    sfx('navTap');
+    startCampaignWorld(_woSelectedWorld);
+  };
+
+  // Back button
+  document.getElementById('wo-back-btn').onclick=function(){
+    sfx('navTap');
+    _campaignMode=false;
+    _woBgInitialized=false;
+    initBg();
+    overlay.style.transition='opacity 0.3s';overlay.style.opacity='0';
+    setTimeout(function(){
+      overlay.remove();
+      var ms=document.getElementById('screen-menu');
+      if(ms) ms.style.visibility='';
+      if(menuCanvas) menuCanvas.style.visibility='';
+      var sc=document.getElementById('splash-canvas');
+      if(sc) sc.style.visibility='';
+      var ui=document.getElementById('ui');
+      if(ui) ui.style.visibility='';
+      var rb=document.getElementById('reset-btn');
+      if(rb) rb.style.visibility='';
+      var mb=document.getElementById('music-btn');
+      if(mb) mb.style.visibility='';
+
+    },300);
+  };
+
+  // Swipe left/right on overlay to switch worlds
+  var _woSwipeX0=0,_woSwiping=false;
+  overlay.addEventListener('touchstart',function(e){
+    _woSwipeX0=e.touches[0].clientX;_woSwiping=true;
+  },{passive:true});
+  overlay.addEventListener('touchend',function(e){
+    if(!_woSwiping) return;
+    _woSwiping=false;
+    var dx=e.changedTouches[0].clientX-_woSwipeX0;
+    if(Math.abs(dx)<50) return;
+    var dir=dx<0?1:-1; // swipe left = next, swipe right = prev
+    var nextIdx=_woSelectedWorld+dir;
+    if(nextIdx<0||nextIdx>=CAMPAIGN_WORLDS.length) return;
+    if(!isWorldUnlocked(nextIdx)) return;
+    // Simulate clicking that node
+    var node=overlay.querySelector('.wo-node[data-idx="'+nextIdx+'"]');
+    if(node) node.click();
+  },{passive:true});
+}
+
+function startCampaignWorld(worldIdx){
+  // Hide menu screen + related elements during intro (bg canvas stays visible)
+  var ms=document.getElementById('screen-menu');if(ms){ms.style.visibility='hidden';}
+  if(menuCanvas)menuCanvas.style.visibility='hidden';
+  var _sc=document.getElementById('splash-canvas');if(_sc)_sc.style.visibility='hidden';
+  var _ui=document.getElementById('ui');if(_ui)_ui.style.visibility='hidden';
+  var _rb=document.getElementById('reset-btn');if(_rb)_rb.style.visibility='hidden';
+  var _mb=document.getElementById('music-btn');if(_mb)_mb.style.visibility='hidden';
+  _woBgInitialized=false;
+  var world=CAMPAIGN_WORLDS[worldIdx];
+  var startWave=world.waves[0];
+  _campaignMode=true;
+  _campaignWorld=worldIdx;
+  _campaignWave=startWave;
+  _campaignBuffs={};
+  _campaignPickedUpgrades=[];
+  _campaignScore=0;
+  _campaignKills=0;
+  _campaignShieldCharges=0;
+  _campaignMissileTimer=0;
+  _campaignRegenTimer=0;
+  _campaignSingularityTimer=0;
+  _campaignOrbitalAngle=0;
+  _campaignOverchargeCount=0;
+  _campaignBlackHoleTimer=0;
+  _campaignDeathBlossomTimer=0;
+  _campaignDroneAngle=0;
+  _campaignDroneFireTimer=0;
+  _campaignPhoenixUsed=false;
+  _campaignAfterTrails=[];
+  _voidBrokerUsedIds=[];
+  transitionCampaignStars(world,0);
+  initCampaignWorldBg(world.id);
+  wave=startWave; score=0; sessionCoins=0; totalRunCoins=0;
+  SAVE.savedWave=startWave; SAVE.savedScore=0; SAVE.savedSessionCoins=0; SAVE.savedTotalRunCoins=0;
+  SAVE.continueUsed=true;
+
+  // ── Rogue Mode custom world launch intro ──
+  var col=world.announceColor;
+
+  // 1) Smoothly fade out the World Overview overlay
+  var woEl=document.getElementById('wo-overlay');
+  if(woEl){
+    woEl.style.transition='opacity 0.6s ease, transform 0.6s ease';
+    woEl.style.opacity='0';
+    woEl.style.transform='scale(1.05)';
+    setTimeout(function(){if(woEl.parentNode)woEl.remove();},650);
+  }
+
+  // 2) Fade out menu music
+  resumeAC(); stopMenuAnim();
+  if(glitchTimer)clearTimeout(glitchTimer);
+  if(AC&&masterGain){
+    try{masterGain.gain.setValueAtTime(masterGain.gain.value,AC.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0,AC.currentTime+0.5);}catch(e){}
+  }
+  setTimeout(function(){try{stopMenuMusic(false);}catch(e){}},550);
+
+  // 3) Start world music early during title sequence
+  setTimeout(function(){
+    masterGain.gain.cancelScheduledValues(AC.currentTime);
+    masterGain.gain.setValueAtTime(0.001,AC.currentTime);
+    currentTrackName='__none__';
+    var musicKey=getCampaignWorldMusicKey(_campaignWave);
+    if(musicKey&&playCampaignMusic(musicKey,true)){
+      currentTrackName='_cw_'+musicKey;
+    } else {
+      setTrack(getWaveTrack());
+    }
+    var savedVol=SAVE.musicVolume/100;
+    masterGain.gain.exponentialRampToValueAtTime(Math.max(0.001,savedVol),AC.currentTime+2.0);
+  },600);
+
+  // 4) Init game behind the scenes (paused)
+  window._deferWaveMusic=true;
+  initGame();
+  window._deferWaveMusic=false;
+
+  // 5) Build title sequence overlay
+  var intro=document.createElement('div');
+  intro.id='cw-launch-intro';
+  intro.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:transparent;pointer-events:none;overflow:hidden';
+
+  intro.innerHTML=
+    '<div id="cwl-emoji" style="font-size:72px;opacity:0;transform:scale(0.2);transition:all 0.7s cubic-bezier(.17,.67,.35,1.4);filter:drop-shadow(0 0 20px '+col+')">'+world.emoji+'</div>'+
+    '<div id="cwl-entering" style="font-family:Orbitron,sans-serif;font-size:10px;color:#778;letter-spacing:6px;margin-top:16px;opacity:0;transition:all 0.5s ease 0.3s">ENTERING</div>'+
+    '<div id="cwl-name" style="font-family:Orbitron,sans-serif;font-size:26px;font-weight:900;color:'+col+';letter-spacing:5px;margin-top:10px;opacity:0;transform:translateY(20px);transition:all 0.6s ease 0.5s;text-shadow:0 0 30px '+col+',0 0 60px '+col+'44">'+world.name+'</div>'+
+    '<div id="cwl-desc" style="font-family:Orbitron,sans-serif;font-size:10px;color:#aaa;letter-spacing:1px;margin-top:10px;max-width:280px;line-height:1.5;opacity:0;transition:all 0.5s ease 0.8s;text-shadow:0 1px 6px #000">'+world.desc+'</div>'+
+    '<div id="cwl-waves" style="font-family:Orbitron,sans-serif;font-size:9px;color:'+col+'88;letter-spacing:3px;margin-top:10px;opacity:0;transition:all 0.4s ease 1.0s">WAVES '+world.waves[0]+' — '+(world.waves[1]===Infinity?'∞':world.waves[1])+'</div>';
+  document.body.appendChild(intro);
+
+  // 6) Staggered entrance for title elements
+  setTimeout(function(){var e=document.getElementById('cwl-emoji');if(e){e.style.opacity='1';e.style.transform='scale(1)';}},100);
+  setTimeout(function(){var e=document.getElementById('cwl-entering');if(e)e.style.opacity='1';},400);
+  setTimeout(function(){var e=document.getElementById('cwl-name');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},600);
+  setTimeout(function(){var e=document.getElementById('cwl-desc');if(e)e.style.opacity='1';},900);
+  setTimeout(function(){var e=document.getElementById('cwl-waves');if(e)e.style.opacity='1';},1100);
+
+  // 7) Themed particles sweep across and blow text away
+  setTimeout(function(){
+    _spawnWaveAnnounceParticles(world.id,2500);
+    // Blow all text elements to the right
+    var blowEls=['cwl-emoji','cwl-entering','cwl-name','cwl-desc','cwl-waves'];
+    blowEls.forEach(function(id,i){
+      setTimeout(function(){
+        var e=document.getElementById(id);
+        if(e){
+          e.style.transition='transform 0.8s cubic-bezier(.4,0,.9,.4), opacity 0.6s ease';
+          e.style.transform='translateX('+(300+i*40)+'px) rotate('+(3+i*2)+'deg)';
+          e.style.opacity='0';
+        }
+      },i*80);
+    });
+  },2200);
+
+  // 8) Switch to game screen with ship fly-in + power-up pulse
+  setTimeout(function(){
+    // Restore hidden elements before screen switch
+    var _ms=document.getElementById('screen-menu');if(_ms)_ms.style.visibility='';
+    if(menuCanvas)menuCanvas.style.visibility='';
+    var _sc2=document.getElementById('splash-canvas');if(_sc2)_sc2.style.visibility='';
+    var _ui2=document.getElementById('ui');if(_ui2)_ui2.style.visibility='';
+    var _rb2=document.getElementById('reset-btn');if(_rb2)_rb2.style.visibility='';
+    var _mb2=document.getElementById('music-btn');if(_mb2)_mb2.style.visibility='';
+    showScreen('__game__');
+    gState='playing';
+    window._waveMusicStartedEarly=true;
+
+    // Hide HUD for animated entrance
+    var livesEl=document.getElementById('lives-display');
+    var ctrlBtns=document.getElementById('ctrl-btns');
+    var bombCounter=document.getElementById('bomb-counter');
+    var worldMeter=document.getElementById('world-meter');
+    if(livesEl){livesEl.style.transform='translateX(-80px)';livesEl.style.opacity='0';livesEl.style.transition='none';}
+    if(ctrlBtns){ctrlBtns.style.transform='translateX(80px)';ctrlBtns.style.opacity='0';ctrlBtns.style.transition='none';}
+    if(worldMeter){worldMeter.style.transform='translateX(60px) translateY(-50%)';worldMeter.style.opacity='0';worldMeter.style.transition='none';}
+    if(bombCounter)bombCounter.style.display='none';
+
+    // Remove intro text overlay
+    var introEl=document.getElementById('cw-launch-intro');
+    if(introEl&&introEl.parentNode)introEl.remove();
+
+    // ── Ship fly-in from bottom ──
+    var shipTargetY=player.y;
+    player.y=H+60; // Start off-screen below
+    var _cwShipFlyIn=true;
+    var _cwFlyStart=performance.now();
+    var _cwFlyDuration=900; // ms
+    var _cwPulseFired=false;
+
+    // Pulse effect canvas overlay
+    var pulseCvs=document.createElement('canvas');
+    pulseCvs.width=W;pulseCvs.height=H;
+    pulseCvs.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:50;pointer-events:none';
+    document.body.appendChild(pulseCvs);
+    var pulseCtx=pulseCvs.getContext('2d');
+    var _cwPulses=[]; // {x,y,radius,maxRadius,alpha,color}
+    var _cwSparkles=[]; // {x,y,vx,vy,life,maxLife,size,color}
+
+    function animateShipEntry(now){
+      var elapsed=now-_cwFlyStart;
+      var t=Math.min(1,elapsed/_cwFlyDuration);
+
+      // Ease-out cubic for smooth deceleration
+      var ease=1-Math.pow(1-t,3);
+      player.y=H+60-(H+60-shipTargetY)*ease;
+
+      // Engine trail particles during fly-in
+      if(t<1&&Math.random()<0.6){
+        particles.push({
+          x:player.x+(Math.random()-0.5)*14,
+          y:player.y+18,
+          vx:(Math.random()-0.5)*1.5,
+          vy:3+Math.random()*4,
+          life:0.4+Math.random()*0.3,
+          maxLife:0.4+Math.random()*0.3,
+          size:2+Math.random()*3,
+          color:col
+        });
+      }
+
+      // Ship arrived — fire power-up pulse!
+      if(t>=1&&!_cwPulseFired){
+        _cwPulseFired=true;
+        sfx('setComplete');
+
+        // Tight horizontal shockwave (elliptical, not circular)
+        _cwPulses.push({x:player.x,y:player.y,radius:6,maxRadius:120,speed:320,alpha:1.0,color:col,lineWidth:3,scaleY:0.4});
+        // Inner bright flash
+        _cwPulses.push({x:player.x,y:player.y,radius:4,maxRadius:60,speed:200,alpha:0.8,color:'#ffffff',lineWidth:5,scaleY:0.5});
+        // Delayed secondary ripple
+        setTimeout(function(){
+          _cwPulses.push({x:player.x,y:player.y,radius:4,maxRadius:90,speed:250,alpha:0.5,color:col,lineWidth:2,scaleY:0.35});
+        },100);
+
+        // Tight burst of energy sparks (mostly downward, short-lived)
+        for(var i=0;i<20;i++){
+          var angle=Math.PI*0.35+Math.random()*Math.PI*0.3;
+          var spd=80+Math.random()*180;
+          _cwSparkles.push({
+            x:player.x+(Math.random()-0.5)*16,
+            y:player.y+6,
+            vx:Math.cos(angle)*spd*(Math.random()<0.5?-1:1),
+            vy:Math.sin(angle)*spd,
+            life:0.3+Math.random()*0.35,
+            maxLife:0.3+Math.random()*0.35,
+            size:1.5+Math.random()*2,
+            color:Math.random()<0.4?'#ffffff':col
+          });
+        }
+        // Horizontal energy wisps
+        for(var j=0;j<10;j++){
+          var dir=j<5?-1:1;
+          _cwSparkles.push({
+            x:player.x+dir*(8+Math.random()*10),
+            y:player.y+(Math.random()-0.5)*12,
+            vx:dir*(120+Math.random()*100),
+            vy:(Math.random()-0.5)*30,
+            life:0.25+Math.random()*0.2,
+            maxLife:0.25+Math.random()*0.2,
+            size:1+Math.random()*1.5,
+            color:col
+          });
+        }
+
+        // Slide HUD in after pulse
+        setTimeout(function(){
+          if(livesEl){livesEl.style.transition='transform 0.6s cubic-bezier(.17,.67,.35,1.2), opacity 0.5s ease';livesEl.style.transform='translateX(0)';livesEl.style.opacity='1';}
+          if(ctrlBtns){ctrlBtns.style.transition='transform 0.6s cubic-bezier(.17,.67,.35,1.2), opacity 0.5s ease';ctrlBtns.style.transform='translateX(0)';ctrlBtns.style.opacity='1';}
+          if(worldMeter){worldMeter.style.transition='transform 0.7s cubic-bezier(.17,.67,.35,1.2) 0.1s, opacity 0.6s ease 0.1s';worldMeter.style.transform='translateX(0) translateY(-50%)';worldMeter.style.opacity='1';}
+          setTimeout(function(){
+            updateBombDisplay();
+            if(livesEl){livesEl.style.transition='';livesEl.style.transform='';livesEl.style.opacity='';}
+            if(ctrlBtns){ctrlBtns.style.transition='';ctrlBtns.style.transform='';ctrlBtns.style.opacity='';}
+            if(worldMeter){worldMeter.style.transition='';worldMeter.style.transform='translateY(-50%)';worldMeter.style.opacity='';}
+          },750);
+        },200);
+      }
+
+      // Draw pulse rings + sparkles on overlay canvas
+      pulseCtx.clearRect(0,0,W,H);
+      var allDone=true;
+
+      // Pulse rings (elliptical shockwaves)
+      for(var pi=_cwPulses.length-1;pi>=0;pi--){
+        var p=_cwPulses[pi];
+        p.radius+=p.speed*(1/60);
+        var prog=p.radius/p.maxRadius;
+        var a=p.alpha*(1-prog*prog); // sharper falloff
+        if(a<0.01||prog>=1){_cwPulses.splice(pi,1);continue;}
+        allDone=false;
+        var sy=p.scaleY||1;
+        pulseCtx.save();
+        pulseCtx.translate(p.x,p.y);
+        pulseCtx.scale(1,sy);
+        // Outer stroke
+        pulseCtx.beginPath();
+        pulseCtx.arc(0,0,p.radius,0,Math.PI*2);
+        pulseCtx.strokeStyle=p.color;
+        pulseCtx.globalAlpha=a;
+        pulseCtx.lineWidth=p.lineWidth*(1-prog*0.7);
+        pulseCtx.stroke();
+        // Soft glow fill (very faint)
+        pulseCtx.globalAlpha=a*0.15;
+        pulseCtx.fillStyle=p.color;
+        pulseCtx.fill();
+        pulseCtx.restore();
+      }
+
+      // Sparkles
+      for(var si=_cwSparkles.length-1;si>=0;si--){
+        var s=_cwSparkles[si];
+        s.x+=s.vx*(1/60);
+        s.y+=s.vy*(1/60);
+        s.vy+=300*(1/60); // gravity
+        s.life-=1/60;
+        if(s.life<=0){_cwSparkles.splice(si,1);continue;}
+        allDone=false;
+        var sa=s.life/s.maxLife;
+        pulseCtx.globalAlpha=sa;
+        pulseCtx.fillStyle=s.color;
+        pulseCtx.shadowColor=s.color;
+        pulseCtx.shadowBlur=6;
+        pulseCtx.beginPath();
+        pulseCtx.arc(s.x,s.y,s.size*sa,0,Math.PI*2);
+        pulseCtx.fill();
+      }
+      pulseCtx.globalAlpha=1;
+      pulseCtx.shadowBlur=0;
+
+      if(!_cwPulseFired||!allDone){
+        requestAnimationFrame(animateShipEntry);
+      } else {
+        // Cleanup pulse canvas
+        if(pulseCvs.parentNode)pulseCvs.remove();
+      }
+    }
+    requestAnimationFrame(animateShipEntry);
+
+    lastTime=0;
+    rafId=requestAnimationFrame(gameLoop);
+  },3800);
 }
 
 function showCampaignIntro(onDone){
@@ -14738,37 +15296,7 @@ function showCampaignIntro(onDone){
   };
 }
 
-function startCampaignRun(){
-  _campaignMode=true;
-  _campaignWave=1;
-  _campaignWorld=0;
-  _campaignBuffs={};
-  _campaignPickedUpgrades=[];
-  _campaignScore=0;
-  _campaignKills=0;
-  _campaignShieldCharges=0;
-  _campaignMissileTimer=0;
-  _campaignRegenTimer=0;
-  _campaignSingularityTimer=0;
-  _campaignOrbitalAngle=0;
-  _campaignOverchargeCount=0;
-  _campaignBlackHoleTimer=0;
-  _campaignDeathBlossomTimer=0;
-  _campaignDroneAngle=0;
-  _campaignDroneFireTimer=0;
-  _campaignPhoenixUsed=false;
-  _campaignAfterTrails=[];
-  _voidBrokerUsedIds=[];
-  // Set initial world star colors
-  transitionCampaignStars(CAMPAIGN_WORLDS[0],0);
-  initCampaignWorldBg('asteroid');
-  // Override save temporarily for initGame
-  wave=1; score=0; sessionCoins=0; totalRunCoins=0;
-  SAVE.savedWave=1; SAVE.savedScore=0; SAVE.savedSessionCoins=0; SAVE.savedTotalRunCoins=0;
-  SAVE.continueUsed=true; // no continue in campaign
-  _launchFromMenu=true;
-  _startGameActual();
-}
+function startCampaignRun(){ startCampaignWorld(0); }
 
 function exitCampaign(){
   var el=document.getElementById('campaign-gameover');
@@ -14869,24 +15397,33 @@ function updateWorldMeter(){
   ind.style.bottom=Math.max(2,Math.min(152,pct*1.56))+'px';
   ind.style.color=col;
   ind.style.boxShadow='0 0 6px #fff,0 0 12px '+col;
-  // Boss at wave 5 is mini-boss, at wave 10 is world boss
+  // Boss every 5 waves; world boss at last wave
   var isBossWave=(_campaignWave%5===0);
   if(isBossWave){ind.style.animation='wmPulse 1s ease-in-out infinite';}
   else{ind.style.animation='none';}
   // Track border color
   document.getElementById('wm-track-bg').style.borderColor='rgba('+hexToRgbParts(col)+',0.15)';
   document.getElementById('wm-track-bg').style.background='rgba('+hexToRgbParts(col)+',0.04)';
-  // Boss markers positioned at 50% and 100%
-  document.getElementById('wm-boss5').style.bottom='50%';
-  document.getElementById('wm-boss10').style.bottom='99%';
-  // Tick marks
+  // Hide static boss markers (now generated dynamically)
+  document.getElementById('wm-boss5').style.display='none';
+  document.getElementById('wm-boss10').style.display='none';
+  // Tick marks + dynamic boss markers
   var ticks=document.getElementById('wm-ticks');
   var tickHtml='';
   for(var i=1;i<worldSize;i++){
     var tp=Math.round((i/worldSize)*100);
-    var isBoss5=i===(worldSize/2|0);
-    var isBoss10=i===worldSize-1;
-    if(!isBoss5&&!isBoss10){
+    var isBossAt=i%5===0;
+    var isWorldBossAt=i===worldSize-1;
+    if(isBossAt){
+      // Boss marker line
+      var bossW=isWorldBossAt?34:30;
+      var bossH=isWorldBossAt?3:2;
+      var bossL=isWorldBossAt?-6:-4;
+      var bossCol=isWorldBossAt?'#ffd700':'#ff4444';
+      var bossOp=isWorldBossAt?0.8:0.5;
+      var bossShadow=isWorldBossAt?'box-shadow:0 0 8px #ffd70044;':'';
+      tickHtml+='<div style="position:absolute;left:'+bossL+'px;width:'+bossW+'px;height:'+bossH+'px;background:linear-gradient(to right,transparent,'+bossCol+',transparent);border-radius:1px;bottom:'+tp+'%;opacity:'+bossOp+';'+bossShadow+'"></div>';
+    } else {
       tickHtml+='<div style="position:absolute;left:4px;right:4px;height:1px;bottom:'+tp+'%;background:rgba('+hexToRgbParts(col)+','+(i<waveInWorld?0.3:0.08)+');border-radius:1px"></div>';
     }
   }
@@ -14962,22 +15499,40 @@ function spawnCampaignWave(){
 }
 
 function announceCampaignWave(){
-  sfx('waveStart');
   var world=CAMPAIGN_WORLDS[getCampaignWorldIndex(_campaignWave)];
+  // Skip announce on first wave of world — launch intro already covers it
+  if(_campaignWave===world.waves[0]) return;
+  sfx('waveStart');
   var el=document.getElementById('wa-inner');
   if(!el) return;
   var waOuter=document.getElementById('wave-announce');
   if(!waOuter) return;
-  el.innerHTML='<div style="font-size:9px;color:'+world.announceColor+'88;letter-spacing:3px">'+world.emoji+' '+world.name+'</div>'+
-    '<div style="font-size:22px;font-weight:900;color:'+world.announceColor+';text-shadow:0 0 20px '+world.announceColor+'">WAVE '+_campaignWave+'</div>';
-  waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.7)';
-  waOuter.style.transition='opacity 0.3s,transform 0.3s';
-  setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
-  // Themed particle burst across the announcement
-  _spawnWaveAnnounceParticles(world.id,1800);
-  setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.1)';
-    setTimeout(function(){waOuter.style.display='none';},300);
-  },1800);
+  var isFirstWave=_campaignWave===world.waves[0];
+  if(isFirstWave){
+    // Epic world intro — bigger, longer, with particles
+    el.innerHTML='<div style="font-size:48px;margin-bottom:8px;filter:drop-shadow(0 0 16px '+world.announceColor+')">'+world.emoji+'</div>'+
+      '<div style="font-size:9px;color:#778;letter-spacing:5px;margin-bottom:6px">ENTERING</div>'+
+      '<div style="font-size:24px;font-weight:900;color:'+world.announceColor+';letter-spacing:4px;text-shadow:0 0 30px '+world.announceColor+',0 0 60px '+world.announceColor+'44;margin-bottom:6px">'+world.name+'</div>'+
+      '<div style="font-size:10px;color:#aaa;letter-spacing:1px;max-width:260px;line-height:1.4;margin-bottom:10px">'+world.desc+'</div>'+
+      '<div style="font-size:14px;font-weight:700;color:'+world.announceColor+'aa;letter-spacing:3px">WAVE '+_campaignWave+'</div>';
+    waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.5)';
+    waOuter.style.transition='opacity 0.5s cubic-bezier(.17,.67,.35,1.4),transform 0.6s cubic-bezier(.17,.67,.35,1.4)';
+    setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
+    _spawnWaveAnnounceParticles(world.id,3000);
+    setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.05)';
+      setTimeout(function(){waOuter.style.display='none';},400);
+    },3000);
+  } else {
+    // Regular wave — simple, no particles
+    el.innerHTML='<div style="font-size:9px;color:'+world.announceColor+'88;letter-spacing:3px">'+world.emoji+' '+world.name+'</div>'+
+      '<div style="font-size:22px;font-weight:900;color:'+world.announceColor+';text-shadow:0 0 20px '+world.announceColor+'">WAVE '+_campaignWave+'</div>';
+    waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.7)';
+    waOuter.style.transition='opacity 0.3s,transform 0.3s';
+    setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
+    setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.1)';
+      setTimeout(function(){waOuter.style.display='none';},300);
+    },1800);
+  }
 }
 
 // ── THEMED WAVE ANNOUNCEMENT PARTICLES ─────────────────────
@@ -15127,21 +15682,33 @@ function campaignWaveCleared(){
   eBullets=[];bullets=[];powerupDrops=[];activePowerups={};_campaignAfterTrails=[];
   // Recharge shields (unless Void Broker _noShields debuff)
   if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields) _campaignShieldCharges=_campaignBuffs.shieldCharges;
-  var isWorldBoss=_campaignWave%10===0;
+  var worldIdx=getCampaignWorldIndex(_campaignWave);
+  var curWorld=CAMPAIGN_WORLDS[worldIdx];
+  var isVoidWorld=curWorld&&curWorld.waves[1]===Infinity;
+  var isWorldBoss=!isVoidWorld&&_campaignWave===curWorld.waves[1];
   var isRegularBoss=_campaignWave%5===0&&!isWorldBoss;
   // Update stats
   var cd=SAVE.campaignData||{};
   if(_campaignWave>(cd.highestWave||0)) cd.highestWave=_campaignWave;
-  var worldIdx=getCampaignWorldIndex(_campaignWave);
   if(worldIdx>(cd.highestWorld||0)) cd.highestWorld=worldIdx;
+  // Mark world cleared + save per-world stats
+  if(isWorldBoss){
+    if(!Array.isArray(cd.worldsCleared)) cd.worldsCleared=[];
+    if(cd.worldsCleared.indexOf(worldIdx)<0) cd.worldsCleared.push(worldIdx);
+    if(!cd.worldStats) cd.worldStats={};
+    var ws=cd.worldStats[worldIdx]||{bestScore:0,bestKills:0,clears:0};
+    ws.clears++;
+    if(_campaignScore>ws.bestScore) ws.bestScore=_campaignScore;
+    if(_campaignKills>ws.bestKills) ws.bestKills=_campaignKills;
+    cd.worldStats[worldIdx]=ws;
+  }
+  if(_campaignScore>(cd.bestRunScore||0)) cd.bestRunScore=_campaignScore;
+  cd.totalCampaignKills=(cd.totalCampaignKills||0)+_campaignKills;
   SAVE.campaignData=cd;
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
-  _campaignWave++;
-  wave=_campaignWave;
-  updateWorldMeter();
-  // World transition or upgrade pick
+  // World boss = world complete → show cleared cinematic → return to overview
   if(isWorldBoss){
-    // Fade out music over 1.5s during world transition
+    // Fade out music
     var savedVol=SAVE.musicVolume/100;
     if(musicOn&&savedVol>0){
       masterGain.gain.cancelScheduledValues(AC.currentTime);
@@ -15151,11 +15718,14 @@ function campaignWaveCleared(){
     setTimeout(function(){
       stopCampaignMusic(false);stopBattleAudio(false);stopBossTheme(false);stopMusic();
     },1600);
-    var newWorldIdx=getCampaignWorldIndex(_campaignWave);
-    showCampaignWorldTransition(newWorldIdx,function(){
-      showCampaignUpgradePick(true);
-    });
-  } else if(shouldShowVoidBroker()){
+    showWorldCleared(worldIdx);
+    return;
+  }
+  _campaignWave++;
+  wave=_campaignWave;
+  updateWorldMeter();
+  // Regular wave/boss → upgrade pick
+  if(shouldShowVoidBroker()){
     showVoidBroker(function(){
       showCampaignUpgradePick(isRegularBoss);
     });
@@ -15713,6 +16283,64 @@ function startNextCampaignWave(){
 }
 
 // ── WORLD TRANSITION ─────────────────────────────────────
+function showWorldCleared(worldIdx){
+  var world=CAMPAIGN_WORLDS[worldIdx];
+  var upgradeCount=_campaignPickedUpgrades.length;
+  var upgradeIcons=_campaignPickedUpgrades.map(function(id){
+    var up=CAMPAIGN_UPGRADES.find(function(u){return u.id===id;});
+    return up?'<span style="font-size:16px;display:inline-block;width:26px;height:26px;text-align:center;border-radius:4px;border:1px solid '+up.color+'44;background:rgba(0,0,0,0.4);line-height:26px">'+up.icon+'</span>':'';
+  }).join('');
+  function statBox(label,value,color){
+    return '<div style="padding:8px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid '+color+'22">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px">'+label+'</div>'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:'+color+';margin-top:3px">'+value+'</div></div>';
+  }
+  var overlay=document.createElement('div');
+  overlay.id='world-cleared-overlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(0,0,0,0);padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:background 0.5s';
+  overlay.innerHTML=
+    '<div id="wc-emoji" style="font-size:72px;opacity:0;transform:scale(0.2);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4)">'+world.emoji+'</div>'+
+    '<div id="wc-title" style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#00ff88;letter-spacing:4px;margin-top:12px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #00ff88">WORLD CLEARED</div>'+
+    '<div id="wc-name" style="font-family:Orbitron,sans-serif;font-size:12px;color:'+world.announceColor+';letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.4s ease 0.5s;text-shadow:0 0 12px '+world.announceColor+'">'+world.emoji+' '+world.name+'</div>'+
+    '<div id="wc-stats" style="width:100%;max-width:280px;margin:20px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
+        statBox('SCORE',_campaignScore.toLocaleString(),'#ffd700')+
+        statBox('KILLS',_campaignKills,'#ff8800')+
+      '</div>'+
+    '</div>'+
+    '<div id="wc-upgrades" style="width:100%;max-width:280px;margin:14px auto 0;opacity:0;transition:all 0.5s ease 0.9s">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:3px;margin-bottom:6px">'+upgradeCount+' UPGRADES COLLECTED</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">'+upgradeIcons+'</div>'+
+    '</div>'+
+    '<div id="wc-buttons" style="margin-top:24px;opacity:0;transition:all 0.5s ease 1.2s;display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px">'+
+      '<button id="wc-continue-btn" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px 20px;background:rgba(0,255,136,0.1);border:2px solid #00ff88;color:#00ff88;border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-shadow:0 0 8px #00ff8866">▶ CONTINUE</button>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  sfx('setComplete');
+  setTimeout(function(){overlay.style.background='rgba(0,0,0,0.8)';},50);
+  setTimeout(function(){var e=document.getElementById('wc-emoji');if(e){e.style.opacity='1';e.style.transform='scale(1)';}},100);
+  setTimeout(function(){var e=document.getElementById('wc-title');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},300);
+  setTimeout(function(){var e=document.getElementById('wc-name');if(e)e.style.opacity='1';},500);
+  setTimeout(function(){var e=document.getElementById('wc-stats');if(e)e.style.opacity='1';},700);
+  setTimeout(function(){var e=document.getElementById('wc-upgrades');if(e)e.style.opacity='1';},900);
+  setTimeout(function(){var e=document.getElementById('wc-buttons');if(e)e.style.opacity='1';},1200);
+  // Themed particle burst
+  setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2500);},200);
+  // Continue button → back to world overview
+  document.getElementById('wc-continue-btn').onclick=function(){
+    sfx('navTap');
+    overlay.style.transition='opacity 0.4s';overlay.style.opacity='0';
+    setTimeout(function(){
+      overlay.remove();
+      // Stop game state, show menu elements for overview
+      gState='paused';
+      if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+      showScreen('screen-menu');
+      setTimeout(function(){showWorldOverview();},100);
+    },400);
+  };
+}
+
 function showCampaignWorldTransition(newWorldIdx,onDone){
   _campaignWorld=newWorldIdx;
   var world=CAMPAIGN_WORLDS[newWorldIdx];
@@ -15876,6 +16504,16 @@ function campaignEndGame(){
   if(_campaignWave>(cd.highestWave||0)) cd.highestWave=_campaignWave;
   var worldIdx=getCampaignWorldIndex(_campaignWave);
   if(worldIdx>(cd.highestWorld||0)) cd.highestWorld=worldIdx;
+  // Track per-world stats on death (especially important for The Void which can't be "cleared")
+  if(!cd.worldStats) cd.worldStats={};
+  var ws=cd.worldStats[worldIdx]||{bestScore:0,bestKills:0,clears:0};
+  if(_campaignScore>ws.bestScore) ws.bestScore=_campaignScore;
+  if(_campaignKills>ws.bestKills) ws.bestKills=_campaignKills;
+  if(CAMPAIGN_WORLDS[worldIdx].waves[1]===Infinity){
+    var voidWave=_campaignWave-CAMPAIGN_WORLDS[worldIdx].waves[0]+1;
+    ws.bestVoidWave=Math.max(ws.bestVoidWave||0,voidWave);
+  }
+  cd.worldStats[worldIdx]=ws;
   SAVE.campaignData=cd;
   localStorage.setItem('vi2_save',JSON.stringify(SAVE));
   var worldName=CAMPAIGN_WORLDS[worldIdx].name;
@@ -15911,7 +16549,8 @@ function campaignEndGame(){
       '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#556;letter-spacing:3px;margin-bottom:6px">UPGRADES COLLECTED</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">'+upgradeIcons+'</div></div>'+
     '<div style="margin-top:24px;opacity:0;transition:all 0.5s ease 1.2s;display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px" id="cgo-btns">'+
-      '<button onclick="var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();startCampaignRun();" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px 24px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">↺ NEW RUN</button>'+
+      '<button onclick="var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();startCampaignWorld('+worldIdx+');" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px 24px;border-radius:4px;border:2px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">↺ RETRY WORLD</button>'+
+      '<button onclick="var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();showScreen(\'screen-menu\');setTimeout(showWorldOverview,100);" style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.06);color:#00f5ff;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">🗺 WORLD MAP</button>'+
       '<button onclick="exitCampaign()" style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #1a2540;background:transparent;color:#446;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">⌂ MAIN MENU</button>'+
     '</div>';
   document.body.appendChild(el);
