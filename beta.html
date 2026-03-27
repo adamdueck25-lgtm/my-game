@@ -3695,6 +3695,7 @@ function hasRogueL3Unlocked(){
   return cd&&cd.worldsCleared&&cd.worldsCleared.indexOf(3)>=0;
 }
 function applyRogueLoadout(buffs){
+  try{
   var lo=SAVE.rogueLoadout;
   if(!lo) return;
   if(!hasRogueLoadoutUnlocked()) return;
@@ -3704,9 +3705,11 @@ function applyRogueLoadout(buffs){
     var item=getRogueLoadoutItem(slots[i]);
     if(!item||!item.levels) continue;
     var lvl=Math.min(getRogueItemLevel(slots[i]),item.levels.length);
-    item.levels[lvl-1].apply(buffs);
+    if(lvl<1) lvl=1;
+    try{ item.levels[lvl-1].apply(buffs); }catch(e){ console.error('Loadout item apply error:',slots[i],e); }
   }
   applyRogueSets(buffs);
+  }catch(e){ console.error('applyRogueLoadout error:',e); }
 }
 
 // ── ROGUE SET BONUSES ────────────────────────────────────
@@ -4129,6 +4132,13 @@ function loadSave(){
     if(!s.campaignData||typeof s.campaignData!=='object') s.campaignData={highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{}};
     if(!Array.isArray(s.campaignData.worldsCleared)) s.campaignData.worldsCleared=[];
     if(!s.campaignData.worldStats||typeof s.campaignData.worldStats!=='object') s.campaignData.worldStats={};
+    if(!s.campaignData.worldGrades||typeof s.campaignData.worldGrades!=='object') s.campaignData.worldGrades={};
+    // Rogue mode fields
+    if(!s.rogueLoadout||typeof s.rogueLoadout!=='object') s.rogueLoadout={ability:null,weapon:null,passive:null};
+    if(!Array.isArray(s.rogueUnlocks)) s.rogueUnlocks=[];
+    if(!s.rogueProgress||typeof s.rogueProgress!=='object') s.rogueProgress={currentWorld:0,runActive:false};
+    if(!isFinite(s.rogueTokens)||s.rogueTokens<0) s.rogueTokens=0;
+    if(!s.rogueLoadoutLevels||typeof s.rogueLoadoutLevels!=='object') s.rogueLoadoutLevels={};
     if(s.shipCustom && !s.shipCustom.sprite) s.shipCustom.sprite='none';
     if(!isFinite(s.musicVolume)||s.musicVolume<0||s.musicVolume>100) s.musicVolume=55;
     if(!isFinite(s.sfxVolume)||s.sfxVolume<0||s.sfxVolume>100) s.sfxVolume=50;
@@ -4143,7 +4153,6 @@ function loadSave(){
 }
 function doSave(){ 
   if(gState==='gameover') return;
-    console.trace('doSave called with upgrades:', JSON.stringify(SAVE.upgrades));
   localStorage.setItem('vi2_save',JSON.stringify(SAVE)); 
 }
 let SAVE = loadSave();
@@ -9963,7 +9972,7 @@ function showScreen(id) {
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
-  if(id==='screen-vault'){ buildVaultScreen(); startVaultBg(); if(!SAVE.vaultIntroSeen){ SAVE.vaultIntroSeen=true; doSave(); showVaultIntro(); } } else { stopVaultBg(); }
+  if(id==='screen-vault'){ try{ buildVaultScreen(); }catch(e){console.error('Vault build error:',e);} startVaultBg(); if(!SAVE.vaultIntroSeen){ SAVE.vaultIntroSeen=true; doSave(); showVaultIntro(); } } else { stopVaultBg(); }
   if(id==='screen-achievements'){ if(!SAVE.achievementsIntroSeen){ SAVE.achievementsIntroSeen=true; doSave(); showAchievementsIntro(); } }
   if(id==='screen-daily-spin') initDailySpin();
   if(id==='screen-echoes'){ buildEchoes(); if(!SAVE.echoesIntroSeen){ SAVE.echoesIntroSeen=true; doSave(); showEchoesIntro(); } }
@@ -11164,7 +11173,7 @@ function showSetPreview(setKey){
   var artHtml = '<div style="width:100%;max-width:340px;margin-bottom:12px">';
   set.artifacts.forEach(function(a){
     var has = (SAVE.artifacts||{})[a.id];
-    var rDef = ARTIFACT_RARITIES.find(function(r){ return r.id===a.rarity; });
+    var rDef = ARTIFACT_RARITIES.find(function(r){ return r.id===a.rarity; }) || {id:'common',name:'Common',color:'#888888'};
     artHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:4px;border-radius:8px;border:1px solid '+(has?rDef.color+'55':'#1a254066')+';background:'+(has?'rgba('+hexToRgb(rDef.color)+',0.06)':'rgba(10,15,30,0.4)')+'">' +
       '<span style="font-size:22px;width:32px;text-align:center;'+(has?'':'filter:grayscale(1) brightness(0.3)')+'">'+( has?a.icon:'❓')+'</span>' +
       '<div style="flex:1;min-width:0">' +
@@ -16934,10 +16943,12 @@ function showCampaignUpgradePick(isBossReward){
     });
 
     // Apply upgrade now
-    chosen.apply(_campaignBuffs);
+    try{ chosen.apply(_campaignBuffs); }catch(e){ console.error('Upgrade apply error:',e); }
     _campaignPickedUpgrades.push(chosen.id);
+    try{
     if(chosen.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=Math.min(player.lives+1,player.maxLives);}
     if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=1;}
+    }catch(e){ console.error('Upgrade stats error:',e); }
 
     // ═══ Phase C: FADE OVERLAY → REVEAL SHIP → FLY ICON → IMPACT ═══
     // Step 1: Shrink card to center, fade title/subtitle
