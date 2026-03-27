@@ -4075,7 +4075,7 @@ function showBossIntro(worldId,callback){
   setTimeout(function(){var c=ov.children;if(c[2])c[2].style.opacity='1';},500);
   setTimeout(function(){
     ov.style.transition='opacity 0.5s';ov.style.opacity='0';
-    setTimeout(function(){ov.remove();gState='playing';callback();},500);
+    setTimeout(function(){ov.remove();gState='playing';if(boss)boss.graceTimer=2.0;callback();},500);
   },2000);
   try{sfx('setComplete');}catch(e){}
 }
@@ -4328,6 +4328,8 @@ function drawWorldBoss(c,b,col,ts,dt){
 function updateWorldBoss(b,dt){
   b.anim=(b.anim||0)+dt;
   var a=b.anim;
+  // Grace period after intro — no attacks
+  if(b.graceTimer>0){b.graceTimer-=dt;return;}
   b.shotCooldown=(b.shotCooldown||0)-dt;
   switch(b.bossId){
     case 'asteroid': // ROCK TITAN
@@ -7983,9 +7985,10 @@ let moveDx = 0;
       }
     }
 
-    // Shooting
-    boss.shotCooldown-=dt;
-    if(boss.shotCooldown<=0){
+    // Shooting (skip during grace period after intro)
+    if(boss.graceTimer>0){boss.graceTimer-=dt;boss.shotCooldown=1;} else {
+    boss.shotCooldown-=dt;}
+    if(boss.shotCooldown<=0&&!(boss.graceTimer>0)){
       const isLate=wave>=10||(_campaignMode&&boss.worldIndex>=2);
       const plasma=wave>=20||(_campaignMode&&boss.worldIndex>=3);
       const spd=isLate?2.5+Math.random()*2.5:3;
@@ -16438,6 +16441,8 @@ function showWorldOverview(){
   // Launch button
   document.getElementById('wo-launch-btn').onclick=function(){
     sfx('navTap');
+    // Remove world overview overlay before launching
+    var woOv=document.getElementById('wo-overlay');if(woOv)woOv.remove();
     startCampaignWorld(_woSelectedWorld);
   };
 
@@ -16612,7 +16617,7 @@ function showRogueLoadoutPicker(slotKey,items){
       var canUpgradeThis=_canUpgrade&&canSelect&&!isMaxed&&(lvl<2||_canL3);
       var upgCost=canUpgradeThis?getRogueUpgradeCost(lvl):0;
       var canAfford=(SAVE.rogueTokens||0)>=upgCost;
-      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;transition:all 0.2s">';
+      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;touch-action:pan-y;transition:all 0.2s">';
       h+='<div style="font-size:28px;min-width:36px;text-align:center">'+item.icon+'</div>';
       h+='<div style="flex:1;min-width:0">';
       h+='<div style="display:flex;align-items:center;gap:6px"><span style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:'+(canSelect?'#eee':'#667')+';letter-spacing:1px">'+(canSelect?item.name:'???')+'</span>';
