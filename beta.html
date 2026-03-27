@@ -11258,55 +11258,18 @@ var _vaultBgEl = null;
 function startVaultBg(){
   var vault = document.getElementById('screen-vault');
   if(!vault || _vaultBgEl) return;
-  // Create a fixed overlay behind vault content but inside the screen
   _vaultBgEl = document.createElement('div');
   _vaultBgEl.id = 'vault-synth-bg';
   _vaultBgEl.style.cssText = 'position:fixed;inset:0;z-index:19;pointer-events:none;overflow:hidden;';
-  // Build layered synthwave scene with CSS
+  // Lightweight vault background — no perspective transforms or heavy animations (iOS GPU safe)
   _vaultBgEl.innerHTML =
-    // Base dark
     '<div style="position:absolute;inset:0;background:linear-gradient(180deg,#0a0015 0%,#0d0020 30%,#15002a 50%,#0a0015 100%)"></div>'+
-    // Upper sky gradient glow (warm sunset colors)
-    '<div style="position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(180deg,rgba(80,10,60,0.2) 0%,rgba(255,50,100,0.14) 30%,rgba(255,100,0,0.12) 60%,rgba(255,160,0,0.08) 85%,transparent 100%);pointer-events:none"></div>'+
-    // Warm center ambient
-    '<div style="position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);width:400px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,80,40,0.12) 0%,rgba(255,50,100,0.05) 50%,transparent 70%);pointer-events:none"></div>'+
-    // Perspective grid (angled lines spanning full screen)
-    '<div style="position:absolute;left:-80%;right:-80%;top:-60%;bottom:-30%;overflow:hidden;perspective:400px;perspective-origin:50% 60%">'+
-      '<div class="vault-grid-floor" style="position:absolute;inset:0;background-image:'+
-        'linear-gradient(0deg,transparent 0%,transparent calc(100% - 1px),rgba(0,200,255,0.18) 100%),'+
-        'linear-gradient(90deg,transparent 0%,transparent calc(100% - 1px),rgba(180,0,255,0.14) 100%);'+
-        'background-size:60px 60px;transform:rotateX(45deg);transform-origin:50% 55%;animation:vaultGridScroll 2s linear infinite"></div>'+
-    '</div>'+
-    // Side glows
+    '<div style="position:absolute;left:0;right:0;top:0;height:50%;background:linear-gradient(180deg,rgba(80,10,60,0.2) 0%,rgba(255,50,100,0.14) 30%,rgba(255,100,0,0.12) 60%,rgba(255,160,0,0.08) 85%,transparent 100%)"></div>'+
+    '<div style="position:absolute;left:50%;top:30%;transform:translate(-50%,-50%);width:400px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,80,40,0.12) 0%,rgba(255,50,100,0.05) 50%,transparent 70%)"></div>'+
     '<div style="position:absolute;left:0;top:0;bottom:0;width:15%;background:linear-gradient(90deg,rgba(170,0,255,0.1),transparent)"></div>'+
     '<div style="position:absolute;right:0;top:0;bottom:0;width:15%;background:linear-gradient(-90deg,rgba(170,0,255,0.1),transparent)"></div>'+
-    // Stars
-    '<div style="position:absolute;inset:0;bottom:65%;" class="vault-stars"></div>'+
-    // Scan lines
-    '<div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);pointer-events:none"></div>';
+    '<div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px)"></div>';
   document.body.appendChild(_vaultBgEl);
-  // Inject keyframes if not yet added
-  if(!document.getElementById('vault-synth-keyframes')){
-    var style = document.createElement('style');
-    style.id = 'vault-synth-keyframes';
-    style.textContent =
-      '@keyframes vaultGridScroll{0%{background-position:0 0}100%{background-position:0 30px}}'+
-      '#vault-synth-bg .vault-stars{background:radial-gradient(1px 1px at 10% 20%,rgba(255,255,255,0.5),transparent),'+
-        'radial-gradient(1px 1px at 25% 35%,rgba(255,255,255,0.4),transparent),'+
-        'radial-gradient(1px 1px at 40% 15%,rgba(255,255,255,0.5),transparent),'+
-        'radial-gradient(1.5px 1.5px at 55% 45%,rgba(255,255,255,0.6),transparent),'+
-        'radial-gradient(1px 1px at 70% 25%,rgba(255,255,255,0.4),transparent),'+
-        'radial-gradient(1px 1px at 85% 40%,rgba(255,255,255,0.5),transparent),'+
-        'radial-gradient(1.5px 1.5px at 15% 60%,rgba(255,255,255,0.3),transparent),'+
-        'radial-gradient(1px 1px at 50% 10%,rgba(255,255,255,0.5),transparent),'+
-        'radial-gradient(1px 1px at 65% 55%,rgba(255,255,255,0.4),transparent),'+
-        'radial-gradient(1px 1px at 80% 15%,rgba(255,255,255,0.5),transparent),'+
-        'radial-gradient(1px 1px at 35% 50%,rgba(255,255,255,0.3),transparent),'+
-        'radial-gradient(1.5px 1.5px at 90% 35%,rgba(255,255,255,0.6),transparent);'+
-        'animation:vaultStarTwinkle 4s ease-in-out infinite alternate}'+
-      '@keyframes vaultStarTwinkle{0%{opacity:0.5}100%{opacity:1}}';
-    document.head.appendChild(style);
-  }
 }
 function stopVaultBg(){
   if(_vaultBgEl){ _vaultBgEl.remove(); _vaultBgEl=null; }
