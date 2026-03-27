@@ -3244,7 +3244,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   achievements:{}, notificationsOn:false,
   dailyChallenges:[], dailyChallengeProgress:{}, dailyChallengeComplete:{}, dailyChallengeAllClaimed:false,
   lastDailyChallengeReset:null, dailyChallengeStats:{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0},
-  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{}},
+  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{}},
   rogueLoadout:{ability:null,weapon:null,passive:null},
   rogueUnlocks:[],
   rogueProgress:{currentWorld:0,runActive:false},
@@ -4964,6 +4964,7 @@ function loadSave(){
     if(typeof s.campaignData.mutatorUnlocked!=='boolean') s.campaignData.mutatorUnlocked=false;
     if(!s.campaignData.challengesCompleted||typeof s.campaignData.challengesCompleted!=='object') s.campaignData.challengesCompleted={};
     if(!s.campaignData.worldMastery||typeof s.campaignData.worldMastery!=='object') s.campaignData.worldMastery={};
+    if(!s.campaignData.tipsShown||typeof s.campaignData.tipsShown!=='object') s.campaignData.tipsShown={};
     // Rogue mode fields
     if(!s.rogueLoadout||typeof s.rogueLoadout!=='object') s.rogueLoadout={ability:null,weapon:null,passive:null};
     if(!Array.isArray(s.rogueUnlocks)) s.rogueUnlocks=[];
@@ -5761,6 +5762,8 @@ var _campaignDroneAngle = 0;
 var _campaignDroneFireTimer = 0;
 var _campaignPhoenixUsed = false;
 var _campaignAfterTrails = [];
+var _campaignMines = [];
+var _campaignMineTimer = 0;
 var _campaignBulletTimeFactor = 1.0;
 var _campaignStarOverride = null;
 var _custActiveCategory = 'sprite';
@@ -8163,6 +8166,37 @@ let moveDx = 0;
         }
       }
     }
+    // Proximity Mines
+    if(stats._campaignProximityMines){
+      _campaignMineTimer-=dt;
+      if(_campaignMineTimer<=0){
+        _campaignMineTimer=stats._campaignMineInterval;
+        if(_campaignMines.length<5) _campaignMines.push({x:player.x,y:player.y+12,life:8,pulse:0});
+      }
+      _campaignMines=_campaignMines.filter(function(m){
+        m.life-=dt;m.pulse+=dt*4;
+        var _mHit=false;
+        for(var _mi=0;_mi<enemies.length;_mi++){
+          var _me=enemies[_mi];
+          if(!_me.alive||_me.entering)continue;
+          if(Math.hypot(_me.x-m.x,_me.y-m.y)<30){_mHit=true;break;}
+        }
+        if(_mHit){
+          spawnExplosion(m.x,m.y,'#ff4444',5,true);
+          try{sfx('enemyDie');}catch(ex){}
+          for(var _mj=0;_mj<enemies.length;_mj++){
+            var _me2=enemies[_mj];
+            if(!_me2.alive||_me2.entering)continue;
+            if(Math.hypot(_me2.x-m.x,_me2.y-m.y)<50){
+              _me2.hp-=stats.damage*3;_me2.hitFlash=1;
+              if(_me2.hp<=0){_me2.alive=false;_campaignKills++;_campaignScore+=_me2.scoreVal*wave;spawnExplosion(_me2.x,_me2.y,_me2.campaignColor||'#ff8800',3);}
+            }
+          }
+          return false;
+        }
+        return m.life>0;
+      });
+    }
     // Auto-regen
     if(stats._campaignRegen){
       _campaignRegenTimer-=dt;
@@ -8270,7 +8304,7 @@ let moveDx = 0;
       const alive=enemies.filter(e=>e.alive&&!e.entering&&e.y<b.y+150);
       if(alive.length){
         const nearest=alive.reduce((a,e)=>Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a);
-        if(Math.hypot(nearest.x-b.x,nearest.y-b.y)<200) b.x+=(nearest.x-b.x)*0.06;
+        if(Math.hypot(nearest.x-b.x,nearest.y-b.y)<200){b.x+=(nearest.x-b.x)*0.06;if(particles.length<40&&Math.random()<0.3)particles.push({type:'spark',x:b.x,y:b.y,vx:(Math.random()-0.5)*0.3,vy:0.5,life:0.5,maxLife:0.5,r:1,col:'#44ffff'});}
       }
     }
     if(b.missile && b.targetEnemy){
@@ -8292,7 +8326,7 @@ let moveDx = 0;
     if(_campaignMode&&stats._campaignAfterburn&&!b.missile&&!b.drone){
       _campaignAfterTrails.push({x:b.x,y:b.y,life:0.5});
     }
-    b.y-=b.spd;
+    if(b._vx!==undefined){b.x+=b._vx;b.y+=b._vy;} else b.y-=b.spd;
     // Ricochet — bounce off top of screen once (bullet reverses direction downward)
     if(_campaignMode&&stats._campaignRicochet&&!b.bounced&&!b.missile&&!b.drone&&!b.rear){
       if(b.y<4){b.y=4;b.spd=-b.spd;b.bounced=true;b.hit=new Set();}
@@ -8758,6 +8792,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     p.life-=dt*(p.type==='ring'?1.8:0.035);
     if(p.type==='spark'){p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.vx*=0.98;}
     if(p.type==='ring'){p.r+=(p.maxR-p.r)*dt*6;}
+    if(p.type==='lightning') p.life-=dt*2.5;
     if(p.type==='spark') p.life-=dt*1.0;
     return p.life>0;
   });
@@ -8795,7 +8830,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             enemies.filter(n=>n.alive&&n!==e&&Math.abs(n.x-e.x)<50&&Math.abs(n.y-e.y)<40)
               .forEach(n=>{ n.shield=Math.max(n.shield,1); n.maxShield=Math.max(n.maxShield,1); n.shieldFlash=1; });
           } else {
-            var _dmg=stats.damage;
+            var _dmg=b.splitDmgOverride||stats.damage;
             if(b.overcharge) _dmg*=b.overchargeDmg;
             if(_campaignMode&&stats._campaignCritChance>0&&Math.random()<stats._campaignCritChance){_dmg*=3;floatTexts.push({x:e.x,y:e.y-14,text:'CRIT!',col:'#ffd700',life:0.8,vy:-2});}
             e.hp-=_dmg; b.hit.add(e); e.hitFlash=1;
@@ -8803,6 +8838,24 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             else if(!b.pierce || b.hit.size>1) b.y=-200;
             spawnExplosion(e.x,e.y,e.campaignColor||['#ff00cc','#00f5ff','#ff6600'][e.type],2);
             if(_campaignMode&&stats._campaignExplosive){enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<40){n.hp-=_dmg*0.5;n.hitFlash=1;spawnExplosion(n.x,n.y,n.campaignColor||'#ff8800',2);if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;}}});}
+            // Split Shot — bullets split into 2 on hit
+            if(_campaignMode&&stats._loadoutSplitShot&&!b.split&&!b.missile&&!b.drone&&!b.overcharge&&!b.blossom){
+              var _sDmg=_dmg*stats._loadoutSplitDmg;
+              var _sSpd=stats.bulletSpeed*0.8;
+              bullets.push({x:e.x,y:e.y,spd:_sSpd,pierce:false,hit:new Set(),trail:[],split:true,splitDmgOverride:_sDmg,_vx:Math.sin(0.5)*_sSpd,_vy:-Math.cos(0.5)*_sSpd});
+              bullets.push({x:e.x,y:e.y,spd:_sSpd,pierce:false,hit:new Set(),trail:[],split:true,splitDmgOverride:_sDmg,_vx:Math.sin(-0.5)*_sSpd,_vy:-Math.cos(-0.5)*_sSpd});
+              if(particles.length<40) spawnExplosion(e.x,e.y,'#aa44ff',3);
+            }
+            // Ricochet — bullets bounce to nearest enemy on hit
+            if(_campaignMode&&stats._loadoutRicochet&&!b.ricocheted&&!b.split&&!b.missile&&!b.drone){
+              var _aliveR=enemies.filter(function(n){return n.alive&&n!==e&&!n.entering&&Math.hypot(n.x-e.x,n.y-e.y)<120;});
+              if(_aliveR.length){
+                var _tgt=_aliveR.reduce(function(a,n){return Math.hypot(n.x-e.x,n.y-e.y)<Math.hypot(a.x-e.x,a.y-e.y)?n:a;});
+                var _rdx=_tgt.x-e.x,_rdy=_tgt.y-e.y,_rd=Math.max(1,Math.hypot(_rdx,_rdy));
+                bullets.push({x:e.x,y:e.y,spd:stats.bulletSpeed,pierce:false,hit:new Set(),trail:[],ricocheted:true,splitDmgOverride:_dmg*stats._loadoutRicochetDmg,_vx:_rdx/_rd*stats.bulletSpeed,_vy:_rdy/_rd*stats.bulletSpeed});
+                if(particles.length<40)particles.push({type:'lightning',x1:e.x,y1:e.y,x2:_tgt.x,y2:_tgt.y,life:1,maxLife:1,col:'#ff8844',segs:[Math.random()*12-6,Math.random()*12-6,Math.random()*12-6]});
+              }
+            }
             sfx('hit');
             // VOLATILE ROUNDS — splash nearby enemies
             if(hasPerk('volatileRounds')){
@@ -8856,7 +8909,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             // Chain lightning
             if(activePowerups['chainLightning']){
               const nearby=enemies.filter(n=>n.alive&&n!==e&&!n.mini).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,2);
-              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
+              nearby.forEach(n=>{ n.hp-=stats.damage*1.5; n.hitFlash=1; spawnExplosion(n.x,n.y,'#44ffff',3); if(particles.length<40)particles.push({type:'lightning',x1:e.x,y1:e.y,x2:n.x,y2:n.y,life:1,maxLife:1,col:'#44ffff',segs:[Math.random()*16-8,Math.random()*16-8,Math.random()*16-8]}); if(n.hp<=0){ n.alive=false; sessionCoins+=n.coinVal; score+=n.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; coinDrops.push({x:n.x,y:n.y,val:n.coinVal}); } });
               // Chaos Engine 2pc: chain kills trigger fire rate burst
               if(_campaignMode&&_campaignBuffs.setChainFireBurst) _chainFireBurstTimer=1.0;
             }
@@ -8908,7 +8961,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(stats.chainKill){
               const near=enemies.filter(en=>en.alive&&en!==e)
                 .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y))[0];
-              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; } }
+              if(near){ near.hp-=stats.damage*1.5; spawnExplosion(near.x,near.y,'#ff8800',4); if(particles.length<40)particles.push({type:'lightning',x1:e.x,y1:e.y,x2:near.x,y2:near.y,life:1,maxLife:1,col:'#ff8800',segs:[Math.random()*14-7,Math.random()*14-7,Math.random()*14-7]}); if(near.hp<=0){ near.alive=false; sessionCoins+=near.coinVal; score+=near.scoreVal*wave; killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++; } }
             }
           }
         }
@@ -9229,10 +9282,33 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     } else if(p.type==='ring'){
       ctx.strokeStyle=p.col; ctx.lineWidth=2*(1-p.r/p.maxR);
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.stroke();
+    } else if(p.type==='lightning'){
+      ctx.strokeStyle=p.col; ctx.lineWidth=2*p.life;
+      ctx.beginPath();
+      var _dx=(p.x2-p.x1)/4,_dy=(p.y2-p.y1)/4;
+      ctx.moveTo(p.x1,p.y1);
+      for(var _li=1;_li<4;_li++){
+        ctx.lineTo(p.x1+_dx*_li+p.segs[_li-1]*p.life,p.y1+_dy*_li+p.segs[(_li+1)%3]*p.life);
+      }
+      ctx.lineTo(p.x2,p.y2);
+      ctx.stroke();
     }
     ctx.restore();
   });
 
+  // Proximity mines
+  if(_campaignMode&&_campaignMines.length>0){
+    _campaignMines.forEach(function(m){
+      ctx.save();
+      ctx.globalAlpha=Math.min(1,m.life/2);
+      var _pr=5+Math.sin(m.pulse)*1.2;
+      ctx.fillStyle='#ff4444';ctx.beginPath();ctx.arc(m.x,m.y,_pr,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#ffcc00';ctx.beginPath();ctx.arc(m.x,m.y,2,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(255,68,68,'+(0.15+Math.sin(m.pulse)*0.1)+')';ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(m.x,m.y,28,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+    });
+  }
   // Float texts (score popups, graze, muzzle flash)
   floatTexts.forEach(function(ft){
     ctx.save();
@@ -9257,6 +9333,25 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.save();ctx.globalAlpha=Math.min(1,(b.life||1)/0.5);ctx.shadowBlur=6;ctx.shadowColor='#ff88cc';
       ctx.fillStyle='#ff88cc';ctx.beginPath();ctx.arc(b.x,b.y,3,0,Math.PI*2);ctx.fill();
       ctx.restore();return;
+    }
+    // Focus Beam — bright white-cyan beam
+    if(_campaignMode&&stats._loadoutFocusBeam&&!b.missile&&!b.drone&&!b.overcharge&&!b.blossom&&!b.rear&&!b.split&&!b.ricocheted){
+      ctx.save();ctx.fillStyle='#44eeff';ctx.globalAlpha=0.4;ctx.fillRect(b.x-3,b.y-6,6,12);
+      ctx.fillStyle='#ffffff';ctx.globalAlpha=1;ctx.fillRect(b.x-1,b.y-7,2,14);
+      ctx.fillStyle='#aaeeff';ctx.globalAlpha=0.3;ctx.beginPath();ctx.arc(b.x,b.y-7,3,0,Math.PI*2);ctx.fill();
+      ctx.restore();return;
+    }
+    // Missile — small red rocket with exhaust
+    if(b.missile){
+      ctx.save();ctx.translate(b.x,b.y);
+      ctx.fillStyle='#ff6633';ctx.fillRect(-2,-8,4,10);
+      ctx.fillStyle='#ffaa44';ctx.beginPath();ctx.moveTo(-2,-8);ctx.lineTo(0,-12);ctx.lineTo(2,-8);ctx.fill();
+      ctx.fillStyle='#cc3300';ctx.fillRect(-4,0,2,4);ctx.fillRect(2,0,2,4);
+      ctx.fillStyle='#ffcc00';ctx.globalAlpha=0.5+Math.random()*0.5;
+      ctx.beginPath();ctx.arc(0,4,1.5+Math.random(),0,Math.PI*2);ctx.fill();
+      ctx.restore();
+      if(particles.length<40&&Math.random()<0.2)particles.push({type:'spark',x:b.x,y:b.y+5,vx:(Math.random()-0.5)*0.4,vy:0.8+Math.random()*0.5,life:0.3,maxLife:0.3,r:1.2,col:'#ff6600'});
+      return;
     }
     b.trail.forEach((tp,i)=>{
       const a=(i+1)/b.trail.length*0.4;
@@ -16795,7 +16890,7 @@ function showWorldOverview(){
   // Remove any existing overlay
   var old=document.getElementById('wo-overlay');if(old)old.remove();
   // Clear leftover game objects from previous run
-  powerupDrops=[];coinDrops=[];particles=[];bullets=[];enemies=[];floatTexts=[];eBullets=[];
+  powerupDrops=[];coinDrops=[];particles=[];bullets=[];enemies=[];floatTexts=[];eBullets=[];_campaignMines=[];_campaignMineTimer=0;
   boss=null;_bossHazards=[];
   var cd=SAVE.campaignData||{};
   if(!Array.isArray(cd.worldsCleared)) cd.worldsCleared=[];
@@ -16996,6 +17091,12 @@ function showWorldOverview(){
   // Mutator badge is position:fixed, no animation needed
   setTimeout(function(){var c=document.getElementById('wo-challenges');if(c)c.style.opacity='1';},200);
   setTimeout(function(){var b=document.getElementById('wo-buttons');if(b)b.style.opacity='1';},250);
+  // Contextual tips for first-time encounters
+  setTimeout(function(){showCampaignTip('tip_worldOverview','Select a world and tap Launch to begin your run.',{position:'bottom',icon:'🗺️'});},600);
+  if(_loadoutUnlocked){setTimeout(function(){showCampaignTip('tip_loadout','Equip abilities, weapons, and passives. Loadout items carry between runs!',{position:'center',icon:'⚔️'});},800);}
+  if(mutsUnlocked){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},1000);}
+  if(challengeSection){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},1200);}
+  if(selWorld.modifier){setTimeout(function(){showCampaignTip('tip_worldModifier','Each world has a unique modifier that changes gameplay. Adapt your strategy!',{position:'top',icon:'⚙'});},1400);}
 
   // World node click handlers — with swipe guard to avoid selecting during scroll
   var _woPathTouchStartX=0;
@@ -17452,7 +17553,7 @@ function startCampaignWorld(worldIdx){
   _campaignDroneAngle=0;
   _campaignDroneFireTimer=0;
   _campaignPhoenixUsed=false;
-  _campaignAfterTrails=[];
+  _campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
   _voidBrokerUsedIds=[];
   transitionCampaignStars(world,0);
   initCampaignWorldBg(world.id);
@@ -17755,6 +17856,99 @@ function showCampaignIntro(onDone){
   };
 }
 
+// ── CAMPAIGN CONTEXTUAL TIPS ──────────────────────────────
+var _campaignTipQueue=[];
+var _campaignTipActive=false;
+var _campaignTipEl=null;
+var _campaignTipTimer=null;
+
+function showCampaignTip(tipId,text,options){
+  var cd=SAVE.campaignData||(SAVE.campaignData={});
+  if(!cd.tipsShown) cd.tipsShown={};
+  if(cd.tipsShown[tipId]) return;
+  cd.tipsShown[tipId]=true;
+  try{doSave();}catch(e){localStorage.setItem('vi2_save',JSON.stringify(SAVE));}
+  var opts=options||{};
+  _campaignTipQueue.push({tipId:tipId,text:text,opts:opts});
+  if(!_campaignTipActive) _showNextCampaignTip();
+}
+
+function _showNextCampaignTip(){
+  if(!_campaignTipQueue.length){_campaignTipActive=false;return;}
+  _campaignTipActive=true;
+  var item=_campaignTipQueue.shift();
+  var o=item.opts;
+  var pos=o.position||'bottom';
+  var icon=o.icon||'💡';
+  var color=o.color||'#ff8800';
+  var delay=o.delay||400;
+  var autoDismiss=o.autoDismiss||8000;
+
+  setTimeout(function(){
+    var el=document.createElement('div');
+    _campaignTipEl=el;
+    el.id='campaign-tip';
+    // Position styles
+    var posStyle='left:50%;';
+    var initTransform='translateX(-50%) translateY(20px)';
+    var showTransform='translateX(-50%) translateY(0)';
+    var hideTransform='translateX(-50%) translateY(20px)';
+    if(pos==='top'){
+      posStyle+='top:60px;';
+      initTransform='translateX(-50%) translateY(-20px)';
+      showTransform='translateX(-50%) translateY(0)';
+      hideTransform='translateX(-50%) translateY(-20px)';
+    } else if(pos==='center'){
+      posStyle+='top:50%;';
+      initTransform='translateX(-50%) translateY(-50%) scale(0.9)';
+      showTransform='translateX(-50%) translateY(-50%) scale(1)';
+      hideTransform='translateX(-50%) translateY(-50%) scale(0.9)';
+    } else {
+      posStyle+='bottom:80px;';
+    }
+    el.style.cssText='position:fixed;z-index:9999999;'+posStyle+'max-width:320px;width:calc(100% - 48px);padding:14px 18px;border-radius:12px;background:rgba(10,10,20,0.92);border:2px solid '+color+'44;box-shadow:0 0 20px '+color+'22,0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:'+initTransform+';transition:all 0.4s cubic-bezier(.17,.67,.35,1.2);pointer-events:auto;-webkit-tap-highlight-color:transparent';
+    el.innerHTML=
+      '<div style="display:flex;align-items:flex-start;gap:12px">'+
+        '<div style="font-size:22px;flex-shrink:0;margin-top:2px">'+icon+'</div>'+
+        '<div style="flex:1">'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ccc;letter-spacing:0.5px;line-height:1.5">'+item.text+'</div>'+
+          '<div id="campaign-tip-btn" style="font-family:Orbitron,sans-serif;font-size:8px;color:'+color+';letter-spacing:3px;margin-top:10px;padding:6px 16px;border:1px solid '+color+'44;border-radius:4px;display:inline-block;cursor:pointer;-webkit-tap-highlight-color:transparent">GOT IT</div>'+
+        '</div>'+
+      '</div>';
+    document.body.appendChild(el);
+    setTimeout(function(){el.style.opacity='1';el.style.transform=showTransform;},30);
+    try{sfx('coin');}catch(e){}
+    var dismissed=false;
+    function dismiss(){
+      if(dismissed) return;
+      dismissed=true;
+      clearTimeout(_campaignTipTimer);
+      el.style.opacity='0';
+      el.style.transform=hideTransform;
+      setTimeout(function(){
+        el.remove();
+        _campaignTipEl=null;
+        _showNextCampaignTip();
+      },400);
+    }
+    document.getElementById('campaign-tip-btn').onclick=dismiss;
+    el.onclick=function(e){if(e.target.id!=='campaign-tip-btn') dismiss();};
+    _campaignTipTimer=setTimeout(dismiss,autoDismiss);
+    if(o.onDismiss){
+      var origDismiss=dismiss;
+      dismiss=function(){origDismiss();o.onDismiss();};
+    }
+  },delay);
+}
+
+function _dismissCampaignTip(){
+  if(_campaignTipEl){
+    _campaignTipEl.style.opacity='0';
+    setTimeout(function(){if(_campaignTipEl){_campaignTipEl.remove();_campaignTipEl=null;}_showNextCampaignTip();},400);
+    clearTimeout(_campaignTipTimer);
+  }
+}
+
 function startCampaignRun(){ startCampaignWorld(0); }
 
 function exitCampaign(){
@@ -17839,6 +18033,8 @@ function computeCampaignStats(){
     _campaignBlackHole:!!b.blackHole,
     _campaignPhoenix:!!b.phoenix||!!b.loadoutPhoenix,
     _campaignDeathBlossom:!!b.deathBlossom,
+    _campaignProximityMines:!!b.proximityMines,
+    _campaignMineInterval:b.mineInterval||4,
     _loadoutOvercharge:!!b.loadoutOvercharge,
     _loadoutOverchargeN:b.loadoutOverchargeN||8,
     _loadoutOverchargeMult:b.loadoutOverchargeMult||2.5,
@@ -17994,6 +18190,7 @@ function spawnCampaignWave(){
       });
     }
     bossEntrance=true;
+    if(_campaignMode) showCampaignTip('tip_bossFight','BOSS FIGHT! Target the weak point when it opens.',{position:'top',icon:'💀',autoDismiss:5000});
   } else {
     var cols=Math.min(10,Math.max(gridFloor,4+Math.floor(waveInWorld/3)));
     // World modifier: DENSE CANOPY (jungle) — +1 column
@@ -18249,7 +18446,7 @@ function _spawnWaveAnnounceParticles(worldId,duration){
 function campaignWaveCleared(){
   gState='paused';
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
-  eBullets=[];bullets=[];powerupDrops=[];activePowerups={};_campaignAfterTrails=[];
+  eBullets=[];bullets=[];powerupDrops=[];activePowerups={};_campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
   // Recharge shields (unless Void Broker _noShields debuff)
   if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields) _campaignShieldCharges=_campaignBuffs.shieldCharges;
   var worldIdx=getCampaignWorldIndex(_campaignWave);
@@ -18325,6 +18522,7 @@ function showVoidBroker(onDone){
   overlay.id='void-broker-overlay';
   overlay.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0);pointer-events:auto;transition:background 0.6s;overflow:hidden';
   document.body.appendChild(overlay);
+  setTimeout(function(){showCampaignTip('tip_broker','The Void Broker offers powerful buffs \u2014 but every deal has a cost.',{position:'top',icon:'👁‍🗨',color:'#ff4466'});},800);
 
   // Animate in
   setTimeout(function(){overlay.style.background='rgba(0,0,0,0.85)';},20);
@@ -18518,6 +18716,7 @@ function showCampaignUpgradePick(isBossReward){
   html+='</div>';
   overlay.innerHTML=html;
   document.body.appendChild(overlay);
+  setTimeout(function(){showCampaignTip('tip_upgradePicker','Choose wisely! Pick 1 upgrade to power up your run. Some upgrades stack!',{position:'top',icon:'⬆'});},800);
 
   // Phase 1: Background fades in
   setTimeout(function(){
@@ -19001,6 +19200,7 @@ function showWorldCleared(worldIdx){
   // Grade removed — no animation needed
   setTimeout(function(){var e=document.getElementById('wc-upgrades');if(e)e.style.opacity='1';},1000);
   setTimeout(function(){var e=document.getElementById('wc-tokens');if(e)e.style.opacity='1';},1100);
+  setTimeout(function(){showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},1600);
   setTimeout(function(){var e=document.getElementById('wc-challenges-done');if(e)e.style.opacity='1';},1150);
   setTimeout(function(){var e=document.getElementById('wc-mastery');if(e)e.style.opacity='1';},1200);
   setTimeout(function(){var e=document.getElementById('wc-challenge-tokens');if(e)e.style.opacity='1';},1250);
