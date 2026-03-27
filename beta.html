@@ -406,7 +406,6 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- ANNOUNCEMENTS TICKER -->
     <div id="menu-ticker-wrap" onclick="openAnnouncements()" style="width:calc(100% + 28px);margin-left:-14px;margin-right:-14px;background:rgba(0,245,255,0.05);border-bottom:1px solid #00f5ff22;border-top:1px solid #00f5ff22;padding:7px 0;cursor:pointer;overflow:hidden;position:relative;margin-bottom:8px;flex-shrink:0">
       <div id="menu-ticker-inner" style="display:inline-block;white-space:nowrap;font-family:'Orbitron',sans-serif;font-size:9px;color:#00f5ff;letter-spacing:2px;will-change:transform"></div>
-      <div id="menu-ticker-badge" style="display:none;position:absolute;top:50%;right:10px;transform:translateY(-50%);background:#ff4455;border-radius:10px;font-family:'Orbitron',sans-serif;font-size:7px;color:#fff;letter-spacing:1px;padding:2px 6px;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite">NEW</div>
     </div>
 
     <!-- HERO TITLE -->
@@ -452,7 +451,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <!-- ROGUE MODE BUTTON -->
     <div style="width:100%;box-sizing:border-box;position:relative;overflow:visible;border-radius:6px;margin-top:0px">
       <button id="btn-rogue" onclick="openCampaign()" style="width:100%;font-family:'Orbitron',sans-serif;font-weight:700;font-size:13px;letter-spacing:4px;padding:14px 14px;white-space:nowrap;border:2px solid #ff8800;border-radius:6px;background:rgba(255,136,0,0.12);color:#ff8800;cursor:pointer;position:relative;overflow:visible;text-shadow:0 0 8px #ff880066;box-shadow:0 0 14px rgba(255,136,0,0.1),inset 0 0 14px rgba(255,136,0,0.05);-webkit-tap-highlight-color:transparent;transition:all 0.2s">
-        <span style="position:relative;z-index:1">⚔️ ADVENTURE MODE</span>
+        <span style="position:relative;z-index:1">🗺️ ADVENTURE MODE</span>
         <div style="position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;border-radius:4px"><div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,136,0,0.12),transparent);animation:shimmer 3s ease-in-out infinite"></div></div>
         <div id="rogue-new-badge" style="position:absolute;top:-8px;right:-6px;font-family:Orbitron,sans-serif;font-size:7px;font-weight:900;color:#fff;background:#ff4444;padding:3px 6px;border-radius:4px;letter-spacing:1px;z-index:3;animation:newBadgeBounce 2s ease-in-out infinite;box-shadow:0 2px 8px rgba(255,68,68,0.4)">NEW</div>
       </button>
@@ -3372,6 +3371,15 @@ var CAMPAIGN_WORLDS = [
     announceColor:'#ffffff', desc:'Reality unravels. Nothing is real.',
     modifier:{name:'VOID FLUX',desc:'15% chance enemies spawn as next-tier variant'}}
 ];
+var WORLD_CLEAR_SHIPS = [
+  {id:'asteroidRamShip',   label:'ASTEROID RAM',      icon:'☄️', worldIdx:0},
+  {id:'tidalSerpentShip',  label:'TIDAL SERPENT',      icon:'🐍', worldIdx:1},
+  {id:'magmaForgeShip',    label:'MAGMA FORGE',        icon:'🔨', worldIdx:2},
+  {id:'discoStarShip',     label:'DISCO STAR',         icon:'🪩', worldIdx:3},
+  {id:'auroraSentinelShip',label:'AURORA SENTINEL',    icon:'🌌', worldIdx:4},
+  {id:'thornWraithShip',   label:'THORN WRAITH',       icon:'🌿', worldIdx:5},
+  {id:'realityBreakerShip',label:'REALITY BREAKER',    icon:'🌀', worldIdx:6}
+];
 var CAMPAIGN_UPGRADES = [
   // ── COMMON (Tier 0 — all worlds) ──
   {id:'dmgUp',name:'PLASMA CORE',icon:'⚡',rarity:'common',color:'#ffffff',worldGate:0,
@@ -5854,6 +5862,7 @@ let rafId = null;
 // Restore cosmetic rewards for completed artifact sets (must be after SPRITE_SHIPS etc.)
 restoreArtifactRewards();
 restorePremiumRewards();
+restoreWorldClearShips();
 
 // Nav stack for back buttons
 let navStack = [];
@@ -6990,6 +6999,548 @@ function drawShip(c, x, y, inv, custom, scale=1){
       c.fillStyle=_fi<2?'#ffcc00':_fi<4?'#ff6600':'#ff2200';
       c.shadowColor=c.fillStyle; c.shadowBlur=8;
       c.beginPath(); c.arc(Math.sin(_t*5+_fi*2)*3,_fy,_fr,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── ASTEROID RAM (World 0) ─────────────────────────────────
+  if(custom.sprite==='asteroidRamShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2)*0.3;
+    // Amber ore glow aura
+    c.save();
+    c.globalAlpha=0.12*_pulse;
+    var _oreGlow=c.createRadialGradient(0,0,4,0,0,22);
+    _oreGlow.addColorStop(0,'#ff9900'); _oreGlow.addColorStop(1,'#ff660000');
+    c.fillStyle=_oreGlow;
+    c.beginPath(); c.arc(0,0,22,0,Math.PI*2); c.fill();
+    c.restore();
+    // Orbiting debris
+    c.save();
+    for(var _di=0;_di<5;_di++){
+      var _da=(_di/5)*Math.PI*2+_t*0.8;
+      var _dr=17+Math.sin(_t*1.5+_di*1.7)*3;
+      var _dx=Math.cos(_da)*_dr, _dy=Math.sin(_da)*_dr;
+      c.globalAlpha=0.5+Math.sin(_t*2+_di)*0.2;
+      c.fillStyle=_di%2===0?'#8b6914':'#665544';
+      c.beginPath(); c.moveTo(_dx,_dy-2); c.lineTo(_dx+2,_dy+1); c.lineTo(_dx-2,_dy+1); c.closePath(); c.fill();
+    }
+    c.restore();
+    // Hull — jagged rock wedge
+    c.save();
+    var _rockGrad=c.createLinearGradient(0,-18,0,14);
+    _rockGrad.addColorStop(0,'#5a4020'); _rockGrad.addColorStop(0.5,'#3d2b15'); _rockGrad.addColorStop(1,'#2a1a0a');
+    c.fillStyle=_rockGrad;
+    c.beginPath();
+    c.moveTo(0,-18); c.lineTo(4,-14); c.lineTo(8,-8); c.lineTo(12,-2);
+    c.lineTo(14,4); c.lineTo(10,12); c.lineTo(4,14);
+    c.lineTo(-4,14); c.lineTo(-10,12); c.lineTo(-14,4);
+    c.lineTo(-12,-2); c.lineTo(-8,-8); c.lineTo(-4,-14);
+    c.closePath(); c.fill();
+    c.strokeStyle='#44331188'; c.lineWidth=1; c.stroke();
+    c.restore();
+    // Rock tusks
+    c.save();
+    c.fillStyle='#6b5030';
+    c.beginPath(); c.moveTo(-6,-14); c.lineTo(-10,-20); c.lineTo(-8,-12); c.closePath(); c.fill();
+    c.beginPath(); c.moveTo(6,-14); c.lineTo(10,-20); c.lineTo(8,-12); c.closePath(); c.fill();
+    c.restore();
+    // Ore veins — glowing amber lines
+    c.save();
+    c.strokeStyle='#ff9900'; c.lineWidth=1;
+    c.shadowColor='#ff8800'; c.shadowBlur=6;
+    c.globalAlpha=0.5+Math.sin(_t*3)*0.25;
+    c.beginPath(); c.moveTo(-2,-12); c.lineTo(-4,-4); c.lineTo(-8,2); c.stroke();
+    c.beginPath(); c.moveTo(3,-10); c.lineTo(5,-2); c.lineTo(9,4); c.stroke();
+    c.beginPath(); c.moveTo(-1,0); c.lineTo(1,6); c.lineTo(-2,11); c.stroke();
+    c.restore();
+    // Cockpit — amber slit
+    c.save();
+    c.fillStyle='#ffaa00';
+    c.shadowColor='#ff8800'; c.shadowBlur=8;
+    c.beginPath(); c.ellipse(0,-8,3,1.5,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Exhaust — tumbling rock fragments
+    c.save();
+    for(var _ri=0;_ri<4;_ri++){
+      var _ry=15+_ri*5+Math.sin(_t*4+_ri*2)*2;
+      var _rr=2-_ri*0.4;
+      c.globalAlpha=0.5-_ri*0.12;
+      c.fillStyle=_ri%2===0?'#7a5a30':'#554422';
+      c.save();
+      c.translate(Math.sin(_t*3+_ri*1.8)*3,_ry);
+      c.rotate(_t*2+_ri);
+      c.fillRect(-_rr,-_rr,_rr*2,_rr*2);
+      c.restore();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── TIDAL SERPENT (World 1) ─────────────────────────────────
+  if(custom.sprite==='tidalSerpentShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    // Bioluminescent glow
+    c.save();
+    c.globalAlpha=0.1;
+    var _bioGlow=c.createRadialGradient(0,0,3,0,0,20);
+    _bioGlow.addColorStop(0,'#00ff88'); _bioGlow.addColorStop(1,'#00886600');
+    c.fillStyle=_bioGlow;
+    c.beginPath(); c.arc(0,0,20,0,Math.PI*2); c.fill();
+    c.restore();
+    // Hull — sleek serpentine body
+    c.save();
+    var _serpGrad=c.createLinearGradient(0,-18,0,14);
+    _serpGrad.addColorStop(0,'#006688'); _serpGrad.addColorStop(0.4,'#004466'); _serpGrad.addColorStop(1,'#002233');
+    c.fillStyle=_serpGrad;
+    c.beginPath();
+    c.moveTo(0,-18);
+    c.quadraticCurveTo(6,-10,8,-4);
+    c.quadraticCurveTo(10,4,6,12);
+    c.lineTo(2,14);
+    c.lineTo(-2,14);
+    c.quadraticCurveTo(-10,4,-8,-4);
+    c.quadraticCurveTo(-6,-10,0,-18);
+    c.closePath(); c.fill();
+    c.strokeStyle='#00aacc44'; c.lineWidth=1; c.stroke();
+    c.restore();
+    // Waving side fins
+    c.save();
+    c.strokeStyle='#00bbaa'; c.lineWidth=1.5;
+    c.globalAlpha=0.7;
+    var _finWave=Math.sin(_t*3)*4;
+    // Left fin
+    c.beginPath(); c.moveTo(-7,-2); c.quadraticCurveTo(-16+_finWave,2,-12+_finWave,10); c.stroke();
+    c.beginPath(); c.moveTo(-6,4); c.quadraticCurveTo(-14-_finWave,8,-10-_finWave,14); c.stroke();
+    // Right fin
+    c.beginPath(); c.moveTo(7,-2); c.quadraticCurveTo(16-_finWave,2,12-_finWave,10); c.stroke();
+    c.beginPath(); c.moveTo(6,4); c.quadraticCurveTo(14+_finWave,8,10+_finWave,14); c.stroke();
+    c.restore();
+    // Bioluminescent eye spots
+    c.save();
+    c.fillStyle='#00ff88';
+    c.shadowColor='#00ff88'; c.shadowBlur=10;
+    c.globalAlpha=0.6+Math.sin(_t*4)*0.3;
+    c.beginPath(); c.arc(-4,-8,2,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(4,-8,2,0,Math.PI*2); c.fill();
+    c.restore();
+    // Jellyfish canopy
+    c.save();
+    c.globalAlpha=0.2+Math.sin(_t*2)*0.1;
+    var _canopyGrad=c.createRadialGradient(0,-12,1,0,-12,8);
+    _canopyGrad.addColorStop(0,'#00ffcc'); _canopyGrad.addColorStop(1,'#00446600');
+    c.fillStyle=_canopyGrad;
+    c.beginPath(); c.arc(0,-12,8,Math.PI,0); c.closePath(); c.fill();
+    c.restore();
+    // Tentacle exhaust
+    c.save();
+    c.strokeStyle='#00bbcc'; c.lineWidth=1;
+    for(var _ti=0;_ti<4;_ti++){
+      var _tx=(_ti-1.5)*4;
+      c.globalAlpha=0.4-_ti*0.06;
+      c.beginPath();
+      c.moveTo(_tx,14);
+      c.quadraticCurveTo(_tx+Math.sin(_t*3+_ti)*5,20+_ti*2,_tx+Math.sin(_t*2.5+_ti*1.3)*6,28+_ti*3);
+      c.stroke();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── MAGMA FORGE (World 2) ─────────────────────────────────
+  if(custom.sprite==='magmaForgeShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _pulse=0.7+Math.sin(_t*2.5)*0.3;
+    // Forge heat glow
+    c.save();
+    c.globalAlpha=0.1*_pulse;
+    var _forgeGlow=c.createRadialGradient(0,0,4,0,0,22);
+    _forgeGlow.addColorStop(0,'#ff6600'); _forgeGlow.addColorStop(1,'#ff220000');
+    c.fillStyle=_forgeGlow;
+    c.beginPath(); c.arc(0,0,22,0,Math.PI*2); c.fill();
+    c.restore();
+    // Rising spark particles from chimney
+    c.save();
+    c.fillStyle='#ffcc00';
+    for(var _si=0;_si<6;_si++){
+      var _sy=-20-(_t*30+_si*12)%30;
+      var _sx=Math.sin(_t*2+_si*1.4)*4;
+      c.globalAlpha=Math.max(0,0.6-((-20-_sy)/30));
+      c.beginPath(); c.arc(_sx,_sy,1,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Hull — anvil/crucible shape
+    c.save();
+    var _ironGrad=c.createLinearGradient(0,-14,0,14);
+    _ironGrad.addColorStop(0,'#3a3a3a'); _ironGrad.addColorStop(0.4,'#2a2a2a'); _ironGrad.addColorStop(1,'#1a1a1a');
+    c.fillStyle=_ironGrad;
+    c.beginPath();
+    c.moveTo(0,-14); c.lineTo(6,-10); c.lineTo(8,-4);
+    c.lineTo(14,0); c.lineTo(14,6); c.lineTo(10,12);
+    c.lineTo(4,14); c.lineTo(-4,14); c.lineTo(-10,12);
+    c.lineTo(-14,6); c.lineTo(-14,0); c.lineTo(-8,-4);
+    c.lineTo(-6,-10);
+    c.closePath(); c.fill();
+    c.strokeStyle='#ff440044'; c.lineWidth=1; c.stroke();
+    c.restore();
+    // Hammer wing pylons
+    c.save();
+    c.fillStyle='#444444';
+    // Left hammer
+    c.beginPath(); c.moveTo(-14,0); c.lineTo(-18,-4); c.lineTo(-18,4); c.lineTo(-14,6); c.closePath(); c.fill();
+    // Right hammer
+    c.beginPath(); c.moveTo(14,0); c.lineTo(18,-4); c.lineTo(18,4); c.lineTo(14,6); c.closePath(); c.fill();
+    c.strokeStyle='#666'; c.lineWidth=0.5;
+    c.beginPath(); c.moveTo(-14,0); c.lineTo(-18,-4); c.lineTo(-18,4); c.lineTo(-14,6); c.closePath(); c.stroke();
+    c.beginPath(); c.moveTo(14,0); c.lineTo(18,-4); c.lineTo(18,4); c.lineTo(14,6); c.closePath(); c.stroke();
+    c.restore();
+    // Forge cracks — glowing orange
+    c.save();
+    c.strokeStyle='#ff6600'; c.lineWidth=1.2;
+    c.shadowColor='#ff4400'; c.shadowBlur=5;
+    c.globalAlpha=0.6+Math.sin(_t*3.5)*0.25;
+    c.beginPath(); c.moveTo(0,-10); c.lineTo(-2,-4); c.lineTo(1,2); c.lineTo(-1,8); c.stroke();
+    c.beginPath(); c.moveTo(-6,-2); c.lineTo(-10,4); c.stroke();
+    c.beginPath(); c.moveTo(6,-2); c.lineTo(10,4); c.stroke();
+    c.restore();
+    // Forge opening cockpit
+    c.save();
+    c.fillStyle='#ff8800';
+    c.shadowColor='#ff6600'; c.shadowBlur=12;
+    c.globalAlpha=0.7+Math.sin(_t*4)*0.2;
+    c.beginPath(); c.ellipse(0,-6,4,3,0,0,Math.PI*2); c.fill();
+    c.fillStyle='#ffcc00'; c.shadowBlur=6;
+    c.beginPath(); c.ellipse(0,-6,2,1.5,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Chimney stack
+    c.save();
+    c.fillStyle='#333333';
+    c.fillRect(-2,-14,4,-6);
+    c.strokeStyle='#555'; c.lineWidth=0.5;
+    c.strokeRect(-2,-14,4,-6);
+    c.restore();
+    // Exhaust — molten drips
+    c.save();
+    for(var _mi=0;_mi<4;_mi++){
+      var _my=15+_mi*4+Math.sin(_t*5+_mi*1.8)*2;
+      var _mr=2.5-_mi*0.5;
+      c.globalAlpha=0.6-_mi*0.14;
+      c.fillStyle=_mi<2?'#ffaa00':'#ff6600';
+      c.shadowColor=c.fillStyle; c.shadowBlur=4;
+      c.beginPath(); c.arc(Math.sin(_t*3+_mi*2.2)*3,_my,_mr,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── DISCO STAR (World 3) ─────────────────────────────────
+  if(custom.sprite==='discoStarShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    var _beat=1+Math.sin(_t*8)*0.04;
+    c.save();
+    c.scale(_beat,_beat);
+    // Rotating light beams
+    c.save();
+    c.globalAlpha=0.08;
+    for(var _bi=0;_bi<6;_bi++){
+      var _ba=(_bi/6)*Math.PI*2+_t*1.5;
+      c.save();
+      c.rotate(_ba);
+      var _beamHue=(_bi*60+_t*80)%360;
+      c.fillStyle='hsl('+_beamHue+',100%,70%)';
+      c.beginPath(); c.moveTo(-2,0); c.lineTo(2,0); c.lineTo(4,-35); c.lineTo(-4,-35); c.closePath(); c.fill();
+      c.restore();
+    }
+    c.restore();
+    // Hull — star/diamond shape with facets
+    c.save();
+    var _discoGrad=c.createLinearGradient(0,-16,0,14);
+    _discoGrad.addColorStop(0,'#cc44ff'); _discoGrad.addColorStop(0.5,'#8833cc'); _discoGrad.addColorStop(1,'#442266');
+    c.fillStyle=_discoGrad;
+    c.beginPath();
+    c.moveTo(0,-16); c.lineTo(10,-4); c.lineTo(14,4);
+    c.lineTo(8,12); c.lineTo(0,14);
+    c.lineTo(-8,12); c.lineTo(-14,4);
+    c.lineTo(-10,-4);
+    c.closePath(); c.fill();
+    c.strokeStyle='#ff66ff44'; c.lineWidth=1; c.stroke();
+    c.restore();
+    // Mirror-ball facets
+    c.save();
+    var _facets=[[-4,-10],[2,-10],[0,-4],[-6,-2],[6,-2],[-4,4],[4,4],[-2,8],[2,8],[0,2]];
+    for(var _fi=0;_fi<_facets.length;_fi++){
+      var _fhue=(_fi*36+_t*120)%360;
+      c.fillStyle='hsl('+_fhue+',80%,65%)';
+      c.globalAlpha=0.4+Math.sin(_t*5+_fi*0.8)*0.3;
+      c.fillRect(_facets[_fi][0]-1.5,_facets[_fi][1]-1.5,3,3);
+    }
+    c.restore();
+    // Neon cockpit ring
+    c.save();
+    var _cockpitHue=(_t*60)%360;
+    c.strokeStyle='hsl('+_cockpitHue+',100%,70%)';
+    c.shadowColor=c.strokeStyle; c.shadowBlur=8;
+    c.lineWidth=1.5;
+    c.beginPath(); c.arc(0,-6,3.5,0,Math.PI*2); c.stroke();
+    c.restore();
+    // Musical note exhaust
+    c.save();
+    for(var _ni=0;_ni<3;_ni++){
+      var _ny=16+_ni*6+Math.sin(_t*3+_ni*2)*2;
+      var _nx=Math.sin(_t*2+_ni*2.5)*5;
+      var _nhue=(_ni*120+_t*90)%360;
+      c.globalAlpha=0.5-_ni*0.15;
+      c.fillStyle='hsl('+_nhue+',100%,70%)';
+      c.beginPath(); c.arc(_nx,_ny,2,0,Math.PI*2); c.fill();
+      c.strokeStyle=c.fillStyle; c.lineWidth=0.8;
+      c.beginPath(); c.moveTo(_nx+2,_ny); c.lineTo(_nx+2,_ny-5); c.stroke();
+    }
+    c.restore();
+    c.restore(); // beat scale
+    c.restore();
+    return;
+  }
+
+  // ── AURORA SENTINEL (World 4) ─────────────────────────────────
+  if(custom.sprite==='auroraSentinelShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    // Aurora curtains above ship
+    c.save();
+    for(var _ai=0;_ai<4;_ai++){
+      var _ay=-22-_ai*4;
+      var _aHues=[120,180,280,150];
+      c.strokeStyle='hsl('+(_aHues[_ai]+Math.sin(_t+_ai)*20)+',80%,60%)';
+      c.lineWidth=2.5;
+      c.globalAlpha=0.25+Math.sin(_t*1.5+_ai*1.2)*0.15;
+      c.beginPath();
+      c.moveTo(-14,_ay);
+      c.quadraticCurveTo(-4,_ay+Math.sin(_t*2+_ai)*5,0,_ay+Math.sin(_t*1.8+_ai*0.7)*3);
+      c.quadraticCurveTo(4,_ay+Math.sin(_t*2.2+_ai*1.3)*5,14,_ay);
+      c.stroke();
+    }
+    c.restore();
+    // Hull — crystalline spire
+    c.save();
+    var _spireGrad=c.createLinearGradient(0,-18,0,14);
+    _spireGrad.addColorStop(0,'#ccddff'); _spireGrad.addColorStop(0.4,'#8899cc'); _spireGrad.addColorStop(1,'#445577');
+    c.fillStyle=_spireGrad;
+    c.beginPath();
+    c.moveTo(0,-18); c.lineTo(4,-12); c.lineTo(6,-4);
+    c.lineTo(7,4); c.lineTo(4,12); c.lineTo(0,14);
+    c.lineTo(-4,12); c.lineTo(-7,4); c.lineTo(-6,-4);
+    c.lineTo(-4,-12);
+    c.closePath(); c.fill();
+    c.strokeStyle='#aabbee44'; c.lineWidth=1; c.stroke();
+    c.restore();
+    // Crystal wing guards
+    c.save();
+    c.fillStyle='#99bbdd';
+    c.globalAlpha=0.6;
+    // Left crystal
+    c.beginPath(); c.moveTo(-7,0); c.lineTo(-14,-4); c.lineTo(-12,4); c.lineTo(-7,4); c.closePath(); c.fill();
+    // Right crystal
+    c.beginPath(); c.moveTo(7,0); c.lineTo(14,-4); c.lineTo(12,4); c.lineTo(7,4); c.closePath(); c.fill();
+    c.strokeStyle='#bbddff66'; c.lineWidth=0.5;
+    c.beginPath(); c.moveTo(-7,0); c.lineTo(-14,-4); c.lineTo(-12,4); c.lineTo(-7,4); c.closePath(); c.stroke();
+    c.beginPath(); c.moveTo(7,0); c.lineTo(14,-4); c.lineTo(12,4); c.lineTo(7,4); c.closePath(); c.stroke();
+    c.restore();
+    // Aurora-shifting cockpit
+    c.save();
+    var _ckHue=(120+Math.sin(_t*1.5)*80);
+    c.fillStyle='hsl('+_ckHue+',70%,60%)';
+    c.shadowColor=c.fillStyle; c.shadowBlur=10;
+    c.globalAlpha=0.7+Math.sin(_t*3)*0.2;
+    c.beginPath(); c.ellipse(0,-8,3,2,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Ice crystal exhaust
+    c.save();
+    for(var _ci=0;_ci<5;_ci++){
+      var _cy=15+_ci*4+Math.sin(_t*3+_ci)*2;
+      var _cx=Math.sin(_t*2+_ci*1.5)*3;
+      c.globalAlpha=0.4-_ci*0.07;
+      c.fillStyle=_ci%2===0?'#aaddff':'#88bbee';
+      c.save();
+      c.translate(_cx,_cy);
+      c.rotate(_t+_ci);
+      c.fillRect(-1.2,-1.2,2.4,2.4);
+      c.restore();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── THORN WRAITH (World 5) ─────────────────────────────────
+  if(custom.sprite==='thornWraithShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    // Spore particles drifting upward
+    c.save();
+    for(var _si=0;_si<6;_si++){
+      var _sy=-10-((_t*15+_si*8)%30);
+      var _sx=Math.sin(_t*1.2+_si*1.6)*8;
+      c.globalAlpha=Math.max(0,0.35-Math.abs(_sy+10)/30);
+      c.fillStyle=_si%2===0?'#88ff44':'#aacc22';
+      c.beginPath(); c.arc(_sx,_sy,1.2,0,Math.PI*2); c.fill();
+    }
+    c.restore();
+    // Hull — gnarled bark shape
+    c.save();
+    var _barkGrad=c.createLinearGradient(0,-16,0,14);
+    _barkGrad.addColorStop(0,'#2d4a1a'); _barkGrad.addColorStop(0.5,'#1e3510'); _barkGrad.addColorStop(1,'#0f1f08');
+    c.fillStyle=_barkGrad;
+    c.beginPath();
+    c.moveTo(0,-16); c.lineTo(3,-14); c.lineTo(7,-8);
+    c.quadraticCurveTo(10,-4,11,0);
+    c.quadraticCurveTo(12,6,8,12);
+    c.lineTo(3,14); c.lineTo(-3,14);
+    c.lineTo(-8,12);
+    c.quadraticCurveTo(-12,6,-11,0);
+    c.quadraticCurveTo(-10,-4,-7,-8);
+    c.lineTo(-3,-14);
+    c.closePath(); c.fill();
+    c.restore();
+    // Bark texture lines
+    c.save();
+    c.strokeStyle='#3d5a2a'; c.lineWidth=0.8;
+    c.globalAlpha=0.5;
+    c.beginPath(); c.moveTo(-3,-12); c.lineTo(-4,-4); c.lineTo(-5,4); c.stroke();
+    c.beginPath(); c.moveTo(3,-12); c.lineTo(4,-4); c.lineTo(5,4); c.stroke();
+    c.beginPath(); c.moveTo(-1,-6); c.lineTo(1,0); c.lineTo(-1,6); c.stroke();
+    c.restore();
+    // Writhing thorn vines
+    c.save();
+    c.strokeStyle='#44882a'; c.lineWidth=1.5;
+    c.globalAlpha=0.7;
+    var _vw1=Math.sin(_t*0.7)*5;
+    var _vw2=Math.sin(_t*0.9+1.5)*5;
+    // Left vine
+    c.beginPath(); c.moveTo(-8,0); c.quadraticCurveTo(-16+_vw1,-4,-14+_vw1,-10); c.stroke();
+    // Left thorns
+    c.fillStyle='#66aa33';
+    c.beginPath(); c.moveTo(-12+_vw1*0.5,-6); c.lineTo(-14+_vw1*0.5,-8); c.lineTo(-11+_vw1*0.5,-7); c.closePath(); c.fill();
+    // Right vine
+    c.beginPath(); c.moveTo(8,0); c.quadraticCurveTo(16+_vw2,-4,14+_vw2,-10); c.stroke();
+    // Right thorns
+    c.beginPath(); c.moveTo(12+_vw2*0.5,-6); c.lineTo(14+_vw2*0.5,-8); c.lineTo(11+_vw2*0.5,-7); c.closePath(); c.fill();
+    c.restore();
+    // Glowing yellow eyes
+    c.save();
+    c.fillStyle='#ffcc00';
+    c.shadowColor='#ffaa00'; c.shadowBlur=8;
+    c.globalAlpha=0.6+Math.sin(_t*4)*0.3;
+    c.beginPath(); c.arc(-3,-6,2,0,Math.PI*2); c.fill();
+    c.beginPath(); c.arc(3,-6,2,0,Math.PI*2); c.fill();
+    // Pupil slits
+    c.fillStyle='#1a2a0a'; c.shadowBlur=0;
+    c.beginPath(); c.ellipse(-3,-6,0.6,1.5,0,0,Math.PI*2); c.fill();
+    c.beginPath(); c.ellipse(3,-6,0.6,1.5,0,0,Math.PI*2); c.fill();
+    c.restore();
+    // Leaf exhaust
+    c.save();
+    for(var _li=0;_li<4;_li++){
+      var _ly=15+_li*5+Math.sin(_t*2.5+_li)*2;
+      var _lx=Math.sin(_t*1.8+_li*2)*4;
+      c.globalAlpha=0.45-_li*0.1;
+      c.fillStyle=_li%2===0?'#55aa22':'#338818';
+      c.save();
+      c.translate(_lx,_ly);
+      c.rotate(_t*1.5+_li*1.2);
+      c.beginPath(); c.ellipse(0,0,2.5,1.2,0,0,Math.PI*2); c.fill();
+      c.restore();
+    }
+    c.restore();
+    c.restore();
+    return;
+  }
+
+  // ── REALITY BREAKER (World 6) ─────────────────────────────────
+  if(custom.sprite==='realityBreakerShip'){
+    var _t=typeof performance!=='undefined'?performance.now()/1000:0;
+    // Static noise around ship
+    c.save();
+    c.globalAlpha=0.15;
+    for(var _ni=0;_ni<12;_ni++){
+      var _nSeed=Math.sin(_ni*127.1+Math.floor(_t*8)*311.7);
+      var _nx=_nSeed*16;
+      var _ny=Math.sin(_ni*269.5+Math.floor(_t*8)*173.3)*16;
+      c.fillStyle=Math.random()>0.5?'#ffffff':'#ff00ff';
+      c.fillRect(_nx-1,_ny-1,2,2);
+    }
+    c.restore();
+    // Central void vortex
+    c.save();
+    var _vortGrad=c.createRadialGradient(0,0,0,0,0,10);
+    _vortGrad.addColorStop(0,'#000000'); _vortGrad.addColorStop(0.6,'#110022'); _vortGrad.addColorStop(1,'#00000000');
+    c.fillStyle=_vortGrad;
+    c.beginPath(); c.arc(0,0,10,0,Math.PI*2); c.fill();
+    // Spiral overlay
+    c.strokeStyle='#8844ff'; c.lineWidth=1; c.globalAlpha=0.3;
+    c.beginPath();
+    for(var _vi=0;_vi<30;_vi++){
+      var _va=(_vi/30)*Math.PI*4+_t*3;
+      var _vr=_vi*0.35;
+      var _vx=Math.cos(_va)*_vr, _vy=Math.sin(_va)*_vr;
+      if(_vi===0) c.moveTo(_vx,_vy); else c.lineTo(_vx,_vy);
+    }
+    c.stroke();
+    c.restore();
+    // Fragmented hull shards orbiting
+    c.save();
+    var _shards=[
+      {angle:0, dist:8, size:6, rot:0},
+      {angle:1.05, dist:9, size:5, rot:0.5},
+      {angle:2.1, dist:7, size:6, rot:1.0},
+      {angle:3.14, dist:9, size:5, rot:1.5},
+      {angle:4.19, dist:8, size:5, rot:2.0},
+      {angle:5.24, dist:7, size:6, rot:2.5}
+    ];
+    for(var _si=0;_si<_shards.length;_si++){
+      var _s=_shards[_si];
+      var _sa=_s.angle+_t*0.4+Math.sin(_t*0.8+_si)*0.3;
+      var _sd=_s.dist+Math.sin(_t*1.2+_si*1.1)*2;
+      var _sx=Math.cos(_sa)*_sd, _sy=Math.sin(_sa)*_sd;
+      var _shue=(_si*60+_t*50)%360;
+      c.save();
+      c.translate(_sx,_sy);
+      c.rotate(_t*0.6+_s.rot);
+      // Shard fill
+      c.fillStyle='#1a1a2a';
+      c.beginPath();
+      c.moveTo(0,-_s.size/2); c.lineTo(_s.size/2,0); c.lineTo(0,_s.size/2); c.lineTo(-_s.size/2,0);
+      c.closePath(); c.fill();
+      // Rainbow edge
+      c.strokeStyle='hsl('+_shue+',100%,70%)';
+      c.lineWidth=1;
+      c.shadowColor=c.strokeStyle; c.shadowBlur=4;
+      c.stroke();
+      c.restore();
+    }
+    c.restore();
+    // Core glow pulse
+    c.save();
+    c.globalAlpha=0.2+Math.sin(_t*3)*0.1;
+    c.fillStyle='#cc44ff';
+    c.shadowColor='#cc44ff'; c.shadowBlur=15;
+    c.beginPath(); c.arc(0,0,4,0,Math.PI*2); c.fill();
+    c.restore();
+    // Reality-torn fragment exhaust
+    c.save();
+    for(var _ei=0;_ei<4;_ei++){
+      var _ey=12+_ei*5+Math.sin(_t*4+_ei*1.6)*2;
+      var _ex=Math.sin(_t*2.5+_ei*2)*4;
+      var _ehue=(_ei*90+_t*70)%360;
+      c.globalAlpha=0.4-_ei*0.09;
+      c.fillStyle='hsl('+_ehue+',80%,60%)';
+      c.save();
+      c.translate(_ex,_ey);
+      c.rotate(_t*2+_ei);
+      c.fillRect(-1.5,-1.5,3,3);
+      c.restore();
     }
     c.restore();
     c.restore();
@@ -9918,6 +10469,7 @@ function _doAscensionConfirmed() {
   var savedLootBoxesA = SAVE.lootBoxesOpened||0;
   var savedLootBoxPityA = SAVE.lootBoxPity||0;
   var savedPremiumOwnedA = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  var savedWorldClearShipsA = JSON.parse(JSON.stringify(SAVE.worldClearShips||{}));
   var savedPremiumCratesA = SAVE.premiumCratesOpened||0;
   var savedDailySpinDateA = SAVE.lastDailySpinDate;
   var savedDailySpinStreakA = SAVE.dailySpinStreak||0;
@@ -9977,6 +10529,7 @@ function _doAscensionConfirmed() {
   SAVE.lootBoxesOpened = savedLootBoxesA;
   SAVE.lootBoxPity = savedLootBoxPityA;
   SAVE.premiumOwned = savedPremiumOwnedA;
+  SAVE.worldClearShips = savedWorldClearShipsA;
   SAVE.premiumCratesOpened = savedPremiumCratesA;
   SAVE.lastDailySpinDate = savedDailySpinDateA;
   SAVE.dailySpinStreak = savedDailySpinStreakA;
@@ -10068,6 +10621,7 @@ function _doEndGame() {
   const savedLootBoxesE = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityE = SAVE.lootBoxPity||0;
   const savedPremiumOwnedE = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedWorldClearShipsE = JSON.parse(JSON.stringify(SAVE.worldClearShips||{}));
   const savedPremiumCratesE = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateE = SAVE.lastDailySpinDate;
   const savedDailySpinStreakE = SAVE.dailySpinStreak||0;
@@ -10127,6 +10681,7 @@ function _doEndGame() {
   SAVE.lootBoxesOpened = savedLootBoxesE;
   SAVE.lootBoxPity = savedLootBoxPityE;
   SAVE.premiumOwned = savedPremiumOwnedE;
+  SAVE.worldClearShips = savedWorldClearShipsE;
   SAVE.premiumCratesOpened = savedPremiumCratesE;
   SAVE.lastDailySpinDate = savedDailySpinDateE;
   SAVE.dailySpinStreak = savedDailySpinStreakE;
@@ -10813,6 +11368,7 @@ function doReset() {
   const savedLootBoxesR = SAVE.lootBoxesOpened||0;
   const savedLootBoxPityR = SAVE.lootBoxPity||0;
   const savedPremiumOwnedR = JSON.parse(JSON.stringify(SAVE.premiumOwned||{}));
+  const savedWorldClearShipsR = JSON.parse(JSON.stringify(SAVE.worldClearShips||{}));
   const savedPremiumCratesR = SAVE.premiumCratesOpened||0;
   const savedDailySpinDateR = SAVE.lastDailySpinDate;
   const savedDailySpinStreakR = SAVE.dailySpinStreak||0;
@@ -10860,6 +11416,7 @@ function doReset() {
   SAVE.lootBoxesOpened = savedLootBoxesR;
   SAVE.lootBoxPity = savedLootBoxPityR;
   SAVE.premiumOwned = savedPremiumOwnedR;
+  SAVE.worldClearShips = savedWorldClearShipsR;
   SAVE.premiumCratesOpened = savedPremiumCratesR;
   SAVE.lastDailySpinDate = savedDailySpinDateR;
   SAVE.dailySpinStreak = savedDailySpinStreakR;
@@ -11383,8 +11940,6 @@ var ANNOUNCEMENTS = [
 function openAnnouncements() {
   SAVE.lastSeenAnnouncement = ANNOUNCEMENTS[0].id;
   doSave();
-  const badge = document.getElementById('menu-ticker-badge');
-  if(badge) badge.style.display = 'none';
   const el = document.getElementById('announcements-content');
   el.innerHTML = ANNOUNCEMENTS.map(a => `
     <div style="margin-bottom:20px;padding:14px;border:1px solid ${a.color}33;border-radius:8px;background:rgba(0,0,0,0.3)">
@@ -11399,9 +11954,6 @@ function openAnnouncements() {
 var _tickerRaf = null, _tickerX = 0, _tickerLastT = 0;
 function updateAnnouncementBadge() {
   if(!ANNOUNCEMENTS || !ANNOUNCEMENTS.length) return;
-  const badge = document.getElementById('menu-ticker-badge');
-  const hasNew = !SAVE.lastSeenAnnouncement || SAVE.lastSeenAnnouncement !== ANNOUNCEMENTS[0].id;
-  if(badge) badge.style.display = hasNew ? 'block' : 'none';
   startMenuTicker();
 }
 
@@ -12410,6 +12962,17 @@ function restorePremiumRewards(){
         if(!DECALS.find(function(s){return s.id===item.id;})){
           DECALS.push({id:item.id,label:item.label,icon:'💎'});
         }
+      }
+    }
+  });
+}
+
+function restoreWorldClearShips(){
+  if(!SAVE.worldClearShips) return;
+  WORLD_CLEAR_SHIPS.forEach(function(ws){
+    if(SAVE.worldClearShips[ws.id]){
+      if(!SPRITE_SHIPS.find(function(s){return s.id===ws.id;})){
+        SPRITE_SHIPS.push({id:ws.id, label:ws.label, icon:ws.icon});
       }
     }
   });
@@ -14278,6 +14841,7 @@ function buildCustomize(){
   if(!SAVE.shipCustom) SAVE.shipCustom={shape:'classic',hullColor:'#00f5ff',cockpitColor:'#00f5ff',thrusterColor:'#ff6600',bulletColor:'#00f5ff',bulletShape:'laser',aura:'none',decal:'none',sprite:'none'};
   restoreArtifactRewards();
   restorePremiumRewards();
+  restoreWorldClearShips();
   var pills=document.getElementById('customize-pills');
   var panel=document.getElementById('customize-panel');
   if(!pills||!panel) return;
@@ -16853,7 +17417,7 @@ function startCampaignWorld(worldIdx){
   var staleOverlays=['wo-overlay','world-cleared-overlay','campaign-pick-overlay','cw-launch-intro'];
   staleOverlays.forEach(function(oid){var el=document.getElementById(oid);if(el)el.remove();});
   // Clear game arrays to prevent leftover visuals
-  powerupDrops=[];coins=[];particles=[];bullets=[];eBullets=[];enemies=[];floatTexts=[];coinDrops=[];
+  powerupDrops=[];coinDrops=[];particles=[];bullets=[];eBullets=[];enemies=[];floatTexts=[];
   // Hide menu screen + related elements during intro (bg canvas stays visible)
   var ms=document.getElementById('screen-menu');if(ms){ms.style.visibility='hidden';}
   if(menuCanvas)menuCanvas.style.visibility='hidden';
@@ -18349,6 +18913,24 @@ function showWorldCleared(worldIdx){
       _pendingRogueUnlocks.push({icon:'🔥',title:'PHOENIX PROTOCOL UNLOCKED',sub:'The legendary revive ability is now available!',color:'#ffd700'});
       _pendingRogueUnlocks.push({icon:'⭐',title:'ENDGAME UPGRADES UNLOCKED',sub:'The most powerful mid-wave upgrades are now available!',color:'#ffd700'});
     }
+    // ── World-clear ship reward (all worlds) ──
+    var _worldShip=WORLD_CLEAR_SHIPS[worldIdx];
+    if(_worldShip){
+      if(!SAVE.worldClearShips) SAVE.worldClearShips={};
+      if(!SAVE.worldClearShips[_worldShip.id]){
+        SAVE.worldClearShips[_worldShip.id]=true;
+        if(!SPRITE_SHIPS.find(function(s){return s.id===_worldShip.id;})){
+          SPRITE_SHIPS.push({id:_worldShip.id, label:_worldShip.label, icon:_worldShip.icon});
+        }
+        _pendingRogueUnlocks.push({
+          icon:_worldShip.icon,
+          title:'SHIP UNLOCKED: '+_worldShip.label,
+          sub:'A new ship earned by conquering '+CAMPAIGN_WORLDS[worldIdx].name+'!',
+          color:CAMPAIGN_WORLDS[worldIdx].announceColor,
+          shipPreview:_worldShip.id
+        });
+      }
+    }
   }
   // ── Mutator token multiplier ──
   var mutMult=getMutatorMultiplier();
@@ -18467,19 +19049,40 @@ function showRogueUnlockCinematic(unlocks){
       return;
     }
     var u=unlocks[idx];
+    var shipCanvasHtml=u.shipPreview?'<canvas id="ruc-ship-canvas" width="120" height="120" style="position:static;margin:12px auto;display:block;border-radius:8px;border:1px solid '+u.color+'22;background:rgba(0,0,0,0.5)"></canvas>':'';
+    var equipHint=u.shipPreview?'<div style="font-family:Orbitron,sans-serif;font-size:8px;color:'+u.color+'88;letter-spacing:1px;margin:8px auto 0">Equip in Customize &rarr; Sprites</div>':'';
     var card='<div id="ruc-card" style="text-align:center;opacity:0;transform:translateY(40px) scale(0.85);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">'+
       '<div style="font-size:56px;margin-bottom:12px;filter:drop-shadow(0 0 20px '+u.color+')">'+u.icon+'</div>'+
+      shipCanvasHtml+
       '<div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+u.color+';letter-spacing:3px;text-shadow:0 0 20px '+u.color+'44,0 0 40px '+u.color+'22">'+u.title+'</div>'+
       '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#aab;letter-spacing:1px;margin:10px auto 0;max-width:280px;line-height:1.5">'+u.sub+'</div>'+
+      equipHint+
       '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#ffffff22;letter-spacing:2px;margin-top:20px">'+(idx<unlocks.length-1?'TAP FOR NEXT':'TAP TO CONTINUE')+'</div>'+
     '</div>';
     ov.innerHTML=card;
     try{sfx('setComplete');}catch(e){}
+    // Start ship preview animation if this card has one
+    var _shipPreviewRAF=null;
+    if(u.shipPreview){
+      (function animateShipPreview(){
+        var cvs=document.getElementById('ruc-ship-canvas');
+        if(!cvs){_shipPreviewRAF=null;return;}
+        var ctx=cvs.getContext('2d');
+        ctx.clearRect(0,0,120,120);
+        ctx.save();
+        ctx.beginPath();ctx.rect(0,0,120,120);ctx.clip();
+        drawShip(ctx,60,68,0,{sprite:u.shipPreview},1.8);
+        ctx.restore();
+        _shipPreviewRAF=requestAnimationFrame(animateShipPreview);
+      })();
+    }
     setTimeout(function(){
       var c=document.getElementById('ruc-card');
       if(c){c.style.opacity='1';c.style.transform='translateY(0) scale(1)';}
     },50);
     ov.onclick=function(){
+      // Cancel ship preview animation
+      if(_shipPreviewRAF){cancelAnimationFrame(_shipPreviewRAF);_shipPreviewRAF=null;}
       // Fade current card out
       var c=document.getElementById('ruc-card');
       if(c){c.style.opacity='0';c.style.transform='translateY(-20px) scale(0.9)';}
@@ -18580,18 +19183,71 @@ function toggleRoguePause(){
   var wEmoji=world?world.emoji:'⚔';
   var wName=world?world.name:'ADVENTURE MODE';
   var wColor=world?world.announceColor:'#00f5ff';
+  // Build loadout display
+  var lo=SAVE.rogueLoadout||{};
+  var loSlots=[{key:'ability',label:'ABL'},{key:'weapon',label:'WPN'},{key:'passive',label:'PAS'}];
+  var loHtml='';
+  for(var _li=0;_li<loSlots.length;_li++){
+    var _ls=loSlots[_li];
+    var _lItem=lo[_ls.key]?getRogueLoadoutItem(lo[_ls.key]):null;
+    var _lLevel=(SAVE.rogueLoadoutLevels||{})[lo[_ls.key]]||1;
+    var _lStars='';for(var _si=0;_si<3;_si++) _lStars+=_si<_lLevel?'★':'☆';
+    if(_lItem){
+      loHtml+='<div style="text-align:center;min-width:52px">'+
+        '<div style="font-size:20px;width:36px;height:36px;line-height:36px;margin:0 auto;border-radius:6px;border:1px solid '+(_lItem.color||'#fff')+'33;background:rgba(0,0,0,0.4)">'+_lItem.icon+'</div>'+
+        '<div style="font-size:6px;color:'+(_lItem.color||'#aaa')+';letter-spacing:1px;margin-top:3px">'+_ls.label+'</div>'+
+        '<div style="font-size:7px;color:#ffd700;margin-top:1px">'+_lStars+'</div></div>';
+    } else {
+      loHtml+='<div style="text-align:center;min-width:52px">'+
+        '<div style="font-size:16px;width:36px;height:36px;line-height:36px;margin:0 auto;border-radius:6px;border:1px dashed #333;color:#333">—</div>'+
+        '<div style="font-size:6px;color:#334;letter-spacing:1px;margin-top:3px">'+_ls.label+'</div></div>';
+    }
+  }
+  // Build acquired upgrades display
+  var upHtml='';
+  if(_campaignPickedUpgrades.length>0){
+    // Count occurrences of each upgrade (stacked)
+    var upCounts={};var upOrder=[];
+    for(var _ui=0;_ui<_campaignPickedUpgrades.length;_ui++){
+      var _uid=_campaignPickedUpgrades[_ui];
+      if(!upCounts[_uid]){upCounts[_uid]=0;upOrder.push(_uid);}
+      upCounts[_uid]++;
+    }
+    var upIcons='';
+    for(var _oi=0;_oi<upOrder.length;_oi++){
+      var _up=CAMPAIGN_UPGRADES.find(function(u){return u.id===upOrder[_oi];});
+      if(_up){
+        var _cnt=upCounts[upOrder[_oi]];
+        upIcons+='<div style="position:relative;display:inline-block;width:26px;height:26px;text-align:center;border-radius:4px;border:1px solid '+_up.color+'44;background:rgba(0,0,0,0.4);line-height:26px;font-size:14px" title="'+_up.name+'">'+_up.icon+
+          (_cnt>1?'<span style="position:absolute;bottom:-2px;right:-2px;font-size:7px;color:#ffd700;background:#000;border-radius:3px;padding:0 2px;line-height:1.2">x'+_cnt+'</span>':'')+
+        '</div>';
+      }
+    }
+    upHtml='<div style="margin-top:16px;text-align:center">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-bottom:6px">UPGRADES ACQUIRED</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:280px;margin:0 auto">'+upIcons+'</div></div>';
+  }
   ov.innerHTML=
     '<div style="font-size:48px;margin-bottom:12px;filter:drop-shadow(0 0 20px '+wColor+')">'+wEmoji+'</div>'+
     '<div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:6px;text-shadow:0 0 30px '+wColor+'">PAUSED</div>'+
     '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-top:8px">WAVE '+_campaignWave+' · '+wName+'</div>'+
-    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:32px;align-items:center">'+
-      '<div id="rogue-resume-btn" style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#00f5ff;letter-spacing:4px;padding:12px 36px;border:2px solid #00f5ff44;border-radius:8px;cursor:pointer;background:rgba(0,245,255,0.06);-webkit-tap-highlight-color:transparent;transition:all 0.2s">▶ RESUME</div>'+
-      '<div id="rogue-quit-btn" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff445588;letter-spacing:3px;padding:8px 24px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color 0.2s">✕ ABANDON RUN</div>'+
-    '</div>'+
-    '<div style="margin-top:40px;display:flex;gap:20px;font-family:Orbitron,sans-serif;font-size:8px;color:#445;letter-spacing:1px">'+
+    // Stats row
+    '<div style="margin-top:16px;display:flex;gap:20px;font-family:Orbitron,sans-serif;font-size:9px;color:#667;letter-spacing:1px">'+
       '<div>❤ '+((player?player.lives:0))+'</div>'+
       '<div>⬆ '+_campaignPickedUpgrades.length+'</div>'+
       '<div>💀 '+_campaignKills+'</div>'+
+    '</div>'+
+    // Loadout
+    '<div style="margin-top:20px;text-align:center">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-bottom:8px">LOADOUT</div>'+
+      '<div style="display:flex;gap:12px;justify-content:center;font-family:Orbitron,sans-serif">'+loHtml+'</div>'+
+    '</div>'+
+    // Upgrades
+    upHtml+
+    // Buttons
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;align-items:center">'+
+      '<div id="rogue-resume-btn" style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#00f5ff;letter-spacing:4px;padding:12px 36px;border:2px solid #00f5ff44;border-radius:8px;cursor:pointer;background:rgba(0,245,255,0.06);-webkit-tap-highlight-color:transparent;transition:all 0.2s">▶ RESUME</div>'+
+      '<div id="rogue-quit-btn" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff445588;letter-spacing:3px;padding:8px 24px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color 0.2s">✕ ABANDON RUN</div>'+
     '</div>';
   document.body.appendChild(ov);
   setTimeout(function(){ov.style.opacity='1';},20);
@@ -18626,9 +19282,44 @@ function resumeRogue(){
     masterGain.gain.setValueAtTime(masterGain.gain.value,AC.currentTime);
     masterGain.gain.linearRampToValueAtTime(savedVol,AC.currentTime+0.3);
   }
-  gState='playing';
-  lastTime=performance.now();
-  rafId=requestAnimationFrame(gameLoop);
+  // 3..2..1 countdown before resuming
+  var cdOv=document.createElement('div');
+  cdOv.id='rogue-countdown-overlay';
+  cdOv.style.cssText='position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;pointer-events:none';
+  var cdNum=document.createElement('div');
+  cdNum.style.cssText='font-family:Orbitron,sans-serif;font-size:72px;font-weight:900;color:#00f5ff;letter-spacing:6px;text-shadow:0 0 40px #00f5ff,0 0 80px #00f5ff44;opacity:0;transform:scale(2);transition:all 0.3s cubic-bezier(.17,.67,.35,1.4)';
+  cdOv.appendChild(cdNum);
+  document.body.appendChild(cdOv);
+  var cdNums=['3','2','1','GO'];
+  var cdIdx=0;
+  function showNext(){
+    if(cdIdx>=cdNums.length){
+      cdOv.remove();
+      gState='playing';
+      lastTime=performance.now();
+      rafId=requestAnimationFrame(gameLoop);
+      return;
+    }
+    var isGo=cdNums[cdIdx]==='GO';
+    cdNum.textContent=cdNums[cdIdx];
+    cdNum.style.color=isGo?'#ffd700':'#00f5ff';
+    cdNum.style.textShadow=isGo?'0 0 40px #ffd700,0 0 80px #ffd70044':'0 0 40px #00f5ff,0 0 80px #00f5ff44';
+    cdNum.style.fontSize=isGo?'48px':'72px';
+    cdNum.style.opacity='0';
+    cdNum.style.transform='scale(2)';
+    setTimeout(function(){
+      cdNum.style.opacity='1';
+      cdNum.style.transform='scale(1)';
+    },30);
+    setTimeout(function(){
+      cdNum.style.opacity='0';
+      cdNum.style.transform='scale(0.5)';
+    },isGo?400:650);
+    cdIdx++;
+    setTimeout(showNext,isGo?500:750);
+    try{sfx('navTap');}catch(e){}
+  }
+  setTimeout(showNext,300);
 }
 
 // ── CAMPAIGN GAME OVER ───────────────────────────────────
@@ -18705,7 +19396,7 @@ function campaignEndGame(){
       '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">'+upgradeIcons+'</div></div>'+
     '<div style="margin-top:24px;opacity:0;transition:all 0.5s ease 1.2s;display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px" id="cgo-btns">'+
       '<button onclick="var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();startCampaignWorld('+worldIdx+');" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px 24px;border-radius:4px;border:2px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">↺ RETRY WORLD</button>'+
-      '<button onclick="var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();showScreen(\'screen-menu\');setTimeout(showWorldOverview,100);" style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.06);color:#00f5ff;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">🗺 WORLD MAP</button>'+
+      '<button onclick="_suppressNavSound=true;showScreen(\'screen-menu\');setTimeout(function(){showWorldOverview();var e=document.getElementById(\'campaign-gameover\');if(e)e.remove();},120);" style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #00f5ff;background:rgba(0,245,255,0.06);color:#00f5ff;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">🗺 WORLD MAP</button>'+
       '<button onclick="exitCampaign()" style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:12px 24px;border-radius:4px;border:2px solid #1a2540;background:transparent;color:#446;cursor:pointer;width:100%;-webkit-tap-highlight-color:transparent">⌂ MAIN MENU</button>'+
     '</div>';
   document.body.appendChild(el);
