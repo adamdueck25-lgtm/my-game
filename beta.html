@@ -494,7 +494,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
           <div class="dock-label">CUSTOMIZE</div>
         </div>
 
-        <div class="dock-tile" id="dock-vault" onclick="buildVaultScreen();showScreen('screen-vault')" style="--tc:#ffcc00;border-color:#ffcc0099">
+        <div class="dock-tile" id="dock-vault" onclick="showScreen('screen-vault')" style="--tc:#ffcc00;border-color:#ffcc0099">
           <div class="dock-icon">📦</div>
           <div class="dock-label">VAULT</div>
           <div id="dock-vault-badge" style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:#ff4455;border-radius:50%;box-shadow:0 0 6px #ff4455;animation:badgePulse 1.2s ease-in-out infinite"></div>
@@ -1197,6 +1197,7 @@ if('serviceWorker' in navigator){
 // Global error recovery — clean up stuck crate overlays
 window.addEventListener('error', function(evt){
   console.error('Global error:', evt.error||evt.message);
+  try{ localStorage.setItem('vi2_crash_log', JSON.stringify({time:new Date().toISOString(),msg:String(evt.error||evt.message),file:evt.filename||'',line:evt.lineno||0,col:evt.colno||0})); }catch(e){}
   var stuck;
   while((stuck = document.getElementById('lootbox-overlay')) && stuck.parentNode){
     stuck.parentNode.removeChild(stuck);
@@ -9972,7 +9973,7 @@ function showScreen(id) {
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
   else { stopMenuAnim(); stopShopCanvas(); stopMenuShipPreview(); stopMenuTicker(); }
-  if(id==='screen-vault'){ try{ buildVaultScreen(); }catch(e){console.error('Vault build error:',e);} startVaultBg(); if(!SAVE.vaultIntroSeen){ SAVE.vaultIntroSeen=true; doSave(); showVaultIntro(); } } else { stopVaultBg(); }
+  if(id==='screen-vault'){ try{ buildVaultScreen(); }catch(e){console.error('Vault build error:',e);} try{ startVaultBg(); }catch(e){console.error('Vault bg error:',e);} if(!SAVE.vaultIntroSeen){ SAVE.vaultIntroSeen=true; doSave(); showVaultIntro(); } } else { stopVaultBg(); }
   if(id==='screen-achievements'){ if(!SAVE.achievementsIntroSeen){ SAVE.achievementsIntroSeen=true; doSave(); showAchievementsIntro(); } }
   if(id==='screen-daily-spin') initDailySpin();
   if(id==='screen-echoes'){ buildEchoes(); if(!SAVE.echoesIntroSeen){ SAVE.echoesIntroSeen=true; doSave(); showEchoesIntro(); } }
@@ -15120,6 +15121,9 @@ function splashLaunch() {
   splash.style.opacity='0';
   setTimeout(()=>{ splash.style.display='none'; checkWhatsNew(); }, 800);
   _suppressNavSound = true; showScreen('screen-menu');
+  // Show last crash log if any
+  var _crashLog=localStorage.getItem('vi2_crash_log');
+  if(_crashLog){ try{ var cl=JSON.parse(_crashLog); console.warn('LAST CRASH:',cl); showToast('Last crash: '+cl.msg+' L:'+cl.line,4000); localStorage.removeItem('vi2_crash_log'); }catch(e){} }
   } catch(e) {
     document.body.innerHTML += `<div style="position:fixed;top:40px;left:0;right:0;background:#ff4400;color:#fff;font-size:12px;padding:10px;z-index:99999;font-family:monospace">${e.message}<br>${e.stack}</div>`;
   }
