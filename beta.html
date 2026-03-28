@@ -5030,6 +5030,15 @@ function loadSave(){
     if(!s.campaignData.challengesCompleted||typeof s.campaignData.challengesCompleted!=='object') s.campaignData.challengesCompleted={};
     if(!s.campaignData.worldMastery||typeof s.campaignData.worldMastery!=='object') s.campaignData.worldMastery={};
     if(!s.campaignData.tipsShown||typeof s.campaignData.tipsShown!=='object') s.campaignData.tipsShown={};
+    // Campaign data integrity
+    if(!Array.isArray(s.campaignData.worldsCleared)) s.campaignData.worldsCleared=[];
+    if(!s.campaignData.worldStats||typeof s.campaignData.worldStats!=='object') s.campaignData.worldStats={};
+    if(!Array.isArray(s.campaignData.activeMutators)) s.campaignData.activeMutators=[];
+    if(!isFinite(s.campaignData.highestWorld)) s.campaignData.highestWorld=0;
+    if(!isFinite(s.campaignData.highestWave)) s.campaignData.highestWave=0;
+    if(!s.worldClearShips||typeof s.worldClearShips!=='object') s.worldClearShips={};
+    if(!s.rogueTokenPurchases||typeof s.rogueTokenPurchases!=='object') s.rogueTokenPurchases={};
+    if(!isFinite(s.rogueTokens)) s.rogueTokens=0;
     // Rogue mode fields
     if(!s.rogueLoadout||typeof s.rogueLoadout!=='object') s.rogueLoadout={ability:null,weapon:null,passive:null};
     if(!Array.isArray(s.rogueUnlocks)) s.rogueUnlocks=[];
@@ -5877,6 +5886,9 @@ var _campaignPhoenixUsed = false;
 var _campaignAfterTrails = [];
 var _campaignMines = [];
 var _campaignMineTimer = 0;
+var _cachedCampaignStats = null;
+var _cachedCampaignStatsFrame = 0;
+var _gameFrameCount = 0;
 var _campaignBulletTimeFactor = 1.0;
 var _loadoutBulletTimeTimer = 0;
 var _momentumStacks = 0, _momentumTimer = 0;
@@ -8202,7 +8214,10 @@ function gameLoop(ts) {
   const dt = Math.min((ts - lastTime) / 1000, 0.05);
   lastTime=ts;
   const t=ts/1000;
+  _gameFrameCount++;
   const stats=computeStats();
+  // Cache alive enemies once per frame (avoid repeated filter calls in bullet loop)
+  var _frameAlive=enemies.filter(function(e){return e.alive&&!e.entering;});
 
   // Screen shake decay
   if(screenShake.dur>0) {
@@ -8286,9 +8301,8 @@ let moveDx = 0;
       _campaignMissileTimer-=dt;
       if(_campaignMissileTimer<=0){
         _campaignMissileTimer=stats._campaignMissileInterval;
-        var aliveE=enemies.filter(function(e){return e.alive&&!e.entering;});
-        if(aliveE.length){
-          var tgt=aliveE[Math.floor(Math.random()*aliveE.length)];
+        if(_frameAlive.length){
+          var tgt=_frameAlive[Math.floor(Math.random()*_frameAlive.length)];
           bullets.push({x:player.x,y:player.y-16,spd:stats.bulletSpeed*1.2,pierce:false,hit:new Set(),trail:[],missile:true,tx:tgt.x,ty:tgt.y});
           sfx('shoot');
         }
@@ -8325,16 +8339,17 @@ let moveDx = 0;
       _campaignMineTimer-=dt;
       if(_campaignMineTimer<=0){
         _campaignMineTimer=stats._campaignMineInterval;
-        if(_campaignMines.length<5) _campaignMines.push({x:player.x+(Math.random()-0.5)*40,y:player.y-80-Math.random()*60,life:8,pulse:0});
+        if(_campaignMines.length<5){_campaignMines.push({x:player.x+(Math.random()-0.5)*40,y:player.y-80-Math.random()*60,life:8,pulse:0});try{sfx('navTap');}catch(e){}}
       }
       _campaignMines=_campaignMines.filter(function(m){
+        // Only check collisions every 2nd frame for performance
+        var _checkCollision=(_gameFrameCount%2===0);
         m.life-=dt;m.pulse+=dt*4;
         var _mHit=false;
-        for(var _mi=0;_mi<enemies.length;_mi++){
-          var _me=enemies[_mi];
-          if(!_me.alive||_me.entering)continue;
+        if(_checkCollision){for(var _mi=0;_mi<_frameAlive.length;_mi++){
+          var _me=_frameAlive[_mi];
           if(Math.hypot(_me.x-m.x,_me.y-m.y)<30){_mHit=true;break;}
-        }
+        }}
         if(_mHit){
           spawnExplosion(m.x,m.y,'#ff4444',5,true);
           try{sfx('enemyDie');}catch(ex){}
@@ -8387,11 +8402,10 @@ let moveDx = 0;
       _campaignOrbitalVolleyTimer-=dt;
       if(_campaignOrbitalVolleyTimer<=0){
         _campaignOrbitalVolleyTimer=2.5/(orbCount>2?1.5:1); // faster with more drones
-        var _aliveE=enemies.filter(function(e){return e.alive&&!e.entering;});
-        if(_aliveE.length){
+        if(_frameAlive.length){
           var _d=_campaignOrbitalDrones[_campaignOrbitalVolleyIdx%orbCount];
           if(_d.state==='orbit'){
-            var _tgt=_aliveE[Math.floor(Math.random()*_aliveE.length)];
+            var _tgt=_frameAlive[Math.floor(Math.random()*_frameAlive.length)];
             _d.state='attack';_d.tx=_tgt.x;_d.ty=_tgt.y;
           }
           _campaignOrbitalVolleyIdx++;
@@ -8407,7 +8421,7 @@ let moveDx = 0;
           _od.x=homeX;_od.y=homeY;
         } else if(_od.state==='attack'){
           // Re-target nearest alive enemy for better tracking
-          var _atkAlive=enemies.filter(function(en){return en.alive&&!en.entering;});
+          var _atkAlive=_frameAlive;
           if(_atkAlive.length){var _nearest=_atkAlive.reduce(function(a,en){return Math.hypot(en.x-_od.x,en.y-_od.y)<Math.hypot(a.x-_od.x,a.y-_od.y)?en:a;});_od.tx=_nearest.x;_od.ty=_nearest.y;}
           var _adx=_od.tx-_od.x,_ady=_od.ty-_od.y,_ad=Math.max(1,Math.hypot(_adx,_ady));
           _od.x+=_adx/_ad*14;_od.y+=_ady/_ad*14;
@@ -8506,26 +8520,26 @@ let moveDx = 0;
     b.trail.push({x:b.x,y:b.y});
     if(b.trail.length>6) b.trail.shift();
     if(stats.heatSeek && !bossFight) {
-      const alive = enemies.filter(e=>e.alive&&!e.entering);
+      const alive = _frameAlive;
       if(alive.length) {
         const nearest = alive.reduce((a,e)=>Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a);
         if(Math.hypot(nearest.x-b.x, nearest.y-b.y) < 120) b.x += (nearest.x - b.x) * 0.03;
       }
     }
     if(activePowerups['homingShots'] && !bossFight){
-      const alive=enemies.filter(e=>e.alive&&!e.entering&&e.y<b.y+150);
+      const alive=_frameAlive.filter(e=>e.y<b.y+150);
       if(alive.length){
         const nearest=alive.reduce((a,e)=>Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a);
         if(Math.hypot(nearest.x-b.x,nearest.y-b.y)<250){b.x+=(nearest.x-b.x)*0.12;if(particles.length<40&&Math.random()<0.3)particles.push({type:'spark',x:b.x,y:b.y,vx:(Math.random()-0.5)*0.3,vy:0.5,life:0.5,maxLife:0.5,r:1,col:'#44ffff'});}
       }
     }
     if(b.missile && b.targetEnemy){
-      if(!b.targetEnemy.alive){ const alive=enemies.filter(e=>e.alive&&!e.entering); b.targetEnemy=alive[0]||null; }
+      if(!b.targetEnemy.alive){ b.targetEnemy=_frameAlive[0]||null; }
       if(b.targetEnemy){ const dx=b.targetEnemy.x-b.x; const dy=b.targetEnemy.y-b.y; const dist=Math.hypot(dx,dy)||1; b.x+=dx/dist*8; b.y+=dy/dist*8; }
     }
     // Campaign missile homing
     if(b.missile && !b.targetEnemy && _campaignMode){
-      var _alv=enemies.filter(function(e){return e.alive&&!e.entering;});
+      var _alv=_frameAlive;
       if(_alv.length){var _nr=_alv.reduce(function(a,e){return Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a;});var _dx=_nr.x-b.x,_dy=_nr.y-b.y,_dd=Math.max(1,Math.hypot(_dx,_dy));b.x+=_dx/_dd*10;b.y+=_dy/_dd*10;}
     }
     // Death Blossom bullets move via blossomVx/Vy instead of spd
@@ -9021,7 +9035,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
 
   // ── FLOAT TEXTS ────────────────────────────────
   for(var fi=floatTexts.length-1;fi>=0;fi--){var ft=floatTexts[fi];ft.y+=ft.vy;ft.life-=dt*1.2;if(ft.life<=0)floatTexts.splice(fi,1);}
-  if(floatTexts.length>15) floatTexts.splice(0,floatTexts.length-15);
+  if(floatTexts.length>20) floatTexts.splice(0,floatTexts.length-12);
 
   // ── COMBO TIMER ─────────────────────────────────
   if(comboTimer>0){ comboTimer-=dt; if(comboTimer<=0) combo=0; }
@@ -11240,10 +11254,15 @@ function nextWave() {
 // ═══════════════════════════════════════════════════
 //  HUD
 // ═══════════════════════════════════════════════════
+var _prevHudLives=-1,_prevHudShields=-1,_prevHudScore=-1;
 function updateHUD() {
-  document.getElementById('hud-score').textContent=score;
+  if(score!==_prevHudScore){document.getElementById('hud-score').textContent=score;_prevHudScore=score;}
   document.getElementById('hud-wave').textContent=wave;
   document.getElementById('hud-coins').textContent=SAVE.coins+(sessionCoins||0);
+  var _curLives=player?player.lives:0;
+  var _curShields=_campaignMode?_campaignShieldCharges:0;
+  if(_curLives===_prevHudLives&&_curShields===_prevHudShields) {if(_campaignMode)updateWorldMeter();return;}
+  _prevHudLives=_curLives;_prevHudShields=_curShields;
   const livesEl=document.getElementById('lives-display');
   if(livesEl){
     livesEl.innerHTML='';
@@ -18484,6 +18503,8 @@ function exitCampaign(){
 
 // ── CAMPAIGN STATS ────────────────────────────────────────
 function computeCampaignStats(){
+  // Return cached stats if same frame (avoids 3x recompute per frame)
+  if(_cachedCampaignStats&&_cachedCampaignStatsFrame===_gameFrameCount) return _cachedCampaignStats;
   var b=_campaignBuffs;
   var baseDmg=1.0*(b.damageMult||1);
   var baseFR=300*(b.fireRateMult||1);
@@ -18509,7 +18530,7 @@ function computeCampaignStats(){
   if(curWorld&&curWorld.id==='frozen'){baseSpd*=0.92;baseBSpd*=1.10;}
   // Loadout: Bullet Speed Up
   if(b.loadoutBulletSpeed) baseBSpd*=b.loadoutBulletSpeed;
-  return {
+  _cachedCampaignStats={
     fireCooldown:Math.max(40,baseFR),
     bulletSpeed:baseBSpd,
     multishot:b.spreadShot?4:(b.tripleShot?2:(b.doubleShot?1:0)),
@@ -18605,6 +18626,8 @@ function computeCampaignStats(){
     _ionCannon:!!b.ionCannon,
     _bossSlowMult:b.bossSlowMult||1
   };
+  _cachedCampaignStatsFrame=_gameFrameCount;
+  return _cachedCampaignStats;
 }
 
 // ── WORLD PROGRESS METER ──────────────────────────────────
@@ -19186,7 +19209,7 @@ function showChaosJester(onDone){
         resultItem.apply(_campaignBuffs);
       }
       // Update player stats
-      try{var s=computeCampaignStats();if(player){player.maxLives=s.maxLives;player.lives=Math.min(player.lives,player.maxLives);if(player.lives<1)player.lives=1;}}catch(e){}
+      try{var s=computeCampaignStats();if(player){player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives,player.maxLives);if(player.lives<1)player.lives=1;}}catch(e){}
       // Big result reveal
       var rEl=document.getElementById('cj-result');
       var rSub=document.getElementById('cj-result-sub');
@@ -19402,8 +19425,8 @@ function showCampaignUpgradePick(isBossReward){
     try{autoPick.apply(_campaignBuffs);}catch(e){}
     _campaignPickedUpgrades.push(autoPick.id);
     _campaignUpgradesTaken++;
-    if(autoPick.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=Math.min(player.lives+1,player.maxLives);}
-    if(autoPick.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=1;}
+    if(autoPick.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);}
+    if(autoPick.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=1;}
     // Brief flash showing what was picked
     var flash=document.createElement('div');
     flash.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);pointer-events:none;opacity:1;transition:opacity 0.6s';
@@ -19565,7 +19588,7 @@ function showCampaignUpgradePick(isBossReward){
     if(chosen.id==='arsenalOverload'){floatTexts.push({x:player?player.x:W/2,y:player?player.y-20:H/2,text:'⚡ OVERLOAD!',col:'#ffd700',life:1.5,vy:-1.2});spawnExplosion(player?player.x:W/2,player?player.y:H/2,'#ffd700',8,true);if(player)player.shieldFlash=0.6;shake(4,0.2);}
     try{
     if(chosen.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=_campaignBuffs._hpLocked?player.maxLives:s.maxLives;if(!_campaignBuffs._hpLocked)player.lives=Math.min(player.lives+1,player.maxLives);}
-    if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=1;}
+    if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=1;}
     if(chosen.id==='shield'){_campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);if(player)player.shieldFlash=0.5;updateHUD();}
     }catch(e){ console.error('Upgrade stats error:',e); }
 
