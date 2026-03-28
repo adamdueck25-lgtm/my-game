@@ -656,6 +656,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
     <div style="font-size:28px;margin-bottom:4px">🏅</div>
     <div class="screen-title" style="color:#ffd700;text-shadow:0 0 20px #ffd70066;margin-bottom:4px;font-size:18px">ACHIEVEMENTS</div>
     <div style="font-size:10px;color:#778;letter-spacing:2px" id="ach-screen-subtitle"></div>
+    <div style="font-size:7px;color:#556;letter-spacing:1px;margin-top:2px">CLASSIC MODE ONLY · NOT ACTIVE IN ADVENTURE</div>
   </div>
   <div id="ach-screen-list" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 8px;width:100%"></div>
   <div style="flex:0 0 auto;padding:10px 14px calc(env(safe-area-inset-bottom,0px)+14px);background:rgba(3,6,16,0.95);border-top:1px solid #1a2540;display:flex;justify-content:center">
@@ -725,6 +726,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       <div class="screen-title" style="color:var(--c)">⚡ UPGRADES</div>
       <button onclick="window._powerupGuidePrev='screen-shop';showScreen('screen-powerup-guide');" style="font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid #00f5ff55;background:rgba(0,245,255,0.08);color:#00f5ff;cursor:pointer;letter-spacing:1px">🌟 POWERUP LIST</button>
     </div>
+    <div style="font-size:7px;color:#556;letter-spacing:1px;margin-top:2px">CLASSIC MODE ONLY · NOT ACTIVE IN ADVENTURE</div>
     <div class="shop-ticker"><span class="shop-ticker-inner">★ NEW WEAPONS AVAILABLE ★ SPEND YOUR COINS ★ UPGRADE YOUR SHIP ★ COLLECT ALL CARDS ★ COMPLETE SETS FOR POWERS ★ BOSS EVERY 5 WAVES ★</span></div>
     <div class="shop-coins-display" id="shop-coins-display">💰 <span id="shop-coins">0</span></div>
   </div>
@@ -755,6 +757,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div class="screen-title" style="color:#aa44ff">🌀 VOID ECHOES</div>
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">PERMANENT PRESTIGE UPGRADES</div>
+    <div style="font-size:7px;color:#556;letter-spacing:1px;margin-top:2px">CLASSIC MODE ONLY · NOT ACTIVE IN ADVENTURE</div>
     <div id="echoes-balance" style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#aa44ff;text-shadow:0 0 12px #aa44ff,0 0 30px #aa44ff44;margin:6px 0 2px">🌀 0</div>
     <div id="echoes-title" style="font-size:10px;color:#aa44ffcc;letter-spacing:2px;margin-bottom:4px">PILOT</div>
   </div>
@@ -827,6 +830,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   <div style="flex:0 0 auto;padding:14px 14px 4px;text-align:center;position:relative;z-index:1">
     <div class="screen-title" style="color:#ff8800">🔗 VOID SYNERGIES</div>
     <div style="font-size:10px;color:#778;letter-spacing:1px;margin-top:2px">COMBINE SYSTEMS FOR POWERFUL BONUSES</div>
+    <div style="font-size:7px;color:#556;letter-spacing:1px;margin-top:2px">CLASSIC MODE ONLY · NOT ACTIVE IN ADVENTURE</div>
     <div id="synergies-active-count" style="font-family:'Orbitron',sans-serif;font-size:12px;color:#ff8800;margin:6px 0 2px"></div>
   </div>
   <div id="synergies-scroll" style="flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 14px 8px;width:100%;position:relative;z-index:1">
@@ -3364,7 +3368,7 @@ var CAMPAIGN_WORLDS = [
     starHues:[{hue:200,weight:0.4},{hue:180,weight:0.4},{hue:160,weight:0.2}],
     enemyColors:['#00f5ff','#0088ff','#44ddaa'],
     announceColor:'#00aaff', desc:'The crushing depths stir with ancient life',
-    modifier:{name:'PRESSURE DEPTH',desc:'Enemy bullets 15% slower, deal 15% more damage'}},
+    modifier:{name:'PRESSURE DEPTH',desc:'Enemy bullets are larger and harder to dodge'}},
   {id:'volcanic', name:'MOLTEN CORE', emoji:'🌋', waves:[41,60],
     starHues:[{hue:15,weight:0.4},{hue:30,weight:0.3},{hue:0,weight:0.3}],
     enemyColors:['#ff2244','#ff6600','#ff4400'],
@@ -3374,7 +3378,7 @@ var CAMPAIGN_WORLDS = [
     starHues:[{hue:300,weight:0.3},{hue:270,weight:0.3},{hue:330,weight:0.2},{hue:50,weight:0.2}],
     enemyColors:['#ff44ff','#ffaa00','#44ffdd','#ff6699'],
     announceColor:'#ff44ff', desc:'The bass drops. The lights never stop.',
-    modifier:{name:'DISCO VIP',desc:'1 random enemy per wave has 2x HP and grants bonus score'}},
+    modifier:{name:'DISCO FEVER',desc:'Enemies move in unpredictable patterns'}},
   {id:'frozen', name:'FROZEN AURORA', emoji:'❄️', waves:[81,100],
     starHues:[{hue:200,weight:0.3},{hue:160,weight:0.3},{hue:280,weight:0.2},{hue:0,weight:0.2}],
     enemyColors:['#88ddff','#aaeeff','#44aacc'],
@@ -3426,13 +3430,13 @@ var CAMPAIGN_UPGRADES = [
   {id:'nanoRepair',name:'NANO REPAIR',icon:'🔋',rarity:'common',color:'#ffffff',worldGate:0,
     desc:'Restore 1 HP at wave start',stackable:true,maxStack:2,
     apply:function(b){b.waveHeal=(b.waveHeal||0)+1;}},
-  {id:'luckyDrops',name:'LUCKY DROPS',icon:'🍀',rarity:'common',color:'#ffffff',worldGate:0,
-    desc:'8% chance enemies drop a powerup on kill',stackable:true,maxStack:2,
-    apply:function(b){b.luckyDropChance=Math.min(0.20,(b.luckyDropChance||0)+0.08);}},
+  {id:'luckyDrops',name:'LUCKY DROPS',icon:'🍀',rarity:'rare',color:'#4488ff',worldGate:0,
+    desc:'Small chance enemies drop a powerup on kill',stackable:false,
+    apply:function(b){b.luckyDropChance=0.03;}},
   // ── RARE ──
-  {id:'spreadShot',name:'SPREAD SHOT',icon:'🔫',rarity:'rare',color:'#4488ff',worldGate:0,
-    desc:'5-bullet wide fan (reduced damage)',stackable:false,
-    apply:function(b){b.spreadShot=true;}},
+  {id:'spreadShot',name:'WIDE SPREAD',icon:'🔫',rarity:'rare',color:'#4488ff',worldGate:0,
+    desc:'Bullets fire in a wider pattern',stackable:false,
+    apply:function(b){b.wideSpread=true;}},
   {id:'armorPiercing',name:'ARMOR PIERCING',icon:'🔩',rarity:'rare',color:'#4488ff',worldGate:0,
     desc:'Bullets ignore enemy shields',stackable:false,
     apply:function(b){b.armorPiercing=true;}},
@@ -3507,7 +3511,7 @@ var CAMPAIGN_UPGRADES = [
     desc:'Deploy mine every 4s — explodes on enemy contact (3 dmg, 30px)',stackable:false,
     apply:function(b){b.proximityMines=true;b.mineInterval=4;}},
   {id:'ricochetRounds',name:'RICOCHET ROUNDS',icon:'↗',rarity:'epic',color:'#aa44ff',worldGate:2,
-    desc:'Bullets bounce to 1 nearby enemy on hit',stackable:false,
+    desc:'Bullets bounce off enemies and hit another nearby target',stackable:false,
     apply:function(b){b.ricochet=true;}},
   {id:'phaseCloak',name:'PHASE CLOAK',icon:'👻',rarity:'epic',color:'#aa44ff',worldGate:3,
     desc:'2s invulnerability every 12s (auto-triggers)',stackable:false,
@@ -3525,9 +3529,9 @@ var CAMPAIGN_UPGRADES = [
   {id:'quantumShield',name:'QUANTUM SHIELD',icon:'🔮',rarity:'legendary',color:'#ffd700',worldGate:3,
     desc:'Auto-regenerate 1 HP every 20s',stackable:true,maxStack:2,
     apply:function(b){b.regenInterval=Math.max(10,(b.regenInterval||20)-5);b.hasRegen=true;}},
-  {id:'singularity',name:'SINGULARITY',icon:'🌀',rarity:'legendary',color:'#ffd700',worldGate:4,
-    desc:'Every 15s, pull all enemies towards the center',stackable:false,
-    apply:function(b){b.singularity=true;}},
+  {id:'timeWarpLeg',name:'TIME WARP',icon:'⏳',rarity:'legendary',color:'#ffd700',worldGate:4,
+    desc:'Every 15s, freeze all enemies for 2 seconds',stackable:false,
+    apply:function(b){b.timeWarpLeg=true;}},
   {id:'berserker',name:'BERSERKER PROTOCOL',icon:'😈',rarity:'legendary',color:'#ffd700',worldGate:3,
     desc:'Below 2 HP: 2x damage + 2x fire rate',stackable:false,
     apply:function(b){b.berserker=true;}},
@@ -4020,6 +4024,7 @@ var _campaignRunTimer=0;
 var _campaignDamageTaken=0;
 var _campaignUpgradesTaken=0;
 var _campaignBrokerDeclinedAll=true;
+var _campaignActiveEffects=[]; // tracks broker deals + jester results for pause display
 var _campaignSkippedUpgrades=0;
 var _campaignOverkillDmg=0;
 var _campaignBossKillTimes=[];
@@ -4033,7 +4038,7 @@ var _chainFireBurstTimer=0;
 var _pendingRogueUnlocks=[];
 function resetChallengeTracking(){
   _campaignRunTimer=0;_campaignDamageTaken=0;_campaignUpgradesTaken=0;
-  _campaignBrokerDeclinedAll=true;_campaignSkippedUpgrades=0;
+  _campaignBrokerDeclinedAll=true;_campaignSkippedUpgrades=0;_campaignActiveEffects=[];
   _campaignOverkillDmg=0;_campaignBossKillTimes=[];_campaignPhoenixUsed=false;
   _campaignCoinsCollected=0;_campaignEnemiesSpawned=0;_campaignEnemiesKilled=0;
   _ironHeartCounter=0;_chainFireBurstTimer=0;
@@ -8216,6 +8221,8 @@ function gameLoop(ts) {
   const t=ts/1000;
   _gameFrameCount++;
   const stats=computeStats();
+  // Ensure player HP stays within bounds
+  if(_campaignMode&&player&&stats.maxLives){player.maxLives=Math.max(1,stats.maxLives);if(player.lives>player.maxLives)player.lives=player.maxLives;}
   // Cache alive enemies once per frame (avoid repeated filter calls in bullet loop)
   var _frameAlive=enemies.filter(function(e){return e.alive&&!e.entering;});
 
@@ -8273,7 +8280,8 @@ let moveDx = 0;
     // freeTriple forces 3-way spread even without multishot upgrade
     const shotCount = stats.freeTriple ? 2 : stats.multishot;
     const shots=stats.quadShot?[[-24,0],[-8,0],[8,0],[24,0]]:shotCount>=2?[[-16,0],[0,0],[16,0]]:shotCount>=1?[[-10,0],[10,0]]:[[0,0]];
-    shots.forEach(([ox])=>bullets.push({x:player.x+ox,y:player.y-16,spd:stats.bulletSpeed,pierce,hit:new Set(),trail:[]}));
+    var _spreadAng=stats._wideSpread?0.15:0;
+    shots.forEach(([ox],si)=>{var _sa=_spreadAng*(si-(shots.length-1)/2);var b={x:player.x+ox,y:player.y-16,spd:stats.bulletSpeed,pierce:pierce,hit:new Set(),trail:[]};if(_sa!==0){b._vx=Math.sin(_sa)*stats.bulletSpeed;b._vy=-Math.cos(_sa)*stats.bulletSpeed;}bullets.push(b);});
     // Rapid Payload — extra bullets with slight spread
     if(_campaignMode&&stats._campaignExtraBullets>0){
       for(var _rp=0;_rp<stats._campaignExtraBullets;_rp++){
@@ -8375,20 +8383,23 @@ let moveDx = 0;
       }
     }
     // Singularity pull
-    if(stats._campaignSingularity){
+    // Time Warp — freeze all enemies for 2s every 15s
+    if(stats._campaignTimeWarp){
       _campaignSingularityTimer-=dt;
       if(_campaignSingularityTimer<=0&&!_singularityActive){
         _campaignSingularityTimer=15;
-        _singularityActive=true;_singularityCenter={x:W/2,y:H*0.3};_singularityEnd=performance.now()+2000;
+        _singularityActive=true;_singularityEnd=performance.now()+2000;
         try{sfx('bomb');}catch(ex){}
+        floatTexts.push({x:W/2,y:H*0.3,text:'⏳ TIME WARP',col:'#ffd700',life:1.0,vy:-1,big:true});
       }
       if(_singularityActive){
         if(performance.now()>_singularityEnd||gState!=='playing'){_singularityActive=false;}
         else{
-          var _sc=_singularityCenter;
-          enemies.forEach(function(e){if(!e.alive||e.entering)return;var dx=_sc.x-e.x,dy=_sc.y-e.y;var d=Math.max(1,Math.hypot(dx,dy));e.x+=dx/d*2.5;e.y+=dy/d*2.5;});
-          if(particles.length<40&&Math.random()<0.4)particles.push({type:'spark',x:_sc.x+(Math.random()-0.5)*80,y:_sc.y+(Math.random()-0.5)*80,vx:(_sc.x-(_sc.x+(Math.random()-0.5)*80))*0.02,vy:(_sc.y-(_sc.y+(Math.random()-0.5)*80))*0.02,life:0.5,maxLife:0.5,r:1.5,col:'#aa44ff'});
+          // Freeze enemies in place (zero their movement)
+          _frameAlive.forEach(function(e){e.frozen=true;});
         }
+      } else {
+        _frameAlive.forEach(function(e){if(e.frozen)e.frozen=false;});
       }
     }
     // Orbital drones — staggered volley attacks
@@ -8430,7 +8441,7 @@ let moveDx = 0;
             // Impact — AoE explosion
             spawnExplosion(_od.tx,_od.ty,'#00f5ff',6,true);
             try{sfx('bomb');}catch(ex){}
-            enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-_od.tx,e.y-_od.ty)<40){e.hp-=stats.damage*2;e.hitFlash=1;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#ff8800',4);}}});
+            enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-_od.tx,e.y-_od.ty)<50){e.hp-=stats.damage*3.5;e.hitFlash=1;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#ff8800',5,true);}}});
             _od.state='return';_od.returnT=0;
           }
         } else if(_od.state==='return'){
@@ -8511,7 +8522,7 @@ let moveDx = 0;
     // Afterburn trails — damage enemies touching trails
     _campaignAfterTrails=_campaignAfterTrails.filter(function(t){
       t.life-=dt;
-      enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-t.x,e.y-t.y)<12){e.hp=Math.max(0,e.hp-stats.damage*0.08*dt*60);e.hitFlash=0.15;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#ff8800',3);}}});
+      enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-t.x,e.y-t.y)<14){e.hp=Math.max(0,e.hp-stats.damage*0.12*dt*60);e.hitFlash=0.2;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#ff8800',3);}}});
       return t.life>0;
     });
   }
@@ -8549,13 +8560,13 @@ let moveDx = 0;
       enemies.forEach(function(e){if(!e.alive||e.entering)return;var gd=Math.hypot(e.x-b.x,e.y-b.y);if(gd<50&&gd>5){e.x+=(b.x-e.x)/gd*1.5;e.y+=(b.y-e.y)/gd*1.5;if(particles.length<40&&Math.random()<0.12)particles.push({type:'spark',x:e.x,y:e.y,vx:(b.x-e.x)/gd*0.5,vy:(b.y-e.y)/gd*0.5,life:0.3,maxLife:0.3,r:1,col:'#aa44ff'});}});
     }
     // Afterburn — leave damage trail
-    if(_campaignMode&&stats._campaignAfterburn&&!b.missile&&!b.drone&&Math.random()<0.25&&_campaignAfterTrails.length<20){
-      _campaignAfterTrails.push({x:b.x,y:b.y,life:0.35});
+    if(_campaignMode&&stats._campaignAfterburn&&!b.missile&&!b.drone&&Math.random()<0.4&&_campaignAfterTrails.length<25){
+      _campaignAfterTrails.push({x:b.x,y:b.y,life:0.5});
     }
     // Ember Trail — leave short damage trail only near enemies
-    if(_campaignMode&&stats._emberTrail&&!b.missile&&!b.drone&&Math.random()<0.2&&_campaignAfterTrails.length<20){
-      var _nearE=false;for(var _ei=0;_ei<enemies.length;_ei++){if(enemies[_ei].alive&&Math.hypot(enemies[_ei].x-b.x,enemies[_ei].y-b.y)<60){_nearE=true;break;}}
-      if(_nearE) _campaignAfterTrails.push({x:b.x,y:b.y,life:0.25});
+    if(_campaignMode&&stats._emberTrail&&!b.missile&&!b.drone&&Math.random()<0.35&&_campaignAfterTrails.length<25){
+      var _nearE=false;for(var _ei=0;_ei<_frameAlive.length;_ei++){if(Math.hypot(_frameAlive[_ei].x-b.x,_frameAlive[_ei].y-b.y)<80){_nearE=true;break;}}
+      if(_nearE) _campaignAfterTrails.push({x:b.x,y:b.y,life:0.45});
     }
     if(b._vx!==undefined){b.x+=b._vx;b.y+=b._vy;} else b.y-=b.spd;
     // Ricochet — bounce off top of screen once (bullet reverses direction downward)
@@ -8657,6 +8668,7 @@ let moveDx = 0;
   const alive=enemies.filter(e=>e.alive&&!e.entering);
   var _campSlow=(_campaignMode&&stats.enemySlowBonus>0)?(1-stats.enemySlowBonus):1;
   if(_campaignMode&&_campaignBulletTimeFactor<1) _campSlow*=_campaignBulletTimeFactor;
+  if(_campaignMode&&_singularityActive) _campSlow=0; // Time Warp: freeze enemies
   // Campaign effective wave — use waveInWorld + gentle world bonus instead of absolute wave for speed/fire
   var _campEffWave=wave;
   if(_campaignMode&&typeof _campaignWorld==='number'){
@@ -8684,6 +8696,8 @@ let moveDx = 0;
         if(!e.alive||e.entering) return;
         e.x+=eDir*16;
         if(drop) e.y+=16*eYDir;
+        // DISCO FEVER — random jitter on funkytown enemies
+        if(e.discoJitter) e.x+=(Math.random()-0.5)*8;
         // ENTROPY FIELD — random drift per enemy
         if(hasPerk('entropyField')){
           if(!entropyOffsets.has(e)){ entropyOffsets.set(e,{dx:(Math.random()-0.5)*2,dy:(Math.random()-0.5)*2}); }
@@ -8922,7 +8936,7 @@ let moveDx = 0;
   powerupDrops.forEach((p,i)=>{
     p.y+=1.8; p.pulse+=dt*4;
     // Magnet Field — pull powerups toward player
-    if(_campaignMode&&stats._magnetRadius>0&&player){var _md=Math.hypot(p.x-player.x,p.y-player.y);if(_md<stats._magnetRadius&&_md>5){p.x+=(player.x-p.x)/_md*3;p.y+=(player.y-p.y)/_md*3;}}
+    if(_campaignMode&&stats._magnetRadius>0&&player){var _md=Math.hypot(p.x-player.x,p.y-player.y);if(_md<stats._magnetRadius&&_md>5){var _mSpd=4+6*(1-_md/stats._magnetRadius);p.x+=(player.x-p.x)/_md*_mSpd;p.y+=(player.y-p.y)/_md*_mSpd;}}
     const def=POWERUP_DEFS[p.id];
     ctx.save();
     const glow=0.6+Math.sin(p.pulse)*0.4;
@@ -8957,7 +8971,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       spawnPowerupPickup(p.x,p.y,def.color,def.icon);
       if(def.instant){
         if(p.id==='fullHealth'){
-          if(!(_campaignMode&&_campaignBuffs.mutNoHealing)) player.lives=player.maxLives;
+          if(!(_campaignMode&&_campaignBuffs.mutNoHealing)){var _fhMax=_campaignMode?Math.max(1,computeCampaignStats().maxLives||3):player.maxLives;player.lives=Math.min(_fhMax,player.maxLives);}
           updateHUD();
           showToast('❤️ FULL HEALTH RESTORED!');
         } else if(p.id==='nuke'){
@@ -9077,7 +9091,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             spawnExplosion(e.x,e.y,e.campaignColor||['#ff00cc','#00f5ff','#ff6600'][e.type],2);
             if(_campaignMode&&stats._campaignExplosive){enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<40){n.hp-=_dmg*0.5;n.hitFlash=1;spawnExplosion(n.x,n.y,n.campaignColor||'#ff8800',2);if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;}}});}
             // Missile splash damage on hit
-            if(b.missile&&_campaignMode){spawnExplosion(e.x,e.y,'#ff6600',5,true);enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<30){n.hp-=_dmg*0.6;n.hitFlash=1;if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;spawnExplosion(n.x,n.y,n.campaignColor||'#ff6600',3);}}});}
+            if(b.missile&&_campaignMode){spawnExplosion(e.x,e.y,'#ff6600',6,true);shake(2,0.08);enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<40){n.hp-=_dmg*0.8;n.hitFlash=1;if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;spawnExplosion(n.x,n.y,n.campaignColor||'#ff6600',4);}}});}
             // Split Shot — bullets split into 2 on hit
             if(_campaignMode&&stats._loadoutSplitShot&&!b.split&&!b.missile&&!b.drone&&!b.overcharge&&!b.blossom){
               var _sDmg=_dmg*stats._loadoutSplitDmg;
@@ -9178,7 +9192,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
               powerupDrops.push({x:e.x, y:e.y, id:pid, pulse:0});
             }
             spawnExplosion(e.x,e.y,['#ff00cc','#00f5ff','#ff6600'][e.type],5);
-            sfx('enemyDie'); killCount++; totalRunKills++; SAVE.lifetimeStats.totalKills++; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.kills++;
+            sfx('enemyDie'); killCount++; totalRunKills++; if(!_campaignMode){SAVE.lifetimeStats.totalKills++;if(SAVE.dailyChallengeStats)SAVE.dailyChallengeStats.kills++;}
             // Chain lightning
             if(activePowerups['chainLightning']){
               const nearby=enemies.filter(n=>n.alive&&n!==e&&!n.mini).sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,2);
@@ -9305,7 +9319,8 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   // ── COLLISION: eBullets vs player ───────────────
   if(player.inv<=0) {
     eBullets.forEach((b,i)=>{
-      if(Math.abs(b.x-player.x)<16&&Math.abs(b.y-player.y)<16){
+      var _ebHitR=(_campaignMode&&CAMPAIGN_WORLDS[_campaignWorld]&&CAMPAIGN_WORLDS[_campaignWorld].id==='ocean')?22:16;
+      if(Math.abs(b.x-player.x)<_ebHitR&&Math.abs(b.y-player.y)<_ebHitR){
         eBullets.splice(i,1);
         if(stats.reduction>0&&Math.random()<stats.reduction) return; // reduced hit
         if(_campaignMode&&stats._campaignDodge>0&&Math.random()<stats._campaignDodge){floatTexts.push({x:player.x,y:player.y-14,text:'DODGE!',col:'#88ddff',life:0.9,vy:-1.5,big:true});return;}
@@ -10013,7 +10028,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     ctx.save();ctx.globalAlpha=0.4;
     _campaignAfterTrails.forEach(function(t){
       var a=Math.max(0,t.life/0.5);
-      ctx.fillStyle='rgba(255,140,0,'+a*0.4+')';ctx.beginPath();ctx.arc(t.x,t.y,2.5*a,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,140,0,'+a*0.6+')';ctx.beginPath();ctx.arc(t.x,t.y,3.5*a,0,Math.PI*2);ctx.fill();
     });
     ctx.restore();
   }
@@ -10719,9 +10734,11 @@ function waveCleared() {
   bulwarkUsedThisWave=false;
   document.getElementById('reset-btn').style.display = 'block';
   document.getElementById('drag-indicator').style.display = 'none';
-  SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; SAVE.savedTotalKills=totalRunKills; SAVE.savedTotalRunCoins=totalRunCoins;
-  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
-  if(SAVE.dailyChallengeStats && wave > (SAVE.dailyChallengeStats.waveReached||0)) SAVE.dailyChallengeStats.waveReached = wave;
+  if(!_campaignMode){
+    SAVE.savedWave=wave+1; SAVE.savedBombs=sessionBombs; SAVE.savedTotalKills=totalRunKills; SAVE.savedTotalRunCoins=totalRunCoins;
+    if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+    if(SAVE.dailyChallengeStats && wave > (SAVE.dailyChallengeStats.waveReached||0)) SAVE.dailyChallengeStats.waveReached = wave;
+  }
   if(!waveDamageTaken) { SAVE.lifetimeStats.perfectWaves = (SAVE.lifetimeStats.perfectWaves||0) + 1; if(SAVE.dailyChallengeStats) SAVE.dailyChallengeStats.perfectWaves = (SAVE.dailyChallengeStats.perfectWaves||0) + 1; }
   // Unlock synergies as soon as wave 21 is reached (even before death/quit)
   if(wave >= 21 && !SAVE.synergiesUnlocked){ SAVE.synergiesUnlocked = true; }
@@ -10746,9 +10763,9 @@ function waveCleared() {
   SAVE.totalScore = prevTotal + waveEarned + waveBonus;
   SAVE.savedScore = score;
   doSave();
-  var newAchievements = checkAchievements();
-  checkDailyChallenges();
-  const newTrophies = checkNewTrophies(prevTotal);
+  var newAchievements = _campaignMode?[]:checkAchievements();
+  if(!_campaignMode) checkDailyChallenges();
+  const newTrophies = _campaignMode?[]:checkNewTrophies(prevTotal);
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById('hud').style.display='none';
   document.getElementById('controls').style.display='none';
@@ -10880,10 +10897,12 @@ function _doAscensionConfirmed() {
     activeSynergies: computeSynergies(),
     kills: totalRunKills
   };
-  // Update final lifetime stats from this run
-  if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
-  SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + totalRunCoins + sessionCoins;
-  checkAchievements();
+  // Update final lifetime stats from this run (not campaign)
+  if(!_campaignMode){
+    if(wave > (SAVE.lifetimeStats.highestWaveReached||0)) SAVE.lifetimeStats.highestWaveReached = wave;
+    SAVE.lifetimeStats.totalCoinsCollected = (SAVE.lifetimeStats.totalCoinsCollected||0) + totalRunCoins + sessionCoins;
+    checkAchievements();
+  } else { /* campaign stats tracked separately in SAVE.campaignData */ }
   // Preserve persistent data before reset
   var savedEchoes = (SAVE.echoes||0) + echoGain;
   var savedTotalEchoes = (SAVE.totalEchoes||0) + echoGain;
@@ -17496,7 +17515,7 @@ function showWorldOverview(){
   setTimeout(function(){var c=document.getElementById('wo-challenges');if(c)c.style.opacity='1';},200);
   setTimeout(function(){var b=document.getElementById('wo-buttons');if(b)b.style.opacity='1';},250);
   // Contextual tips for first-time encounters
-  setTimeout(function(){showCampaignTip('tip_worldOverview','Select a world and tap Launch to begin your run.',{position:'bottom',icon:'🗺️'});},600);
+  setTimeout(function(){if(!document.getElementById('rogue-unlock-cinematic'))showCampaignTip('tip_worldOverview','Select a world and tap Launch to begin your run.',{position:'bottom',icon:'🗺️'});},600);
   if(_loadoutUnlocked){setTimeout(function(){showCampaignTip('tip_loadout','Equip abilities, weapons, and passives. Loadout items carry between runs!',{position:'center',icon:'⚔️'});},800);}
   if(mutsUnlocked){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},1000);}
   if(challengeSection){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},1200);}
@@ -17652,7 +17671,8 @@ function _updateWoSlot(slotKey){
   var icon=itm?itm.icon:'—';
   var name=itm?itm.name:'NONE';
   var col=itm?itm.color:'#556';
-  slotEl.style.border=itm?'1px solid '+col+'66':'1px dashed #445';
+  slotEl.style.border=itm?'2px solid '+col+'88':'2px dashed #ff880044';
+  slotEl.style.background=itm?'linear-gradient(180deg,#14141e 0%,#0a0a0f 100%)':'linear-gradient(180deg,#1a1510 0%,#0d0d15 100%)';
   var divs=slotEl.querySelectorAll(':scope > div');
   if(divs[0])divs[0].textContent=icon;
   if(divs[2]){divs[2].textContent=name;divs[2].style.color=col;}
@@ -17929,10 +17949,10 @@ function showRogueLoadoutPicker(slotKey,items){
       card.addEventListener('touchmove',function(e){if(Math.abs(e.touches[0].clientY-_touchY)>8)_touchMoved=true;},{passive:true});
       card.addEventListener('touchend',function(e){
         if(_touchMoved) return;
-        e.preventDefault();
         if(card.getAttribute('data-can')!=='1') return;
+        e.preventDefault();
         _selectAndClose(card.getAttribute('data-id'));
-      });
+      },{passive:false});
       card.onclick=function(){
         if(card.getAttribute('data-can')!=='1') return;
         _selectAndClose(card.getAttribute('data-id'));
@@ -18511,7 +18531,7 @@ function computeCampaignStats(){
   if(_chainFireBurstTimer>0) baseFR*=0.5; // Chaos Engine 2pc: double fire rate during burst
   var baseSpd=4.0*(b.speedMult||1);
   var baseBSpd=9.0*(b.bulletSpdMult||1);
-  var maxLives=Math.min(8,3+(b.bonusHP||0));
+  var maxLives=Math.min(8,Math.max(1,3+(b.bonusHP||0)));
   if(b.berserker&&player&&player.lives<=2){baseDmg*=2;baseFR*=0.5;}
   // Loadout berserker: triggers at 50% HP (not 2 HP like campaign berserker)
   if(b.loadoutBerserker&&player&&player.lives<=Math.floor((3+(b.bonusHP||0))/2)){
@@ -18519,7 +18539,7 @@ function computeCampaignStats(){
   }
   // Loadout Last Stand: at 1 HP, boost damage and fire rate
   if(b.loadoutLastStand&&player&&player.lives===1){baseDmg*=(b.loadoutLastStandDmg||1.20);baseFR*=(b.loadoutLastStandFR||0.80);}
-  if(b.spreadShot) baseDmg*=0.6; // spread shot: more bullets but less damage each
+  // (spreadShot removed — wideSpread uses angle spread, no damage change)
   if(b.overdrive&&_overdriveTimer>0){baseDmg*=1.40;baseFR*=0.60;} // overdrive: +40% dmg +40% FR for 10s after hit
   if(b.setDamageFRBoost&&_fortressFRTimer>0) baseFR*=0.70; // fortress 3pc: +30% FR for 2s after hit
   if(b.setStormDmgBoost>0&&player&&player.lives<=Math.floor(maxLives/2)) baseDmg*=(1+b.setStormDmgBoost); // storm bringer 3pc: +15% dmg below 50% HP
@@ -18533,7 +18553,8 @@ function computeCampaignStats(){
   _cachedCampaignStats={
     fireCooldown:Math.max(40,baseFR),
     bulletSpeed:baseBSpd,
-    multishot:b.spreadShot?4:(b.tripleShot?2:(b.doubleShot?1:0)),
+    multishot:b.tripleShot?2:(b.doubleShot?1:0),
+    _wideSpread:!!b.wideSpread,
     damage:baseDmg,
     speed:baseSpd,
     maxLives:glassMaxHP,
@@ -18560,7 +18581,7 @@ function computeCampaignStats(){
     _campaignMissileInterval:b.missileInterval||2.0,
     _campaignRegen:!!b.hasRegen,
     _campaignRegenInterval:b.regenInterval||20,
-    _campaignSingularity:!!b.singularity,
+    _campaignTimeWarp:!!b.timeWarpLeg,
     _campaignMagnetRadius:b.magnetRadius||0,
     _campaignRicochet:!!b.ricochet,
     _campaignScrapHeal:b.scrapHealChance||0,
@@ -18811,15 +18832,9 @@ function spawnCampaignWave(){
         }
       }
     }
-    // World modifier: DISCO VIP (funkytown) — 1 random enemy gets 2x HP, 3x coins
-    if(world.id==='funkytown'&&enemies.length>0){
-      var vipIdx=Math.floor(Math.random()*enemies.length);
-      var vip=enemies[vipIdx];
-      if(vip&&vip.alive){
-        vip.hp=vip.hp*2;vip.maxHp=vip.hp;
-        vip.discoVIP=true;vip.coinVal=(vip.coinVal||0);vip.vipCoinMult=3;
-        vip.scoreVal=(vip.scoreVal||10)*2;
-      }
+    // World modifier: DISCO FEVER (funkytown) — enemies get random jitter movement
+    if(world.id==='funkytown'){
+      enemies.forEach(function(e){if(e.alive)e.discoJitter=true;});
     }
   }
   eDir=1;eMoveTimer=0;
@@ -19057,7 +19072,7 @@ function campaignWaveCleared(){
   var _pickCb=function(){showCampaignUpgradePick(isRegularBoss);};
   if(shouldShowChaosJester()){
     // Jester replaces the upgrade pick — go straight to next wave after
-    showChaosJester(function(){gState='playing';lastTime=performance.now();rafId=requestAnimationFrame(gameLoop);});
+    showChaosJester(function(){startNextCampaignWave();});
   } else if(shouldShowVoidBroker()){
     showVoidBroker(_pickCb);
   } else {
@@ -19204,9 +19219,11 @@ function showChaosJester(onDone){
       if(isPositive){
         resultItem=CHAOS_JESTER_BUFFS[Math.floor(Math.random()*CHAOS_JESTER_BUFFS.length)];
         resultItem.apply(_campaignBuffs);
+        _campaignActiveEffects.push({icon:'🃏',name:resultItem.name,col:'#44ff88',type:'buff'});
       } else {
         resultItem=CHAOS_JESTER_DEBUFFS[Math.floor(Math.random()*CHAOS_JESTER_DEBUFFS.length)];
         resultItem.apply(_campaignBuffs);
+        _campaignActiveEffects.push({icon:'🃏',name:resultItem.name,col:'#ff4455',type:'debuff'});
       }
       // Update player stats
       try{var s=computeCampaignStats();if(player){player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives,player.maxLives);if(player.lives<1)player.lives=1;}}catch(e){}
@@ -19322,6 +19339,8 @@ function showVoidBroker(onDone){
       deal.applyBuff(_campaignBuffs);
       deal.applyDebuff(_campaignBuffs);
       _campaignBrokerDeclinedAll=false;
+      _campaignActiveEffects.push({icon:'👁‍🗨',name:deal.buffName,col:deal.buffColor,type:'buff'});
+      _campaignActiveEffects.push({icon:deal.debuffIcon,name:deal.debuffName,col:'#ff4455',type:'debuff'});
       // Flash red+green
       overlay.style.transition='background 0.3s';
       overlay.style.background='rgba(255,34,0,0.3)';
@@ -19587,9 +19606,9 @@ function showCampaignUpgradePick(isBossReward){
     _campaignUpgradesTaken++;
     if(chosen.id==='arsenalOverload'){floatTexts.push({x:player?player.x:W/2,y:player?player.y-20:H/2,text:'⚡ OVERLOAD!',col:'#ffd700',life:1.5,vy:-1.2});spawnExplosion(player?player.x:W/2,player?player.y:H/2,'#ffd700',8,true);if(player)player.shieldFlash=0.6;shake(4,0.2);}
     try{
-    if(chosen.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=_campaignBuffs._hpLocked?player.maxLives:s.maxLives;if(!_campaignBuffs._hpLocked)player.lives=Math.min(player.lives+1,player.maxLives);}
+    if(chosen.id==='hpUp'&&player){if(_campaignBuffs._hpLocked){floatTexts.push({x:player.x,y:player.y-40,text:'🔒 HP LOCKED',col:'#ff4455',life:1.2,vy:-1.5,big:true});}else{var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);}}
     if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=1;}
-    if(chosen.id==='shield'){_campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);if(player)player.shieldFlash=0.5;updateHUD();}
+    if(chosen.id==='shield'){if(_campaignBuffs._noShields){floatTexts.push({x:player?player.x:W/2,y:player?player.y-40:H/2,text:'🔒 SHIELDS DISABLED',col:'#ff4455',life:1.2,vy:-1.5,big:true});}else{_campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);if(player)player.shieldFlash=0.5;updateHUD();}}
     }catch(e){ console.error('Upgrade stats error:',e); }
 
     // ═══ Phase C: FADE OVERLAY → REVEAL SHIP → FLY ICON → IMPACT ═══
@@ -19844,6 +19863,8 @@ function startNextCampaignWave(){
 
 // ── WORLD TRANSITION ─────────────────────────────────────
 function showWorldCleared(worldIdx){
+  // Clear leftover visuals
+  powerupDrops=[];coinDrops=[];particles=[];eBullets=[];_campaignMines=[];_campaignAfterTrails=[];
   var world=CAMPAIGN_WORLDS[worldIdx];
   var upgradeCount=_campaignPickedUpgrades.length;
   var upgradeIcons=_campaignPickedUpgrades.map(function(id){
@@ -19977,7 +19998,7 @@ function showWorldCleared(worldIdx){
   setTimeout(function(){var e=document.getElementById('wc-challenges-done');if(e)e.style.opacity='1';},1300);
   setTimeout(function(){var e=document.getElementById('wc-unlock-hint');if(e)e.style.opacity='1';},1500);
   setTimeout(function(){var e=document.getElementById('wc-buttons');if(e)e.style.opacity='1';},1600);
-  setTimeout(function(){showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},2000);
+  setTimeout(function(){if(!document.getElementById('rogue-unlock-cinematic'))showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},2000);
   // Themed particle burst
   setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2500);},200);
   // Continue button → World Overview (with unlock cinematic if applicable)
@@ -20002,6 +20023,7 @@ function showWorldCleared(worldIdx){
 
 // ── ROGUE UNLOCK CINEMATIC ────────────────────────────────
 function showRogueUnlockCinematic(unlocks){
+  try{
   if(!unlocks||!unlocks.length) return;
   var ov=document.createElement('div');
   ov.id='rogue-unlock-cinematic';
@@ -20063,6 +20085,7 @@ function showRogueUnlockCinematic(unlocks){
     };
   }
   setTimeout(showCard,400);
+  }catch(e){console.error('Unlock cinematic error:',e);var _staleOv=document.getElementById('rogue-unlock-cinematic');if(_staleOv)_staleOv.remove();}
 }
 
 function showCampaignWorldTransition(newWorldIdx,onDone){
@@ -20199,6 +20222,16 @@ function toggleRoguePause(){
       '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:2px;margin-bottom:8px">UPGRADES ACQUIRED</div>'+
       '<div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:300px;margin:0 auto">'+upIcons+'</div></div>';
   }
+  // Active effects from Void Broker / Chaos Jester
+  var effectsHtml='';
+  if(_campaignActiveEffects.length>0){
+    effectsHtml='<div style="margin-top:14px;text-align:center"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:2px;margin-bottom:6px">ACTIVE EFFECTS</div><div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:300px;margin:0 auto">';
+    for(var _ei=0;_ei<_campaignActiveEffects.length;_ei++){
+      var _ef=_campaignActiveEffects[_ei];
+      effectsHtml+='<div style="font-family:Orbitron,sans-serif;font-size:7px;padding:3px 8px;border-radius:4px;border:1px solid '+_ef.col+'44;background:rgba(0,0,0,0.4);color:'+_ef.col+';letter-spacing:0.5px">'+_ef.icon+' '+_ef.name+'</div>';
+    }
+    effectsHtml+='</div></div>';
+  }
   ov.style.cssText+='overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px';
   ov.innerHTML=
     '<div style="font-size:56px;margin-bottom:10px;filter:drop-shadow(0 0 20px '+wColor+')">'+wEmoji+'</div>'+
@@ -20217,6 +20250,8 @@ function toggleRoguePause(){
     '</div>'+
     // Upgrades acquired
     upHtml+
+    // Active effects (broker/jester)
+    effectsHtml+
     // Buttons
     '<div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;align-items:center;width:100%;max-width:280px">'+
       '<div id="rogue-resume-btn" style="width:100%;text-align:center;font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#00f5ff;letter-spacing:4px;padding:14px 24px;border:2px solid #00f5ff44;border-radius:8px;cursor:pointer;background:rgba(0,245,255,0.06);-webkit-tap-highlight-color:transparent;transition:all 0.2s">▶ RESUME</div>'+
@@ -20306,7 +20341,7 @@ function campaignEndGame(){
     masterGain.gain.cancelScheduledValues(AC.currentTime);
     masterGain.gain.setValueAtTime(savedVol,AC.currentTime);
   }
-  powerupDrops=[];activePowerups={};enemies=[];eBullets=[];bullets=[];particles=[];thrusterParts=[];
+  powerupDrops=[];activePowerups={};enemies=[];eBullets=[];bullets=[];particles=[];thrusterParts=[];coinDrops=[];floatTexts=[];_campaignMines=[];_campaignAfterTrails=[];
   document.getElementById('reset-btn').style.display='block';
   document.getElementById('music-btn').style.display='block';
   document.getElementById('rogue-pause-btn').style.display='none';
