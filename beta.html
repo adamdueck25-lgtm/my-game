@@ -17436,10 +17436,129 @@ function openCampaign(){
     if(!SAVE.campaignData) SAVE.campaignData={};
     SAVE.campaignData.campaignIntroSeen=true;
     doSave();
-    showCampaignIntro(function(){showWorldOverview();});
+    showCampaignIntro(function(){showAdventureModeLoading(showWorldOverview);});
     return;
   }
-  showWorldOverview();
+  showAdventureModeLoading(showWorldOverview);
+}
+
+function showAdventureModeLoading(onDone){
+  var old=document.getElementById('aml-overlay');if(old)old.remove();
+  var ov=document.createElement('div');
+  ov.id='aml-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transition:opacity 0.3s;overflow:hidden';
+  ov.innerHTML=
+    '<div id="aml-logo" style="font-size:64px;opacity:0;transform:scale(0.3);transition:all 0.5s cubic-bezier(.17,.67,.35,1.4)">⚔️</div>'+
+    '<div id="aml-title" style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#ff8800;letter-spacing:5px;margin-top:14px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.1s;text-shadow:0 0 30px #ff8800,0 0 60px #ff880044">ADVENTURE MODE</div>'+
+    '<div id="aml-sub" style="font-family:Orbitron,sans-serif;font-size:9px;color:#ff880066;letter-spacing:3px;margin-top:6px;opacity:0;transition:all 0.3s ease 0.2s">PREPARE FOR BATTLE</div>'+
+    '<div id="aml-streaks" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"></div>'+
+    '<div id="aml-world-flash" style="position:absolute;font-size:52px;opacity:0;transition:all 0.12s;pointer-events:none"></div>';
+  document.body.appendChild(ov);
+
+  // Phase 1: Blackout
+  setTimeout(function(){ov.style.opacity='1';},20);
+  try{sfx('bomb');}catch(e){}
+
+  // Phase 2: Logo reveal (400ms)
+  setTimeout(function(){
+    var l=document.getElementById('aml-logo');
+    if(l){l.style.opacity='1';l.style.transform='scale(1)';}
+    try{sfx('setComplete');}catch(e){}
+  },400);
+  setTimeout(function(){
+    var t=document.getElementById('aml-title');if(t){t.style.opacity='1';t.style.transform='translateY(0)';}
+    var s=document.getElementById('aml-sub');if(s)s.style.opacity='1';
+  },600);
+
+  // Phase 2b: Screen shake (800ms)
+  setTimeout(function(){
+    ov.style.animation='amlShake 0.3s ease';
+    try{sfx('waveClear');}catch(e){}
+    // Intensify glow
+    var t=document.getElementById('aml-title');
+    if(t) t.style.textShadow='0 0 40px #ff8800,0 0 80px #ff880066,0 0 120px #ff880033';
+  },800);
+
+  // Phase 3: Warp streaks (1400ms)
+  setTimeout(function(){
+    // Fade logo/title up
+    var l=document.getElementById('aml-logo');if(l){l.style.transition='all 0.5s';l.style.opacity='0';l.style.transform='translateY(-60px)';}
+    var t=document.getElementById('aml-title');if(t){t.style.transition='all 0.5s';t.style.opacity='0';t.style.transform='translateY(-40px)';}
+    var s=document.getElementById('aml-sub');if(s){s.style.transition='all 0.4s';s.style.opacity='0';}
+    // Generate star streaks
+    var sc=document.getElementById('aml-streaks');
+    if(sc){
+      for(var i=0;i<50;i++){
+        var str=document.createElement('div');
+        var w=30+Math.random()*70;
+        var h=1+Math.random()*1.5;
+        var y=Math.random()*100;
+        var delay=Math.random()*400;
+        var dur=0.8+Math.random()*0.4;
+        var isOrange=Math.random()<0.3;
+        str.style.cssText='position:absolute;top:'+y+'%;left:-120px;width:'+w+'px;height:'+h+'px;background:linear-gradient(90deg,transparent,'+(isOrange?'#ff8800':'#ffffff')+',transparent);border-radius:1px;transform:translateX(0);transition:transform '+dur+'s linear '+delay+'ms';
+        sc.appendChild(str);
+        setTimeout(function(s){s.style.transform='translateX(calc(100vw + 250px))';}.bind(null,str),20);
+      }
+    }
+  },1400);
+
+  // Phase 3b: World emoji flash (1800ms)
+  setTimeout(function(){
+    var wf=document.getElementById('aml-world-flash');
+    if(!wf) return;
+    var worlds=CAMPAIGN_WORLDS;
+    for(var wi=0;wi<worlds.length;wi++){
+      (function(idx){
+        setTimeout(function(){
+          if(!wf.parentNode) return;
+          wf.textContent=worlds[idx].emoji;
+          wf.style.color=worlds[idx].announceColor;
+          wf.style.filter='drop-shadow(0 0 20px '+worlds[idx].announceColor+')';
+          wf.style.opacity='1';
+          wf.style.transform='scale(0.6)';
+          setTimeout(function(){wf.style.transform='scale(1)';},20);
+          // Last emoji — portal zoom
+          if(idx===worlds.length-1){
+            setTimeout(function(){
+              wf.style.transition='all 0.4s ease';
+              wf.style.transform='scale(3)';
+              wf.style.opacity='0';
+            },100);
+          }
+        },idx*120);
+      })(wi);
+    }
+  },1800);
+
+  // Phase 4: Hide menu + start building WO behind overlay, then fade out
+  setTimeout(function(){
+    // Hide menu elements NOW while overlay is still opaque
+    var ms=document.getElementById('screen-menu');if(ms)ms.style.visibility='hidden';
+    if(typeof menuCanvas!=='undefined'&&menuCanvas)menuCanvas.style.visibility='hidden';
+    var _sc=document.getElementById('splash-canvas');if(_sc)_sc.style.visibility='hidden';
+    // Start building world overview behind the overlay
+    if(onDone) onDone();
+    onDone=null; // prevent double-call
+    // Now fade out to reveal WO
+    setTimeout(function(){
+      ov.style.transition='opacity 0.5s ease';
+      ov.style.opacity='0';
+    },100);
+  },2800);
+
+  // Cleanup (3500ms)
+  setTimeout(function(){
+    ov.remove();
+  },3400);
+}
+
+// Inject shake keyframe if not present
+if(!document.getElementById('aml-shake-style')){
+  var _amlStyle=document.createElement('style');
+  _amlStyle.id='aml-shake-style';
+  _amlStyle.textContent='@keyframes amlShake{0%,100%{transform:translate(0)}20%{transform:translate(-4px,2px)}40%{transform:translate(3px,-3px)}60%{transform:translate(-2px,-1px)}80%{transform:translate(2px,3px)}}';
+  document.head.appendChild(_amlStyle);
 }
 
 // ── WORLD OVERVIEW SCREEN ─────────────────────────────────
@@ -18623,6 +18742,11 @@ function _showNextCampaignTip(){
   var autoDismiss=o.autoDismiss||8000;
 
   setTimeout(function(){
+    // Full-screen blocking overlay — prevents clicking anything behind the tip
+    var blocker=document.createElement('div');
+    blocker.id='campaign-tip-blocker';
+    blocker.style.cssText='position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.3);pointer-events:auto;-webkit-tap-highlight-color:transparent';
+    document.body.appendChild(blocker);
     var el=document.createElement('div');
     _campaignTipEl=el;
     el.id='campaign-tip';
@@ -18644,13 +18768,13 @@ function _showNextCampaignTip(){
     } else {
       posStyle+='bottom:80px;';
     }
-    el.style.cssText='position:fixed;z-index:9999999;'+posStyle+'max-width:320px;width:calc(100% - 48px);padding:14px 18px;border-radius:12px;background:rgba(10,10,20,0.92);border:2px solid '+color+'44;box-shadow:0 0 20px '+color+'22,0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:'+initTransform+';transition:all 0.4s cubic-bezier(.17,.67,.35,1.2);pointer-events:auto;-webkit-tap-highlight-color:transparent';
+    el.style.cssText='position:fixed;z-index:9999999;'+posStyle+'max-width:320px;width:calc(100% - 48px);padding:14px 18px;border-radius:12px;background:rgba(10,10,20,0.95);border:2px solid '+color+'44;box-shadow:0 0 20px '+color+'22,0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:'+initTransform+';transition:all 0.4s cubic-bezier(.17,.67,.35,1.2);pointer-events:auto;-webkit-tap-highlight-color:transparent';
     el.innerHTML=
       '<div style="display:flex;align-items:flex-start;gap:12px">'+
         '<div style="font-size:22px;flex-shrink:0;margin-top:2px">'+icon+'</div>'+
         '<div style="flex:1">'+
           '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ccc;letter-spacing:0.5px;line-height:1.5">'+item.text+'</div>'+
-          '<div id="campaign-tip-btn" style="font-family:Orbitron,sans-serif;font-size:8px;color:'+color+';letter-spacing:3px;margin-top:10px;padding:6px 16px;border:1px solid '+color+'44;border-radius:4px;display:inline-block;cursor:pointer;-webkit-tap-highlight-color:transparent">GOT IT</div>'+
+          '<div id="campaign-tip-btn" style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:'+color+';letter-spacing:3px;margin-top:12px;padding:8px 20px;border:1.5px solid '+color+'66;border-radius:6px;display:inline-block;cursor:pointer;-webkit-tap-highlight-color:transparent;background:rgba(255,170,0,0.08)">GOT IT</div>'+
         '</div>'+
       '</div>';
     document.body.appendChild(el);
@@ -18660,18 +18784,19 @@ function _showNextCampaignTip(){
     function dismiss(){
       if(dismissed) return;
       dismissed=true;
-      clearTimeout(_campaignTipTimer);
       el.style.opacity='0';
       el.style.transform=hideTransform;
+      blocker.style.opacity='0';blocker.style.transition='opacity 0.3s';
       setTimeout(function(){
         el.remove();
+        blocker.remove();
         _campaignTipEl=null;
         _showNextCampaignTip();
       },400);
     }
+    // ONLY the GOT IT button can dismiss — no tap-anywhere, no auto-dismiss
     document.getElementById('campaign-tip-btn').onclick=dismiss;
-    el.onclick=function(e){if(e.target.id!=='campaign-tip-btn') dismiss();};
-    _campaignTipTimer=setTimeout(dismiss,autoDismiss);
+    blocker.onclick=function(e){e.stopPropagation();}; // block clicks through
     if(o.onDismiss){
       var origDismiss=dismiss;
       dismiss=function(){origDismiss();o.onDismiss();};
