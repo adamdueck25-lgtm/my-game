@@ -1825,7 +1825,9 @@ var _cwMusicCurrentKey='';
     {key:'frozen',       file:'ice.mp3'},
     {key:'frozen-alt',   file:'ice-alt.mp3'},
     {key:'jungle',       file:'jungle.mp3'},
-    {key:'jungle-alt',   file:'jungle-alt.mp3'}
+    {key:'jungle-alt',   file:'jungle-alt.mp3'},
+    {key:'abyss',        file:'void.mp3'},
+    {key:'abyss-alt',    file:'void-alt.mp3'}
   ];
   tracks.forEach(function(t){
     loadAudioFile(t.file).then(function(buf){ if(buf) _cwMusicBuffers[t.key]=buf; });
@@ -3268,7 +3270,7 @@ const DEFAULT_SAVE = { coins:0, cards:{}, setsComplete:{}, upgrades:{fireRate:0,
   achievements:{}, notificationsOn:false,
   dailyChallenges:[], dailyChallengeProgress:{}, dailyChallengeComplete:{}, dailyChallengeAllClaimed:false,
   lastDailyChallengeReset:null, dailyChallengeStats:{kills:0,coins:0,waveReached:0,bossKills:0,killStreak:0,perfectWaves:0},
-  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{}},
+  campaignData:{highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{},discoveredUpgrades:{}},
   rogueLoadout:{ability:null,weapon:null,passive:null},
   rogueUnlocks:[],
   rogueProgress:{currentWorld:0,runActive:false},
@@ -3430,9 +3432,9 @@ var CAMPAIGN_UPGRADES = [
   {id:'nanoRepair',name:'NANO REPAIR',icon:'🔋',rarity:'common',color:'#ffffff',worldGate:0,
     desc:'Restore 1 HP at wave start',stackable:true,maxStack:2,
     apply:function(b){b.waveHeal=(b.waveHeal||0)+1;}},
-  {id:'luckyDrops',name:'LUCKY DROPS',icon:'🍀',rarity:'rare',color:'#4488ff',worldGate:0,
+  {id:'luckyDrops',name:'LUCKY DROPS',icon:'🍀',rarity:'epic',color:'#aa44ff',worldGate:1,
     desc:'Small chance enemies drop a powerup on kill',stackable:false,
-    apply:function(b){b.luckyDropChance=0.03;}},
+    apply:function(b){b.luckyDropChance=0.02;}},
   // ── RARE ──
   {id:'spreadShot',name:'WIDE SPREAD',icon:'🔫',rarity:'rare',color:'#4488ff',worldGate:0,
     desc:'Bullets fire in a wider pattern',stackable:false,
@@ -3444,7 +3446,7 @@ var CAMPAIGN_UPGRADES = [
     desc:'3-Way Spread Shot',stackable:false,
     apply:function(b){b.tripleShot=true;}},
   {id:'shield',name:'ENERGY BARRIER',icon:'🔰',rarity:'rare',color:'#4488ff',worldGate:0,
-    desc:'Shield absorbs 1 hit per wave',stackable:true,maxStack:3,
+    desc:'Shield absorbs 1 hit per wave',stackable:true,maxStack:2,
     apply:function(b){b.shieldCharges=(b.shieldCharges||0)+1;}},
   {id:'explosive',name:'EXPLOSIVE ROUNDS',icon:'💣',rarity:'rare',color:'#4488ff',worldGate:1,
     desc:'Bullets explode for AoE damage',stackable:false,
@@ -3464,7 +3466,7 @@ var CAMPAIGN_UPGRADES = [
   {id:'overcharge',name:'OVERCHARGE',icon:'🔥',rarity:'rare',color:'#4488ff',worldGate:1,
     desc:'Every 10th shot fires a 5x piercing beam',stackable:false,
     apply:function(b){b.overcharge=true;}},
-  {id:'afterburn',name:'AFTERBURN',icon:'🔥',rarity:'rare',color:'#4488ff',worldGate:1,
+  {id:'afterburn',name:'AFTERBURN',icon:'🌡',rarity:'rare',color:'#4488ff',worldGate:1,
     desc:'Hits mark enemies burning — burn targets take 50% extra damage for 1s',stackable:false,
     apply:function(b){b.afterburn=true;}},
   {id:'magnetField',name:'MAGNET FIELD',icon:'🧲',rarity:'rare',color:'#4488ff',worldGate:1,
@@ -3474,10 +3476,10 @@ var CAMPAIGN_UPGRADES = [
   {id:'pierce',name:'PIERCING BOLTS',icon:'🗡',rarity:'epic',color:'#aa44ff',worldGate:1,
     desc:'Bullets pierce through enemies',stackable:false,
     apply:function(b){b.pierce=true;}},
-  {id:'overdrive',name:'OVERDRIVE',icon:'🔥',rarity:'epic',color:'#aa44ff',worldGate:1,
+  {id:'overdrive',name:'OVERDRIVE',icon:'⚡',rarity:'epic',color:'#aa44ff',worldGate:1,
     desc:'+40% damage & fire rate for 10s after taking damage',stackable:false,
     apply:function(b){b.overdrive=true;}},
-  {id:'emberTrail',name:'EMBER TRAIL',icon:'🔥',rarity:'epic',color:'#aa44ff',worldGate:1,
+  {id:'emberTrail',name:'EMBER TRAIL',icon:'🔶',rarity:'epic',color:'#aa44ff',worldGate:1,
     desc:'Bullets leave damaging embers near enemies',stackable:false,
     apply:function(b){b.emberTrail=true;}},
   {id:'homing',name:'SMART ROUNDS',icon:'🎯',rarity:'epic',color:'#aa44ff',worldGate:2,
@@ -3504,16 +3506,16 @@ var CAMPAIGN_UPGRADES = [
   {id:'bulletTime',name:'BULLET TIME',icon:'⏱',rarity:'epic',color:'#aa44ff',worldGate:3,
     desc:'Below 50% HP: enemies slow 40%',stackable:false,
     apply:function(b){b.bulletTime=true;}},
-  {id:'voidEcho',name:'VOID ECHO',icon:'👻',rarity:'epic',color:'#aa44ff',worldGate:3,
+  {id:'voidEcho',name:'VOID ECHO',icon:'🌀',rarity:'epic',color:'#aa44ff',worldGate:3,
     desc:'Taking damage releases a damage nova',stackable:false,
     apply:function(b){b.voidEcho=true;}},
-  {id:'proximityMines',name:'PROXIMITY MINE',icon:'💣',rarity:'rare',color:'#4488ff',worldGate:2,
+  {id:'proximityMines',name:'PROXIMITY MINE',icon:'💥',rarity:'rare',color:'#4488ff',worldGate:2,
     desc:'Deploy mine every 4s — explodes on enemy contact (3 dmg, 30px)',stackable:false,
     apply:function(b){b.proximityMines=true;b.mineInterval=4;}},
   {id:'ricochetRounds',name:'RICOCHET ROUNDS',icon:'↗',rarity:'epic',color:'#aa44ff',worldGate:2,
     desc:'Bullets bounce off enemies and hit another nearby target',stackable:false,
     apply:function(b){b.ricochet=true;}},
-  {id:'phaseCloak',name:'PHASE CLOAK',icon:'👻',rarity:'epic',color:'#aa44ff',worldGate:3,
+  {id:'phaseCloak',name:'PHASE CLOAK',icon:'🫥',rarity:'epic',color:'#aa44ff',worldGate:3,
     desc:'2s invulnerability every 12s (auto-triggers)',stackable:false,
     apply:function(b){b.phaseCloak=true;b.phaseCloakInterval=12;}},
   {id:'shadowClone',name:'SHADOW CLONE',icon:'👥',rarity:'epic',color:'#aa44ff',worldGate:2,
@@ -3978,6 +3980,170 @@ function showMutatorPopup(){
         badge.style.borderColor=cm.length>0?'#ff880044':'#ff880022';
       }
     },300);
+  };
+}
+
+// ── TOKEN DROPDOWN + UPGRADE GLOSSARY ─────────────────────
+function showTokenDropdown(){
+  var old=document.getElementById('token-dropdown');
+  if(old){old.remove();return;} // toggle off
+  var dd=document.createElement('div');
+  dd.id='token-dropdown';
+  dd.style.cssText='position:fixed;top:44px;right:12px;z-index:100001;background:rgba(10,10,20,0.95);border:1px solid #ffaa0044;border-radius:10px;padding:14px 16px;min-width:180px;opacity:0;transform:translateY(-8px);transition:all 0.2s ease';
+  dd.innerHTML=
+    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#aa8844;letter-spacing:2px;margin-bottom:6px">ROGUE TOKENS</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ffaa00;text-shadow:0 0 12px #ffaa0066">🪙 '+(SAVE.rogueTokens||0)+'</div>'+
+    '<div style="height:1px;background:#ffaa0022;margin:10px 0"></div>'+
+    '<div id="token-dd-glossary" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffaa00;letter-spacing:2px;padding:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent">📖 UPGRADE GLOSSARY</div>';
+  document.body.appendChild(dd);
+  setTimeout(function(){dd.style.opacity='1';dd.style.transform='translateY(0)';},20);
+  document.getElementById('token-dd-glossary').onclick=function(){
+    dd.remove();
+    sfx('navTap');
+    showUpgradeGlossary();
+  };
+  // Tap outside to dismiss
+  setTimeout(function(){
+    document.addEventListener('click',function _ddClose(e){
+      if(!dd.contains(e.target)&&!e.target.closest('#wo-token-badge')){
+        dd.style.opacity='0';dd.style.transform='translateY(-8px)';
+        setTimeout(function(){dd.remove();},200);
+        document.removeEventListener('click',_ddClose);
+      }
+    });
+  },100);
+}
+
+var UPGRADE_STACK_DETAILS={
+  dmgUp:['x1: +15% Damage','x2: +32% Damage','x3: +52% Damage','x4: +75% Damage','x5: +101% Damage'],
+  fireRateUp:['x1: +20% Fire Rate','x2: +36% Fire Rate','x3: +49% Fire Rate','x4: +59% Fire Rate','x5: +67% Fire Rate'],
+  hpUp:['x1: 4 Max HP','x2: 5 Max HP','x3: 6 Max HP','x4: 7 Max HP'],
+  speedUp:['x1: +20% Speed','x2: +44% Speed','x3: +73% Speed','x4: +107% Speed'],
+  bulletSpdUp:['x1: +25% Bullet Speed','x2: +56% Bullet Speed','x3: +95% Bullet Speed','x4: +144% Bullet Speed'],
+  scrapCollect:['x1: 20% heal chance','x2: 40% heal chance','x3: 50% heal chance (max)'],
+  rapidPayload:['x1: +1 extra bullet','x2: +2 extra bullets','x3: +3 extra bullets'],
+  nanoRepair:['x1: +1 HP per wave','x2: +2 HP per wave'],
+  shield:['x1: 1 shield per wave','x2: 2 shields per wave'],
+  critChance:['x1: 15% crit chance','x2: 30% crit chance','x3: 45% crit chance'],
+  dodgeChance:['x1: 10% dodge','x2: 20% dodge','x3: 30% dodge (max)'],
+  magnetField:['x1: 50px range','x2: 100px range','x3: 150px range'],
+  vampiric:['x1: 5% heal on kill','x2: 10% heal on kill','x3: 15% heal on kill'],
+  timeWarp:['x1: 30% slower enemies','x2: 60% slower enemies (max)'],
+  droneSwarm:['x1: 3 drones','x2: 6 drones'],
+  orbitals:['x1: 2 orbital drones','x2: 4 orbital drones (faster volleys)'],
+  missiles:['x1: Missile every 1.5s','x2: Missile every 1.2s'],
+  quantumShield:['x1: Heal every 20s','x2: Heal every 15s']
+};
+function showUpgradeGlossary(){
+  var old=document.getElementById('upgrade-glossary-overlay');if(old)old.remove();
+  var disc=SAVE.campaignData.discoveredUpgrades||{};
+  var discCount=0;
+  CAMPAIGN_UPGRADES.forEach(function(u){if(disc[u.id])discCount++;});
+  var ov=document.createElement('div');
+  ov.id='upgrade-glossary-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.94);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:calc(env(safe-area-inset-top,0px) + 16px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);opacity:0;transition:opacity 0.25s';
+  var rarityOrder=['common','rare','epic','legendary'];
+  var rarityLabels={common:'COMMON',rare:'RARE',epic:'EPIC',legendary:'LEGENDARY'};
+  var rarityColors={common:'#aaaaaa',rare:'#4488ff',epic:'#aa44ff',legendary:'#ffd700'};
+  var html='<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#ffaa00;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px #ffaa0066">📖 UPGRADE GLOSSARY</div>';
+  html+='<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#778;letter-spacing:2px;margin-bottom:16px">'+discCount+' / '+CAMPAIGN_UPGRADES.length+' DISCOVERED</div>';
+  for(var ri=0;ri<rarityOrder.length;ri++){
+    var rar=rarityOrder[ri];
+    var rc=rarityColors[rar];
+    var ups=CAMPAIGN_UPGRADES.filter(function(u){return u.rarity===rar;});
+    if(ups.length===0) continue;
+    var rarDisc=ups.filter(function(u){return disc[u.id];}).length;
+    // Collapsible section header
+    html+='<div class="glossary-section" data-rarity="'+rar+'" style="width:100%;max-width:calc(100% - 8px);margin-top:'+(ri?'8':'0')+'px;cursor:pointer;-webkit-tap-highlight-color:transparent">'+
+      '<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:8px;background:linear-gradient(180deg,rgba(20,20,35,0.95),rgba(10,10,20,0.95));border:1.5px solid '+rc+'55;box-shadow:0 0 8px '+rc+'11">'+
+        '<div style="height:1px;flex:1;background:'+rc+'44"></div>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;color:'+rc+';letter-spacing:3px">'+rarityLabels[rar]+'</span>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:'+rc+'cc">'+rarDisc+'/'+ups.length+'</span>'+
+        '<div style="height:1px;flex:1;background:'+rc+'44"></div>'+
+        '<span class="glossary-arrow" style="font-size:10px;color:'+rc+';transition:transform 0.2s">▶</span>'+
+      '</div>'+
+    '</div>';
+    // Collapsible content (starts collapsed)
+    html+='<div class="glossary-items" data-rarity="'+rar+'" style="display:none;width:100%;max-width:calc(100% - 8px);margin-top:6px">';
+    for(var ui=0;ui<ups.length;ui++){
+      var u=ups[ui];
+      var found=!!disc[u.id];
+      if(found){
+        var stackInfo=u.stackable?'Stack: x'+u.maxStack:'Not Stackable';
+        var gateInfo=u.worldGate>0?'World '+(u.worldGate+1)+'+':'All Worlds';
+        var hasDetail=!!(u.stackable&&UPGRADE_STACK_DETAILS[u.id]);
+        html+='<div class="glossary-card" data-uid="'+u.id+'" style="border-radius:10px;background:rgba(20,20,30,0.8);border:1px solid '+rc+'33;margin-bottom:6px;box-sizing:border-box;'+(hasDetail?'cursor:pointer;-webkit-tap-highlight-color:transparent':'')+'">';
+        html+='<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px">'+
+          '<div style="font-size:24px;min-width:32px;text-align:center;margin-top:2px">'+u.icon+'</div>'+
+          '<div style="flex:1;min-width:0">'+
+            '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:#eee;letter-spacing:1px">'+u.name+'</span><span style="font-size:7px;color:#000;background:'+rc+';padding:1px 5px;border-radius:3px;font-family:Orbitron,sans-serif;font-weight:700;letter-spacing:1px">'+rar.toUpperCase()+'</span>'+(hasDetail?'<span style="font-size:8px;color:'+rc+'88">▶</span>':'')+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#99a;margin-top:3px;line-height:1.4">'+u.desc+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:1px;margin-top:4px">'+gateInfo+' · '+stackInfo+'</div>'+
+          '</div></div>';
+        // Expandable stack detail (hidden by default)
+        if(hasDetail){
+          var stacks=UPGRADE_STACK_DETAILS[u.id];
+          html+='<div class="glossary-detail" data-uid="'+u.id+'" style="display:none;padding:0 12px 10px 56px">';
+          for(var si=0;si<stacks.length;si++){
+            var _isFilled=si<stacks.length;
+            html+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'+
+              '<span style="font-size:10px;color:#ffd700">★</span>'+
+              '<span style="font-family:Orbitron,sans-serif;font-size:8px;color:#bbc;letter-spacing:0.5px">'+stacks[si]+'</span></div>';
+          }
+          html+='</div>';
+        }
+        html+='</div>';
+      } else {
+        html+='<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(15,15,25,0.6);border:1px solid #333;margin-bottom:6px;box-sizing:border-box;opacity:0.5">'+
+          '<div style="font-size:24px;min-width:32px;text-align:center;color:#444">❓</div>'+
+          '<div style="flex:1"><div style="font-family:Orbitron,sans-serif;font-size:11px;color:#556;letter-spacing:2px">UNDISCOVERED</div><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#334;margin-top:2px">Play to reveal this upgrade</div></div></div>';
+      }
+    }
+    html+='</div>';
+  }
+  html+='<button id="glossary-back" style="font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:3px;padding:14px 30px;background:rgba(0,0,0,0.3);border:1px solid #445;color:#778;border-radius:6px;cursor:pointer;margin-top:16px;-webkit-tap-highlight-color:transparent;width:100%;max-width:300px">← BACK</button>';
+  ov.innerHTML=html;
+  document.body.appendChild(ov);
+  setTimeout(function(){ov.style.opacity='1';},20);
+  // Toggle sections on click
+  ov.querySelectorAll('.glossary-section').forEach(function(sec){
+    sec.onclick=function(){
+      sfx('navTap');
+      var rar=sec.getAttribute('data-rarity');
+      var items=ov.querySelector('.glossary-items[data-rarity="'+rar+'"]');
+      var arrow=sec.querySelector('.glossary-arrow');
+      if(items.style.display==='none'){
+        items.style.display='block';
+        if(arrow) arrow.style.transform='rotate(90deg)';
+      } else {
+        items.style.display='none';
+        if(arrow) arrow.style.transform='rotate(0deg)';
+      }
+    };
+  });
+  // Toggle individual upgrade card details
+  ov.querySelectorAll('.glossary-card').forEach(function(card){
+    card.onclick=function(e){
+      // Don't trigger if clicking inside a section header
+      if(e.target.closest('.glossary-section')) return;
+      var uid=card.getAttribute('data-uid');
+      var detail=ov.querySelector('.glossary-detail[data-uid="'+uid+'"]');
+      if(!detail) return;
+      var arrow=card.querySelector('span[style*="▶"],span[style*="▼"]');
+      if(detail.style.display==='none'){
+        detail.style.display='block';
+        // Update arrow if present
+        card.querySelectorAll('span').forEach(function(s){if(s.textContent==='▶')s.textContent='▼';});
+      } else {
+        detail.style.display='none';
+        card.querySelectorAll('span').forEach(function(s){if(s.textContent==='▼')s.textContent='▶';});
+      }
+    };
+  });
+  document.getElementById('glossary-back').onclick=function(){
+    sfx('navTap');
+    ov.style.opacity='0';
+    setTimeout(function(){ov.remove();},250);
   };
 }
 
@@ -5035,6 +5201,7 @@ function loadSave(){
     if(!s.campaignData.challengesCompleted||typeof s.campaignData.challengesCompleted!=='object') s.campaignData.challengesCompleted={};
     if(!s.campaignData.worldMastery||typeof s.campaignData.worldMastery!=='object') s.campaignData.worldMastery={};
     if(!s.campaignData.tipsShown||typeof s.campaignData.tipsShown!=='object') s.campaignData.tipsShown={};
+    if(!s.campaignData.discoveredUpgrades||typeof s.campaignData.discoveredUpgrades!=='object') s.campaignData.discoveredUpgrades={};
     // Campaign data integrity
     if(!Array.isArray(s.campaignData.worldsCleared)) s.campaignData.worldsCleared=[];
     if(!s.campaignData.worldStats||typeof s.campaignData.worldStats!=='object') s.campaignData.worldStats={};
@@ -5522,7 +5689,7 @@ function devResetSplashFlags() {
 }
 
 function devResetAdventure() {
-  SAVE.campaignData = {highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{}};
+  SAVE.campaignData = {highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{},discoveredUpgrades:{}};
   SAVE.rogueLoadout = {ability:null,weapon:null,passive:null};
   SAVE.rogueUnlocks = [];
   SAVE.rogueProgress = {currentWorld:0,runActive:false};
@@ -8561,12 +8728,12 @@ let moveDx = 0;
     }
     // Afterburn — leave damage trail
     if(_campaignMode&&stats._campaignAfterburn&&!b.missile&&!b.drone&&Math.random()<0.4&&_campaignAfterTrails.length<25){
-      _campaignAfterTrails.push({x:b.x,y:b.y,life:0.5});
+      _campaignAfterTrails.push({x:b.x,y:b.y,life:0.7});
     }
     // Ember Trail — leave short damage trail only near enemies
     if(_campaignMode&&stats._emberTrail&&!b.missile&&!b.drone&&Math.random()<0.35&&_campaignAfterTrails.length<25){
       var _nearE=false;for(var _ei=0;_ei<_frameAlive.length;_ei++){if(Math.hypot(_frameAlive[_ei].x-b.x,_frameAlive[_ei].y-b.y)<80){_nearE=true;break;}}
-      if(_nearE) _campaignAfterTrails.push({x:b.x,y:b.y,life:0.45});
+      if(_nearE) _campaignAfterTrails.push({x:b.x,y:b.y,life:0.7});
     }
     if(b._vx!==undefined){b.x+=b._vx;b.y+=b._vy;} else b.y-=b.spd;
     // Ricochet — bounce off top of screen once (bullet reverses direction downward)
@@ -10028,7 +10195,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     ctx.save();ctx.globalAlpha=0.4;
     _campaignAfterTrails.forEach(function(t){
       var a=Math.max(0,t.life/0.5);
-      ctx.fillStyle='rgba(255,140,0,'+a*0.6+')';ctx.beginPath();ctx.arc(t.x,t.y,3.5*a,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='rgba(255,140,0,'+a*0.75+')';ctx.beginPath();ctx.arc(t.x,t.y,4*a,0,Math.PI*2);ctx.fill();
     });
     ctx.restore();
   }
@@ -17438,7 +17605,7 @@ function showWorldOverview(){
       _woSetConnector+
       '</div>'+
     // Token count moved to top-right badge
-    '<div id="wo-token-badge" style="position:fixed;top:12px;right:12px;z-index:10;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:#ffaa00;letter-spacing:1px;padding:6px 10px;border-radius:6px;background:#0d0d15;border:1px solid #ffaa0033;text-shadow:0 0 8px #ffaa0044">🪙 '+(SAVE.rogueTokens||0)+'</div>'+
+    '<div id="wo-token-badge" style="position:fixed;top:12px;right:12px;z-index:10;font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ffaa00;letter-spacing:1px;padding:8px 14px;border-radius:8px;background:linear-gradient(180deg,#1a1510,#0d0d15);border:1.5px solid #ffaa0055;text-shadow:0 0 8px #ffaa0066;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 0 10px #ffaa0022,inset 0 1px 0 #ffaa0022">🪙 '+(SAVE.rogueTokens||0)+' <span style="font-size:8px;color:#ffaa0066;margin-left:2px">▼</span></div>'+
     '<div style="display:none">'+
     '</div>';
   } else {
@@ -17520,6 +17687,7 @@ function showWorldOverview(){
   if(mutsUnlocked){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},1000);}
   if(challengeSection){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},1200);}
   if(selWorld.modifier){setTimeout(function(){showCampaignTip('tip_worldModifier','Each world has a unique modifier that changes gameplay. Adapt your strategy!',{position:'top',icon:'⚙'});},1400);}
+  setTimeout(function(){showCampaignTip('tip_glossary','Tap the 🪙 token badge to view your Upgrade Glossary and see all available upgrades!',{position:'top',icon:'📖',color:'#ffaa00'});},1600);
 
   // World node click handlers — with swipe guard to avoid selecting during scroll
   var _woPathTouchStartX=0;
@@ -17613,6 +17781,10 @@ function showWorldOverview(){
       showMutatorPopup();
     };
   }
+
+  // Token badge dropdown
+  var tokBadge=document.getElementById('wo-token-badge');
+  if(tokBadge){tokBadge.onclick=function(){sfx('navTap');showTokenDropdown();};}
 
   // Launch button
   document.getElementById('wo-launch-btn').onclick=function(){
@@ -17943,17 +18115,23 @@ function showRogueLoadoutPicker(slotKey,items){
         }
       },200);
     }
+    // Single delegated tap handler on overlay — no per-card touch listeners (iOS scroll fix)
+    var _ovTouchY=0,_ovTouchMoved=false;
+    ov.addEventListener('touchstart',function(e){_ovTouchY=e.touches[0].clientY;_ovTouchMoved=false;},{passive:true});
+    ov.addEventListener('touchmove',function(e){if(Math.abs(e.touches[0].clientY-_ovTouchY)>10)_ovTouchMoved=true;},{passive:true});
+    ov.addEventListener('touchend',function(e){
+      if(_ovTouchMoved) return;
+      var card=e.target.closest('.lo-pick-card');
+      if(!card) return;
+      if(card.getAttribute('data-can')!=='1') return;
+      // Don't intercept upgrade/buy button taps
+      if(e.target.closest('.lo-upgrade-btn')||e.target.closest('.lo-token-buy')) return;
+      _selectAndClose(card.getAttribute('data-id'));
+    },{passive:true});
+    // Desktop click fallback
     cards.forEach(function(card){
-      var _touchY=0,_touchMoved=false;
-      card.addEventListener('touchstart',function(e){_touchY=e.touches[0].clientY;_touchMoved=false;},{passive:true});
-      card.addEventListener('touchmove',function(e){if(Math.abs(e.touches[0].clientY-_touchY)>8)_touchMoved=true;},{passive:true});
-      card.addEventListener('touchend',function(e){
-        if(_touchMoved) return;
-        if(card.getAttribute('data-can')!=='1') return;
-        e.preventDefault();
-        _selectAndClose(card.getAttribute('data-id'));
-      },{passive:false});
-      card.onclick=function(){
+      card.onclick=function(e){
+        if(e.target.closest('.lo-upgrade-btn')||e.target.closest('.lo-token-buy')) return;
         if(card.getAttribute('data-can')!=='1') return;
         _selectAndClose(card.getAttribute('data-id'));
       };
@@ -18421,6 +18599,8 @@ var _campaignTipEl=null;
 var _campaignTipTimer=null;
 
 function showCampaignTip(tipId,text,options){
+  // Never show tips while unlock cinematic is active
+  if(document.getElementById('rogue-unlock-cinematic')) return;
   var cd=SAVE.campaignData||(SAVE.campaignData={});
   if(!cd.tipsShown) cd.tipsShown={};
   if(cd.tipsShown[tipId]) return;
@@ -19083,9 +19263,9 @@ function campaignWaveCleared(){
 function shouldShowChaosJester(){
   var curWorld=CAMPAIGN_WORLDS[getCampaignWorldIndex(_campaignWave)];
   var waveInWorld=_campaignWave-curWorld.waves[0]+1;
-  if(waveInWorld<4) return false;
-  if(waveInWorld===10||waveInWorld===20) return false;
-  return Math.random()<0.08;
+  if(waveInWorld<3) return false;
+  // Allow after boss waves (10, 20) — no exclusion
+  return Math.random()<0.10;
 }
 
 // ── VOID BROKER ENCOUNTER ─────────────────────────────────
@@ -19139,7 +19319,7 @@ function showChaosJester(onDone){
 
     ov.innerHTML=
       '<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(255,170,0,0.06) 0%,transparent 60%);pointer-events:none"></div>'+
-      '<div id="cj-char" style="font-size:72px;opacity:0;transform:scale(0.2) rotate(-30deg);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4);filter:drop-shadow(0 0 30px #ffaa00) drop-shadow(0 0 60px #ff660044)">🃏</div>'+
+      '<div id="cj-char" style="font-size:72px;opacity:0;transform:scale(0.2) rotate(-30deg);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4)">🃏</div>'+
       '<div id="cj-title" style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;color:#ffaa00;letter-spacing:5px;margin-top:12px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 20px #ffaa00,0 0 40px #ff880044">THE CHAOS JESTER</div>'+
       '<div id="cj-sub" style="font-family:Orbitron,sans-serif;font-size:9px;color:#aa8844;letter-spacing:3px;margin-top:6px;opacity:0;transition:all 0.4s ease 0.5s">FATE DECIDES YOUR FORTUNE...</div>'+
       '<canvas id="cj-wheel" width="240" height="240" style="position:static;margin:20px auto;display:block;opacity:0;transform:scale(0.8);transition:all 0.5s cubic-bezier(.17,.67,.35,1.2) 0.7s"></canvas>'+
@@ -19443,8 +19623,10 @@ function showCampaignUpgradePick(isBossReward){
     var autoPick=picks[autoIdx];
     try{autoPick.apply(_campaignBuffs);}catch(e){}
     _campaignPickedUpgrades.push(autoPick.id);
+    if(!SAVE.campaignData.discoveredUpgrades)SAVE.campaignData.discoveredUpgrades={};
+    SAVE.campaignData.discoveredUpgrades[autoPick.id]=true;
     _campaignUpgradesTaken++;
-    if(autoPick.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);}
+    if(autoPick.id==='hpUp'&&player){if(!_campaignBuffs._hpLocked){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);}}
     if(autoPick.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=1;}
     // Brief flash showing what was picked
     var flash=document.createElement('div');
@@ -19457,6 +19639,9 @@ function showCampaignUpgradePick(isBossReward){
   }
   var world=CAMPAIGN_WORLDS[_campaignWorld];
   var overlay=document.createElement('div');
+  // Mark all shown upgrades as discovered
+  if(!SAVE.campaignData.discoveredUpgrades)SAVE.campaignData.discoveredUpgrades={};
+  picks.forEach(function(p){SAVE.campaignData.discoveredUpgrades[p.id]=true;});
   overlay.id='campaign-pick-overlay';
   overlay.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0);padding:20px;transition:background 0.4s;overflow:hidden';
   var title=isBossReward?'🏆 BOSS REWARD':'⬆ CHOOSE UPGRADE';
@@ -19603,10 +19788,12 @@ function showCampaignUpgradePick(isBossReward){
     // Apply upgrade now
     try{ chosen.apply(_campaignBuffs); }catch(e){ console.error('Upgrade apply error:',e); }
     _campaignPickedUpgrades.push(chosen.id);
+    if(!SAVE.campaignData.discoveredUpgrades)SAVE.campaignData.discoveredUpgrades={};
+    SAVE.campaignData.discoveredUpgrades[chosen.id]=true;
     _campaignUpgradesTaken++;
     if(chosen.id==='arsenalOverload'){floatTexts.push({x:player?player.x:W/2,y:player?player.y-20:H/2,text:'⚡ OVERLOAD!',col:'#ffd700',life:1.5,vy:-1.2});spawnExplosion(player?player.x:W/2,player?player.y:H/2,'#ffd700',8,true);if(player)player.shieldFlash=0.6;shake(4,0.2);}
     try{
-    if(chosen.id==='hpUp'&&player){if(_campaignBuffs._hpLocked){floatTexts.push({x:player.x,y:player.y-40,text:'🔒 HP LOCKED',col:'#ff4455',life:1.2,vy:-1.5,big:true});}else{var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);}}
+    if(chosen.id==='hpUp'&&player){if(_campaignBuffs._hpLocked){floatTexts.push({x:player.x,y:player.y-40,text:'🔒 HP LOCKED',col:'#ff4455',life:1.2,vy:-1.5,big:true});}else{var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives+1,player.maxLives);updateHUD();}}
     if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=Math.max(1,s.maxLives||3);player.lives=1;}
     if(chosen.id==='shield'){if(_campaignBuffs._noShields){floatTexts.push({x:player?player.x:W/2,y:player?player.y-40:H/2,text:'🔒 SHIELDS DISABLED',col:'#ff4455',life:1.2,vy:-1.5,big:true});}else{_campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);if(player)player.shieldFlash=0.5;updateHUD();}}
     }catch(e){ console.error('Upgrade stats error:',e); }
