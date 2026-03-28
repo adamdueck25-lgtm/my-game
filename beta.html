@@ -304,6 +304,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
     </div>
     <div id="lives-display" style="position:absolute;left:24px;bottom:calc(env(safe-area-inset-bottom,0px) + 340px);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;z-index:20;"></div>
+    <div id="shield-display" style="position:absolute;left:52px;bottom:calc(env(safe-area-inset-bottom,0px) + 340px);display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;z-index:20;"></div>
     <div id="ctrl-btns" class="r-btns">
       <div id="relic-badges" style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none"></div>
       <div class="ctrl-btn btn-shop" id="btn-shop">🛒</div>
@@ -958,6 +959,25 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
       </div>
       <div style="margin-bottom:12px">
         <button onclick="devResetSplashFlags()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #00f5ff;background:rgba(0,245,255,0.1);color:#00f5ff;border-radius:4px;cursor:pointer;width:100%">📖 RESET SPLASH SCREENS</button>
+      </div>
+      <div style="font-size:11px;color:#ff8800;letter-spacing:2px;margin:12px 0 8px;border-top:1px solid #ff880033;padding-top:10px">⚔ ADVENTURE MODE</div>
+      <div style="margin-bottom:8px">
+        <button onclick="devResetAdventure()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ff4455;background:rgba(255,68,85,0.1);color:#ff4455;border-radius:4px;cursor:pointer;width:100%">🔄 RESET ADVENTURE PROGRESS</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:9px;color:#556;letter-spacing:1px;margin-bottom:4px">JUMP TO WORLD</div>
+        <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap">
+          <button onclick="devJumpWorld(0)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W1</button>
+          <button onclick="devJumpWorld(1)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W2</button>
+          <button onclick="devJumpWorld(2)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W3</button>
+          <button onclick="devJumpWorld(3)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W4</button>
+          <button onclick="devJumpWorld(4)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W5</button>
+          <button onclick="devJumpWorld(5)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W6</button>
+          <button onclick="devJumpWorld(6)" style="font-family:'Orbitron',sans-serif;font-size:9px;padding:6px 8px;border:1px solid #ff8800;background:rgba(255,136,0,0.1);color:#ff8800;border-radius:4px;cursor:pointer">W7</button>
+        </div>
+      </div>
+      <div style="margin-bottom:8px">
+        <button onclick="devAddTokens()" style="font-family:'Orbitron',sans-serif;font-size:10px;padding:7px 12px;border:1px solid #ffaa00;background:rgba(255,170,0,0.1);color:#ffaa00;border-radius:4px;cursor:pointer;width:100%">🪙 +20 ROGUE TOKENS</button>
       </div>
       <div style="display:flex;gap:8px;justify-content:center">
         <button onclick="devLaunch()" style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 20px;border-radius:4px;border:2px solid #00ff88;background:rgba(0,255,136,0.1);color:#00ff88;cursor:pointer">▶ LAUNCH</button>
@@ -3406,7 +3426,16 @@ var CAMPAIGN_UPGRADES = [
   {id:'nanoRepair',name:'NANO REPAIR',icon:'🔋',rarity:'common',color:'#ffffff',worldGate:0,
     desc:'Restore 1 HP at wave start',stackable:true,maxStack:2,
     apply:function(b){b.waveHeal=(b.waveHeal||0)+1;}},
+  {id:'luckyDrops',name:'LUCKY DROPS',icon:'🍀',rarity:'common',color:'#ffffff',worldGate:0,
+    desc:'8% chance enemies drop a powerup on kill',stackable:true,maxStack:2,
+    apply:function(b){b.luckyDropChance=Math.min(0.20,(b.luckyDropChance||0)+0.08);}},
   // ── RARE ──
+  {id:'spreadShot',name:'SPREAD SHOT',icon:'🔫',rarity:'rare',color:'#4488ff',worldGate:0,
+    desc:'5-bullet wide fan (reduced damage)',stackable:false,
+    apply:function(b){b.spreadShot=true;}},
+  {id:'armorPiercing',name:'ARMOR PIERCING',icon:'🔩',rarity:'rare',color:'#4488ff',worldGate:0,
+    desc:'Bullets ignore enemy shields',stackable:false,
+    apply:function(b){b.armorPiercing=true;}},
   {id:'tripleShot',name:'TRI-CANNON',icon:'🔱',rarity:'rare',color:'#4488ff',worldGate:0,
     desc:'3-Way Spread Shot',stackable:false,
     apply:function(b){b.tripleShot=true;}},
@@ -3434,10 +3463,19 @@ var CAMPAIGN_UPGRADES = [
   {id:'afterburn',name:'AFTERBURN',icon:'🔥',rarity:'rare',color:'#4488ff',worldGate:1,
     desc:'Hits mark enemies burning — burn targets take 50% extra damage for 1s',stackable:false,
     apply:function(b){b.afterburn=true;}},
+  {id:'magnetField',name:'MAGNET FIELD',icon:'🧲',rarity:'rare',color:'#4488ff',worldGate:1,
+    desc:'Powerups auto-collect within 50px',stackable:true,maxStack:3,
+    apply:function(b){b.magnetRadius=Math.max(b.magnetRadius||0,(b.magnetRadius||0)+50);}},
   // ── EPIC ──
   {id:'pierce',name:'PIERCING BOLTS',icon:'🗡',rarity:'epic',color:'#aa44ff',worldGate:1,
     desc:'Bullets pierce through enemies',stackable:false,
     apply:function(b){b.pierce=true;}},
+  {id:'overdrive',name:'OVERDRIVE',icon:'🔥',rarity:'epic',color:'#aa44ff',worldGate:1,
+    desc:'+40% damage & fire rate for 10s after taking damage',stackable:false,
+    apply:function(b){b.overdrive=true;}},
+  {id:'emberTrail',name:'EMBER TRAIL',icon:'🔥',rarity:'epic',color:'#aa44ff',worldGate:1,
+    desc:'Bullets leave damaging embers near enemies',stackable:false,
+    apply:function(b){b.emberTrail=true;}},
   {id:'homing',name:'SMART ROUNDS',icon:'🎯',rarity:'epic',color:'#aa44ff',worldGate:2,
     desc:'Bullets gently track nearest enemy',stackable:false,
     apply:function(b){b.homing=true;}},
@@ -3474,6 +3512,9 @@ var CAMPAIGN_UPGRADES = [
   {id:'phaseCloak',name:'PHASE CLOAK',icon:'👻',rarity:'epic',color:'#aa44ff',worldGate:3,
     desc:'2s invulnerability every 12s (auto-triggers)',stackable:false,
     apply:function(b){b.phaseCloak=true;b.phaseCloakInterval=12;}},
+  {id:'shadowClone',name:'SHADOW CLONE',icon:'👥',rarity:'epic',color:'#aa44ff',worldGate:2,
+    desc:'Ghost ship mirrors your position and fires',stackable:false,
+    apply:function(b){b.shadowClone=true;}},
   // ── LEGENDARY ──
   {id:'orbitals',name:'ORBITAL DRONES',icon:'🛸',rarity:'legendary',color:'#ffd700',worldGate:2,
     desc:'Drones volley at enemies and explode on impact',stackable:true,maxStack:2,
@@ -3512,7 +3553,10 @@ var CAMPAIGN_UPGRADES = [
     apply:function(b){b.deathBlossom=true;}},
   {id:'voidAnchor',name:'VOID ANCHOR',icon:'🌀',rarity:'legendary',color:'#ffd700',worldGate:4,
     desc:'Bosses move 30% slower',stackable:false,
-    apply:function(b){b.voidAnchor=true;b.bossSlowMult=0.70;}}
+    apply:function(b){b.voidAnchor=true;b.bossSlowMult=0.70;}},
+  {id:'ionCannon',name:'ION CANNON',icon:'⚡',rarity:'legendary',color:'#ffd700',worldGate:3,
+    desc:'Every 10s, fire a massive piercing beam',stackable:false,
+    apply:function(b){b.ionCannon=true;}}
 ];
 function getCampaignWorldIndex(w){for(var i=CAMPAIGN_WORLDS.length-1;i>=0;i--){if(w>=CAMPAIGN_WORLDS[i].waves[0])return i;}return 0;}
 function getCampaignUpgradeStackCount(id){return _campaignPickedUpgrades.filter(function(x){return x===id;}).length;}
@@ -3687,8 +3731,8 @@ var ROGUE_LOADOUT_PASSIVES = [
   {id:'lo_kill_shield',name:'KILL SHIELD',icon:'🛡',rarity:'epic',color:'#aa44ff',
     unlockCost:0,unlockGate:3,maxLevel:2,
     levels:[
-      {desc:'Every 15 kills, gain a 1-hit shield',apply:function(b){b.loadoutKillShield=true;b.loadoutKillShieldN=15;}},
-      {desc:'Every 12 kills, gain a 1-hit shield',apply:function(b){b.loadoutKillShield=true;b.loadoutKillShieldN=12;}}
+      {desc:'Every 25 kills, gain a 1-hit shield',apply:function(b){b.loadoutKillShield=true;b.loadoutKillShieldN=25;}},
+      {desc:'Every 20 kills, gain a 1-hit shield',apply:function(b){b.loadoutKillShield=true;b.loadoutKillShieldN=20;}}
     ]},
   {id:'lo_magnetize',name:'MAGNETIZE',icon:'🧲',rarity:'rare',color:'#4488ff',
     unlockCost:0,unlockGate:1,maxLevel:3,
@@ -3765,26 +3809,26 @@ function applyRogueLoadout(buffs){
 
 // ── ROGUE SET BONUSES ────────────────────────────────────
 var ROGUE_SETS=[
-  {id:'glass_storm',name:'GLASS STORM',color:'#ff4444',icon:'💥',
+  {id:'devastator',name:'DEVASTATOR',color:'#ff4444',icon:'💥',
     items:['lo_glass_cannon','lo_explosive','lo_dmg_up'],
-    bonus2:{desc:'Explosion radius +15%',apply:function(b){b.setExplosionRadius=(b.setExplosionRadius||1)*1.15;}},
-    bonus3:{desc:'12% chance explosions chain',apply:function(b){b.setExplosionChain=0.12;}}},
-  {id:'iron_wall',name:'IRON WALL',color:'#44aaff',icon:'🛡',
-    items:['lo_dodge','lo_double_shot','lo_stability'],
-    bonus2:{desc:'+5% dodge chance',apply:function(b){b.dodgeChance=Math.min(0.30,(b.dodgeChance||0)+0.05);}},
-    bonus3:{desc:'Dodge emits shockwave (60px knockback)',apply:function(b){b.setDodgeShockwave=true;b.setDodgeKnockback=60;b.setDodgeRadius=50;}}},
+    bonus2:{desc:'Your explosions deal 20% more damage',apply:function(b){b.setExplosionRadius=(b.setExplosionRadius||1)*1.20;}},
+    bonus3:{desc:'Enemies you kill have a 15% chance to explode',apply:function(b){b.setExplosionChain=0.15;}}},
+  {id:'fortress',name:'FORTRESS',color:'#44aaff',icon:'🛡',
+    items:['lo_dodge','lo_max_hp','lo_stability'],
+    bonus2:{desc:'5% better chance to dodge incoming attacks',apply:function(b){b.dodgeChance=Math.min(0.30,(b.dodgeChance||0)+0.05);}},
+    bonus3:{desc:'Getting hit makes you shoot 30% faster for 2 seconds',apply:function(b){b.setDamageFRBoost=true;}}},
   {id:'void_hunter',name:'VOID HUNTER',color:'#00ccff',icon:'🎯',
     items:['lo_overcharge','lo_homing','lo_fire_rate'],
-    bonus2:{desc:'Overcharge counter -1',apply:function(b){if(b.loadoutOverchargeN)b.loadoutOverchargeN=Math.max(3,b.loadoutOverchargeN-1);}},
-    bonus3:{desc:'Overcharged shots explode (30% dmg, 20px)',apply:function(b){b.setOverchargeExplode=true;b.setOverchargeExpDmg=0.30;b.setOverchargeExpRadius=20;}}},
-  {id:'chaos_engine',name:'CHAOS ENGINE',color:'#ff8800',icon:'⚡',
-    items:['lo_berserker','lo_chain','lo_energy'],
-    bonus2:{desc:'Chain kills trigger 1s fire rate burst',apply:function(b){b.setChainFireBurst=true;}},
-    bonus3:{desc:'Below 50% HP: kills 8% chance drop powerup',apply:function(b){b.setChaosKillPowerup=0.08;}}},
-  {id:'survivors_edge',name:"SURVIVOR'S EDGE",color:'#44ff88',icon:'💪',
-    items:['lo_last_stand','lo_vampiric','lo_max_hp'],
-    bonus2:{desc:'Vampiric heal chance +3%',apply:function(b){b.vampChance=Math.min(0.15,(b.vampChance||0)+0.03);}},
-    bonus3:{desc:'At 1 HP: kills 15% chance to heal',apply:function(b){b.setSurvivorHeal=0.15;}}}
+    bonus2:{desc:'Your power shot charges 1 shot faster',apply:function(b){if(b.loadoutOverchargeN)b.loadoutOverchargeN=Math.max(3,b.loadoutOverchargeN-1);}},
+    bonus3:{desc:'Power shots create an explosion on impact',apply:function(b){b.setOverchargeExplode=true;b.setOverchargeExpDmg=0.30;b.setOverchargeExpRadius=20;}}},
+  {id:'storm_bringer',name:'STORM BRINGER',color:'#ff8800',icon:'⚡',
+    items:['lo_berserker','lo_chain','lo_bullet_speed'],
+    bonus2:{desc:'Killing chained enemies gives a 1 second shooting boost',apply:function(b){b.setChainFireBurst=true;}},
+    bonus3:{desc:'Deal 15% more damage when below half health',apply:function(b){b.setStormDmgBoost=0.15;}}},
+  {id:'blood_pact',name:'BLOOD PACT',color:'#44ff88',icon:'💪',
+    items:['lo_last_stand','lo_vampiric','lo_kill_shield'],
+    bonus2:{desc:'Slightly higher chance to heal from kills',apply:function(b){b.vampChance=Math.min(0.15,(b.vampChance||0)+0.03);}},
+    bonus3:{desc:'When at 1 HP, every kill has a chance to restore health',apply:function(b){b.setSurvivorHeal=0.15;}}}
 ];
 function getActiveRogueSets(){
   var lo=SAVE.rogueLoadout;
@@ -4605,11 +4649,11 @@ var VOID_BROKER_DEALS=[
    buffColor:'#ffaa00',
    applyBuff:function(b){b.fireRateMult=(b.fireRateMult||1)*0.50;},
    applyDebuff:function(b){b.speedMult=(b.speedMult||1)*0.70;}},
-  {id:'vb_vampiric_pact',buffName:'VAMPIRIC PACT',buffIcon:'🩸',buffDesc:'15% kill heal chance',
-   debuffName:'BLOOD PRICE',debuffIcon:'💀',debuffDesc:'-2 Max HP',
-   buffColor:'#cc0044',
-   applyBuff:function(b){b.vampChance=Math.min(0.30,(b.vampChance||0)+0.15);},
-   applyDebuff:function(b){b.bonusHP=(b.bonusHP||0)-2;}},
+  {id:'vb_void_shield',buffName:'VOID SHIELD',buffIcon:'🛡',buffDesc:'+3 Shield Charges',
+   debuffName:'DAMPENED CORE',debuffIcon:'📉',debuffDesc:'-25% Damage',
+   buffColor:'#00f5ff',
+   applyBuff:function(b){b.shieldCharges=(b.shieldCharges||0)+3;},
+   applyDebuff:function(b){b.damageMult=(b.damageMult||1)*0.75;}},
   {id:'vb_temporal',buffName:'TIME DILATION',buffIcon:'⏳',buffDesc:'Enemies 50% slower',
    debuffName:'ENTROPY LEAK',debuffIcon:'🕳',debuffDesc:'-25% Bullet Speed',
    buffColor:'#8844ff',
@@ -4620,23 +4664,42 @@ var VOID_BROKER_DEALS=[
    buffColor:'#ff2200',
    applyBuff:function(b){b.damageMult=(b.damageMult||1)*1.40;b.fireRateMult=(b.fireRateMult||1)*0.70;},
    applyDebuff:function(b){b.shieldCharges=0;b._noShields=true;}},
-  {id:'vb_phantom',buffName:'PHANTOM ROUNDS',buffIcon:'👻',buffDesc:'Pierce + 20% Dodge',
-   debuffName:'WEAKENED ARMOR',debuffIcon:'🔓',debuffDesc:'-30% Damage',
-   buffColor:'#44ddff',
-   applyBuff:function(b){b.pierce=true;b.dodgeChance=Math.min(0.40,(b.dodgeChance||0)+0.20);},
-   applyDebuff:function(b){b.damageMult=(b.damageMult||1)*0.70;}},
-  {id:'vb_gravity',buffName:'GRAVITY WELL',buffIcon:'🌀',buffDesc:'Massive coin magnet + Singularity',
-   debuffName:'HEAVY MASS',debuffIcon:'⬇',debuffDesc:'-40% Move Speed',
-   buffColor:'#aa66ff',
-   applyBuff:function(b){b.magnetRadius=(b.magnetRadius||0)+200;b.singularity=true;},
-   applyDebuff:function(b){b.speedMult=(b.speedMult||1)*0.60;}},
-  {id:'vb_chain',buffName:'STORM SURGE',buffIcon:'🌩',buffDesc:'Chain Lightning + Shockwave',
-   debuffName:'POWER DRAIN',debuffIcon:'🔋',debuffDesc:'-40% Fire Rate',
-   buffColor:'#00ccff',
-   applyBuff:function(b){b.chainLightning=true;b.shockwave=true;},
-   applyDebuff:function(b){b.fireRateMult=(b.fireRateMult||1)*1.40;}}
+  {id:'vb_adrenaline',buffName:'ADRENALINE RUSH',buffIcon:'💉',buffDesc:'+30% Damage & Fire Rate',
+   debuffName:'LOCKED HULL',debuffIcon:'🔒',debuffDesc:'Max HP locked to current',
+   buffColor:'#ff6600',
+   applyBuff:function(b){b.damageMult=(b.damageMult||1)*1.30;b.fireRateMult=(b.fireRateMult||1)*0.70;},
+   applyDebuff:function(b){b._hpLocked=true;}},
+  {id:'vb_chaos_rounds',buffName:'CHAOS ROUNDS',buffIcon:'🎲',buffDesc:'20% chance for 4x damage per shot',
+   debuffName:'UNSTABLE CORE',debuffIcon:'💫',debuffDesc:'-15% Fire Rate + 10% misfire',
+   buffColor:'#ffcc00',
+   applyBuff:function(b){b._chaosRoundsChance=0.20;},
+   applyDebuff:function(b){b.fireRateMult=(b.fireRateMult||1)*1.15;b._misfireChance=0.10;}},
+  {id:'vb_echo_strike',buffName:'ECHO STRIKE',buffIcon:'🔮',buffDesc:'Every 5th kill triggers shockwave',
+   debuffName:'HEAVY FRAME',debuffIcon:'⬇',debuffDesc:'-20% Move Speed',
+   buffColor:'#aa44ff',
+   applyBuff:function(b){b._echoStrikeInterval=5;},
+   applyDebuff:function(b){b.speedMult=(b.speedMult||1)*0.80;}}
 ];
 var _voidBrokerUsedIds=[];
+
+// ── CHAOS JESTER ──────────────────────────────────────────
+var _chaosJesterShown=false;
+var CHAOS_JESTER_BUFFS=[
+  {name:'+20% DAMAGE',icon:'💥',col:'#44ff88',apply:function(b){b.damageMult=(b.damageMult||1)*1.20;}},
+  {name:'+20% FIRE RATE',icon:'🔧',col:'#44ff88',apply:function(b){b.fireRateMult=(b.fireRateMult||1)*0.80;}},
+  {name:'+1 MAX HP',icon:'❤️',col:'#44ff88',apply:function(b){b.bonusHP=(b.bonusHP||0)+1;}},
+  {name:'+2 SHIELDS',icon:'🛡',col:'#44ff88',apply:function(b){b.shieldCharges=(b.shieldCharges||0)+2;}},
+  {name:'+12% CRIT CHANCE',icon:'🎲',col:'#44ff88',apply:function(b){b.critChance=Math.min(0.45,(b.critChance||0)+0.12);}},
+  {name:'+15% DODGE',icon:'👤',col:'#44ff88',apply:function(b){b.dodgeChance=Math.min(0.30,(b.dodgeChance||0)+0.15);}}
+];
+var CHAOS_JESTER_DEBUFFS=[
+  {name:'-15% DAMAGE',icon:'💔',col:'#ff4455',apply:function(b){b.damageMult=(b.damageMult||1)*0.85;}},
+  {name:'-15% FIRE RATE',icon:'🐌',col:'#ff4455',apply:function(b){b.fireRateMult=(b.fireRateMult||1)*1.15;}},
+  {name:'-1 MAX HP',icon:'💀',col:'#ff4455',apply:function(b){b.bonusHP=(b.bonusHP||0)-1;}},
+  {name:'-15% MOVE SPEED',icon:'⬇',col:'#ff4455',apply:function(b){b.speedMult=(b.speedMult||1)*0.85;}},
+  {name:'-15% BULLET SPEED',icon:'🕳',col:'#ff4455',apply:function(b){b.bulletSpdMult=(b.bulletSpdMult||1)*0.85;}}
+];
+
 // ── PREMIUM ITEMS ──────────────────────────────────────────
 var PREMIUM_ITEMS = [
   {id:'celestialShip', name:'CELESTIAL TITAN', type:'sprite', label:'CELESTIAL TITAN', icon:'👼', rarity:'legendary', color:'#ffd700'},
@@ -5444,6 +5507,47 @@ function devResetSplashFlags() {
   closeDevModal();
 }
 
+function devResetAdventure() {
+  SAVE.campaignData = {highestWorld:0,highestWave:0,totalRuns:0,totalCampaignKills:0,bestRunScore:0,campaignIntroSeen:false,worldsCleared:[],worldStats:{},worldGrades:{},activeMutators:[],mutatorUnlocked:false,challengesCompleted:{},worldMastery:{},tipsShown:{}};
+  SAVE.rogueLoadout = {ability:null,weapon:null,passive:null};
+  SAVE.rogueUnlocks = [];
+  SAVE.rogueProgress = {currentWorld:0,runActive:false};
+  SAVE.rogueTokens = 0;
+  SAVE.rogueLoadoutLevels = {};
+  SAVE.worldClearShips = {};
+  doSave();
+  showToast('🔄 Adventure Mode progress reset!');
+  closeDevModal();
+}
+
+function devJumpWorld(worldIdx) {
+  if(!SAVE.campaignData) SAVE.campaignData = {};
+  SAVE.campaignData.campaignIntroSeen = true;
+  if(!Array.isArray(SAVE.campaignData.worldsCleared)) SAVE.campaignData.worldsCleared = [];
+  // Clear all worlds up to the target
+  for(var i = 0; i < worldIdx; i++){
+    if(SAVE.campaignData.worldsCleared.indexOf(i) < 0) SAVE.campaignData.worldsCleared.push(i);
+    if(!SAVE.campaignData.worldStats) SAVE.campaignData.worldStats = {};
+    if(!SAVE.campaignData.worldStats[i]) SAVE.campaignData.worldStats[i] = {clears:1,bestScore:10000,bestKills:50};
+  }
+  SAVE.campaignData.highestWorld = Math.max(SAVE.campaignData.highestWorld||0, worldIdx);
+  SAVE.campaignData.highestWave = Math.max(SAVE.campaignData.highestWave||0, CAMPAIGN_WORLDS[worldIdx].waves[0]);
+  SAVE.campaignData.mutatorUnlocked = worldIdx >= 1;
+  SAVE.rogueProgress = {currentWorld:worldIdx, runActive:false};
+  doSave();
+  showToast('⚔ Jumped to World ' + (worldIdx+1) + ': ' + CAMPAIGN_WORLDS[worldIdx].name);
+  closeDevModal();
+  _suppressNavSound = true;
+  showScreen('screen-menu');
+  setTimeout(function(){ _woSelectedWorld = worldIdx; showWorldOverview(); }, 100);
+}
+
+function devAddTokens() {
+  SAVE.rogueTokens = (SAVE.rogueTokens||0) + 20;
+  doSave();
+  showToast('🪙 +20 Rogue Tokens (Total: ' + SAVE.rogueTokens + ')');
+}
+
 function devLaunch() {
   SAVE.savedWave = devWaveTarget;
   doSave();
@@ -5777,6 +5881,10 @@ var _campaignBulletTimeFactor = 1.0;
 var _loadoutBulletTimeTimer = 0;
 var _momentumStacks = 0, _momentumTimer = 0;
 var _killShieldCounter = 0;
+var _overdriveTimer = 0;
+var _fortressFRTimer = 0;
+var _shadowCloneFireTimer = 0;
+var _ionCannonTimer = 0;
 var _campaignStarOverride = null;
 var _custActiveCategory = 'sprite';
 var _prevActiveSynergies = [];
@@ -7894,6 +8002,12 @@ function drawPlayer(x,y,inv){
   drawShip(ctx,x,y,inv,SAVE.shipCustom);
 }
 
+function spawnHealRing(x,y){
+  if(particles.length<40){
+    particles.push({x:x,y:y,r:0,maxR:28,life:1,col:'#44ff88',type:'ring'});
+    particles.push({x:x,y:y,r:0,maxR:18,life:0.8,col:'#88ffaa',type:'ring'});
+  }
+}
 function spawnExplosion(x,y,col,count=6,big=false) {
   // Hard cap — never let particles pile up
   if(particles.length>40) particles.splice(0, particles.length-30);
@@ -8138,6 +8252,8 @@ let moveDx = 0;
   else playerSpriteState='idle';
   if(firing && fireTimer<=0 && gState==='playing') {
     fireTimer=safeCooldown;
+    if(_campaignMode&&stats._misfireChance>0&&Math.random()<stats._misfireChance){/* misfire — skip this shot */}
+    else {
     const pierce=stats.piercingShots;
     // freeTriple forces 3-way spread even without multishot upgrade
     const shotCount = stats.freeTriple ? 2 : stats.multishot;
@@ -8161,7 +8277,7 @@ let moveDx = 0;
     }
     if(_campaignMode&&stats._campaignRearShot) bullets.push({x:player.x,y:player.y+16,spd:-stats.bulletSpeed*0.7,pierce:pierce,hit:new Set(),trail:[],rear:true});
     sfx(shotCount>0?'shoot2':'shoot');
-  }
+  } /* end else (misfire check) */ }
 
   // ── CAMPAIGN SPECIAL MECHANICS ──────────────────
   if(_campaignMode&&gState==='playing'){
@@ -8176,6 +8292,32 @@ let moveDx = 0;
           bullets.push({x:player.x,y:player.y-16,spd:stats.bulletSpeed*1.2,pierce:false,hit:new Set(),trail:[],missile:true,tx:tgt.x,ty:tgt.y});
           sfx('shoot');
         }
+      }
+    }
+    // Shadow Clone — mirrored ghost ship fires every 2nd shot
+    if(stats._shadowClone&&player){
+      _shadowCloneFireTimer-=dt;
+      if(_shadowCloneFireTimer<=0){
+        _shadowCloneFireTimer=stats.fireCooldown*2/1000; // fires at half player rate
+        var _cloneX=W-player.x; // mirrored horizontally
+        bullets.push({x:_cloneX,y:player.y-12,spd:stats.bulletSpeed,pierce:false,hit:new Set(),trail:[],clone:true});
+      }
+    }
+    // Ion Cannon — massive piercing beam every 10s
+    if(stats._ionCannon){
+      _ionCannonTimer-=dt;
+      if(_ionCannonTimer<=0){
+        _ionCannonTimer=10;
+        // Fire a column of damage up the screen from player position
+        enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.abs(e.x-player.x)<20){e.hp-=stats.damage*4;e.hitFlash=1;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#44eeff',5,true);}}});
+        // Visual beam
+        if(particles.length<40){
+          for(var _bi=0;_bi<6;_bi++) particles.push({type:'spark',x:player.x+(Math.random()-0.5)*8,y:player.y-40-_bi*80,vx:0,vy:-2,life:0.6,maxLife:0.6,r:3,col:'#44eeff'});
+          particles.push({type:'ring',x:player.x,y:player.y-16,r:0,maxR:30,life:0.8,col:'#44eeff'});
+        }
+        try{sfx('bomb');}catch(e){}
+        shake(3,0.15);
+        floatTexts.push({x:player.x,y:player.y-40,text:'⚡ ION BEAM',col:'#44eeff',life:0.8,vy:-2,big:true});
       }
     }
     // Proximity Mines
@@ -8214,7 +8356,7 @@ let moveDx = 0;
       _campaignRegenTimer-=dt;
       if(_campaignRegenTimer<=0){
         _campaignRegenTimer=stats._campaignRegenInterval;
-        if(player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-18,text:'🔮 +1 HP',col:'#aa44ff',life:1.0,vy:-1.5});spawnExplosion(player.x,player.y,'#aa44ff',5);player.shieldFlash=0.5;}
+        if(player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-40,text:'🔮 +1 HP',col:'#aa44ff',life:1.0,vy:-1.5,big:true});spawnExplosion(player.x,player.y,'#aa44ff',5);spawnHealRing(player.x,player.y);player.shieldFlash=0.5;}
       }
     }
     // Singularity pull
@@ -8264,10 +8406,13 @@ let moveDx = 0;
         if(_od.state==='orbit'){
           _od.x=homeX;_od.y=homeY;
         } else if(_od.state==='attack'){
+          // Re-target nearest alive enemy for better tracking
+          var _atkAlive=enemies.filter(function(en){return en.alive&&!en.entering;});
+          if(_atkAlive.length){var _nearest=_atkAlive.reduce(function(a,en){return Math.hypot(en.x-_od.x,en.y-_od.y)<Math.hypot(a.x-_od.x,a.y-_od.y)?en:a;});_od.tx=_nearest.x;_od.ty=_nearest.y;}
           var _adx=_od.tx-_od.x,_ady=_od.ty-_od.y,_ad=Math.max(1,Math.hypot(_adx,_ady));
-          _od.x+=_adx/_ad*12;_od.y+=_ady/_ad*12;
-          if(particles.length<40&&Math.random()<0.3)particles.push({type:'spark',x:_od.x,y:_od.y,vx:(Math.random()-0.5)*0.5,vy:0.5,life:0.3,maxLife:0.3,r:1.2,col:'#00f5ff'});
-          if(_ad<15){
+          _od.x+=_adx/_ad*14;_od.y+=_ady/_ad*14;
+          if(particles.length<40&&Math.random()<0.4)particles.push({type:'spark',x:_od.x,y:_od.y,vx:(Math.random()-0.5)*0.8,vy:0.3+Math.random()*0.5,life:0.3,maxLife:0.3,r:1.5,col:'#00f5ff'});
+          if(_ad<18){
             // Impact — AoE explosion
             spawnExplosion(_od.tx,_od.ty,'#00f5ff',6,true);
             try{sfx('bomb');}catch(ex){}
@@ -8312,6 +8457,10 @@ let moveDx = 0;
     } else { _campaignBulletTimeFactor=1.0; }
     // Momentum Core — decay timer
     if(_momentumStacks>0){_momentumTimer-=dt;if(_momentumTimer<=0){_momentumStacks=0;_momentumTimer=0;}}
+    // Overdrive — decay timer
+    if(_overdriveTimer>0) _overdriveTimer-=dt;
+    // Fortress FR boost — decay timer
+    if(_fortressFRTimer>0) _fortressFRTimer-=dt;
     // Plasma Storm — expanding electric ring
     if(stats._campaignPlasmaStorm){
       _campaignPlasmaStormTimer-=dt;
@@ -8325,8 +8474,9 @@ let moveDx = 0;
         var _ps=_campaignPlasmaStormRing;
         _ps.life-=dt;
         _ps.r+=(_ps.maxR/_ps.maxLife)*dt;
-        // Damage and push enemies the ring passes through
-        enemies.forEach(function(e){if(!e.alive||e.entering)return;var ed=Math.hypot(e.x-_ps.x,e.y-_ps.y);if(Math.abs(ed-_ps.r)<20){e.hp-=stats.damage*2;e.hitFlash=1;var pdx=e.x-_ps.x,pdy=e.y-_ps.y,pd=Math.max(1,Math.hypot(pdx,pdy));e.x+=pdx/pd*40*dt*4;e.y+=pdy/pd*40*dt*4;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,'#44eeff',4,true);}}});
+        // Damage and push enemies the ring passes through (once per enemy)
+        if(!_ps.hitSet) _ps.hitSet=new Set();
+        enemies.forEach(function(e){if(!e.alive||e.entering)return;var ed=Math.hypot(e.x-_ps.x,e.y-_ps.y);if(Math.abs(ed-_ps.r)<20){var pdx=e.x-_ps.x,pdy=e.y-_ps.y,pd=Math.max(1,Math.hypot(pdx,pdy));e.x+=pdx/pd*3;e.y+=pdy/pd*3;if(!_ps.hitSet.has(e)){_ps.hitSet.add(e);e.hp-=stats.damage*1.5;e.hitFlash=1;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,'#44eeff',4,true);}}}});
         if(particles.length<40&&Math.random()<0.3){var _psa=Math.random()*Math.PI*2;particles.push({type:'spark',x:_ps.x+Math.cos(_psa)*_ps.r,y:_ps.y+Math.sin(_psa)*_ps.r,vx:Math.cos(_psa)*1.5,vy:Math.sin(_psa)*1.5,life:0.4,maxLife:0.4,r:1.5,col:'#44eeff'});}
         if(_ps.life<=0) _campaignPlasmaStormRing=null;
       }
@@ -8347,7 +8497,7 @@ let moveDx = 0;
     // Afterburn trails — damage enemies touching trails
     _campaignAfterTrails=_campaignAfterTrails.filter(function(t){
       t.life-=dt;
-      enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-t.x,e.y-t.y)<12){e.hp-=stats.damage*0.15*dt*60;e.hitFlash=0.15;}});
+      enemies.forEach(function(e){if(!e.alive||e.entering)return;if(Math.hypot(e.x-t.x,e.y-t.y)<12){e.hp=Math.max(0,e.hp-stats.damage*0.08*dt*60);e.hitFlash=0.15;if(e.hp<=0){e.alive=false;_campaignKills++;_campaignScore+=e.scoreVal*wave;spawnExplosion(e.x,e.y,e.campaignColor||'#ff8800',3);}}});
       return t.life>0;
     });
   }
@@ -8366,7 +8516,7 @@ let moveDx = 0;
       const alive=enemies.filter(e=>e.alive&&!e.entering&&e.y<b.y+150);
       if(alive.length){
         const nearest=alive.reduce((a,e)=>Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a);
-        if(Math.hypot(nearest.x-b.x,nearest.y-b.y)<200){b.x+=(nearest.x-b.x)*0.06;if(particles.length<40&&Math.random()<0.3)particles.push({type:'spark',x:b.x,y:b.y,vx:(Math.random()-0.5)*0.3,vy:0.5,life:0.5,maxLife:0.5,r:1,col:'#44ffff'});}
+        if(Math.hypot(nearest.x-b.x,nearest.y-b.y)<250){b.x+=(nearest.x-b.x)*0.12;if(particles.length<40&&Math.random()<0.3)particles.push({type:'spark',x:b.x,y:b.y,vx:(Math.random()-0.5)*0.3,vy:0.5,life:0.5,maxLife:0.5,r:1,col:'#44ffff'});}
       }
     }
     if(b.missile && b.targetEnemy){
@@ -8376,7 +8526,7 @@ let moveDx = 0;
     // Campaign missile homing
     if(b.missile && !b.targetEnemy && _campaignMode){
       var _alv=enemies.filter(function(e){return e.alive&&!e.entering;});
-      if(_alv.length){var _nr=_alv.reduce(function(a,e){return Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a;});var _dx=_nr.x-b.x,_dy=_nr.y-b.y,_dd=Math.max(1,Math.hypot(_dx,_dy));b.x+=_dx/_dd*6;b.y+=_dy/_dd*6;}
+      if(_alv.length){var _nr=_alv.reduce(function(a,e){return Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a;});var _dx=_nr.x-b.x,_dy=_nr.y-b.y,_dd=Math.max(1,Math.hypot(_dx,_dy));b.x+=_dx/_dd*10;b.y+=_dy/_dd*10;}
     }
     // Death Blossom bullets move via blossomVx/Vy instead of spd
     if(b.blossom){b.x+=b.blossomVx;b.y+=b.blossomVy;b.life=(b.life||1.5)-dt;return b.life>0&&b.x>-20&&b.x<W+20&&b.y>-20&&b.y<H+20;}
@@ -8387,6 +8537,11 @@ let moveDx = 0;
     // Afterburn — leave damage trail
     if(_campaignMode&&stats._campaignAfterburn&&!b.missile&&!b.drone&&Math.random()<0.25&&_campaignAfterTrails.length<20){
       _campaignAfterTrails.push({x:b.x,y:b.y,life:0.35});
+    }
+    // Ember Trail — leave short damage trail only near enemies
+    if(_campaignMode&&stats._emberTrail&&!b.missile&&!b.drone&&Math.random()<0.2&&_campaignAfterTrails.length<20){
+      var _nearE=false;for(var _ei=0;_ei<enemies.length;_ei++){if(enemies[_ei].alive&&Math.hypot(enemies[_ei].x-b.x,enemies[_ei].y-b.y)<60){_nearE=true;break;}}
+      if(_nearE) _campaignAfterTrails.push({x:b.x,y:b.y,life:0.25});
     }
     if(b._vx!==undefined){b.x+=b._vx;b.y+=b._vy;} else b.y-=b.spd;
     // Ricochet — bounce off top of screen once (bullet reverses direction downward)
@@ -8752,6 +8907,8 @@ let moveDx = 0;
   // Move & draw drops
   powerupDrops.forEach((p,i)=>{
     p.y+=1.8; p.pulse+=dt*4;
+    // Magnet Field — pull powerups toward player
+    if(_campaignMode&&stats._magnetRadius>0&&player){var _md=Math.hypot(p.x-player.x,p.y-player.y);if(_md<stats._magnetRadius&&_md>5){p.x+=(player.x-p.x)/_md*3;p.y+=(player.y-p.y)/_md*3;}}
     const def=POWERUP_DEFS[p.id];
     ctx.save();
     const glow=0.6+Math.sin(p.pulse)*0.4;
@@ -8882,7 +9039,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             return;
           }
           // Mirror modifier — reflector enemies bounce bullets back
-          if(e.shield>0 && !stats.piercingShots){
+          if(e.shield>0 && !stats.piercingShots && !stats._armorPiercing){
             e.shield--; e.shieldFlash=1; b.hit.add(e);
             if(!b.pierce) b.y=-200;
             spawnExplosion(e.x,e.y,'#00ccff',2);
@@ -8898,6 +9055,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             var _dmg=b.splitDmgOverride||stats.damage;
             if(b.overcharge) _dmg*=b.overchargeDmg;
             if(_momentumStacks>0) _dmg*=(1+_momentumStacks*((stats._loadoutMomentumPct)||0.03));
+            if(stats._chaosRoundsChance>0&&Math.random()<stats._chaosRoundsChance){_dmg*=4;floatTexts.push({x:e.x,y:e.y-14,text:'CHAOS!',col:'#ffcc00',life:0.6,vy:-2});}
             if(_campaignMode&&stats._campaignCritChance>0&&Math.random()<stats._campaignCritChance){_dmg*=3;floatTexts.push({x:e.x,y:e.y-14,text:'CRIT!',col:'#ffd700',life:0.8,vy:-2});}
             e.hp-=_dmg; b.hit.add(e); e.hitFlash=1;
             if(b.overcharge){/* overcharge always pierces */}
@@ -8954,10 +9112,10 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
             if(_campaignMode){_campaignScore+=e.scoreVal*wave;_campaignKills++;_campaignEnemiesKilled++;
               _campaignCoinsCollected+=c;
               if(e.hp<0) _campaignOverkillDmg+=Math.abs(e.hp);
-              if(!_campaignBuffs.mutNoHealing&&stats._campaignVamp>0&&Math.random()<stats._campaignVamp&&player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-18,text:'🩸 +1 HP',col:'#ff4466',life:1.0,vy:-1.5});spawnExplosion(player.x,player.y,'#ff4466',3);player.shieldFlash=0.4;}
+              if(!_campaignBuffs.mutNoHealing&&stats._campaignVamp>0&&Math.random()<stats._campaignVamp&&player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-40,text:'🩸 +1 HP',col:'#ff4466',life:1.0,vy:-1.5,big:true});spawnExplosion(player.x,player.y,'#ff4466',3);spawnHealRing(player.x,player.y);player.shieldFlash=0.4;}
               if(stats._campaignShockwave){enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<60){n.hp-=stats.damage*0.5;n.hitFlash=1;if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;spawnExplosion(n.x,n.y,n.campaignColor||'#ff8800',4,true);}}});}
               // Survivor's Edge 3pc — at 1 HP, kills have chance to heal
-              if(!_campaignBuffs.mutNoHealing&&_campaignBuffs.setSurvivorHeal&&player&&player.lives===1&&player.lives<player.maxLives&&Math.random()<_campaignBuffs.setSurvivorHeal){player.lives++;floatTexts.push({x:player.x,y:player.y-14,text:'+1 HP',col:'#44ff88',life:0.7,vy:-2});}
+              if(!_campaignBuffs.mutNoHealing&&_campaignBuffs.setSurvivorHeal&&player&&player.lives===1&&player.lives<player.maxLives&&Math.random()<_campaignBuffs.setSurvivorHeal){player.lives++;floatTexts.push({x:player.x,y:player.y-40,text:'+1 HP',col:'#44ff88',life:1.0,vy:-1.5,big:true});spawnExplosion(player.x,player.y,'#44ff88',3);spawnHealRing(player.x,player.y);}
               // Chaos Engine 3pc — below 50% HP: chance to drop powerup
               if(_campaignBuffs.setChaosKillPowerup&&player&&player.lives<=Math.floor(player.maxLives/2)&&Math.random()<_campaignBuffs.setChaosKillPowerup){
                 var _cpKeys=['rapidFire','doubleDamage','tripleShot','homingShots','ghostMode','timeFreeze'];
@@ -8965,7 +9123,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                 if(!_campaignBuffs.mutNoPowerups) powerupDrops.push({x:e.x,y:e.y,id:_cpId,pulse:0});
               }
               // Scrap Collector — chance to heal on kill
-              if(!_campaignBuffs.mutNoHealing&&stats._campaignScrapHeal>0&&Math.random()<stats._campaignScrapHeal&&player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-18,text:'+1 HP',col:'#44ff88',life:1.0,vy:-1.5});spawnExplosion(player.x,player.y,'#44ff88',4);player.shieldFlash=0.4;sfx('coin');}
+              if(!_campaignBuffs.mutNoHealing&&stats._campaignScrapHeal>0&&Math.random()<stats._campaignScrapHeal&&player.lives<player.maxLives){player.lives++;floatTexts.push({x:player.x,y:player.y-40,text:'+1 HP',col:'#44ff88',life:1.0,vy:-1.5,big:true});spawnExplosion(player.x,player.y,'#44ff88',4);spawnHealRing(player.x,player.y);player.shieldFlash=0.4;sfx('coin');}
               // Momentum Core — kill streak damage buff
               if(stats._loadoutMomentum){
                 var _mMax=Math.floor(stats._loadoutMomentumMax/stats._loadoutMomentumPct);
@@ -8978,12 +9136,27 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
                 _killShieldCounter++;
                 if(_killShieldCounter>=stats._loadoutKillShieldN){
                   _killShieldCounter=0;
-                  _campaignShieldCharges++;
+                  _campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);
                   if(player) player.shieldFlash=0.8;
-                  floatTexts.push({x:player?player.x:W/2,y:player?player.y-18:H/2,text:'+🛡 SHIELD',col:'#00f5ff',life:0.8,vy:-2});
+                  floatTexts.push({x:player?player.x:W/2,y:player?player.y-18:H/2,text:'+🛡 SHIELD',col:'#00f5ff',life:1.0,vy:-1.5,big:true});
                   try{sfx('coin');}catch(ex){}
                 }
               }
+              // Echo Strike — shockwave every Nth kill
+              if(stats._echoStrikeInterval>0){
+                if(!_campaignBuffs._echoKillCount) _campaignBuffs._echoKillCount=0;
+                _campaignBuffs._echoKillCount++;
+                if(_campaignBuffs._echoKillCount>=stats._echoStrikeInterval){
+                  _campaignBuffs._echoKillCount=0;
+                  enemies.forEach(function(n){if(n.alive&&n!==e&&Math.hypot(n.x-e.x,n.y-e.y)<60){n.hp-=stats.damage*0.5;n.hitFlash=1;if(n.hp<=0){n.alive=false;_campaignKills++;_campaignScore+=n.scoreVal*wave;spawnExplosion(n.x,n.y,n.campaignColor||'#aa44ff',4,true);}}});
+                  spawnExplosion(e.x,e.y,'#aa44ff',5,true);
+                }
+              }
+            }
+            // Lucky Drops — campaign powerup drop chance
+            if(_campaignMode&&stats._luckyDropChance>0&&!_campaignBuffs.mutNoPowerups&&Math.random()<stats._luckyDropChance){
+              var _lpKeys=['rapidFire','doubleDamage','tripleShot','homingShots','timeFreeze'];
+              powerupDrops.push({x:e.x,y:e.y,id:_lpKeys[Math.floor(Math.random()*_lpKeys.length)],pulse:0});
             }
             // Powerup drop — 4% chance per kill (not in campaign)
             if(!_campaignMode&&Math.random()<0.04){
@@ -9121,16 +9294,16 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       if(Math.abs(b.x-player.x)<16&&Math.abs(b.y-player.y)<16){
         eBullets.splice(i,1);
         if(stats.reduction>0&&Math.random()<stats.reduction) return; // reduced hit
-        if(_campaignMode&&stats._campaignDodge>0&&Math.random()<stats._campaignDodge){floatTexts.push({x:player.x,y:player.y-14,text:'DODGE!',col:'#88ddff',life:0.7,vy:-2});return;}
+        if(_campaignMode&&stats._campaignDodge>0&&Math.random()<stats._campaignDodge){floatTexts.push({x:player.x,y:player.y-14,text:'DODGE!',col:'#88ddff',life:0.9,vy:-1.5,big:true});return;}
         // Reflector — chance to reflect enemy bullet back
         if(_campaignMode&&stats._reflectChance>0&&Math.random()<stats._reflectChance){
           bullets.push({x:b.x,y:b.y,spd:stats.bulletSpeed||6,pierce:false,hit:new Set(),trail:[],ricocheted:true,_vx:b.vx?-b.vx:0,_vy:b.vy?-b.vy:-6});
-          floatTexts.push({x:player.x,y:player.y-14,text:'REFLECT!',col:'#00f5ff',life:0.8,vy:-2});
+          floatTexts.push({x:player.x,y:player.y-14,text:'REFLECT!',col:'#00f5ff',life:0.9,vy:-1.5,big:true});
           spawnExplosion(player.x,player.y,'#00f5ff',3);
           return;
         }
         const invDur = hasPerk('ghostProtocol') ? [3,4,5,6][perkLevel('ghostProtocol')-1]||3 : 1.8;
-        if(_campaignMode&&_campaignShieldCharges>0){_campaignShieldCharges--;player.inv=invDur;player.shieldFlash=0.8;sfx('shieldBreak');floatTexts.push({x:player.x,y:player.y-14,text:'SHIELD!',col:'#00f5ff',life:0.7,vy:-2});return;}
+        if(_campaignMode&&_campaignShieldCharges>0){var _shCost=Math.min(_campaignShieldCharges,(b.big?2:1));_campaignShieldCharges-=_shCost;player.inv=invDur;player.shieldFlash=0.8;sfx('shieldBreak');floatTexts.push({x:player.x,y:player.y-40,text:'SHIELD! (-'+_shCost+'🛡)',col:'#00f5ff',life:0.9,vy:-1.5,big:true});updateHUD();return;}
         // Iron Heart — absorb every Nth hit
         if(_campaignMode&&_campaignBuffs.ironHeartInterval){_ironHeartCounter++;if(_ironHeartCounter>=_campaignBuffs.ironHeartInterval){_ironHeartCounter=0;player.inv=invDur;player.shieldFlash=0.6;floatTexts.push({x:player.x,y:player.y-14,text:'ABSORBED',col:'#44ffaa',life:0.8,vy:-2});sfx('shieldBreak');return;}}
         // Bulwark shield absorbs hit before any damage
@@ -9141,7 +9314,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         player.lives = lastStandSave ? 1 : Math.max(0, player.lives - dmg);
         player.inv=invDur; player.shieldFlash=0.6;
         waveDamageTaken=true;
-        if(_campaignMode){_campaignDamageTaken+=dmg;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;}
+        if(_campaignMode){_campaignDamageTaken+=dmg;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;if(stats._overdrive)_overdriveTimer=10;if(stats._setDamageFRBoost)_fortressFRTimer=2;}
         killStreakCount=0;
         if(hasPerk('retribution')){ const dur=[2,3,4,5][perkLevel('retribution')-1]; retributionTimer=dur; }
         // Last Stand — trigger shield when dropping to 1 life
@@ -9214,7 +9387,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       if(e.spawnGrace>0) return;
       if(player&&player.inv<=0&&Math.abs(e.x-player.x)<14&&Math.abs(e.y-player.y)<14){
         e.alive=false;
-        player.lives--; player.inv=1.8; player.shieldFlash=0.6; if(_campaignMode){_campaignDamageTaken++;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;}
+        player.lives--; player.inv=1.8; player.shieldFlash=0.6; if(_campaignMode){_campaignDamageTaken++;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;if(stats._overdrive)_overdriveTimer=10;if(stats._setDamageFRBoost)_fortressFRTimer=2;}
         spawnExplosion(player.x,player.y,'#ff4455',6); shake(6,0.2); sfx('playerHit');
         const hf=document.getElementById('hit-flash');
         hf.style.transition='none'; hf.style.opacity='1';
@@ -9406,7 +9579,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   floatTexts.forEach(function(ft){
     ctx.save();
     ctx.globalAlpha=Math.max(0,ft.life);
-    ctx.fillStyle=ft.col; ctx.font='bold 10px monospace'; ctx.textAlign='center'; ctx.fillText(ft.text,ft.x,ft.y);
+    ctx.fillStyle=ft.col; ctx.font='bold '+(ft.big?'14px':'10px')+' monospace'; ctx.textAlign='center'; ctx.fillText(ft.text,ft.x,ft.y);
     ctx.restore();
   });
 
@@ -9709,7 +9882,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
         ctx.fillStyle='rgba(255,150,0,'+ha*0.6+')';ctx.beginPath();ctx.arc(hz.x,hz.y,hz.r*0.6,0,Math.PI*2);ctx.fill();
         // Meteor-player collision
         if(player&&player.inv<=0&&Math.abs(hz.x-player.x)<hz.r+10&&Math.abs(hz.y-player.y)<hz.r+10){
-          player.lives-=hz.dmg;player.inv=1.5;player.shieldFlash=0.6;if(_campaignMode){_campaignDamageTaken+=hz.dmg;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;}
+          player.lives-=hz.dmg;player.inv=1.5;player.shieldFlash=0.6;if(_campaignMode){_campaignDamageTaken+=hz.dmg;if(stats._loadoutBulletTime)_loadoutBulletTimeTimer=stats._loadoutBulletTimeDur;if(stats._overdrive)_overdriveTimer=10;if(stats._setDamageFRBoost)_fortressFRTimer=2;}
           hz.life=0;sfx('shieldBreak');
         }
         if(hz.y>H+20)hz.life=0;
@@ -9792,6 +9965,20 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     ctx.beginPath();ctx.arc(_ps.x,_ps.y,_ps.r,0,Math.PI*2);ctx.stroke();
     ctx.strokeStyle='#ffffff';ctx.lineWidth=1;ctx.globalAlpha=_psAlpha*0.4;
     ctx.beginPath();ctx.arc(_ps.x,_ps.y,_ps.r,0,Math.PI*2);ctx.stroke();
+    ctx.restore();
+  }
+  // Shadow Clone visual — ghost ship mirrored
+  if(_campaignMode&&stats._shadowClone&&player){
+    var _clX=W-player.x;
+    ctx.save();ctx.globalAlpha=0.3;ctx.translate(_clX,player.y);
+    ctx.fillStyle='#8888ff';ctx.beginPath();ctx.moveTo(0,-12);ctx.lineTo(8,6);ctx.lineTo(-8,6);ctx.closePath();ctx.fill();
+    ctx.restore();
+  }
+  // Ion Cannon beam visual — brief vertical beam
+  if(_campaignMode&&stats._ionCannon&&_ionCannonTimer>9.4&&player){
+    ctx.save();ctx.globalAlpha=Math.max(0,(_ionCannonTimer-9.4)/0.6)*0.5;
+    ctx.fillStyle='#44eeff';ctx.fillRect(player.x-4,0,8,player.y-12);
+    ctx.fillStyle='#ffffff';ctx.globalAlpha*=0.6;ctx.fillRect(player.x-1,0,2,player.y-12);
     ctx.restore();
   }
   // Campaign drone swarm visual
@@ -11066,6 +11253,25 @@ function updateHUD() {
       h.className='lh '+(i<player.lives?'on':'off');
       h.textContent=i<player.lives?'♥':'♡';
       livesEl.appendChild(h);
+    }
+  }
+  // Shield charge display — separate column to the right of hearts
+  var shieldEl=document.getElementById('shield-display');
+  if(shieldEl){
+    shieldEl.innerHTML='';
+    if(_campaignMode&&_campaignShieldCharges>0){
+      for(var _si=0;_si<Math.min(_campaignShieldCharges,5);_si++){
+        var _sh=document.createElement('span');
+        _sh.style.cssText='font-size:14px;color:#00f5ff;text-shadow:0 0 6px #00f5ff,0 0 12px #00f5ff44';
+        _sh.textContent='🛡';
+        shieldEl.appendChild(_sh);
+      }
+      if(_campaignShieldCharges>5){
+        var _shMore=document.createElement('span');
+        _shMore.style.cssText='font-family:Orbitron,sans-serif;font-size:8px;font-weight:700;color:#00f5ff;text-shadow:0 0 4px #00f5ff';
+        _shMore.textContent='+'+(_campaignShieldCharges-5);
+        shieldEl.appendChild(_shMore);
+      }
     }
   }
   if(_campaignMode) updateWorldMeter();
@@ -17137,9 +17343,9 @@ function showWorldOverview(){
     if(!item) return '';
     var lvl=getRogueItemLevel(itemId);
     var max=item.maxLevel;
-    var stars='';
-    for(var s=0;s<max;s++) stars+=(s<lvl?'★':'☆');
-    return '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:'+(lvl>=max?'#ffd700':'#ff880088')+';letter-spacing:1px;margin-top:3px">'+stars+'</div>';
+    var sh='';
+    for(var s=0;s<max;s++) sh+='<span style="color:'+(s<lvl?'#ffd700':'#44444488')+';'+(s<lvl?'text-shadow:0 0 4px #ffd700;':'')+'">'+(s<lvl?'★':'☆')+'</span>';
+    return '<div style="font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:2px;margin-top:3px">'+sh+'</div>';
   }
   function _woSlotHtml(slotKey,label,arr){
     var item=lo[slotKey]?getRogueLoadoutItem(lo[slotKey]):null;
@@ -17147,9 +17353,21 @@ function showWorldOverview(){
     var name=item?item.name:'TAP TO SET';
     var col=item?item.color:'#ff8800';
     var nameCol=item?col:'#55667788';
-    var borderStyle=item?'border:2px solid '+col+'88':'border:2px dashed #ff880044';
+    // Check if this slot's item is part of an active set
+    var _slotSetColor=null;var _slotSetFull=false;
+    if(item&&lo[slotKey]){
+      var _activeSets=getActiveRogueSets();
+      for(var _ssi=0;_ssi<_activeSets.length;_ssi++){
+        if(_activeSets[_ssi].set.items.indexOf(lo[slotKey])>=0){
+          _slotSetColor=_activeSets[_ssi].set.color;
+          _slotSetFull=_activeSets[_ssi].count>=3;
+          break;
+        }
+      }
+    }
+    var borderStyle=_slotSetColor?'border:2px solid '+_slotSetColor+'aa':(item?'border:2px solid '+col+'88':'border:2px dashed #ff880044');
     var bgStyle=item?'background:linear-gradient(180deg,#14141e 0%,#0a0a0f 100%)':'background:linear-gradient(180deg,#1a1510 0%,#0d0d15 100%)';
-    var shadowStyle=item?'box-shadow:0 0 12px '+col+'22,inset 0 1px 0 '+col+'33,0 4px 12px rgba(0,0,0,0.4)':'box-shadow:0 0 8px #ff880011,inset 0 1px 0 rgba(255,136,0,0.08),0 4px 12px rgba(0,0,0,0.4)';
+    var shadowStyle=_slotSetColor?'box-shadow:0 0 '+(_slotSetFull?'14':'8')+'px '+_slotSetColor+'66,inset 0 1px 0 '+_slotSetColor+'33,0 4px 12px rgba(0,0,0,0.4)':(item?'box-shadow:0 0 12px '+col+'22,inset 0 1px 0 '+col+'33,0 4px 12px rgba(0,0,0,0.4)':'box-shadow:0 0 8px #ff880011,inset 0 1px 0 rgba(255,136,0,0.08),0 4px 12px rgba(0,0,0,0.4)');
     return '<div class="wo-loadout-slot" data-slot="'+slotKey+'" style="flex:1;text-align:center;padding:14px 6px 10px;border-radius:12px;'+bgStyle+';'+borderStyle+';'+shadowStyle+';cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all 0.2s;min-width:0;position:relative">'+
       '<div style="font-size:26px;margin-bottom:5px;'+(item?'filter:drop-shadow(0 0 6px '+col+'66)':'opacity:0.35;filter:drop-shadow(0 0 4px #ff880044)')+'">'+icon+'</div>'+
       '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:'+(item?'#aab':'#776')+';letter-spacing:2px">'+label+'</div>'+
@@ -17160,6 +17378,18 @@ function showWorldOverview(){
   }
   var loadoutSection;
   if(_loadoutUnlocked){
+    var _woActiveSets=getActiveRogueSets();
+    var _woSetInfo=_woActiveSets.length>0?_woActiveSets[0]:null;
+    var _woSetConnector='';
+    if(_woSetInfo){
+      var _sc=_woSetInfo.set.color;
+      var _sf=_woSetInfo.count>=3;
+      // Glowing connector bar behind slots + set name label
+      _woSetConnector='<div id="wo-set-connector" style="position:relative;margin:-6px 0 4px">'+
+        '<div style="position:absolute;top:50%;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,'+_sc+'66,'+_sc+(_sf?'cc':'66')+','+_sc+'66,transparent);transform:translateY(-50%)"></div>'+
+        '<div style="position:relative;text-align:center"><span style="font-family:Orbitron,sans-serif;font-size:8px;font-weight:700;color:'+_sc+';letter-spacing:2px;background:#0d0d15;padding:2px 10px;border:1px solid '+_sc+'44;border-radius:10px;text-shadow:0 0 6px '+_sc+'44">'+_woSetInfo.set.icon+' '+_woSetInfo.set.name+' '+_woSetInfo.count+'/3</span></div>'+
+      '</div>';
+    }
     loadoutSection='<div id="wo-loadout" style="width:100%;max-width:340px;opacity:0;transition:all 0.4s ease 0.2s;margin:8px 0">'+
       '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff880088;letter-spacing:4px;text-align:center;margin-bottom:8px">LOADOUT</div>'+
       '<div id="wo-loadout-slots" style="display:flex;gap:8px">'+
@@ -17167,7 +17397,7 @@ function showWorldOverview(){
         _woSlotHtml('weapon','WEAPON',ROGUE_LOADOUT_WEAPONS)+
         _woSlotHtml('passive','PASSIVE',ROGUE_LOADOUT_PASSIVES)+
       '</div>'+
-      (function(){var sets=getActiveRogueSets();if(sets.length===0)return '';var sh='';for(var si=0;si<sets.length;si++){var s=sets[si];sh+='<div style="font-family:Orbitron,sans-serif;font-size:9px;color:'+s.set.color+';letter-spacing:1px;text-align:center;margin-top:5px;text-shadow:0 0 6px '+s.set.color+'44">'+s.set.icon+' '+s.set.name+' '+s.count+'/3</div>';}return sh;})()+
+      _woSetConnector+
       '</div>'+
     // Token count moved to top-right badge
     '<div id="wo-token-badge" style="position:fixed;top:12px;right:12px;z-index:10;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:#ffaa00;letter-spacing:1px;padding:6px 10px;border-radius:6px;background:#0d0d15;border:1px solid #ffaa0033;text-shadow:0 0 8px #ffaa0044">🪙 '+(SAVE.rogueTokens||0)+'</div>'+
@@ -17418,6 +17648,85 @@ function _updateWoSlot(slotKey){
   // Update token badge
   var tokEl=document.getElementById('wo-token-badge');
   if(tokEl) tokEl.textContent='🪙 '+(SAVE.rogueTokens||0);
+  // Update set connector and slot borders
+  _updateWoSetDisplay();
+}
+function _updateWoSetDisplay(){
+  var lo=SAVE.rogueLoadout||{ability:null,weapon:null,passive:null};
+  var activeSets=getActiveRogueSets();
+  var setInfo=activeSets.length>0?activeSets[0]:null;
+  // Update slot borders for set matching
+  var allSlots=document.querySelectorAll('.wo-loadout-slot');
+  allSlots.forEach(function(el){
+    var sk=el.getAttribute('data-slot');
+    var itemId=lo[sk];
+    var item=itemId?getRogueLoadoutItem(itemId):null;
+    var slotSetColor=null;var slotSetFull=false;
+    if(item&&itemId){
+      for(var i=0;i<activeSets.length;i++){
+        if(activeSets[i].set.items.indexOf(itemId)>=0){slotSetColor=activeSets[i].set.color;slotSetFull=activeSets[i].count>=3;break;}
+      }
+    }
+    if(slotSetColor){
+      el.style.border='2px solid '+slotSetColor+'aa';
+      el.style.boxShadow='0 0 '+(slotSetFull?'14':'8')+'px '+slotSetColor+'66,inset 0 1px 0 '+slotSetColor+'33,0 4px 12px rgba(0,0,0,0.4)';
+    } else if(item){
+      el.style.border='2px solid '+item.color+'88';
+      el.style.boxShadow='0 0 12px '+item.color+'22,inset 0 1px 0 '+item.color+'33,0 4px 12px rgba(0,0,0,0.4)';
+    } else {
+      el.style.border='2px dashed #ff880044';
+      el.style.boxShadow='0 0 8px #ff880011,inset 0 1px 0 rgba(255,136,0,0.08),0 4px 12px rgba(0,0,0,0.4)';
+    }
+  });
+  // Update or remove set connector
+  var oldConn=document.getElementById('wo-set-connector');
+  if(oldConn) oldConn.remove();
+  if(setInfo){
+    var sc=setInfo.set.color;
+    var sf=setInfo.count>=3;
+    var conn=document.createElement('div');
+    conn.id='wo-set-connector';
+    conn.style.cssText='position:relative;margin:-6px 0 4px;opacity:0;transition:opacity 0.3s';
+    conn.innerHTML='<div style="position:absolute;top:50%;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,'+sc+'66,'+sc+(sf?'cc':'66')+','+sc+'66,transparent);transform:translateY(-50%)"></div>'+
+      '<div style="position:relative;text-align:center"><span style="font-family:Orbitron,sans-serif;font-size:8px;font-weight:700;color:'+sc+';letter-spacing:2px;background:#0d0d15;padding:2px 10px;border:1px solid '+sc+'44;border-radius:10px;text-shadow:0 0 6px '+sc+'44">'+setInfo.set.icon+' '+setInfo.set.name+' '+setInfo.count+'/3</span></div>';
+    var slotsEl=document.getElementById('wo-loadout-slots');
+    if(slotsEl&&slotsEl.parentNode) slotsEl.parentNode.insertBefore(conn,slotsEl.nextSibling);
+    setTimeout(function(){conn.style.opacity='1';},30);
+  }
+}
+function _playSetActivation(setData){
+  var sc=setData.set.color;
+  var si=setData.set.icon;
+  try{sfx('setComplete');}catch(e){}
+  // Burst set emoji from each of the 3 loadout slots
+  var slots=document.querySelectorAll('.wo-loadout-slot');
+  slots.forEach(function(el,idx){
+    var rect=el.getBoundingClientRect();
+    var cx=rect.left+rect.width/2;
+    var cy=rect.top+rect.height/2;
+    // Spawn 4 floating emojis per slot
+    for(var ei=0;ei<4;ei++){
+      (function(i,delay){
+        setTimeout(function(){
+          var em=document.createElement('div');
+          em.style.cssText='position:fixed;left:'+cx+'px;top:'+cy+'px;z-index:999999;pointer-events:none;font-size:16px;opacity:1;transform:translate(-50%,-50%);transition:all 0.7s ease-out';
+          em.textContent=si;
+          document.body.appendChild(em);
+          var dx=(Math.random()-0.5)*50;
+          var dy=-30-Math.random()*40;
+          setTimeout(function(){em.style.transform='translate(calc(-50% + '+dx+'px),calc(-50% + '+dy+'px))';em.style.opacity='0';},20);
+          setTimeout(function(){em.remove();},750);
+        },delay);
+      })(ei,idx*80+ei*60);
+    }
+    // Quick pulse on each slot
+    setTimeout(function(){
+      el.style.transition='transform 0.12s ease-out';
+      el.style.transform='scale(1.1)';
+      setTimeout(function(){el.style.transition='transform 0.25s ease-in-out';el.style.transform='scale(1)';},120);
+    },idx*80);
+  });
+  setTimeout(function(){_updateWoSetDisplay();},500);
 }
 function _playSlotAnimation(slotKey,type){
   var slotEl=document.querySelector('.wo-loadout-slot[data-slot="'+slotKey+'"]');
@@ -17484,14 +17793,14 @@ function showRogueLoadoutPicker(slotKey,items){
   var label=slotKey==='ability'?'ABILITY':slotKey==='weapon'?'WEAPON MOD':'PASSIVE';
   var ov=document.createElement('div');
   ov.id='lo-picker-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.92);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:calc(env(safe-area-inset-top,0px) + 20px) 16px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
+  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.94);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
   function _buildPickerHtml(){
     var h='<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ff8800;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px #ff880066">SELECT '+label+'</div>';
     h+='<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ffaa0088;letter-spacing:2px;margin-bottom:14px">🪙 '+(SAVE.rogueTokens||0)+' ROGUE TOKENS</div>';
     // Active set bonuses — show above card list
     var _activeSetsTop=getActiveRogueSets();
     if(_activeSetsTop.length>0){
-      h+='<div style="width:100%;max-width:340px;margin-bottom:12px;padding:12px 14px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid #ffffff22">';
+      h+='<div style="width:100%;max-width:calc(100% - 8px);margin-bottom:12px;padding:12px 14px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid #ffffff22">';
       h+='<div style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:#aab;letter-spacing:3px;margin-bottom:8px">ACTIVE SET BONUSES</div>';
       for(var asi2=0;asi2<_activeSetsTop.length;asi2++){
         var as2=_activeSetsTop[asi2];
@@ -17503,7 +17812,7 @@ function showRogueLoadoutPicker(slotKey,items){
       }
       h+='</div>';
     }
-    h+='<div id="lo-card-list" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px">';
+    h+='<div id="lo-card-list" style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:calc(100% - 8px)">';
     var rarityOrder={common:0,rare:1,epic:2,legendary:3};
     var sorted=items.slice().sort(function(a,b){return (rarityOrder[a.rarity]||0)-(rarityOrder[b.rarity]||0);});
     var curLo=SAVE.rogueLoadout||{ability:null,weapon:null,passive:null};
@@ -17528,21 +17837,22 @@ function showRogueLoadoutPicker(slotKey,items){
       var canUpgradeThis=_canUpgrade&&canSelect&&!isMaxed&&(lvl<2||_canL3);
       var upgCost=canUpgradeThis?getRogueUpgradeCost(lvl):0;
       var canAfford=(SAVE.rogueTokens||0)>=upgCost;
-      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;touch-action:pan-y;transition:all 0.2s">';
-      h+='<div style="font-size:28px;min-width:36px;text-align:center">'+item.icon+'</div>';
+      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;touch-action:pan-y;transition:all 0.2s">';
+      h+='<div style="font-size:36px;min-width:44px;text-align:center;'+(canSelect?'filter:drop-shadow(0 0 4px '+rc+'44)':'opacity:0.4')+'">'+item.icon+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="display:flex;align-items:center;gap:6px"><span style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:'+(canSelect?'#eee':'#667')+';letter-spacing:1px">'+(canSelect?item.name:'???')+'</span>';
-      h+='<span style="font-family:Orbitron,sans-serif;font-size:7px;color:'+rc+';letter-spacing:1px;text-transform:uppercase">'+item.rarity+'</span>';
+      h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(canSelect?'#fff':'#667')+';letter-spacing:1px">'+(canSelect?item.name:'???')+'</span>';
+      h+='<span style="font-family:Orbitron,sans-serif;font-size:7px;color:#000;letter-spacing:1px;text-transform:uppercase;background:'+rc+';padding:1px 5px;border-radius:3px;font-weight:700">'+item.rarity+'</span>';
       // Set badge
       var _itemSet=null;for(var si=0;si<ROGUE_SETS.length;si++){if(ROGUE_SETS[si].items.indexOf(item.id)>=0){_itemSet=ROGUE_SETS[si];break;}}
-      if(_itemSet&&canSelect) h+='<span style="font-family:Orbitron,sans-serif;font-size:6px;color:'+_itemSet.color+';letter-spacing:1px;opacity:0.7">'+_itemSet.icon+'</span>';
+      if(_itemSet&&canSelect) h+='<span style="font-size:10px;color:'+_itemSet.color+'">'+_itemSet.icon+'</span>';
       h+='</div>';
       if(canSelect){
-        h+='<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#889;margin-top:3px;letter-spacing:0.5px">'+desc+'</div>';
-        h+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px">';
-        h+='<span style="font-family:Orbitron,sans-serif;font-size:7px;color:'+(isMaxed?'#ffd700':'#ff880088')+';letter-spacing:1px">'+stars+(isMaxed?' MAX':'')+'</span>';
+        h+='<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#99a;margin-top:4px;letter-spacing:0.5px;line-height:1.4">'+desc+'</div>';
+        h+='<div style="display:flex;align-items:center;gap:10px;margin-top:6px">';
+        var _starHtml='';for(var _si=0;_si<maxLvl;_si++) _starHtml+='<span style="color:'+(_si<lvl?'#ffd700':'#44444488')+';'+(_si<lvl?'text-shadow:0 0 4px #ffd700;':'')+'">'+(_si<lvl?'★':'☆')+'</span>';
+        h+='<span style="font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:2px">'+_starHtml+(isMaxed?' <span style="font-size:8px;color:#ffd700;letter-spacing:1px;vertical-align:middle">MAX</span>':'')+'</span>';
         if(canUpgradeThis){
-          h+='<span class="lo-upgrade-btn" data-id="'+item.id+'" data-cost="'+upgCost+'" style="font-family:Orbitron,sans-serif;font-size:7px;padding:3px 8px;background:'+(canAfford?'rgba(255,170,0,0.15)':'rgba(100,100,100,0.15)')+';border:1px solid '+(canAfford?'#ffaa0044':'#44444444')+';border-radius:4px;color:'+(canAfford?'#ffaa00':'#555')+';letter-spacing:1px;cursor:'+(canAfford?'pointer':'default')+';-webkit-tap-highlight-color:transparent">⬆ '+upgCost+' 🪙</span>';
+          h+='<span class="lo-upgrade-btn" data-id="'+item.id+'" data-cost="'+upgCost+'" style="font-family:Orbitron,sans-serif;font-size:8px;padding:5px 10px;background:'+(canAfford?'rgba(255,170,0,0.15)':'rgba(100,100,100,0.15)')+';border:1px solid '+(canAfford?'#ffaa0066':'#44444444')+';border-radius:5px;color:'+(canAfford?'#ffaa00':'#555')+';letter-spacing:1px;cursor:'+(canAfford?'pointer':'default')+';-webkit-tap-highlight-color:transparent;font-weight:700">⬆ '+upgCost+' 🪙</span>';
         }
         h+='</div>';
       } else if(gated){
@@ -17567,8 +17877,33 @@ function showRogueLoadoutPicker(slotKey,items){
     _attachPickerHandlers();
   }
   function _attachPickerHandlers(){
-    // Card tap to select (swipe-aware to not block scrolling)
+    // Card tap to select — auto-close and return to WO
     var cards=ov.querySelectorAll('.lo-pick-card');
+    var _pickClosing=false;
+    function _selectAndClose(id){
+      if(_pickClosing) return;
+      _pickClosing=true;
+      sfx('navTap');
+      // Check sets before selection to detect new completion
+      var _setsBefore=getActiveRogueSets().filter(function(s){return s.count>=3;}).length;
+      if(!SAVE.rogueLoadout) SAVE.rogueLoadout={ability:null,weapon:null,passive:null};
+      SAVE.rogueLoadout[slotKey]=(SAVE.rogueLoadout[slotKey]===id)?null:id;
+      doSave();
+      var _setsAfter=getActiveRogueSets();
+      var _newFullSet=_setsAfter.filter(function(s){return s.count>=3;}).length>_setsBefore?_setsAfter.filter(function(s){return s.count>=3;})[0]:null;
+      _updateWoSlot(slotKey);
+      // Brief highlight then close
+      ov.style.opacity='0';
+      setTimeout(function(){
+        ov.remove();
+        var curSel=(SAVE.rogueLoadout||{})[slotKey]||null;
+        if(curSel&&curSel!==_initialSelection) _playSlotAnimation(slotKey,'set');
+        // Set completion celebration
+        if(_newFullSet){
+          setTimeout(function(){_playSetActivation(_newFullSet);},300);
+        }
+      },200);
+    }
     cards.forEach(function(card){
       var _touchY=0,_touchMoved=false;
       card.addEventListener('touchstart',function(e){_touchY=e.touches[0].clientY;_touchMoved=false;},{passive:true});
@@ -17577,24 +17912,11 @@ function showRogueLoadoutPicker(slotKey,items){
         if(_touchMoved) return;
         e.preventDefault();
         if(card.getAttribute('data-can')!=='1') return;
-        sfx('navTap');
-        var id=card.getAttribute('data-id');
-        if(!SAVE.rogueLoadout) SAVE.rogueLoadout={ability:null,weapon:null,passive:null};
-        SAVE.rogueLoadout[slotKey]=(SAVE.rogueLoadout[slotKey]===id)?null:id;
-        doSave();
-        _refreshPicker();
-        _updateWoSlot(slotKey);
+        _selectAndClose(card.getAttribute('data-id'));
       });
-      // Desktop fallback (mouse click, not touch)
       card.onclick=function(){
         if(card.getAttribute('data-can')!=='1') return;
-        sfx('navTap');
-        var id=card.getAttribute('data-id');
-        if(!SAVE.rogueLoadout) SAVE.rogueLoadout={ability:null,weapon:null,passive:null};
-        SAVE.rogueLoadout[slotKey]=(SAVE.rogueLoadout[slotKey]===id)?null:id;
-        doSave();
-        _refreshPicker();
-        _updateWoSlot(slotKey);
+        _selectAndClose(card.getAttribute('data-id'));
       };
     });
     // Upgrade button click — also swipe-aware
@@ -17649,21 +17971,27 @@ function showRogueLoadoutPicker(slotKey,items){
     var modal=document.createElement('div');
     modal.id='lo-upgrade-modal';
     modal.style.cssText='position:fixed;inset:0;z-index:9999999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);opacity:0;transition:opacity 0.2s;-webkit-tap-highlight-color:transparent';
+    var _upgStars='';for(var _usi=0;_usi<item.maxLevel;_usi++){var _isCur=_usi<curLvl;var _isNext=_usi===curLvl;_upgStars+='<span style="font-size:16px;color:'+(_isCur?'#ffd700':(_isNext?'#00ff88':'#333'))+';'+(_isCur?'text-shadow:0 0 4px #ffd700;':(_isNext?'text-shadow:0 0 6px #00ff88;':''))+'">'+(_isCur?'★':(_isNext?'★':'☆'))+'</span>';}
     modal.innerHTML=
-      '<div style="background:#111;border:1px solid #ffaa0044;border-radius:12px;padding:20px 24px;max-width:300px;width:90%;text-align:center">'+
-        '<div style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:#ffaa00;letter-spacing:3px;margin-bottom:12px">⬆ UPGRADE</div>'+
-        '<div style="font-size:28px;margin-bottom:4px">'+item.icon+'</div>'+
-        '<div style="font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;color:#eee;letter-spacing:2px">'+item.name+'</div>'+
-        '<div style="margin-top:14px;text-align:left">'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-bottom:3px">NOW (L'+curLvl+')</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#889;letter-spacing:0.5px">'+curDesc+'</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#00ff88;letter-spacing:2px;margin-top:10px;margin-bottom:3px">NEXT (L'+(curLvl+1)+')</div>'+
-          '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#aaffcc;letter-spacing:0.5px">'+nextDesc+'</div>'+
+      '<div style="background:linear-gradient(180deg,#151520 0%,#0a0a14 100%);border:2px solid #ffaa0044;border-radius:16px;padding:28px 24px;max-width:360px;width:calc(100% - 40px);text-align:center;box-shadow:0 0 40px rgba(255,170,0,0.1)">'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ffaa00;letter-spacing:4px;margin-bottom:16px;text-shadow:0 0 12px #ff880044">⬆ UPGRADE</div>'+
+        '<div style="font-size:48px;margin-bottom:8px;filter:drop-shadow(0 0 12px '+item.color+'66)">'+item.icon+'</div>'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px">'+item.name+'</div>'+
+        '<div style="margin-top:4px">'+_upgStars+'</div>'+
+        '<div style="margin-top:18px;text-align:left;display:flex;flex-direction:column;gap:12px">'+
+          '<div style="padding:12px 14px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid #ffffff11">'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:2px;margin-bottom:4px">CURRENT — LEVEL '+curLvl+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#99a;letter-spacing:0.5px;line-height:1.4">'+curDesc+'</div>'+
+          '</div>'+
+          '<div style="padding:12px 14px;border-radius:8px;background:rgba(0,255,136,0.04);border:1px solid #00ff8822">'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00ff88;letter-spacing:2px;margin-bottom:4px">NEXT — LEVEL '+(curLvl+1)+'</div>'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#aaffcc;letter-spacing:0.5px;line-height:1.4">'+nextDesc+'</div>'+
+          '</div>'+
         '</div>'+
-        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#ffaa0088;letter-spacing:1px;margin-top:14px">Cost: '+cost+' 🪙 (You have '+(SAVE.rogueTokens||0)+')</div>'+
-        '<div style="display:flex;gap:8px;margin-top:16px">'+
-          '<button id="lo-upg-confirm" style="flex:1;font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:10px;background:'+(canAfford?'rgba(255,170,0,0.15)':'rgba(50,50,50,0.3)')+';border:1px solid '+(canAfford?'#ffaa00':'#444')+';color:'+(canAfford?'#ffaa00':'#555')+';border-radius:6px;cursor:'+(canAfford?'pointer':'default')+';-webkit-tap-highlight-color:transparent">UPGRADE</button>'+
-          '<button id="lo-upg-cancel" style="flex:1;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;padding:10px;background:rgba(0,0,0,0.3);border:1px solid #445;color:#778;border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent">CANCEL</button>'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffaa00aa;letter-spacing:1px;margin-top:18px">Cost: '+cost+' 🪙 <span style="color:#667">(You have '+(SAVE.rogueTokens||0)+')</span></div>'+
+        '<div style="display:flex;gap:10px;margin-top:18px">'+
+          '<button id="lo-upg-confirm" style="flex:1;font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px;background:'+(canAfford?'rgba(255,170,0,0.15)':'rgba(50,50,50,0.3)')+';border:2px solid '+(canAfford?'#ffaa00':'#444')+';color:'+(canAfford?'#ffaa00':'#555')+';border-radius:8px;cursor:'+(canAfford?'pointer':'default')+';-webkit-tap-highlight-color:transparent">UPGRADE</button>'+
+          '<button id="lo-upg-cancel" style="flex:1;font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:3px;padding:14px;background:rgba(0,0,0,0.3);border:2px solid #334;color:#778;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent">CANCEL</button>'+
         '</div>'+
       '</div>';
     document.body.appendChild(modal);
@@ -17675,21 +18003,16 @@ function showRogueLoadoutPicker(slotKey,items){
     };
     document.getElementById('lo-upg-confirm').onclick=function(){
       if(!canAfford) return;
-      sfx('navTap');
+      sfx('setComplete');
       SAVE.rogueTokens=(SAVE.rogueTokens||0)-cost;
       if(!SAVE.rogueLoadoutLevels) SAVE.rogueLoadoutLevels={};
       SAVE.rogueLoadoutLevels[id]=(SAVE.rogueLoadoutLevels[id]||1)+1;
       doSave();
-      // Close modal + picker, return to world overview with upgrade animation
+      // Close modal only — stay in picker with updated info
       modal.style.opacity='0';
       setTimeout(function(){
         modal.remove();
-        ov.style.opacity='0';
-        setTimeout(function(){
-          ov.remove();
-          _updateWoSlot(slotKey);
-          _playSlotAnimation(slotKey,'upgrade');
-        },200);
+        _refreshPicker();
       },200);
     };
     // Tap outside to close
@@ -17733,7 +18056,7 @@ function startCampaignWorld(worldIdx){
   _campaignKills=0;_campaignEnemiesSpawned=0;
   _campaignShieldCharges=0;
   // MAX HP UP loadout start shield
-  if(_campaignBuffs.loadoutStartShield) _campaignShieldCharges+=_campaignBuffs.loadoutStartShield;
+  if(_campaignBuffs.loadoutStartShield) _campaignShieldCharges=Math.min(5,_campaignShieldCharges+_campaignBuffs.loadoutStartShield);
   _campaignMissileTimer=0;
   _campaignRegenTimer=0;
   _campaignSingularityTimer=0;
@@ -17748,7 +18071,9 @@ function startCampaignWorld(worldIdx){
   _campaignPhoenixUsed=false;
   _campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
   _loadoutBulletTimeTimer=0;_momentumStacks=0;_momentumTimer=0;_killShieldCounter=0;
+  _overdriveTimer=0;_fortressFRTimer=0;_shadowCloneFireTimer=0;_ionCannonTimer=0;
   _voidBrokerUsedIds=[];
+  _chaosJesterShown=false;
   transitionCampaignStars(world,0);
   initCampaignWorldBg(world.id);
   wave=startWave; score=0; sessionCoins=0; totalRunCoins=0;
@@ -18165,7 +18490,7 @@ function computeCampaignStats(){
   if(_chainFireBurstTimer>0) baseFR*=0.5; // Chaos Engine 2pc: double fire rate during burst
   var baseSpd=4.0*(b.speedMult||1);
   var baseBSpd=9.0*(b.bulletSpdMult||1);
-  var maxLives=3+(b.bonusHP||0);
+  var maxLives=Math.min(8,3+(b.bonusHP||0));
   if(b.berserker&&player&&player.lives<=2){baseDmg*=2;baseFR*=0.5;}
   // Loadout berserker: triggers at 50% HP (not 2 HP like campaign berserker)
   if(b.loadoutBerserker&&player&&player.lives<=Math.floor((3+(b.bonusHP||0))/2)){
@@ -18173,6 +18498,10 @@ function computeCampaignStats(){
   }
   // Loadout Last Stand: at 1 HP, boost damage and fire rate
   if(b.loadoutLastStand&&player&&player.lives===1){baseDmg*=(b.loadoutLastStandDmg||1.20);baseFR*=(b.loadoutLastStandFR||0.80);}
+  if(b.spreadShot) baseDmg*=0.6; // spread shot: more bullets but less damage each
+  if(b.overdrive&&_overdriveTimer>0){baseDmg*=1.40;baseFR*=0.60;} // overdrive: +40% dmg +40% FR for 10s after hit
+  if(b.setDamageFRBoost&&_fortressFRTimer>0) baseFR*=0.70; // fortress 3pc: +30% FR for 2s after hit
+  if(b.setStormDmgBoost>0&&player&&player.lives<=Math.floor(maxLives/2)) baseDmg*=(1+b.setStormDmgBoost); // storm bringer 3pc: +15% dmg below 50% HP
   var glassMaxHP=b.glassMode?1:(b.loadoutGlassMode?2:(b.mutFragile?2:Math.min(8,maxLives)));
   // World modifier: ICE FRICTION (frozen) — player speed -8%, bullet speed +10%
   var wi=getCampaignWorldIndex(_campaignWave);
@@ -18183,7 +18512,7 @@ function computeCampaignStats(){
   return {
     fireCooldown:Math.max(40,baseFR),
     bulletSpeed:baseBSpd,
-    multishot:b.tripleShot?2:(b.doubleShot?1:0),
+    multishot:b.spreadShot?4:(b.tripleShot?2:(b.doubleShot?1:0)),
     damage:baseDmg,
     speed:baseSpd,
     maxLives:glassMaxHP,
@@ -18260,6 +18589,20 @@ function computeCampaignStats(){
     _setChaosKillCoins:b.setChaosKillCoins||1.0,
     _worldModifier:curWorld?curWorld.modifier:null,
     _reflectChance:b.reflectChance||0,
+    _chaosRoundsChance:b._chaosRoundsChance||0,
+    _misfireChance:b._misfireChance||0,
+    _echoStrikeInterval:b._echoStrikeInterval||0,
+    _setDamageFRBoost:!!b.setDamageFRBoost,
+    _setStormDmgBoost:b.setStormDmgBoost||0,
+    _hpLocked:!!b._hpLocked,
+    _luckyDropChance:b.luckyDropChance||0,
+    _spreadShot:!!b.spreadShot,
+    _armorPiercing:!!b.armorPiercing,
+    _magnetRadius:b.magnetRadius||0,
+    _overdrive:!!b.overdrive,
+    _emberTrail:!!b.emberTrail,
+    _shadowClone:!!b.shadowClone,
+    _ionCannon:!!b.ionCannon,
     _bossSlowMult:b.bossSlowMult||1
   };
 }
@@ -18642,8 +18985,8 @@ function campaignWaveCleared(){
   gState='paused';
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   eBullets=[];bullets=[];powerupDrops=[];activePowerups={};_campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
-  // Recharge shields (unless Void Broker _noShields debuff)
-  if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields) _campaignShieldCharges=_campaignBuffs.shieldCharges;
+  // Recharge shields — add per-wave charges without resetting existing (cap at 5)
+  if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields) _campaignShieldCharges=Math.min(5,_campaignShieldCharges+_campaignBuffs.shieldCharges);
   var worldIdx=getCampaignWorldIndex(_campaignWave);
   var curWorld=CAMPAIGN_WORLDS[worldIdx];
   var isVoidWorld=curWorld&&curWorld.id==='abyss';
@@ -18687,14 +19030,24 @@ function campaignWaveCleared(){
   _campaignWave++;
   wave=_campaignWave;
   updateWorldMeter();
-  // Regular wave/boss → upgrade pick
-  if(shouldShowVoidBroker()){
-    showVoidBroker(function(){
-      showCampaignUpgradePick(isRegularBoss);
-    });
+  // Regular wave/boss → check for random events, then upgrade pick
+  var _pickCb=function(){showCampaignUpgradePick(isRegularBoss);};
+  if(shouldShowChaosJester()){
+    // Jester replaces the upgrade pick — go straight to next wave after
+    showChaosJester(function(){gState='playing';lastTime=performance.now();rafId=requestAnimationFrame(gameLoop);});
+  } else if(shouldShowVoidBroker()){
+    showVoidBroker(_pickCb);
   } else {
-    showCampaignUpgradePick(isRegularBoss);
+    _pickCb();
   }
+}
+
+function shouldShowChaosJester(){
+  var curWorld=CAMPAIGN_WORLDS[getCampaignWorldIndex(_campaignWave)];
+  var waveInWorld=_campaignWave-curWorld.waves[0]+1;
+  if(waveInWorld<4) return false;
+  if(waveInWorld===10||waveInWorld===20) return false;
+  return Math.random()<0.08;
 }
 
 // ── VOID BROKER ENCOUNTER ─────────────────────────────────
@@ -18706,6 +19059,181 @@ function shouldShowVoidBroker(){
   if(waveInWorld===10||waveInWorld===20) return false; // not after boss waves
   return Math.random()<0.20;
 }
+// ── CHAOS JESTER EVENT ────────────────────────────────────
+function showChaosJester(onDone){
+  _chaosJesterShown=true;
+  var ov=document.createElement('div');
+  ov.id='chaos-jester-overlay';
+  ov.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0);pointer-events:auto;transition:background 0.6s;overflow:hidden;text-align:center';
+  document.body.appendChild(ov);
+  setTimeout(function(){ov.style.background='rgba(10,0,20,0.94)';},20);
+  setTimeout(function(){showCampaignTip('tip_chaosJester','The Chaos Jester gambles your fate! Tap to stop the wheel \u2014 land on ★ for a buff or ✗ for a debuff.',{position:'bottom',icon:'🃏',color:'#ffaa00'});},2500);
+
+  // Phase 1: Show upgrade cards briefly (1s)
+  var picks=rollCampaignUpgrades(3,false);
+  var cardsHtml='<div id="cj-cards" style="display:flex;gap:10px;justify-content:center;opacity:0;transform:translateY(20px);transition:all 0.4s cubic-bezier(.17,.67,.35,1.2)">';
+  picks.forEach(function(p,pi){
+    cardsHtml+='<div style="width:80px;padding:12px 6px;border-radius:10px;border:2px solid '+p.color+'88;background:rgba(10,10,25,0.9);text-align:center;position:relative;box-shadow:0 0 12px '+p.color+'22"><div style="font-size:28px">'+p.icon+'</div><div style="font-family:Orbitron,sans-serif;font-size:7px;color:#aaa;margin-top:4px;letter-spacing:1px">'+p.name+'</div><div id="cj-x-'+pi+'" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;color:#ff2222;opacity:0;transform:scale(3) rotate(-15deg);transition:all 0.15s cubic-bezier(.17,.67,.35,1.4);text-shadow:0 0 20px #ff0000">✗</div></div>';
+  });
+  cardsHtml+='</div>';
+  ov.innerHTML=cardsHtml;
+  setTimeout(function(){var c=document.getElementById('cj-cards');if(c){c.style.opacity='1';c.style.transform='translateY(0)';}},100);
+
+  // Phase 2: Cross out cards with slam effect (after 1s)
+  setTimeout(function(){
+    for(var xi=0;xi<3;xi++){
+      (function(i){setTimeout(function(){
+        var xEl=document.getElementById('cj-x-'+i);
+        if(xEl){xEl.style.opacity='1';xEl.style.transform='scale(1) rotate('+(Math.random()*20-10)+'deg)';try{sfx('hit');}catch(e){}}
+        shake(3,0.12);
+      },i*180);})(xi);
+    }
+  },1000);
+
+  // Phase 3: Fade cards, show Jester + wheel (after 2s)
+  setTimeout(function(){
+    var isPositive=null;
+    var resultItem=null;
+    var wheelAngle=Math.random()*Math.PI*2;
+    var wheelSpeed=0;
+    var wheelStopping=false;
+    var wheelDone=false;
+
+    ov.innerHTML=
+      '<div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(255,170,0,0.06) 0%,transparent 60%);pointer-events:none"></div>'+
+      '<div id="cj-char" style="font-size:72px;opacity:0;transform:scale(0.2) rotate(-30deg);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4);filter:drop-shadow(0 0 30px #ffaa00) drop-shadow(0 0 60px #ff660044)">🃏</div>'+
+      '<div id="cj-title" style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;color:#ffaa00;letter-spacing:5px;margin-top:12px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 20px #ffaa00,0 0 40px #ff880044">THE CHAOS JESTER</div>'+
+      '<div id="cj-sub" style="font-family:Orbitron,sans-serif;font-size:9px;color:#aa8844;letter-spacing:3px;margin-top:6px;opacity:0;transition:all 0.4s ease 0.5s">FATE DECIDES YOUR FORTUNE...</div>'+
+      '<canvas id="cj-wheel" width="240" height="240" style="position:static;margin:20px auto;display:block;opacity:0;transform:scale(0.8);transition:all 0.5s cubic-bezier(.17,.67,.35,1.2) 0.7s"></canvas>'+
+      '<div id="cj-tap" style="font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:#ffaa00;letter-spacing:4px;margin-top:10px;opacity:0;transition:opacity 0.4s ease 1s;animation:campaignPulse 1.2s ease-in-out infinite">⬇ TAP TO STOP ⬇</div>'+
+      '<div id="cj-result" style="font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;margin-top:20px;opacity:0;transform:scale(0.5);transition:all 0.4s cubic-bezier(.17,.67,.35,1.4)"></div>'+
+      '<div id="cj-result-sub" style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;margin-top:6px;opacity:0;transition:all 0.3s ease 0.2s"></div>';
+    try{sfx('setComplete');}catch(e){}
+
+    // Animate in
+    setTimeout(function(){var c=document.getElementById('cj-char');if(c){c.style.opacity='1';c.style.transform='scale(1) rotate(0deg)';}},50);
+    setTimeout(function(){var t=document.getElementById('cj-title');if(t){t.style.opacity='1';t.style.transform='translateY(0)';}},300);
+    setTimeout(function(){var s=document.getElementById('cj-sub');if(s)s.style.opacity='1';},500);
+    setTimeout(function(){var w=document.getElementById('cj-wheel');if(w){w.style.opacity='1';w.style.transform='scale(1)';}},700);
+    setTimeout(function(){var tp=document.getElementById('cj-tap');if(tp)tp.style.opacity='1';},1000);
+
+    // Start wheel spinning
+    wheelSpeed=10+Math.random()*5;
+    var _wheelRaf=null;
+    var _wheelT=0;
+    function drawWheel(){
+      var cvs=document.getElementById('cj-wheel');
+      if(!cvs){return;}
+      var ctx=cvs.getContext('2d');
+      var cx=120,cy=120,r=95;
+      _wheelT+=0.016;
+      ctx.clearRect(0,0,240,240);
+      // Outer glow ring
+      ctx.save();
+      ctx.globalAlpha=0.15+Math.sin(_wheelT*3)*0.05;
+      ctx.strokeStyle='#ffaa00';ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(cx,cy,r+6,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+      // Draw 10 segments with richer colors
+      for(var si=0;si<10;si++){
+        var sa=wheelAngle+(si/10)*Math.PI*2;
+        var ea=wheelAngle+((si+1)/10)*Math.PI*2;
+        var isGreen=si%2===0;
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,sa,ea);ctx.closePath();
+        ctx.fillStyle=isGreen?'rgba(30,120,60,0.7)':'rgba(120,30,40,0.7)';
+        ctx.fill();
+        ctx.strokeStyle=isGreen?'#44ff8866':'#ff445566';ctx.lineWidth=1;ctx.stroke();
+        // Segment icon
+        var mid=(sa+ea)/2;
+        var ix=cx+Math.cos(mid)*(r*0.62);
+        var iy=cy+Math.sin(mid)*(r*0.62);
+        ctx.font='bold 18px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillStyle=isGreen?'#66ffaa':'#ff6677';
+        ctx.fillText(isGreen?'★':'✗',ix,iy);
+      }
+      // Inner ring
+      ctx.beginPath();ctx.arc(cx,cy,25,0,Math.PI*2);
+      ctx.fillStyle='#0d0d15';ctx.fill();
+      ctx.strokeStyle='#ffaa0088';ctx.lineWidth=2;ctx.stroke();
+      ctx.font='20px sans-serif';ctx.fillStyle='#ffaa00';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('🃏',cx,cy);
+      // Pointer triangle at top — bigger and more visible
+      ctx.fillStyle='#ffcc00';
+      ctx.beginPath();ctx.moveTo(cx-10,6);ctx.lineTo(cx+10,6);ctx.lineTo(cx,24);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#ffaa00';ctx.lineWidth=1;ctx.stroke();
+      // Tick sound while spinning fast
+      if(wheelSpeed>3&&Math.floor(wheelAngle*10)%3===0)try{/* subtle tick */}catch(e){}
+      // Update angle
+      wheelAngle+=wheelSpeed*0.016;
+      if(wheelStopping){wheelSpeed*=0.97;if(wheelSpeed<0.08&&!wheelDone){wheelDone=true;resolveWheel();}}
+      if(!wheelDone) _wheelRaf=requestAnimationFrame(drawWheel);
+      else drawWheel._final=true; // draw one last frame
+    }
+    setTimeout(drawWheel,800);
+
+    function resolveWheel(){
+      // Pointer is at top center (angle = -π/2 from canvas 0).
+      // Find which segment the top of the wheel points to.
+      var pointerAngle=-Math.PI/2; // top of circle
+      var relAngle=((pointerAngle-wheelAngle)%(Math.PI*2)+(Math.PI*2))%(Math.PI*2);
+      var segIdx=Math.floor((relAngle/(Math.PI*2))*10)%10;
+      isPositive=segIdx%2===0;
+      if(isPositive){
+        resultItem=CHAOS_JESTER_BUFFS[Math.floor(Math.random()*CHAOS_JESTER_BUFFS.length)];
+        resultItem.apply(_campaignBuffs);
+      } else {
+        resultItem=CHAOS_JESTER_DEBUFFS[Math.floor(Math.random()*CHAOS_JESTER_DEBUFFS.length)];
+        resultItem.apply(_campaignBuffs);
+      }
+      // Update player stats
+      try{var s=computeCampaignStats();if(player){player.maxLives=s.maxLives;player.lives=Math.min(player.lives,player.maxLives);if(player.lives<1)player.lives=1;}}catch(e){}
+      // Big result reveal
+      var rEl=document.getElementById('cj-result');
+      var rSub=document.getElementById('cj-result-sub');
+      if(rEl){
+        rEl.style.color=resultItem.col;
+        rEl.textContent=resultItem.icon+' '+resultItem.name;
+        rEl.style.opacity='1';
+        rEl.style.transform='scale(1)';
+        rEl.style.textShadow='0 0 20px '+resultItem.col+',0 0 40px '+resultItem.col+'44';
+      }
+      if(rSub){
+        rSub.style.color=isPositive?'#88ffaa':'#ff8899';
+        rSub.textContent=isPositive?'✨ FORTUNE SMILES! ✨':'💀 FATE IS CRUEL...';
+        rSub.style.opacity='1';
+      }
+      var subEl=document.getElementById('cj-sub');
+      if(subEl) subEl.style.opacity='0';
+      var tapEl=document.getElementById('cj-tap');
+      if(tapEl) tapEl.style.display='none';
+      // Flash the whole overlay
+      var flash=document.createElement('div');
+      flash.style.cssText='position:absolute;inset:0;background:'+(isPositive?'#44ff88':'#ff4455')+';opacity:0.3;pointer-events:none;transition:opacity 0.4s';
+      ov.appendChild(flash);
+      setTimeout(function(){flash.style.opacity='0';},80);
+      setTimeout(function(){if(flash.parentNode)flash.remove();},500);
+      try{sfx(isPositive?'waveClear':'hit');}catch(e){}
+      shake(isPositive?4:6,0.2);
+      // Auto-close after 2.5s
+      setTimeout(function(){
+        ov.style.transition='opacity 0.5s';ov.style.opacity='0';
+        setTimeout(function(){ov.remove();if(onDone)onDone();},500);
+      },2500);
+    }
+
+    // Tap to stop wheel
+    ov.onclick=function(){
+      if(wheelDone) return;
+      if(!wheelStopping){
+        wheelStopping=true;
+        var tapEl=document.getElementById('cj-tap');
+        if(tapEl){tapEl.style.transition='opacity 0.2s';tapEl.style.opacity='0';}
+        try{sfx('navTap');}catch(e){}
+      }
+    };
+  },2000);
+}
+
 function showVoidBroker(onDone){
   // Pick a random deal not yet used this run
   var available=VOID_BROKER_DEALS.filter(function(d){return _voidBrokerUsedIds.indexOf(d.id)<0;});
@@ -19036,8 +19564,9 @@ function showCampaignUpgradePick(isBossReward){
     _campaignUpgradesTaken++;
     if(chosen.id==='arsenalOverload'){floatTexts.push({x:player?player.x:W/2,y:player?player.y-20:H/2,text:'⚡ OVERLOAD!',col:'#ffd700',life:1.5,vy:-1.2});spawnExplosion(player?player.x:W/2,player?player.y:H/2,'#ffd700',8,true);if(player)player.shieldFlash=0.6;shake(4,0.2);}
     try{
-    if(chosen.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=Math.min(player.lives+1,player.maxLives);}
+    if(chosen.id==='hpUp'&&player){var s=computeCampaignStats();player.maxLives=_campaignBuffs._hpLocked?player.maxLives:s.maxLives;if(!_campaignBuffs._hpLocked)player.lives=Math.min(player.lives+1,player.maxLives);}
     if(chosen.id==='glassCannon'&&player){var s=computeCampaignStats();player.maxLives=s.maxLives;player.lives=1;}
+    if(chosen.id==='shield'){_campaignShieldCharges=Math.min(5,_campaignShieldCharges+1);if(player)player.shieldFlash=0.5;updateHUD();}
     }catch(e){ console.error('Upgrade stats error:',e); }
 
     // ═══ Phase C: FADE OVERLAY → REVEAL SHIP → FLY ICON → IMPACT ═══
@@ -19230,8 +19759,8 @@ function startNextCampaignWave(){
   if(!_campaignBuffs.mutNoHealing&&_nrStats._campaignWaveHeal>0&&player&&player.lives<player.maxLives){
     var _heal=Math.min(_nrStats._campaignWaveHeal,player.maxLives-player.lives);
     player.lives+=_heal;
-    floatTexts.push({x:player.x,y:player.y-18,text:'🔋 +'+_heal+' HP',col:'#44ff88',life:1.2,vy:-1.2});
-    spawnExplosion(player.x,player.y,'#44ff88',5);
+    floatTexts.push({x:player.x,y:player.y-40,text:'🔋 +'+_heal+' HP',col:'#44ff88',life:1.2,vy:-1.2,big:true});
+    spawnExplosion(player.x,player.y,'#44ff88',5);spawnHealRing(player.x,player.y);
     player.shieldFlash=0.5;
   }
   // Music logic for campaign: use world-specific tracks when available
@@ -19373,55 +19902,59 @@ function showWorldCleared(worldIdx){
   var overlay=document.createElement('div');
   overlay.id='world-cleared-overlay';
   overlay.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(0,0,0,0);padding:24px;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:background 0.5s';
+  var _totalTokens=tokensEarned+challengeTokens;
   overlay.innerHTML=
-    '<div id="wc-emoji" style="font-size:72px;opacity:0;transform:scale(0.2);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4)">'+world.emoji+'</div>'+
-    '<div id="wc-title" style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#00ff88;letter-spacing:4px;margin-top:12px;opacity:0;transform:translateY(20px);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #00ff88">WORLD CLEARED</div>'+
-    '<div id="wc-name" style="font-family:Orbitron,sans-serif;font-size:12px;color:'+world.announceColor+';letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.4s ease 0.5s;text-shadow:0 0 12px '+world.announceColor+'">'+world.emoji+' '+world.name+'</div>'+
-    '<div id="wc-stats" style="width:100%;max-width:280px;margin:20px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'+
-        statBox('SCORE',_campaignScore.toLocaleString(),'#ffd700')+
-        statBox('KILLS',_campaignKills,'#ff8800')+
+    '<div id="wc-emoji" style="font-size:80px;opacity:0;transform:scale(0.2);transition:all 0.6s cubic-bezier(.17,.67,.35,1.4)">'+world.emoji+'</div>'+
+    '<div id="wc-title" style="font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#00ff88;letter-spacing:5px;margin-top:16px;opacity:0;transform:translateY(20px) scale(0.9);transition:all 0.5s ease 0.3s;text-shadow:0 0 30px #00ff88,0 0 60px #00ff8844">WORLD CLEARED</div>'+
+    '<div id="wc-name" style="font-family:Orbitron,sans-serif;font-size:13px;color:'+world.announceColor+';letter-spacing:3px;margin-top:8px;opacity:0;transition:all 0.4s ease 0.5s;text-shadow:0 0 12px '+world.announceColor+'">'+world.name+'</div>'+
+    // Stats — big centered numbers
+    '<div id="wc-stats" style="width:100%;max-width:300px;margin:28px auto 0;opacity:0;transition:all 0.5s ease 0.7s">'+
+      '<div style="display:flex;justify-content:center;gap:24px">'+
+        '<div style="text-align:center"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:3px;margin-bottom:4px">SCORE</div><div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#ffd700;text-shadow:0 0 12px #ffd70044">'+_campaignScore.toLocaleString()+'</div></div>'+
+        '<div style="width:1px;background:#ffffff11;margin:4px 0"></div>'+
+        '<div style="text-align:center"><div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:3px;margin-bottom:4px">KILLS</div><div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#ff8800;text-shadow:0 0 12px #ff880044">'+_campaignKills+'</div></div>'+
       '</div>'+
     '</div>'+
-    '<div id="wc-upgrades" style="width:100%;max-width:280px;margin:14px auto 0;opacity:0;transition:all 0.5s ease 1.0s">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:3px;margin-bottom:6px">'+upgradeCount+' UPGRADES COLLECTED</div>'+
+    // Upgrades collected — compact icon row
+    (upgradeCount>0?
+    '<div id="wc-upgrades" style="width:100%;max-width:300px;margin:16px auto 0;opacity:0;transition:all 0.4s ease 0.9s;text-align:center">'+
       '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center">'+upgradeIcons+'</div>'+
-    '</div>'+
-    '<div id="wc-tokens" style="width:100%;max-width:280px;margin:12px auto 0;opacity:0;transition:all 0.5s ease 1.1s;text-align:center">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffaa00;letter-spacing:2px;text-shadow:0 0 8px #ffaa0044">+'+tokensEarned+' ROGUE TOKENS'+(isFirstClear?' <span style="font-size:7px;color:#00ff88;letter-spacing:1px">(FIRST CLEAR)</span>':'')+(mutMult>1?' <span style="font-size:7px;color:#ff8800;letter-spacing:1px">('+mutMult.toFixed(2)+'x MUTATOR)</span>':'')+'</div>'+
-    '</div>'+
-    (newChallenges.length>0?'<div id="wc-challenges-done" style="width:100%;max-width:280px;margin:8px auto 0;opacity:0;transition:all 0.5s ease 1.15s">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00f5ff;letter-spacing:2px;margin-bottom:4px;text-shadow:0 0 8px #00f5ff44">🏆 CHALLENGES COMPLETED</div>'+
-      newChallenges.map(function(ch){return '<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:4px;background:rgba(0,255,136,0.06);border:1px solid #00ff8833;margin-bottom:3px">'+
-        '<span style="font-size:12px">'+ch.icon+'</span>'+
-        '<span style="flex:1;font-family:Orbitron,sans-serif;font-size:7px;color:#00ff88;letter-spacing:1px">'+ch.name+'</span>'+
-        '<span style="font-family:Orbitron,sans-serif;font-size:7px;color:#ff8800">+'+ch.reward+' 🪙</span></div>';}).join('')+
+      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-top:4px">'+upgradeCount+' UPGRADES</div>'+
     '</div>':'')+
-    '<div id="wc-mastery" style="width:100%;max-width:280px;margin:6px auto 0;opacity:0;transition:all 0.5s ease 1.2s;text-align:center">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:'+MASTERY_COLORS[Math.min(newMasteryLevel-1,4)]+';letter-spacing:2px">'+MASTERY_TITLES[Math.min(newMasteryLevel-1,4)]+' · +'+masteryXP+' XP</div>'+
+    // Tokens earned — big and satisfying
+    '<div id="wc-tokens" style="width:100%;max-width:300px;margin:24px auto 0;opacity:0;transform:scale(0.8);transition:all 0.5s cubic-bezier(.17,.67,.35,1.2) 1s;text-align:center">'+
+      '<div style="display:inline-block;padding:12px 24px;border-radius:10px;background:rgba(255,170,0,0.08);border:1px solid #ffaa0033">'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#aa8844;letter-spacing:3px;margin-bottom:4px">TOKENS EARNED</div>'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#ffaa00;text-shadow:0 0 16px #ffaa0066">+'+_totalTokens+' 🪙</div>'+
+        (isFirstClear?'<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#00ff88;letter-spacing:1px;margin-top:4px">✨ FIRST CLEAR BONUS</div>':'')+
+      '</div>'+
     '</div>'+
-    (challengeTokens>0?'<div id="wc-challenge-tokens" style="width:100%;max-width:280px;margin:4px auto 0;opacity:0;transition:all 0.5s ease 1.25s;text-align:center">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#00f5ff;letter-spacing:2px;text-shadow:0 0 8px #00f5ff44">+'+challengeTokens+' CHALLENGE TOKENS</div></div>':'')+
-    (_pendingRogueUnlocks.length>0?'<div id="wc-unlock-hint" style="width:100%;max-width:280px;margin:8px auto 0;opacity:0;transition:all 0.5s ease 1.3s;text-align:center"><div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ffd700;letter-spacing:2px;text-shadow:0 0 8px #ffd70044;animation:campaignPulse 1.8s ease-in-out infinite">🔓 '+_pendingRogueUnlocks.length+' NEW UNLOCK'+(_pendingRogueUnlocks.length>1?'S':'')+'!</div></div>':'')+
-    '<div id="wc-buttons" style="margin-top:24px;opacity:0;transition:all 0.5s ease 1.4s;display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px">'+
-      '<button id="wc-continue-btn" style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;padding:14px 20px;background:rgba(0,255,136,0.1);border:2px solid #00ff88;color:#00ff88;border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-shadow:0 0 8px #00ff8866">▶ CONTINUE</button>'+
+    // Challenges completed
+    (newChallenges.length>0?'<div id="wc-challenges-done" style="width:100%;max-width:300px;margin:16px auto 0;opacity:0;transition:all 0.4s ease 1.2s">'+
+      newChallenges.map(function(ch){return '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:rgba(0,255,136,0.05);border:1px solid #00ff8833;margin-bottom:6px">'+
+        '<span style="font-size:16px">'+ch.icon+'</span>'+
+        '<span style="flex:1;font-family:Orbitron,sans-serif;font-size:9px;color:#00ff88;letter-spacing:1px">'+ch.name+'</span>'+
+        '<span style="font-family:Orbitron,sans-serif;font-size:9px;font-weight:700;color:#ffaa00">+'+ch.reward+' 🪙</span></div>';}).join('')+
+    '</div>':'')+
+    // Unlocks hint
+    (_pendingRogueUnlocks.length>0?'<div id="wc-unlock-hint" style="width:100%;max-width:300px;margin:12px auto 0;opacity:0;transition:all 0.4s ease 1.3s;text-align:center"><div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffd700;letter-spacing:2px;text-shadow:0 0 8px #ffd70044;animation:campaignPulse 1.8s ease-in-out infinite">🔓 '+_pendingRogueUnlocks.length+' NEW UNLOCK'+(_pendingRogueUnlocks.length>1?'S':'')+'!</div></div>':'')+
+    // Continue button
+    '<div id="wc-buttons" style="margin-top:28px;opacity:0;transition:all 0.5s ease 1.5s;width:100%;max-width:300px">'+
+      '<button id="wc-continue-btn" style="width:100%;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:4px;padding:16px 20px;background:rgba(0,255,136,0.1);border:2px solid #00ff88;color:#00ff88;border-radius:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-shadow:0 0 8px #00ff8866">▶ CONTINUE</button>'+
     '</div>';
   document.body.appendChild(overlay);
   sfx('setComplete');
-  setTimeout(function(){overlay.style.background='rgba(0,0,0,0.8)';},50);
+  setTimeout(function(){overlay.style.background='rgba(0,0,0,0.88)';},50);
   setTimeout(function(){var e=document.getElementById('wc-emoji');if(e){e.style.opacity='1';e.style.transform='scale(1)';}},100);
-  setTimeout(function(){var e=document.getElementById('wc-title');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},300);
+  setTimeout(function(){var e=document.getElementById('wc-title');if(e){e.style.opacity='1';e.style.transform='translateY(0) scale(1)';}},300);
   setTimeout(function(){var e=document.getElementById('wc-name');if(e)e.style.opacity='1';},500);
   setTimeout(function(){var e=document.getElementById('wc-stats');if(e)e.style.opacity='1';},700);
-  // Grade removed — no animation needed
-  setTimeout(function(){var e=document.getElementById('wc-upgrades');if(e)e.style.opacity='1';},1000);
-  setTimeout(function(){var e=document.getElementById('wc-tokens');if(e)e.style.opacity='1';},1100);
-  setTimeout(function(){showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},1600);
-  setTimeout(function(){var e=document.getElementById('wc-challenges-done');if(e)e.style.opacity='1';},1150);
-  setTimeout(function(){var e=document.getElementById('wc-mastery');if(e)e.style.opacity='1';},1200);
-  setTimeout(function(){var e=document.getElementById('wc-challenge-tokens');if(e)e.style.opacity='1';},1250);
-  setTimeout(function(){var e=document.getElementById('wc-unlock-hint');if(e)e.style.opacity='1';},1300);
+  setTimeout(function(){var e=document.getElementById('wc-upgrades');if(e)e.style.opacity='1';},900);
+  setTimeout(function(){var e=document.getElementById('wc-tokens');if(e){e.style.opacity='1';e.style.transform='scale(1)';}},1100);
+  setTimeout(function(){var e=document.getElementById('wc-challenges-done');if(e)e.style.opacity='1';},1300);
+  setTimeout(function(){var e=document.getElementById('wc-unlock-hint');if(e)e.style.opacity='1';},1500);
   setTimeout(function(){var e=document.getElementById('wc-buttons');if(e)e.style.opacity='1';},1600);
+  setTimeout(function(){showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},2000);
   // Themed particle burst
   setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2500);},200);
   // Continue button → World Overview (with unlock cinematic if applicable)
@@ -19456,7 +19989,7 @@ function showRogueUnlockCinematic(unlocks){
   function showCard(){
     if(idx>=unlocks.length){
       // All cards shown — show "TAP TO CONTINUE"
-      ov.innerHTML='<div style="text-align:center;opacity:0;transition:opacity 0.4s"><div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ffffff44;letter-spacing:3px;animation:campaignPulse 1.8s ease-in-out infinite">TAP TO CONTINUE</div></div>';
+      ov.innerHTML='<div style="text-align:center;opacity:0;transition:opacity 0.4s"><div style="font-family:Orbitron,sans-serif;font-size:11px;color:#ffffff66;letter-spacing:3px;animation:campaignPulse 1.5s ease-in-out infinite">TAP TO CONTINUE ▶</div></div>';
       setTimeout(function(){ov.firstChild.style.opacity='1';},50);
       ov.onclick=function(){
         ov.style.transition='opacity 0.4s';ov.style.opacity='0';
@@ -19473,7 +20006,7 @@ function showRogueUnlockCinematic(unlocks){
       '<div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:'+u.color+';letter-spacing:3px;text-shadow:0 0 20px '+u.color+'44,0 0 40px '+u.color+'22">'+u.title+'</div>'+
       '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#aab;letter-spacing:1px;margin:10px auto 0;max-width:280px;line-height:1.5">'+u.sub+'</div>'+
       equipHint+
-      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#ffffff22;letter-spacing:2px;margin-top:20px">'+(idx<unlocks.length-1?'TAP FOR NEXT':'TAP TO CONTINUE')+'</div>'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:10px;color:#ffffff66;letter-spacing:3px;margin-top:24px;animation:campaignPulse 1.5s ease-in-out infinite">'+(idx<unlocks.length-1?'TAP FOR NEXT ▶':'TAP TO CONTINUE ▶')+'</div>'+
     '</div>';
     ov.innerHTML=card;
     try{sfx('setComplete');}catch(e){}
@@ -19609,14 +20142,14 @@ function toggleRoguePause(){
     var _lLevel=(SAVE.rogueLoadoutLevels||{})[lo[_ls.key]]||1;
     var _lStars='';for(var _si=0;_si<3;_si++) _lStars+=_si<_lLevel?'★':'☆';
     if(_lItem){
-      loHtml+='<div style="text-align:center;min-width:52px">'+
-        '<div style="font-size:20px;width:36px;height:36px;line-height:36px;margin:0 auto;border-radius:6px;border:1px solid '+(_lItem.color||'#fff')+'33;background:rgba(0,0,0,0.4)">'+_lItem.icon+'</div>'+
-        '<div style="font-size:6px;color:'+(_lItem.color||'#aaa')+';letter-spacing:1px;margin-top:3px">'+_ls.label+'</div>'+
-        '<div style="font-size:7px;color:#ffd700;margin-top:1px">'+_lStars+'</div></div>';
+      loHtml+='<div style="text-align:center;min-width:56px">'+
+        '<div style="font-size:26px;width:44px;height:44px;line-height:44px;margin:0 auto;border-radius:8px;border:1px solid '+(_lItem.color||'#fff')+'44;background:rgba(0,0,0,0.4)">'+_lItem.icon+'</div>'+
+        '<div style="font-size:7px;color:'+(_lItem.color||'#aaa')+';letter-spacing:1px;margin-top:4px">'+_ls.label+'</div>'+
+        '<div style="font-size:10px;color:#ffd700;margin-top:2px;text-shadow:0 0 4px #ffd70044">'+_lStars+'</div></div>';
     } else {
-      loHtml+='<div style="text-align:center;min-width:52px">'+
-        '<div style="font-size:16px;width:36px;height:36px;line-height:36px;margin:0 auto;border-radius:6px;border:1px dashed #333;color:#333">—</div>'+
-        '<div style="font-size:6px;color:#334;letter-spacing:1px;margin-top:3px">'+_ls.label+'</div></div>';
+      loHtml+='<div style="text-align:center;min-width:56px">'+
+        '<div style="font-size:18px;width:44px;height:44px;line-height:44px;margin:0 auto;border-radius:8px;border:1px dashed #444;color:#444">—</div>'+
+        '<div style="font-size:7px;color:#445;letter-spacing:1px;margin-top:4px">'+_ls.label+'</div></div>';
     }
   }
   // Build acquired upgrades display
@@ -19634,35 +20167,36 @@ function toggleRoguePause(){
       var _up=CAMPAIGN_UPGRADES.find(function(u){return u.id===upOrder[_oi];});
       if(_up){
         var _cnt=upCounts[upOrder[_oi]];
-        upIcons+='<div style="position:relative;display:inline-block;width:26px;height:26px;text-align:center;border-radius:4px;border:1px solid '+_up.color+'44;background:rgba(0,0,0,0.4);line-height:26px;font-size:14px" title="'+_up.name+'">'+_up.icon+
-          (_cnt>1?'<span style="position:absolute;bottom:-2px;right:-2px;font-size:7px;color:#ffd700;background:#000;border-radius:3px;padding:0 2px;line-height:1.2">x'+_cnt+'</span>':'')+
+        upIcons+='<div style="position:relative;display:inline-block;width:32px;height:32px;text-align:center;border-radius:6px;border:1px solid '+_up.color+'44;background:rgba(0,0,0,0.4);line-height:32px;font-size:18px" title="'+_up.name+'">'+_up.icon+
+          (_cnt>1?'<span style="position:absolute;bottom:-3px;right:-3px;font-size:8px;font-weight:700;color:#ffd700;background:#111;border-radius:4px;padding:0 3px;line-height:1.3;border:1px solid #ffd70044">x'+_cnt+'</span>':'')+
         '</div>';
       }
     }
-    upHtml='<div style="margin-top:16px;text-align:center">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-bottom:6px">UPGRADES ACQUIRED</div>'+
-      '<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:280px;margin:0 auto">'+upIcons+'</div></div>';
+    upHtml='<div style="margin-top:18px;text-align:center">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:2px;margin-bottom:8px">UPGRADES ACQUIRED</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:300px;margin:0 auto">'+upIcons+'</div></div>';
   }
+  ov.style.cssText+='overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px 16px';
   ov.innerHTML=
-    '<div style="font-size:48px;margin-bottom:12px;filter:drop-shadow(0 0 20px '+wColor+')">'+wEmoji+'</div>'+
-    '<div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:6px;text-shadow:0 0 30px '+wColor+'">PAUSED</div>'+
-    '<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#556;letter-spacing:3px;margin-top:8px">WAVE '+_campaignWave+' · '+wName+'</div>'+
-    // Stats row
-    '<div style="margin-top:16px;display:flex;gap:20px;font-family:Orbitron,sans-serif;font-size:9px;color:#667;letter-spacing:1px">'+
-      '<div>❤ '+((player?player.lives:0))+'</div>'+
+    '<div style="font-size:56px;margin-bottom:10px;filter:drop-shadow(0 0 20px '+wColor+')">'+wEmoji+'</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:6px;text-shadow:0 0 30px '+wColor+'">PAUSED</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#778;letter-spacing:3px;margin-top:6px">WAVE '+_campaignWave+' · '+wName+'</div>'+
+    // Stats row — bigger
+    '<div style="margin-top:18px;display:flex;gap:24px;font-family:Orbitron,sans-serif;font-size:12px;color:#99a;letter-spacing:1px">'+
+      '<div>❤️ '+((player?player.lives:0))+'</div>'+
       '<div>⬆ '+_campaignPickedUpgrades.length+'</div>'+
       '<div>💀 '+_campaignKills+'</div>'+
     '</div>'+
-    // Loadout
-    '<div style="margin-top:20px;text-align:center">'+
-      '<div style="font-family:Orbitron,sans-serif;font-size:7px;color:#556;letter-spacing:2px;margin-bottom:8px">LOADOUT</div>'+
-      '<div style="display:flex;gap:12px;justify-content:center;font-family:Orbitron,sans-serif">'+loHtml+'</div>'+
+    // Loadout — bigger icons
+    '<div style="margin-top:18px;text-align:center">'+
+      '<div style="font-family:Orbitron,sans-serif;font-size:8px;color:#667;letter-spacing:2px;margin-bottom:8px">LOADOUT</div>'+
+      '<div style="display:flex;gap:14px;justify-content:center;font-family:Orbitron,sans-serif">'+loHtml+'</div>'+
     '</div>'+
-    // Upgrades
+    // Upgrades acquired
     upHtml+
     // Buttons
-    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;align-items:center">'+
-      '<div id="rogue-resume-btn" style="font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;color:#00f5ff;letter-spacing:4px;padding:12px 36px;border:2px solid #00f5ff44;border-radius:8px;cursor:pointer;background:rgba(0,245,255,0.06);-webkit-tap-highlight-color:transparent;transition:all 0.2s">▶ RESUME</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;align-items:center;width:100%;max-width:280px">'+
+      '<div id="rogue-resume-btn" style="width:100%;text-align:center;font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#00f5ff;letter-spacing:4px;padding:14px 24px;border:2px solid #00f5ff44;border-radius:8px;cursor:pointer;background:rgba(0,245,255,0.06);-webkit-tap-highlight-color:transparent;transition:all 0.2s">▶ RESUME</div>'+
       '<div id="rogue-quit-btn" style="font-family:Orbitron,sans-serif;font-size:10px;color:#ff445588;letter-spacing:3px;padding:8px 24px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color 0.2s">✕ ABANDON RUN</div>'+
     '</div>';
   document.body.appendChild(ov);
