@@ -1212,6 +1212,10 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   animation: pulseGlow .8s ease-in-out infinite;
   margin-top:10px; width:100%; max-width:340px;
 }
+/* iOS GPU crash prevention — replace backdrop-filter with solid backgrounds */
+html.ios .ctrl-btn{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(0,10,20,0.85) !important}
+html.ios .relic-badge{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(255,68,85,0.25) !important}
+html.ios #rogue-pause-btn{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(0,20,40,0.85) !important}
 </style>
 
 <script>
@@ -1223,12 +1227,50 @@ if('serviceWorker' in navigator){
   }).catch(function(e){ console.warn('SW registration failed:', e); });
 }
 
+// ── iOS GPU crash prevention ──────────────────────────
+// iOS WebKit has strict GPU memory limits; heavy shadowBlur + backdrop-filter
+// causes VRAM exhaustion → white-screen crash. Cap blur values on iOS.
+var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+if(_isIOS){
+  document.documentElement.classList.add('ios');
+  // Monkey-patch canvas shadowBlur to cap at 8px on iOS — prevents GPU VRAM
+  // exhaustion from 168 shadowBlur assignments (some up to 40px) per frame.
+  // This single patch covers ALL canvas contexts without touching game code.
+  var _origShadowBlurDesc = Object.getOwnPropertyDescriptor(
+    CanvasRenderingContext2D.prototype, 'shadowBlur'
+  );
+  if(_origShadowBlurDesc && _origShadowBlurDesc.set){
+    Object.defineProperty(CanvasRenderingContext2D.prototype, 'shadowBlur', {
+      get: _origShadowBlurDesc.get,
+      set: function(v){ _origShadowBlurDesc.set.call(this, Math.min(v, 8)); },
+      configurable: true
+    });
+  }
+}
+// Force GPU memory release for canvas elements (iOS doesn't free VRAM on .remove() alone)
+function _releaseCanvas(cvs){
+  if(!cvs) return;
+  cvs.width=0; cvs.height=0;
+  var ctx=cvs.getContext&&cvs.getContext('2d');
+  if(ctx) ctx.clearRect(0,0,1,1);
+  if(cvs.parentNode) cvs.parentNode.removeChild(cvs);
+}
+
+// Strip backdrop-filter from inline styles on iOS (prevents GPU compositing storms)
+function _iosStyle(css){
+  if(!_isIOS) return css;
+  return css.replace(/;?\s*-?webkit-?backdrop-filter:[^;]+/gi,'')
+            .replace(/;?\s*backdrop-filter:[^;]+/gi,'');
+}
+
 // Global error recovery — clean up stuck crate overlays
 window.addEventListener('error', function(evt){
   console.error('Global error:', evt.error||evt.message);
   try{ localStorage.setItem('vi2_crash_log', JSON.stringify({time:new Date().toISOString(),msg:String(evt.error||evt.message),file:evt.filename||'',line:evt.lineno||0,col:evt.colno||0})); }catch(e){}
   var stuck;
   while((stuck = document.getElementById('lootbox-overlay')) && stuck.parentNode){
+    // Release canvases inside overlay before removing (iOS GPU memory)
+    try{var _sc=stuck.querySelectorAll('canvas');for(var _si=0;_si<_sc.length;_si++){_sc[_si].width=0;_sc[_si].height=0;}}catch(e){}
     stuck.parentNode.removeChild(stuck);
   }
   // Clean up campaign overlays that may be stuck
@@ -1310,6 +1352,21 @@ document.addEventListener('visibilitychange',function(){
     // Tab visible again — resume context; sources continue from where they froze
     _audioWasSuspended=false;
     AC.resume();
+  }
+  // iOS GPU memory relief — release any stale overlay canvases when backgrounded
+  if(_isIOS && document.hidden){
+    var _bgCanvases = document.querySelectorAll('#lootbox-overlay canvas');
+    for(var _bi=0;_bi<_bgCanvases.length;_bi++){
+      _bgCanvases[_bi].width=0; _bgCanvases[_bi].height=0;
+    }
+  }
+});
+// iOS pagehide — last-chance cleanup before WebKit kills the page
+if(_isIOS) window.addEventListener('pagehide', function(){
+  // Release ALL dynamically-created canvases except the main game canvas
+  var _all=document.querySelectorAll('canvas');
+  for(var i=0;i<_all.length;i++){
+    if(_all[i].id!=='canvas'&&_all[i].id!=='bg-canvas') { _all[i].width=0; _all[i].height=0; }
   }
 });
 
@@ -12565,6 +12622,9 @@ function playLaunchTransition(callback) {
 
       /* Remove overlay after fade completes */
       setTimeout(function() {
+        // Release any canvases inside overlay before removing (iOS GPU memory)
+        var _ocs=overlay.querySelectorAll('canvas');
+        for(var _oi=0;_oi<_ocs.length;_oi++) _releaseCanvas(_ocs[_oi]);
         if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
       }, 500);
 
@@ -13140,7 +13200,7 @@ function claimBetaGift(){
   if(SAVE.betaGiftClaimed) return;
   // Build splash overlay
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;opacity:0;transition:opacity 0.4s';
+  overlay.style.cssText = _iosStyle('position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;opacity:0;transition:opacity 0.4s');
   overlay.innerHTML =
     '<div style="font-size:60px;margin-bottom:16px;animation:cardPulse 1.5s ease-in-out infinite">🎁</div>'+
     '<div style="font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#ff44aa;letter-spacing:3px;text-shadow:0 0 20px #ff44aa66;margin-bottom:8px">THANK YOU!</div>'+
@@ -13331,7 +13391,7 @@ function showSetPreview(setKey){
   var barPct = Math.round((owned/total)*100);
   // Build overlay
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(3,6,16,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px env(safe-area-inset-bottom,16px)';
+  overlay.style.cssText = _iosStyle('position:fixed;inset:0;z-index:99999;background:rgba(3,6,16,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px env(safe-area-inset-bottom,16px)');
   // Close function
   function closePreview(){
     if(_setPreviewRaf){ cancelAnimationFrame(_setPreviewRaf); _setPreviewRaf=null; }
@@ -13691,6 +13751,7 @@ function showPremiumRevealAnimation(item){
   // Safety timeout — auto-dismiss if stuck (12s)
   var _premSafetyTimeout = setTimeout(function(){
     if(overlay.parentNode){
+      var _ocs=overlay.querySelectorAll('canvas');for(var _oi=0;_oi<_ocs.length;_oi++)_releaseCanvas(_ocs[_oi]);
       overlay.parentNode.removeChild(overlay);
       _vaultAnimating = false;
       buildVaultScreen();
@@ -13856,7 +13917,7 @@ function showPremiumRevealAnimation(item){
       clearTimeout(_premSafetyTimeout);
       if(_premAnimId) cancelAnimationFrame(_premAnimId);
       overlay.style.opacity='0';
-      setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); _vaultAnimating=false; buildVaultScreen(); }, 300);
+      setTimeout(function(){ var _ocs=overlay.querySelectorAll('canvas');for(var _oi=0;_oi<_ocs.length;_oi++)_releaseCanvas(_ocs[_oi]); if(overlay.parentNode) overlay.parentNode.removeChild(overlay); _vaultAnimating=false; buildVaultScreen(); }, 300);
     });
   }, 2500);
 
@@ -14301,7 +14362,7 @@ function applyDailySpinResult(result){
 
 function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, setTotal, setCompleted){
   var overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s,backdrop-filter 1s,-webkit-backdrop-filter 1s;pointer-events:auto;font-family:Orbitron,sans-serif;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)';
+  overlay.style.cssText = _iosStyle('position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background 0.5s,backdrop-filter 1s,-webkit-backdrop-filter 1s;pointer-events:auto;font-family:Orbitron,sans-serif;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)');
   overlay.id = 'lootbox-overlay';
 
   // Global error safety — if animation crashes, clean up overlay and restore audio
@@ -14312,6 +14373,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
         masterGain.gain.setTargetAtTime(1.0, AC.currentTime, 0.1);
       }
     } catch(e){}
+    var _ocs=overlay.querySelectorAll('canvas');for(var _oi=0;_oi<_ocs.length;_oi++)_releaseCanvas(_ocs[_oi]);
     if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
     _vaultAnimating = false;
     buildVaultScreen();
@@ -14626,7 +14688,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
     setWrap.style.cssText = 'position:relative;z-index:3;max-height:0;overflow:hidden;transition:max-height 0.9s cubic-bezier(.25,.8,.35,1),margin-top 0.9s cubic-bezier(.25,.8,.35,1);margin-top:0';
 
     var setCard = document.createElement('div');
-    setCard.style.cssText = 'padding:12px 16px 14px;border-radius:12px;border:1.5px solid '+theSet.color+'66;background:rgba(10,15,30,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 0 30px '+theSet.color+'22,0 8px 32px rgba(0,0,0,0.5);transform:translateY(20px);opacity:0;transition:transform 0.7s cubic-bezier(.17,.67,.35,1.1) 0.2s,opacity 0.6s ease 0.15s;max-width:300px;width:90vw';
+    setCard.style.cssText = _iosStyle('padding:12px 16px 14px;border-radius:12px;border:1.5px solid '+theSet.color+'66;background:rgba(10,15,30,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 0 30px '+theSet.color+'22,0 8px 32px rgba(0,0,0,0.5);transform:translateY(20px);opacity:0;transition:transform 0.7s cubic-bezier(.17,.67,.35,1.1) 0.2s,opacity 0.6s ease 0.15s;max-width:300px;width:90vw');
 
     // Set header row
     var setHeader = document.createElement('div');
@@ -14740,6 +14802,7 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
       overlay.style.transition = 'opacity 0.3s';
       overlay.style.opacity = '0';
       setTimeout(function(){
+        var _ocs=overlay.querySelectorAll('canvas');for(var _oi=0;_oi<_ocs.length;_oi++)_releaseCanvas(_ocs[_oi]);
         if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
         _vaultAnimating = false;
         buildVaultScreen();
@@ -18694,7 +18757,7 @@ function startCampaignWorld(worldIdx){
         requestAnimationFrame(animateShipEntry);
       } else {
         // Cleanup pulse canvas
-        if(pulseCvs.parentNode)pulseCvs.remove();
+        _releaseCanvas(pulseCvs);
       }
     }
     requestAnimationFrame(animateShipEntry);
@@ -19321,7 +19384,7 @@ function _spawnWaveAnnounceParticles(worldId,duration){
     var globalFade=elapsed>fadeStart?Math.max(0,1-(elapsed-fadeStart)/(duration-fadeStart)):1;
     ctx.clearRect(0,0,vw,vh);
     if(elapsed>duration+200){
-      cvs.remove();
+      _releaseCanvas(cvs);
       return;
     }
     for(var i=0;i<parts.length;i++){
@@ -19998,10 +20061,9 @@ function showCampaignUpgradePick(isBossReward){
       var shipY=player?player.y:H*0.75;
       _cpickDrawShipFrame(shipX,shipY);
 
-      overlay.style.transition='background 0.5s,backdrop-filter 0.5s,-webkit-backdrop-filter 0.5s';
+      overlay.style.transition='background 0.5s'+(_isIOS?'':',backdrop-filter 0.5s,-webkit-backdrop-filter 0.5s');
       overlay.style.background='rgba(0,0,0,0.15)';
-      overlay.style.backdropFilter='blur(0px)';
-      overlay.style.webkitBackdropFilter='blur(0px)';
+      if(!_isIOS){overlay.style.backdropFilter='blur(0px)';overlay.style.webkitBackdropFilter='blur(0px)';}
     },600);
 
     // Step 3: Start next wave NOW so the ship is live and controllable
@@ -20128,7 +20190,7 @@ function showCampaignUpgradePick(isBossReward){
             });
             tCtx.globalAlpha=1;
             if(ft<1||trailParts.length>0){requestAnimationFrame(fadeBurst);}
-            else{trailCanvas.remove();}
+            else{_releaseCanvas(trailCanvas);}
           }
           fadeBurst();
         }
@@ -20544,7 +20606,7 @@ function toggleRoguePause(){
   // Overlay
   var ov=document.createElement('div');
   ov.id='rogue-pause-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 0.25s';
+  ov.style.cssText=_iosStyle('position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 0.25s');
   var world=CAMPAIGN_WORLDS[_campaignWorld];
   var wEmoji=world?world.emoji:'⚔';
   var wName=world?world.name:'ADVENTURE MODE';
