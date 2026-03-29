@@ -1231,22 +1231,9 @@ if('serviceWorker' in navigator){
 // iOS WebKit has strict GPU memory limits; heavy shadowBlur + backdrop-filter
 // causes VRAM exhaustion → white-screen crash. Cap blur values on iOS.
 var _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-if(_isIOS){
-  document.documentElement.classList.add('ios');
-  // Monkey-patch canvas shadowBlur to cap at 8px on iOS — prevents GPU VRAM
-  // exhaustion from 168 shadowBlur assignments (some up to 40px) per frame.
-  // This single patch covers ALL canvas contexts without touching game code.
-  var _origShadowBlurDesc = Object.getOwnPropertyDescriptor(
-    CanvasRenderingContext2D.prototype, 'shadowBlur'
-  );
-  if(_origShadowBlurDesc && _origShadowBlurDesc.set){
-    Object.defineProperty(CanvasRenderingContext2D.prototype, 'shadowBlur', {
-      get: _origShadowBlurDesc.get,
-      set: function(v){ _origShadowBlurDesc.set.call(this, Math.min(v, 8)); },
-      configurable: true
-    });
-  }
-}
+if(_isIOS) document.documentElement.classList.add('ios');
+// iOS shadowBlur cap — inline helper avoids prototype-patch overhead per frame
+function _sb(v){ return _isIOS ? Math.min(v, 8) : v; }
 // Force GPU memory release for canvas elements (iOS doesn't free VRAM on .remove() alone)
 function _releaseCanvas(cvs){
   if(!cvs) return;
@@ -3506,7 +3493,7 @@ var CAMPAIGN_UPGRADES = [
     apply:function(b){b.tripleShot=true;}},
   {id:'shield',name:'ENERGY BARRIER',icon:'🔰',rarity:'rare',color:'#4488ff',worldGate:0,
     desc:'Shield absorbs 1 hit per wave',stackable:true,maxStack:2,
-    apply:function(b){b.shieldCharges=(b.shieldCharges||0)+1;}},
+    apply:function(b){b.shieldRecharge=(b.shieldRecharge||0)+1;}},
   {id:'explosive',name:'EXPLOSIVE ROUNDS',icon:'💣',rarity:'rare',color:'#4488ff',worldGate:1,
     desc:'Bullets explode for AoE damage',stackable:false,
     apply:function(b){b.explosiveRounds=true;}},
@@ -4405,7 +4392,7 @@ var _bossHazards=[];
 
 function drawWorldBoss(c,b,col,ts,dt){
   var a=b.anim||0;
-  c.shadowBlur=16;c.shadowColor=col;
+  c.shadowBlur=_sb(16);c.shadowColor=col;
   switch(b.bossId){
     case 'asteroid': // ROCK TITAN — jagged rock with orange cracks
       c.fillStyle='#443322';c.strokeStyle=col;c.lineWidth=2;
@@ -6350,14 +6337,14 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Outer star aura
     c.save();
     c.globalAlpha=(flash?0.4:1)*0.18*_pulse;
-    c.shadowBlur=30; c.shadowColor=_sc;
+    c.shadowBlur=_sb(30); c.shadowColor=_sc;
     c.fillStyle=_sc;
     c.beginPath();
     for(var si=0;si<10;si++){ var sa=si*Math.PI/5-Math.PI/2; var sr=si%2===0?28:12; si===0?c.moveTo(Math.cos(sa)*sr,Math.sin(sa)*sr):c.lineTo(Math.cos(sa)*sr,Math.sin(sa)*sr); }
     c.closePath(); c.fill();
     c.restore();
     // Main hull — crystalline diamond shape
-    c.shadowBlur=18; c.shadowColor=_sc;
+    c.shadowBlur=_sb(18); c.shadowColor=_sc;
     c.fillStyle='rgba(0,245,255,0.12)'; c.strokeStyle=_sc; c.lineWidth=1.8;
     c.beginPath();
     c.moveTo(0,-22);        // nose
@@ -6381,7 +6368,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Cockpit — star-shaped
     c.save();
-    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=14; c.shadowColor=_sg;
+    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=_sb(14); c.shadowColor=_sg;
     c.beginPath();
     for(var ci=0;ci<10;ci++){ var ca=ci*Math.PI/5-Math.PI/2; var cr=ci%2===0?5:2.2; var cy2=-6+Math.sin(ca)*0; ci===0?c.moveTo(Math.cos(ca)*cr,(-6)+Math.sin(ca)*cr):c.lineTo(Math.cos(ca)*cr,(-6)+Math.sin(ca)*cr); }
     c.closePath(); c.fill();
@@ -6389,7 +6376,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Star gems on wing tips
     c.save();
     c.fillStyle=_sg; c.globalAlpha=(flash?0.4:1)*_pulse*0.9;
-    c.shadowBlur=10; c.shadowColor=_sg;
+    c.shadowBlur=_sb(10); c.shadowColor=_sg;
     [[-14,4],[14,4]].forEach(function(pt){
       c.beginPath();
       for(var gi=0;gi<10;gi++){ var ga=gi*Math.PI/5-Math.PI/2; var gr=gi%2===0?3:1.2; gi===0?c.moveTo(pt[0]+Math.cos(ga)*gr,pt[1]+Math.sin(ga)*gr):c.lineTo(pt[0]+Math.cos(ga)*gr,pt[1]+Math.sin(ga)*gr); }
@@ -6399,7 +6386,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Nose gem
     c.save();
     c.fillStyle=_sc; c.globalAlpha=(flash?0.4:1)*_pulse;
-    c.shadowBlur=12; c.shadowColor=_sc;
+    c.shadowBlur=_sb(12); c.shadowColor=_sc;
     c.beginPath(); c.arc(0,-18,2,0,Math.PI*2); c.fill();
     c.restore();
     // Trailing stardust particles (decorative, per-frame)
@@ -6426,12 +6413,12 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Ghostly outer haze
     c.save();
     c.globalAlpha=(flash?0.4:1)*0.12*_flicker;
-    c.shadowBlur=40; c.shadowColor=_pc;
+    c.shadowBlur=_sb(40); c.shadowColor=_pc;
     c.fillStyle=_pc;
     c.beginPath(); c.ellipse(0,0,22,26,0,0,Math.PI*2); c.fill();
     c.restore();
     // Main hull — spectral angular shape
-    c.shadowBlur=14; c.shadowColor=_pc;
+    c.shadowBlur=_sb(14); c.shadowColor=_pc;
     c.fillStyle='rgba(136,170,204,0.08)'; c.strokeStyle=_pc+'99'; c.lineWidth=1.2;
     c.globalAlpha=(flash?0.4:1)*_flicker;
     c.beginPath();
@@ -6452,7 +6439,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Ghostly cockpit — hollow eye
     c.save();
     c.strokeStyle=_pg; c.lineWidth=1; c.fillStyle='rgba(170,204,238,0.15)';
-    c.shadowBlur=12; c.shadowColor=_pg;
+    c.shadowBlur=_sb(12); c.shadowColor=_pg;
     c.globalAlpha=(flash?0.4:1)*_flicker*0.8;
     c.beginPath(); c.arc(0,-8,4,0,Math.PI*2); c.fill(); c.stroke();
     c.restore();
@@ -6488,12 +6475,12 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Heat distortion haze
     c.save();
     c.globalAlpha=(flash?0.4:1)*0.1*_burn;
-    c.shadowBlur=35; c.shadowColor=_fc;
+    c.shadowBlur=_sb(35); c.shadowColor=_fc;
     c.fillStyle=_fc;
     c.beginPath(); c.ellipse(0,2,20,24,0,0,Math.PI*2); c.fill();
     c.restore();
     // Main hull — aggressive angular
-    c.shadowBlur=16; c.shadowColor=_fc;
+    c.shadowBlur=_sb(16); c.shadowColor=_fc;
     c.fillStyle='rgba(255,68,0,0.12)'; c.strokeStyle=_fc; c.lineWidth=1.6;
     c.globalAlpha=(flash?0.4:1);
     c.beginPath();
@@ -6513,7 +6500,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Ember cockpit
     c.save();
-    c.fillStyle='rgba(255,170,0,0.4)'; c.shadowBlur=14; c.shadowColor=_fy;
+    c.fillStyle='rgba(255,170,0,0.4)'; c.shadowBlur=_sb(14); c.shadowColor=_fy;
     c.globalAlpha=(flash?0.4:1)*_burn;
     c.beginPath(); c.arc(0,-7,4,0,Math.PI*2); c.fill();
     c.strokeStyle=_fw; c.lineWidth=0.8;
@@ -6522,7 +6509,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Wing embers
     c.save();
     c.fillStyle=_fy; c.globalAlpha=(flash?0.4:1)*_burn*0.8;
-    c.shadowBlur=10; c.shadowColor=_fy;
+    c.shadowBlur=_sb(10); c.shadowColor=_fy;
     [[-16,1],[16,1]].forEach(function(pt){
       c.beginPath(); c.arc(pt[0],pt[1],2,0,Math.PI*2); c.fill();
     });
@@ -6548,7 +6535,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     var _t=typeof performance!=='undefined'?performance.now()/1000:0;
     var _mc='#aabbcc', _mg='#88ff88', _ms='#667788';
     // Main hull — heavy angular armor plates
-    c.shadowBlur=10; c.shadowColor=_mc;
+    c.shadowBlur=_sb(10); c.shadowColor=_mc;
     c.fillStyle='rgba(170,187,204,0.1)'; c.strokeStyle=_mc; c.lineWidth=2;
     c.globalAlpha=(flash?0.4:1);
     c.beginPath();
@@ -6571,7 +6558,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     var scanAngle=Math.sin(_t*2)*0.4;
     c.save();
     c.fillStyle='rgba(136,255,136,0.3)'; c.strokeStyle=_mg; c.lineWidth=1;
-    c.shadowBlur=12; c.shadowColor=_mg;
+    c.shadowBlur=_sb(12); c.shadowColor=_mg;
     c.globalAlpha=(flash?0.4:1)*0.8;
     c.beginPath(); c.arc(0,-8,3.5,0,Math.PI*2); c.fill(); c.stroke();
     // Scan beam
@@ -6610,7 +6597,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Main hull — with glitch offset
     c.save();
     c.translate(glitchOff,0);
-    c.shadowBlur=12; c.shadowColor=_gc;
+    c.shadowBlur=_sb(12); c.shadowColor=_gc;
     c.fillStyle='rgba(0,255,170,0.08)'; c.strokeStyle=_gc; c.lineWidth=1.4;
     c.globalAlpha=(flash?0.4:1);
     c.beginPath();
@@ -6644,7 +6631,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     }
     // Data cockpit
     c.globalAlpha=(flash?0.4:1)*0.7;
-    c.fillStyle=_gc; c.shadowBlur=10; c.shadowColor=_gc;
+    c.fillStyle=_gc; c.shadowBlur=_sb(10); c.shadowColor=_gc;
     c.fillRect(-3,-10,6,4);
     c.fillStyle=_gm; c.globalAlpha=(flash?0.4:1)*0.4;
     c.fillRect(-2,-9,4,2);
@@ -6668,7 +6655,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Dual rotating halo rings
     c.save();
     c.globalAlpha=(flash?0.4:1)*0.15*_pulse;
-    c.strokeStyle=_gc1; c.lineWidth=1.5; c.shadowBlur=20; c.shadowColor=_gc1;
+    c.strokeStyle=_gc1; c.lineWidth=1.5; c.shadowBlur=_sb(20); c.shadowColor=_gc1;
     for(var ri=0;ri<2;ri++){
       c.save();
       c.rotate(_t*(ri===0?0.8:-0.6));
@@ -6678,7 +6665,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Hull — elongated diamond angel-wing shape
     c.save();
-    c.shadowBlur=16; c.shadowColor=_gc1;
+    c.shadowBlur=_sb(16); c.shadowColor=_gc1;
     var hg=c.createLinearGradient(0,-24,0,12);
     hg.addColorStop(0,'rgba(255,251,230,0.25)'); hg.addColorStop(1,'rgba(255,215,0,0.1)');
     c.fillStyle=hg; c.strokeStyle=_gc1; c.lineWidth=1.6;
@@ -6704,7 +6691,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Cockpit — radiant circle with golden cross
     c.save();
-    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=14; c.shadowColor=_gc1;
+    c.fillStyle='rgba(255,215,0,0.35)'; c.shadowBlur=_sb(14); c.shadowColor=_gc1;
     c.globalAlpha=(flash?0.4:1)*_pulse;
     c.beginPath(); c.arc(0,-8,4.5,0,Math.PI*2); c.fill();
     c.strokeStyle=_gc2+'66'; c.lineWidth=0.8;
@@ -6714,7 +6701,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Nose gem
     c.save();
     c.fillStyle=_gc2; c.globalAlpha=(flash?0.4:1)*_pulse;
-    c.shadowBlur=12; c.shadowColor=_gc1;
+    c.shadowBlur=_sb(12); c.shadowColor=_gc1;
     c.beginPath(); c.arc(0,-21,1.8,0,Math.PI*2); c.fill();
     c.restore();
     // Trailing light motes
@@ -6747,7 +6734,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Hull — angular stealth-bomber
     c.save();
-    c.shadowBlur=14; c.shadowColor=_cr;
+    c.shadowBlur=_sb(14); c.shadowColor=_cr;
     c.fillStyle='rgba(20,8,30,0.7)'; c.strokeStyle=_cr; c.lineWidth=1.6;
     c.beginPath();
     c.moveTo(0,-22);
@@ -6776,7 +6763,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Cockpit — red diamond with blinking pixel
     c.save();
-    c.fillStyle='rgba(255,0,68,0.4)'; c.shadowBlur=12; c.shadowColor=_cr;
+    c.fillStyle='rgba(255,0,68,0.4)'; c.shadowBlur=_sb(12); c.shadowColor=_cr;
     c.globalAlpha=(flash?0.4:1)*_pulse;
     c.beginPath();
     c.moveTo(0,-12); c.lineTo(3.5,-7); c.lineTo(0,-2); c.lineTo(-3.5,-7);
@@ -6818,7 +6805,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Outer void aura with tendrils
     c.save();
     c.globalAlpha=(flash?0.3:1)*0.12*_pulse;
-    c.fillStyle=_vp; c.shadowBlur=30; c.shadowColor=_vp;
+    c.fillStyle=_vp; c.shadowBlur=_sb(30); c.shadowColor=_vp;
     c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.fill();
     // Tendrils
     c.strokeStyle=_vd; c.lineWidth=1; c.globalAlpha=(flash?0.3:1)*0.15;
@@ -6830,7 +6817,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Hull — dragon silhouette: pointed nose, swept horns, wide belly
     c.save();
-    c.shadowBlur=16; c.shadowColor=_vp;
+    c.shadowBlur=_sb(16); c.shadowColor=_vp;
     var dg=c.createLinearGradient(0,-22,0,16);
     dg.addColorStop(0,'rgba(102,0,204,0.2)'); dg.addColorStop(1,'rgba(170,0,255,0.08)');
     c.fillStyle=dg; c.strokeStyle=_vp; c.lineWidth=1.6;
@@ -6867,7 +6854,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Dragon eyes (two glowing magenta dots)
     c.save();
     c.globalAlpha=(flash?0.4:1)*_pulse;
-    c.fillStyle=_vm; c.shadowBlur=10; c.shadowColor=_vm;
+    c.fillStyle=_vm; c.shadowBlur=_sb(10); c.shadowColor=_vm;
     c.beginPath(); c.arc(-4,-10,1.5,0,Math.PI*2); c.fill();
     c.beginPath(); c.arc(4,-10,1.5,0,Math.PI*2); c.fill();
     c.restore();
@@ -6914,7 +6901,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Main hull — katana/blade shape, sleek and angular
     c.save();
-    c.shadowBlur=14; c.shadowColor=_pc1;
+    c.shadowBlur=_sb(14); c.shadowColor=_pc1;
     var bg=c.createLinearGradient(0,-22,0,16);
     bg.addColorStop(0,_pc1+'44'); bg.addColorStop(0.5,_pc3+'88'); bg.addColorStop(1,_pc1+'22');
     c.fillStyle=bg; c.strokeStyle=_pc1; c.lineWidth=1.4;
@@ -6947,7 +6934,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Central core — pulsing diamond cockpit
     c.save();
     c.globalAlpha=(flash?0.4:1)*_pulse;
-    c.fillStyle=_pc1; c.shadowBlur=12; c.shadowColor=_pc1;
+    c.fillStyle=_pc1; c.shadowBlur=_sb(12); c.shadowColor=_pc1;
     c.beginPath();
     c.moveTo(0,-8); c.lineTo(3,-3); c.lineTo(0,2); c.lineTo(-3,-3); c.closePath();
     c.fill();
@@ -6972,7 +6959,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Vertical energy slash line (animated)
     c.save();
     c.globalAlpha=(flash?0.2:1)*0.3*(0.5+Math.sin(_t*4)*0.5);
-    c.strokeStyle=_pc1; c.lineWidth=0.5; c.shadowBlur=10; c.shadowColor=_pc1;
+    c.strokeStyle=_pc1; c.lineWidth=0.5; c.shadowBlur=_sb(10); c.shadowColor=_pc1;
     c.beginPath(); c.moveTo(0,-22); c.lineTo(0,14); c.stroke();
     c.restore();
     c.restore();
@@ -7002,7 +6989,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Main hull — rounded solar disk with angular nacelles
     c.save();
-    c.shadowBlur=18; c.shadowColor=_sc1;
+    c.shadowBlur=_sb(18); c.shadowColor=_sc1;
     var sg=c.createRadialGradient(0,-2,0,0,-2,18);
     sg.addColorStop(0,_sc2+'66'); sg.addColorStop(0.6,_sc1+'44'); sg.addColorStop(1,_sc3+'11');
     c.fillStyle=sg;
@@ -7041,7 +7028,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     cg.addColorStop(0,'#ffffff');
     cg.addColorStop(0.3,_sc2);
     cg.addColorStop(1,'rgba(255,136,0,0)');
-    c.fillStyle=cg; c.shadowBlur=16; c.shadowColor='#ffffff';
+    c.fillStyle=cg; c.shadowBlur=_sb(16); c.shadowColor='#ffffff';
     c.beginPath(); c.arc(0,-4,6,0,Math.PI*2); c.fill();
     c.restore();
     // Sunspot eyes
@@ -7054,7 +7041,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Solar prominences — arcing plasma loops from nacelles
     c.save();
     c.globalAlpha=(flash?0.2:1)*0.5*_pulse;
-    c.strokeStyle=_sc2; c.lineWidth=1.2; c.shadowBlur=10; c.shadowColor=_sc2;
+    c.strokeStyle=_sc2; c.lineWidth=1.2; c.shadowBlur=_sb(10); c.shadowColor=_sc2;
     // Right loop
     var lp1=Math.sin(_t*2)*4;
     c.beginPath(); c.moveTo(16,-2);
@@ -7097,7 +7084,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.restore();
     // Main hull — organic leviathan: broad head, tapered body, split tail fins
     c.save();
-    c.shadowBlur=16; c.shadowColor=_ac1;
+    c.shadowBlur=_sb(16); c.shadowColor=_ac1;
     var ag=c.createLinearGradient(0,-20,0,18);
     ag.addColorStop(0,_ac3+'88'); ag.addColorStop(0.4,_ac1+'66'); ag.addColorStop(1,_ac3+'44');
     c.fillStyle=ag; c.strokeStyle=_ac1; c.lineWidth=1.5;
@@ -7137,7 +7124,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     c.globalAlpha=(flash?0.4:1)*_pulse;
     // Eye glow base
-    c.fillStyle=_ac2; c.shadowBlur=10; c.shadowColor=_ac2;
+    c.fillStyle=_ac2; c.shadowBlur=_sb(10); c.shadowColor=_ac2;
     c.beginPath(); c.arc(-6,-8,2.5,0,Math.PI*2); c.fill();
     c.beginPath(); c.arc(6,-8,2.5,0,Math.PI*2); c.fill();
     // Dark slit pupils
@@ -7182,7 +7169,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     var lurePulse=0.5+Math.sin(_t*4)*0.5;
     c.globalAlpha=(flash?0.3:1)*lurePulse;
-    c.fillStyle='#ffffff'; c.shadowBlur=14; c.shadowColor=_ac2;
+    c.fillStyle='#ffffff'; c.shadowBlur=_sb(14); c.shadowColor=_ac2;
     c.beginPath(); c.arc(0,-22,1.5,0,Math.PI*2); c.fill();
     // Lure stalk
     c.strokeStyle=_ac2+'66'; c.lineWidth=0.5; c.shadowBlur=0;
@@ -7250,7 +7237,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Cockpit — diamond shape with inner glow
     c.save();
     c.fillStyle='#ffffff';
-    c.shadowColor='#88ddff'; c.shadowBlur=10;
+    c.shadowColor='#88ddff'; c.shadowBlur=_sb(10);
     c.beginPath(); c.moveTo(0,-10); c.lineTo(3,-5); c.lineTo(0,0); c.lineTo(-3,-5); c.closePath(); c.fill();
     c.restore();
     // Snowflake particles drifting down
@@ -7353,7 +7340,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Cockpit — angry red eye
     c.save();
     c.fillStyle='#ff2200';
-    c.shadowColor='#ff4400'; c.shadowBlur=12;
+    c.shadowColor='#ff4400'; c.shadowBlur=_sb(12);
     c.beginPath(); c.ellipse(0,-10,4,2.5,0,0,Math.PI*2); c.fill();
     // Pupil slit
     c.fillStyle='#000';
@@ -7493,7 +7480,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Bioluminescent eye spots
     c.save();
     c.fillStyle='#00ff88';
-    c.shadowColor='#00ff88'; c.shadowBlur=10;
+    c.shadowColor='#00ff88'; c.shadowBlur=_sb(10);
     c.globalAlpha=0.6+Math.sin(_t*4)*0.3;
     c.beginPath(); c.arc(-4,-8,2,0,Math.PI*2); c.fill();
     c.beginPath(); c.arc(4,-8,2,0,Math.PI*2); c.fill();
@@ -7581,7 +7568,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     // Forge opening cockpit
     c.save();
     c.fillStyle='#ff8800';
-    c.shadowColor='#ff6600'; c.shadowBlur=12;
+    c.shadowColor='#ff6600'; c.shadowBlur=_sb(12);
     c.globalAlpha=0.7+Math.sin(_t*4)*0.2;
     c.beginPath(); c.ellipse(0,-6,4,3,0,0,Math.PI*2); c.fill();
     c.fillStyle='#ffcc00'; c.shadowBlur=6;
@@ -7724,7 +7711,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     var _ckHue=(120+Math.sin(_t*1.5)*80);
     c.fillStyle='hsl('+_ckHue+',70%,60%)';
-    c.shadowColor=c.fillStyle; c.shadowBlur=10;
+    c.shadowColor=c.fillStyle; c.shadowBlur=_sb(10);
     c.globalAlpha=0.7+Math.sin(_t*3)*0.2;
     c.beginPath(); c.ellipse(0,-8,3,2,0,0,Math.PI*2); c.fill();
     c.restore();
@@ -7896,7 +7883,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     c.globalAlpha=0.2+Math.sin(_t*3)*0.1;
     c.fillStyle='#cc44ff';
-    c.shadowColor='#cc44ff'; c.shadowBlur=15;
+    c.shadowColor='#cc44ff'; c.shadowBlur=_sb(15);
     c.beginPath(); c.arc(0,0,4,0,Math.PI*2); c.fill();
     c.restore();
     // Reality-torn fragment exhaust
@@ -7925,12 +7912,12 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     // Outer golden halo
     c.globalAlpha=(flash?0.4:1)*0.25*_ep;
-    c.shadowBlur=30; c.shadowColor='#ffd700';
+    c.shadowBlur=_sb(30); c.shadowColor='#ffd700';
     c.strokeStyle='#ffd700'; c.lineWidth=2;
     c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.stroke();
     // Crown points (5 triangles around top arc)
     c.fillStyle='#ffd700'; c.globalAlpha=(flash?0.4:1)*0.4*_ep;
-    c.shadowBlur=16;
+    c.shadowBlur=_sb(16);
     for(var ci=0;ci<5;ci++){
       var ca=-Math.PI/2+(ci-2)*0.35;
       var cx=Math.cos(ca)*24, cy=Math.sin(ca)*24;
@@ -7949,7 +7936,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     }
     // Inner shimmer ring
     c.globalAlpha=(flash?0.4:1)*0.15*_ep;
-    c.strokeStyle='#fff8dc'; c.lineWidth=0.8; c.shadowBlur=10; c.shadowColor='#fff8dc';
+    c.strokeStyle='#fff8dc'; c.lineWidth=0.8; c.shadowBlur=_sb(10); c.shadowColor='#fff8dc';
     c.beginPath(); c.arc(0,0,20,0,Math.PI*2); c.stroke();
     c.restore();
   } else if(aura==='voidPulse'){
@@ -7958,7 +7945,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     // Pulsing purple ring
     c.globalAlpha=(flash?0.4:1)*0.3*_vp;
-    c.shadowBlur=25; c.shadowColor='#cc44ff';
+    c.shadowBlur=_sb(25); c.shadowColor='#cc44ff';
     c.strokeStyle='#cc44ff'; c.lineWidth=2;
     c.beginPath(); c.arc(0,0,24+Math.sin(_vt*4)*3,0,Math.PI*2); c.stroke();
     // Inner void tendrils (rotating)
@@ -7978,7 +7965,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     // Unstable plasma bursts orbiting the ship
     c.globalAlpha=(flash?0.4:1)*0.3;
-    c.shadowBlur=20; c.shadowColor='#ff8800';
+    c.shadowBlur=_sb(20); c.shadowColor='#ff8800';
     for(var pi=0;pi<6;pi++){
       var pa=_pt*2+pi*Math.PI/3;
       var pr=22+Math.sin(_pt*5+pi*2)*4;
@@ -7997,7 +7984,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     // Icy crystalline ring
     c.globalAlpha=(flash?0.4:1)*0.3*_fp;
-    c.shadowBlur=18; c.shadowColor='#88ddff';
+    c.shadowBlur=_sb(18); c.shadowColor='#88ddff';
     c.strokeStyle='#88ddff'; c.lineWidth=1.5;
     // Hexagonal frost ring
     c.beginPath();
@@ -8031,7 +8018,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
     c.save();
     // Rotating hex grid fragments
     c.globalAlpha=(flash?0.4:1)*0.25;
-    c.shadowBlur=14; c.shadowColor='#00ff88';
+    c.shadowBlur=_sb(14); c.shadowColor='#00ff88';
     c.strokeStyle='#00ff88'; c.lineWidth=0.8;
     for(var hi=0;hi<3;hi++){
       c.save();
@@ -8055,7 +8042,7 @@ function drawShip(c, x, y, inv, custom, scale=1){
   } else if(aura!=='none'){
     c.save(); c.strokeStyle=auraCol; c.lineWidth=1.5;
     c.globalAlpha=(flash?0.4:1)*0.35;
-    c.shadowBlur=20; c.shadowColor=auraCol;
+    c.shadowBlur=_sb(20); c.shadowColor=auraCol;
     c.beginPath(); c.arc(0,0,24,0,Math.PI*2); c.stroke();
     c.restore();
   }
@@ -9174,7 +9161,7 @@ let moveDx = 0;
     // Outer rotating ring
     ctx.translate(p.x,p.y);
     ctx.rotate(p.pulse*0.5);
-    ctx.strokeStyle=def.color; ctx.lineWidth=2; ctx.shadowBlur=20; ctx.shadowColor=def.color;
+    ctx.strokeStyle=def.color; ctx.lineWidth=2; ctx.shadowBlur=_sb(20); ctx.shadowColor=def.color;
     ctx.globalAlpha=0.5+Math.sin(p.pulse)*0.3;
     ctx.setLineDash([4,4]);
     ctx.beginPath(); ctx.arc(0,0,16,0,Math.PI*2); ctx.stroke();
@@ -9743,7 +9730,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       // Plasma pulse — pulsing size + stronger glow
       var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
       ctx.globalAlpha=p.life*0.85;
-      ctx.shadowBlur=12; ctx.shadowColor=p.col;
+      ctx.shadowBlur=_sb(12); ctx.shadowColor=p.col;
       ctx.fillStyle=p.col;
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r*p.life*_pp,0,Math.PI*2); ctx.fill();
     } else if(p.thrusterFx==='gold'){
@@ -9752,7 +9739,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.shadowBlur=8; ctx.shadowColor='#ffd700';
       ctx.fillStyle=p.col;
       var _gr=p.r*p.life;
-      if(p.col==='#ffffff'){ _gr*=1.5; ctx.shadowBlur=14; }
+      if(p.col==='#ffffff'){ _gr*=1.5; ctx.shadowBlur=_sb(14); }
       ctx.beginPath(); ctx.arc(p.x,p.y,_gr,0,Math.PI*2); ctx.fill();
       // Occasional sparkle cross on white particles
       if(p.col==='#ffffff'&&p.life>0.6){
@@ -9775,7 +9762,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     const cy = c.y+Math.sin(t*3)*2;
     // Spinning hexagon
     ctx.strokeStyle='#ffd700'; ctx.lineWidth=1.2;
-    ctx.shadowBlur=10; ctx.shadowColor='#ffd700';
+    ctx.shadowBlur=_sb(10); ctx.shadowColor='#ffd700';
     ctx.globalAlpha=0.7;
     ctx.beginPath();
     for(let i=0;i<6;i++){
@@ -9849,7 +9836,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   bullets.forEach(b=>{
     // Overcharge beam — big bright beam bullet
     if(b.overcharge){
-      ctx.save();ctx.shadowBlur=20;ctx.shadowColor='#ff6600';
+      ctx.save();ctx.shadowBlur=_sb(20);ctx.shadowColor='#ff6600';
       ctx.fillStyle='#ff8800';ctx.beginPath();ctx.ellipse(b.x,b.y,6,14,0,0,Math.PI*2);ctx.fill();
       ctx.fillStyle='#ffffff';ctx.beginPath();ctx.ellipse(b.x,b.y,3,8,0,0,Math.PI*2);ctx.fill();
       ctx.restore();return;
@@ -9907,7 +9894,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.restore();
     } else if(bShape==='bolt'){
       ctx.save(); ctx.translate(b.x,b.y);
-      ctx.shadowBlur=10; ctx.shadowColor=bCol;
+      ctx.shadowBlur=_sb(10); ctx.shadowColor=bCol;
       ctx.beginPath();
       ctx.moveTo(-2,-8); ctx.lineTo(2,-8); ctx.lineTo(0,-3); ctx.lineTo(3,-3);
       ctx.lineTo(-1,3); ctx.lineTo(1,0); ctx.lineTo(-3,0);
@@ -9966,7 +9953,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     }
     // Heavy shooter glow
     if(e.heavyShooter){
-      if(useShadow){ ctx.shadowBlur=14; ctx.shadowColor='#aa00ff'; }
+      if(useShadow){ ctx.shadowBlur=_sb(14); ctx.shadowColor='#aa00ff'; }
       ctx.strokeStyle='#cc00ff'; ctx.lineWidth=1.5;
       ctx.beginPath(); ctx.arc(e.x,e.y,13,0,Math.PI*2); ctx.stroke();
     }
@@ -9974,7 +9961,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     if(e.regen){
       const rAngle = t*1.5;
       ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5;
-      if(useShadow){ ctx.shadowBlur=10; ctx.shadowColor='#00ff88'; }
+      if(useShadow){ ctx.shadowBlur=_sb(10); ctx.shadowColor='#00ff88'; }
       ctx.globalAlpha=0.6+Math.sin(t*3)*0.2;
       ctx.beginPath();
       for(let i=0;i<3;i++){
@@ -9988,7 +9975,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     // Splitter — red-orange tint ring
     if(e.splitter){
       ctx.strokeStyle='#ff6600'; ctx.lineWidth=1.5;
-      if(useShadow){ ctx.shadowBlur=10; ctx.shadowColor='#ff6600'; }
+      if(useShadow){ ctx.shadowBlur=_sb(10); ctx.shadowColor='#ff6600'; }
       ctx.setLineDash([3,3]);
       ctx.beginPath(); ctx.arc(e.x,e.y,11,0,Math.PI*2); ctx.stroke();
       ctx.setLineDash([]);
@@ -9998,14 +9985,14 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       const dp = e.diving ? 0.8+Math.sin(t*10)*0.2 : 0.3+Math.sin(t*2)*0.15;
       ctx.globalAlpha=dp;
       ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5;
-      if(useShadow){ ctx.shadowBlur=12; ctx.shadowColor='#00ff88'; }
+      if(useShadow){ ctx.shadowBlur=_sb(12); ctx.shadowColor='#00ff88'; }
       ctx.beginPath(); ctx.arc(e.x,e.y,14,0,Math.PI*2); ctx.stroke();
       ctx.globalAlpha=1;
     }
     // Armored — gold hexagonal plating
     if(e.armored && !e.armorBroken){
       ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2;
-      if(useShadow){ ctx.shadowBlur=10; ctx.shadowColor='#ffcc00'; }
+      if(useShadow){ ctx.shadowBlur=_sb(10); ctx.shadowColor='#ffcc00'; }
       ctx.fillStyle='rgba(255,200,0,0.08)';
       ctx.beginPath();
       const hs=14;
@@ -10036,7 +10023,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     if(e.frozenShield&&e.shield>0){
       ctx.globalAlpha=0.25+Math.sin(t*2)*0.1;
       ctx.fillStyle='#88ddff';
-      if(useShadow){ctx.shadowBlur=10;ctx.shadowColor='#88ddff';}
+      if(useShadow){ctx.shadowBlur=_sb(10);ctx.shadowColor='#88ddff';}
       ctx.beginPath(); ctx.arc(e.x,e.y,10,0,Math.PI*2); ctx.fill();
       ctx.globalAlpha=1;
     }
@@ -10062,7 +10049,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.save();
       ctx.globalAlpha=0.3+Math.sin(t*8)*0.2;
       ctx.strokeStyle='#aa88ff'; ctx.lineWidth=1.5;
-      ctx.shadowBlur=12; ctx.shadowColor='#aa88ff';
+      ctx.shadowBlur=_sb(12); ctx.shadowColor='#aa88ff';
       ctx.beginPath(); ctx.arc(player.x,player.y,20,0,Math.PI*2); ctx.stroke();
       ctx.restore();
     }
@@ -10073,7 +10060,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
       ctx.globalAlpha=alpha;
       ctx.strokeStyle='#00ccff';
       ctx.lineWidth=2;
-      ctx.shadowBlur=12; ctx.shadowColor='#00ccff';
+      ctx.shadowBlur=_sb(12); ctx.shadowColor='#00ccff';
       ctx.beginPath(); ctx.arc(e.x,e.y,16,0,Math.PI*2); ctx.stroke();
       ctx.globalAlpha=1; ctx.shadowBlur=0;
     }
@@ -10097,7 +10084,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
     if(boss.bossId){
       drawWorldBoss(ctx,boss,col,ts,dt);
     } else {
-      ctx.shadowBlur=18; ctx.shadowColor=col;
+      ctx.shadowBlur=_sb(18); ctx.shadowColor=col;
       ctx.strokeStyle=col; ctx.fillStyle=col+'22'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.ellipse(0,0,32,15,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(0,-12,18,12,0,Math.PI,Math.PI*2); ctx.fill(); ctx.stroke();
@@ -10175,7 +10162,7 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
   if(player.shieldFlash>0){
     ctx.save();
     ctx.strokeStyle=`rgba(0,245,255,${player.shieldFlash*0.8})`;
-    ctx.lineWidth=2; ctx.shadowBlur=12; ctx.shadowColor='#00f5ff';
+    ctx.lineWidth=2; ctx.shadowBlur=_sb(12); ctx.shadowColor='#00f5ff';
     ctx.beginPath(); ctx.arc(player.x,player.y,26,0,Math.PI*2); ctx.stroke();
     ctx.restore();
   }
@@ -11459,11 +11446,11 @@ function showEnemyIntroIfNeeded(onDone) {
     t2+=0.05;
     ctx.save(); ctx.translate(60,60); drawEnemyShape(ctx,0,0,type,t2,intro.color); ctx.restore();
     // Special overlays
-    if(wave===6){ ctx.strokeStyle='#00ccff'; ctx.lineWidth=2; ctx.shadowBlur=12; ctx.shadowColor='#00ccff'; ctx.globalAlpha=0.5+Math.sin(t2*4)*0.3; ctx.beginPath(); ctx.arc(60,60,30,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
-    if(wave===11){ ctx.strokeStyle='#cc00ff'; ctx.lineWidth=1.5; ctx.shadowBlur=10; ctx.shadowColor='#cc00ff'; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(60,60,26,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
-    if(wave===12){ const dp=0.5+Math.sin(t2*3)*0.3; ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5; ctx.shadowBlur=12; ctx.shadowColor='#00ff88'; ctx.globalAlpha=dp; ctx.beginPath(); ctx.arc(60,60,28,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
-    if(wave===16){ ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2; ctx.shadowBlur=10; ctx.shadowColor='#ffcc00'; ctx.globalAlpha=0.7; const hs=26; ctx.beginPath(); for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6;i===0?ctx.moveTo(60+hs*Math.cos(a),60+hs*Math.sin(a)):ctx.lineTo(60+hs*Math.cos(a),60+hs*Math.sin(a));} ctx.closePath(); ctx.stroke(); ctx.globalAlpha=1; }
-    if(wave===21){ const ra=t2*1.5; ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5; ctx.shadowBlur=10; ctx.shadowColor='#00ff88'; ctx.globalAlpha=0.7; ctx.beginPath(); for(let i=0;i<3;i++){const a=ra+i*Math.PI*2/3;i===0?ctx.moveTo(60+28*Math.cos(a),60+28*Math.sin(a)):ctx.lineTo(60+28*Math.cos(a),60+28*Math.sin(a));} ctx.closePath(); ctx.stroke(); ctx.globalAlpha=1; }
+    if(wave===6){ ctx.strokeStyle='#00ccff'; ctx.lineWidth=2; ctx.shadowBlur=_sb(12); ctx.shadowColor='#00ccff'; ctx.globalAlpha=0.5+Math.sin(t2*4)*0.3; ctx.beginPath(); ctx.arc(60,60,30,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
+    if(wave===11){ ctx.strokeStyle='#cc00ff'; ctx.lineWidth=1.5; ctx.shadowBlur=_sb(10); ctx.shadowColor='#cc00ff'; ctx.globalAlpha=0.6; ctx.beginPath(); ctx.arc(60,60,26,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
+    if(wave===12){ const dp=0.5+Math.sin(t2*3)*0.3; ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5; ctx.shadowBlur=_sb(12); ctx.shadowColor='#00ff88'; ctx.globalAlpha=dp; ctx.beginPath(); ctx.arc(60,60,28,0,Math.PI*2); ctx.stroke(); ctx.globalAlpha=1; }
+    if(wave===16){ ctx.strokeStyle='#ffcc00'; ctx.lineWidth=2; ctx.shadowBlur=_sb(10); ctx.shadowColor='#ffcc00'; ctx.globalAlpha=0.7; const hs=26; ctx.beginPath(); for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6;i===0?ctx.moveTo(60+hs*Math.cos(a),60+hs*Math.sin(a)):ctx.lineTo(60+hs*Math.cos(a),60+hs*Math.sin(a));} ctx.closePath(); ctx.stroke(); ctx.globalAlpha=1; }
+    if(wave===21){ const ra=t2*1.5; ctx.strokeStyle='#00ff88'; ctx.lineWidth=1.5; ctx.shadowBlur=_sb(10); ctx.shadowColor='#00ff88'; ctx.globalAlpha=0.7; ctx.beginPath(); for(let i=0;i<3;i++){const a=ra+i*Math.PI*2/3;i===0?ctx.moveTo(60+28*Math.cos(a),60+28*Math.sin(a)):ctx.lineTo(60+28*Math.cos(a),60+28*Math.sin(a));} ctx.closePath(); ctx.stroke(); ctx.globalAlpha=1; }
   },33);
   el._animLoop = animLoop;
   showScreen('screen-enemy-intro');
@@ -14006,7 +13993,7 @@ function showPremiumPreview(itemId){
         ctx.save();
         if(p.thrusterFx==='plasma'){
           var pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
-          ctx.globalAlpha=Math.max(0,p.life*0.85); ctx.fillStyle=p.col; ctx.shadowBlur=14; ctx.shadowColor=p.col;
+          ctx.globalAlpha=Math.max(0,p.life*0.85); ctx.fillStyle=p.col; ctx.shadowBlur=_sb(14); ctx.shadowColor=p.col;
           ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life*pp),0,Math.PI*2); ctx.fill();
         } else if(p.thrusterFx==='gold'){
           ctx.globalAlpha=Math.max(0,p.life*0.85); ctx.fillStyle=p.col; ctx.shadowBlur=p.col==='#ffffff'?16:10; ctx.shadowColor='#ffd700';
@@ -14015,7 +14002,7 @@ function showPremiumPreview(itemId){
             ctx.beginPath(); ctx.moveTo(p.x-5,p.y); ctx.lineTo(p.x+5,p.y); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(p.x,p.y-5); ctx.lineTo(p.x,p.y+5); ctx.stroke(); }
         } else {
-          ctx.globalAlpha=Math.max(0,p.life*0.8); ctx.fillStyle=p.col; ctx.shadowBlur=10; ctx.shadowColor=p.col;
+          ctx.globalAlpha=Math.max(0,p.life*0.8); ctx.fillStyle=p.col; ctx.shadowBlur=_sb(10); ctx.shadowColor=p.col;
           ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); ctx.fill();
         }
         ctx.restore();
@@ -15233,7 +15220,7 @@ function startCustomizeAnim(){
       p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*3;
       if(p.thrusterFx==='plasma'){
         var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
-        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=12; cx.shadowColor=p.col;
+        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=_sb(12); cx.shadowColor=p.col;
         cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*_pp),0,Math.PI*2); cx.fill();
       } else if(p.thrusterFx==='gold'){
         cx.globalAlpha=Math.max(0,p.life*0.8); cx.fillStyle=p.col; cx.shadowBlur=p.col==='#ffffff'?14:8; cx.shadowColor='#ffd700';
@@ -15249,7 +15236,7 @@ function startCustomizeAnim(){
     _customizeThruster=_customizeThruster.filter(p=>p.life>0&&p.y<H+10);
     // Preview bullets
     _customizeBullets.forEach(b=>{ b.y-=dt*200; b.life-=dt*1.2;
-      cx.globalAlpha=Math.max(0,b.life); cx.fillStyle=b.col; cx.shadowBlur=12; cx.shadowColor=b.col;
+      cx.globalAlpha=Math.max(0,b.life); cx.fillStyle=b.col; cx.shadowBlur=_sb(12); cx.shadowColor=b.col;
       if(b.shape==='plasma'){ cx.beginPath(); cx.arc(b.x,b.y,4,0,Math.PI*2); cx.fill(); }
       else if(b.shape==='diamond'){ cx.beginPath(); cx.moveTo(b.x,b.y-6); cx.lineTo(b.x+3,b.y); cx.lineTo(b.x,b.y+6); cx.lineTo(b.x-3,b.y); cx.closePath(); cx.fill(); }
       else if(b.shape==='star'){
@@ -15263,7 +15250,7 @@ function startCustomizeAnim(){
         cx.globalAlpha=0.4; cx.beginPath(); cx.arc(0,0,3,0,Math.PI*2); cx.fill(); cx.restore();
       }
       else if(b.shape==='bolt'){
-        cx.save(); cx.translate(b.x,b.y); cx.shadowBlur=10; cx.shadowColor=b.col;
+        cx.save(); cx.translate(b.x,b.y); cx.shadowBlur=_sb(10); cx.shadowColor=b.col;
         cx.beginPath(); cx.moveTo(-2,-8); cx.lineTo(2,-8); cx.lineTo(0,-3); cx.lineTo(3,-3); cx.lineTo(-1,3); cx.lineTo(1,0); cx.lineTo(-3,0); cx.closePath(); cx.fill(); cx.restore();
       }
       else if(b.shape==='comet'){ cx.beginPath(); cx.arc(b.x,b.y,3.5,0,Math.PI*2); cx.fill(); cx.globalAlpha*=0.4; cx.fillRect(b.x-1,b.y+3,2,10); }
@@ -15319,7 +15306,7 @@ function startMenuShipPreview(){
     _menuShipThruster.forEach(p=>{ p.x+=p.vx; p.y+=p.vy*dt*60; p.life-=dt*2.5;
       if(p.thrusterFx==='plasma'){
         var _pp=0.8+Math.sin(performance.now()/80+p.x)*0.4;
-        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=14; cx.shadowColor=p.col;
+        cx.globalAlpha=Math.max(0,p.life*0.85); cx.fillStyle=p.col; cx.shadowBlur=_sb(14); cx.shadowColor=p.col;
         cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life*_pp),0,Math.PI*2); cx.fill();
       } else if(p.thrusterFx==='gold'){
         cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=p.col==='#ffffff'?16:10; cx.shadowColor='#ffd700';
@@ -15328,7 +15315,7 @@ function startMenuShipPreview(){
           cx.beginPath(); cx.moveTo(p.x-4,p.y); cx.lineTo(p.x+4,p.y); cx.stroke();
           cx.beginPath(); cx.moveTo(p.x,p.y-4); cx.lineTo(p.x,p.y+4); cx.stroke(); }
       } else {
-        cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=12; cx.shadowColor=p.col;
+        cx.globalAlpha=Math.max(0,p.life*0.9); cx.fillStyle=p.col; cx.shadowBlur=_sb(12); cx.shadowColor=p.col;
         cx.beginPath(); cx.arc(p.x,p.y,Math.max(0,p.r*p.life),0,Math.PI*2); cx.fill();
       }
     });
@@ -15340,7 +15327,7 @@ function startMenuShipPreview(){
     if(_menuShipFireTimer<=0 && Math.random()<0.008){ _menuShipFireTimer=0.6+Math.random()*0.8; _menuShipBullets.push({x:shipX,y:shipY-18,life:1}); }
     const bCol=(SAVE.shipCustom?.bulletColor)||'#00f5ff';
     _menuShipBullets.forEach(b=>{ b.y-=dt*220; b.life-=dt*1.5;
-      cx.globalAlpha=Math.max(0,b.life); cx.fillStyle=bCol; cx.shadowBlur=10; cx.shadowColor=bCol;
+      cx.globalAlpha=Math.max(0,b.life); cx.fillStyle=bCol; cx.shadowBlur=_sb(10); cx.shadowColor=bCol;
       cx.fillRect(b.x-1.5,b.y-8,3,12);
     });
     _menuShipBullets=_menuShipBullets.filter(b=>b.life>0&&b.y>-20);
@@ -16631,7 +16618,7 @@ function drawSpinner(angle) {
   ctx.save();
   ctx.beginPath(); ctx.arc(cx,cy,r+1.5,0,Math.PI*2);
   ctx.strokeStyle='#ff880044'; ctx.lineWidth=6;
-  ctx.shadowBlur=12; ctx.shadowColor='#ff6600';
+  ctx.shadowBlur=_sb(12); ctx.shadowColor='#ff6600';
   ctx.stroke(); ctx.restore();
 
   // === Center hub ===
@@ -18928,8 +18915,8 @@ function _syncPlayerAfterBuffChange(){
     if(player.lives>player.maxLives) player.lives=player.maxLives;
     if(player.lives<1) player.lives=1;
   }
-  // Sync shield charges from _campaignBuffs (Void Shield deal adds to b.shieldCharges)
-  if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields){
+  // Sync shield charges — cap at 5 if any shield source is active
+  if((_campaignBuffs.shieldCharges||_campaignBuffs.shieldRecharge)&&!_campaignBuffs._noShields){
     _campaignShieldCharges=Math.min(5,_campaignShieldCharges);
   }
   try{updateHUD();}catch(e){}
@@ -19413,7 +19400,7 @@ function _spawnWaveAnnounceParticles(worldId,duration){
       }
       // Glow
       ctx.globalAlpha=a*0.3;
-      ctx.shadowColor=p.color;ctx.shadowBlur=12;
+      ctx.shadowColor=p.color;ctx.shadowBlur=_sb(12);
       ctx.fillStyle=p.color;
       ctx.beginPath();ctx.arc(p.x,p.y,p.size*0.4,0,Math.PI*2);ctx.fill();
       ctx.shadowBlur=0;
@@ -19436,8 +19423,8 @@ function campaignWaveCleared(){
   gState='paused';
   if(rafId){cancelAnimationFrame(rafId);rafId=null;}
   eBullets=[];bullets=[];powerupDrops=[];activePowerups={};_campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
-  // Recharge shields — add per-wave charges without resetting existing (cap at 5)
-  if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields) _campaignShieldCharges=Math.min(5,_campaignShieldCharges+_campaignBuffs.shieldCharges);
+  // Recharge shields — only per-wave recharge from ENERGY BARRIER upgrade (cap at 5)
+  if(_campaignBuffs.shieldRecharge&&!_campaignBuffs._noShields) _campaignShieldCharges=Math.min(5,_campaignShieldCharges+_campaignBuffs.shieldRecharge);
   var worldIdx=getCampaignWorldIndex(_campaignWave);
   var curWorld=CAMPAIGN_WORLDS[worldIdx];
   var isVoidWorld=curWorld&&curWorld.id==='abyss';
@@ -19497,7 +19484,7 @@ function shouldShowChaosJester(){
   var curWorld=CAMPAIGN_WORLDS[getCampaignWorldIndex(_campaignWave)];
   var waveInWorld=_campaignWave-curWorld.waves[0]+1;
   if(waveInWorld<3) return false;
-  // Allow after boss waves (10, 20) — no exclusion
+  if(waveInWorld===10||waveInWorld===20) return false; // not after boss — don't steal boss upgrade
   return Math.random()<0.10;
 }
 
@@ -20606,7 +20593,7 @@ function toggleRoguePause(){
   // Overlay
   var ov=document.createElement('div');
   ov.id='rogue-pause-overlay';
-  ov.style.cssText=_iosStyle('position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity 0.25s');
+  ov.style.cssText='position:fixed;inset:0;z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;opacity:0;transition:opacity 0.25s';
   var world=CAMPAIGN_WORLDS[_campaignWorld];
   var wEmoji=world?world.emoji:'⚔';
   var wName=world?world.name:'ADVENTURE MODE';
