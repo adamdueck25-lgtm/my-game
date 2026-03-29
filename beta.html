@@ -18831,6 +18831,26 @@ function exitCampaign(){
 }
 
 // ── CAMPAIGN STATS ────────────────────────────────────────
+// Sync player HP, maxLives, and shield charges after any buff change
+function _syncPlayerAfterBuffChange(){
+  _cachedCampaignStats=null;
+  var s=computeCampaignStats();
+  if(player){
+    var oldMax=player.maxLives;
+    player.maxLives=Math.max(1,s.maxLives||3);
+    // If maxLives increased, grant the extra HP
+    if(player.maxLives>oldMax) player.lives=Math.min(player.lives+(player.maxLives-oldMax),player.maxLives);
+    // If maxLives decreased, clamp
+    if(player.lives>player.maxLives) player.lives=player.maxLives;
+    if(player.lives<1) player.lives=1;
+  }
+  // Sync shield charges from _campaignBuffs (Void Shield deal adds to b.shieldCharges)
+  if(_campaignBuffs.shieldCharges&&!_campaignBuffs._noShields){
+    _campaignShieldCharges=Math.min(5,_campaignShieldCharges);
+  }
+  try{updateHUD();}catch(e){}
+}
+
 function computeCampaignStats(){
   // Return cached stats if same frame (avoids 3x recompute per frame)
   if(_cachedCampaignStats&&_cachedCampaignStatsFrame===_gameFrameCount) return _cachedCampaignStats;
@@ -19535,8 +19555,10 @@ function showChaosJester(onDone){
         resultItem.apply(_campaignBuffs);
         _campaignActiveEffects.push({icon:'🃏',name:resultItem.name,col:'#ff4455',type:'debuff'});
       }
-      // Update player stats
-      try{var s=computeCampaignStats();if(player){player.maxLives=Math.max(1,s.maxLives||3);player.lives=Math.min(player.lives,player.maxLives);if(player.lives<1)player.lives=1;}}catch(e){}
+      // Update player stats + HUD
+      // Immediately grant shield charges if the jester gave +2 shields
+      if(isPositive&&resultItem.name==='+2 SHIELDS') _campaignShieldCharges=Math.min(5,_campaignShieldCharges+2);
+      _syncPlayerAfterBuffChange();
       // Big result reveal
       var rEl=document.getElementById('cj-result');
       var rSub=document.getElementById('cj-result-sub');
@@ -19647,8 +19669,13 @@ function showVoidBroker(onDone){
   function closeOverlay(accepted){
     if(accepted){
       _cachedCampaignStats=null;
+      var _shieldsBefore=_campaignBuffs.shieldCharges||0;
       deal.applyBuff(_campaignBuffs);
       deal.applyDebuff(_campaignBuffs);
+      // Immediately grant any new shield charges
+      var _shieldsAdded=(_campaignBuffs.shieldCharges||0)-_shieldsBefore;
+      if(_shieldsAdded>0&&!_campaignBuffs._noShields) _campaignShieldCharges=Math.min(5,_campaignShieldCharges+_shieldsAdded);
+      _syncPlayerAfterBuffChange();
       _campaignBrokerDeclinedAll=false;
       _campaignActiveEffects.push({icon:'👁‍🗨',name:deal.buffName,col:deal.buffColor,type:'buff'});
       _campaignActiveEffects.push({icon:deal.debuffIcon,name:deal.debuffName,col:'#ff4455',type:'debuff'});
