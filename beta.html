@@ -17806,7 +17806,7 @@ function showWorldOverview(){
   if(mutsUnlocked){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},1000);}
   if(challengeSection){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},1200);}
   if(selWorld.modifier){setTimeout(function(){showCampaignTip('tip_worldModifier','Each world has a unique modifier that changes gameplay. Adapt your strategy!',{position:'top',icon:'⚙'});},1400);}
-  setTimeout(function(){showCampaignTip('tip_glossary','Tap the 🪙 token badge to view your Upgrade Glossary and see all available upgrades!',{position:'top',icon:'📖',color:'#ffaa00'});},1600);
+  if(_loadoutUnlocked){setTimeout(function(){showCampaignTip('tip_glossary','Tap the 🪙 token badge to view your Upgrade Glossary and see all available upgrades!',{position:'top',icon:'📖',color:'#ffaa00'});},1600);}
 
   // World node click handlers — with swipe guard to avoid selecting during scroll
   var _woPathTouchStartX=0;
