@@ -18742,11 +18742,14 @@ function _showNextCampaignTip(){
   var autoDismiss=o.autoDismiss||8000;
 
   setTimeout(function(){
-    // Full-screen blocking overlay — prevents clicking anything behind the tip
-    var blocker=document.createElement('div');
-    blocker.id='campaign-tip-blocker';
-    blocker.style.cssText='position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.3);pointer-events:auto;-webkit-tap-highlight-color:transparent';
-    document.body.appendChild(blocker);
+    // Full-screen blocking overlay — reuse existing if present (no gap between queued tips)
+    var blocker=document.getElementById('campaign-tip-blocker');
+    if(!blocker){
+      blocker=document.createElement('div');
+      blocker.id='campaign-tip-blocker';
+      blocker.style.cssText='position:fixed;inset:0;z-index:9999998;background:rgba(0,0,0,0.3);pointer-events:auto;-webkit-tap-highlight-color:transparent';
+      document.body.appendChild(blocker);
+    }
     var el=document.createElement('div');
     _campaignTipEl=el;
     el.id='campaign-tip';
@@ -18786,10 +18789,11 @@ function _showNextCampaignTip(){
       dismissed=true;
       el.style.opacity='0';
       el.style.transform=hideTransform;
-      blocker.style.opacity='0';blocker.style.transition='opacity 0.3s';
+      var hasMore=_campaignTipQueue.length>0;
+      if(!hasMore){blocker.style.opacity='0';blocker.style.transition='opacity 0.3s';}
       setTimeout(function(){
         el.remove();
-        blocker.remove();
+        if(!hasMore) blocker.remove();
         _campaignTipEl=null;
         _showNextCampaignTip();
       },400);
@@ -19521,6 +19525,7 @@ function showChaosJester(onDone){
       var relAngle=((pointerAngle-wheelAngle)%(Math.PI*2)+(Math.PI*2))%(Math.PI*2);
       var segIdx=Math.floor((relAngle/(Math.PI*2))*10)%10;
       isPositive=segIdx%2===0;
+      _cachedCampaignStats=null;
       if(isPositive){
         resultItem=CHAOS_JESTER_BUFFS[Math.floor(Math.random()*CHAOS_JESTER_BUFFS.length)];
         resultItem.apply(_campaignBuffs);
@@ -19641,6 +19646,7 @@ function showVoidBroker(onDone){
 
   function closeOverlay(accepted){
     if(accepted){
+      _cachedCampaignStats=null;
       deal.applyBuff(_campaignBuffs);
       deal.applyDebuff(_campaignBuffs);
       _campaignBrokerDeclinedAll=false;
@@ -19746,6 +19752,7 @@ function showCampaignUpgradePick(isBossReward){
   if(_campaignBuffs.mutRandomUpgrade){
     var autoIdx=Math.floor(Math.random()*picks.length);
     var autoPick=picks[autoIdx];
+    _cachedCampaignStats=null;
     try{autoPick.apply(_campaignBuffs);}catch(e){}
     _campaignPickedUpgrades.push(autoPick.id);
     if(!SAVE.campaignData.discoveredUpgrades)SAVE.campaignData.discoveredUpgrades={};
@@ -19910,7 +19917,8 @@ function showCampaignUpgradePick(isBossReward){
       c.style.transform='translateX('+(dir*250)+'px) rotate('+(dir*40)+'deg) scale(0.2)';
     });
 
-    // Apply upgrade now
+    // Apply upgrade now — invalidate stats cache since buffs are changing
+    _cachedCampaignStats=null;
     try{ chosen.apply(_campaignBuffs); }catch(e){ console.error('Upgrade apply error:',e); }
     _campaignPickedUpgrades.push(chosen.id);
     if(!SAVE.campaignData.discoveredUpgrades)SAVE.campaignData.discoveredUpgrades={};
