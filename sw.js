@@ -1,6 +1,38 @@
+var CACHE_VERSION = 'vi-v3.0.0-beta';
+
+// On install, clean up and activate immediately
+self.addEventListener('install', function(event) {
+  self.skipWaiting();
+});
+
+// On activate, delete old caches
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(names) {
+      return Promise.all(
+        names.filter(function(name) { return name !== CACHE_VERSION; })
+          .map(function(name) { return caches.delete(name); })
+      );
+    }).then(function() { return self.clients.claim(); })
+  );
+});
+
+// Network-first with cache update: always try network, cache response, fallback to cache
 self.addEventListener('fetch', function(e) {
+  // Only cache GET requests for our own origin
+  if (e.request.method !== 'GET') return;
+
   e.respondWith(
-    fetch(e.request).catch(function() {
+    fetch(e.request).then(function(response) {
+      // Cache the fresh response
+      if (response.ok) {
+        var clone = response.clone();
+        caches.open(CACHE_VERSION).then(function(cache) {
+          cache.put(e.request, clone);
+        });
+      }
+      return response;
+    }).catch(function() {
       return caches.match(e.request);
     })
   );
