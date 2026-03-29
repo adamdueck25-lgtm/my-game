@@ -1231,6 +1231,8 @@ window.addEventListener('error', function(evt){
   while((stuck = document.getElementById('lootbox-overlay')) && stuck.parentNode){
     stuck.parentNode.removeChild(stuck);
   }
+  // Clean up campaign overlays that may be stuck
+  ['upgrade-glossary-overlay','token-dropdown','campaign-tip','campaign-tip-blocker','chaos-jester-overlay','void-broker-overlay','lo-picker-overlay'].forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
   try {
     if(typeof masterGain!=='undefined'&&masterGain&&masterGain.gain&&typeof AC!=='undefined'){
       masterGain.gain.cancelScheduledValues(AC.currentTime);
@@ -4035,8 +4037,11 @@ var UPGRADE_STACK_DETAILS={
   quantumShield:['x1: Heal every 20s','x2: Heal every 15s']
 };
 function showUpgradeGlossary(){
+  try{
   var old=document.getElementById('upgrade-glossary-overlay');if(old)old.remove();
-  var disc=SAVE.campaignData.discoveredUpgrades||{};
+  if(!SAVE.campaignData) SAVE.campaignData={};
+  if(!SAVE.campaignData.discoveredUpgrades) SAVE.campaignData.discoveredUpgrades={};
+  var disc=SAVE.campaignData.discoveredUpgrades;
   var discCount=0;
   CAMPAIGN_UPGRADES.forEach(function(u){if(disc[u.id])discCount++;});
   var ov=document.createElement('div');
@@ -4145,6 +4150,7 @@ function showUpgradeGlossary(){
     ov.style.opacity='0';
     setTimeout(function(){ov.remove();},250);
   };
+  }catch(e){console.error('Glossary error:',e);var _ge=document.getElementById('upgrade-glossary-overlay');if(_ge)_ge.remove();}
 }
 
 // ── ROGUE WORLD CHALLENGES ────────────────────────────────
@@ -17800,13 +17806,25 @@ function showWorldOverview(){
   // Mutator badge is position:fixed, no animation needed
   setTimeout(function(){var c=document.getElementById('wo-challenges');if(c)c.style.opacity='1';},200);
   setTimeout(function(){var b=document.getElementById('wo-buttons');if(b)b.style.opacity='1';},250);
-  // Contextual tips for first-time encounters
-  setTimeout(function(){if(!document.getElementById('rogue-unlock-cinematic'))showCampaignTip('tip_worldOverview','Select a world and tap Launch to begin your run.',{position:'bottom',icon:'🗺️'});},600);
-  if(_loadoutUnlocked){setTimeout(function(){showCampaignTip('tip_loadout','Equip abilities, weapons, and passives. Loadout items carry between runs!',{position:'center',icon:'⚔️'});},800);}
-  if(mutsUnlocked){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},1000);}
-  if(challengeSection){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},1200);}
-  if(selWorld.modifier){setTimeout(function(){showCampaignTip('tip_worldModifier','Each world has a unique modifier that changes gameplay. Adapt your strategy!',{position:'top',icon:'⚙'});},1400);}
-  if(_loadoutUnlocked){setTimeout(function(){showCampaignTip('tip_glossary','Tap the 🪙 token badge to view your Upgrade Glossary and see all available upgrades!',{position:'top',icon:'📖',color:'#ffaa00'});},1600);}
+  // Contextual tips — deferred function that can be re-triggered after unlock cinematic
+  var _woTipLoadout=_loadoutUnlocked;
+  var _woTipMuts=mutsUnlocked;
+  var _woTipChallenge=!!challengeSection;
+  var _woTipModifier=!!(selWorld.modifier);
+  window._retriggerWoTooltips=function(){
+    // Only fire if unlock cinematic is gone
+    if(document.getElementById('rogue-unlock-cinematic')) return;
+    setTimeout(function(){showCampaignTip('tip_worldOverview','Select a world and tap Launch to begin your run.',{position:'bottom',icon:'🗺️'});},300);
+    if(_woTipLoadout){setTimeout(function(){showCampaignTip('tip_loadout','Equip abilities, weapons, and passives. Loadout items carry between runs!',{position:'center',icon:'⚔️'});},500);}
+    if(_woTipMuts){setTimeout(function(){showCampaignTip('tip_mutators','Toggle mutators for harder runs and bonus Rogue Tokens!',{position:'top',icon:'☣️'});},700);}
+    if(_woTipChallenge){setTimeout(function(){showCampaignTip('tip_challenges','Complete challenges for one-time token rewards!',{position:'bottom',icon:'🏆',color:'#00f5ff'});},900);}
+    if(_woTipModifier){setTimeout(function(){showCampaignTip('tip_worldModifier','Each world has a unique modifier that changes gameplay. Adapt your strategy!',{position:'top',icon:'⚙'});},1100);}
+    if(_woTipLoadout){setTimeout(function(){showCampaignTip('tip_glossary','Tap the 🪙 token badge to view your Upgrade Glossary and see all available upgrades!',{position:'top',icon:'📖',color:'#ffaa00'});},1300);}
+  };
+  // Fire immediately if no unlock cinematic pending, otherwise wait for it to dismiss
+  if(!_pendingRogueUnlocks||!_pendingRogueUnlocks.length){
+    setTimeout(function(){window._retriggerWoTooltips();},600);
+  }
 
   // World node click handlers — with swipe guard to avoid selecting during scroll
   var _woPathTouchStartX=0;
@@ -18123,7 +18141,12 @@ function showRogueLoadoutPicker(slotKey,items){
   var label=slotKey==='ability'?'ABILITY':slotKey==='weapon'?'WEAPON MOD':'PASSIVE';
   var ov=document.createElement('div');
   ov.id='lo-picker-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.94);overflow-y:scroll;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
+  // Two-layer structure for iOS scroll: outer fixed container + inner scrollable div
+  ov.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.94);opacity:0;transition:opacity 0.25s';
+  var _scrollInner=document.createElement('div');
+  _scrollInner.id='lo-picker-scroll';
+  _scrollInner.style.cssText='position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px)';
+  ov.appendChild(_scrollInner);
   function _buildPickerHtml(){
     var h='<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ff8800;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px #ff880066">SELECT '+label+'</div>';
     h+='<div style="font-family:Orbitron,sans-serif;font-size:9px;color:#ffaa0088;letter-spacing:2px;margin-bottom:14px">🪙 '+(SAVE.rogueTokens||0)+' ROGUE TOKENS</div>';
@@ -18203,12 +18226,12 @@ function showRogueLoadoutPicker(slotKey,items){
     return h;
   }
   function _refreshPicker(){
-    ov.innerHTML=_buildPickerHtml();
+    _scrollInner.innerHTML=_buildPickerHtml();
     _attachPickerHandlers();
   }
   function _attachPickerHandlers(){
     // Card tap to select — auto-close and return to WO
-    var cards=ov.querySelectorAll('.lo-pick-card');
+    var cards=_scrollInner.querySelectorAll('.lo-pick-card');
     var _pickClosing=false;
     function _selectAndClose(id){
       if(_pickClosing) return;
@@ -18234,11 +18257,11 @@ function showRogueLoadoutPicker(slotKey,items){
         }
       },200);
     }
-    // Single delegated tap handler on overlay — no per-card touch listeners (iOS scroll fix)
+    // Single delegated tap handler on scroll container — no per-card touch listeners (iOS scroll fix)
     var _ovTouchY=0,_ovTouchMoved=false;
-    ov.addEventListener('touchstart',function(e){_ovTouchY=e.touches[0].clientY;_ovTouchMoved=false;},{passive:true});
-    ov.addEventListener('touchmove',function(e){if(Math.abs(e.touches[0].clientY-_ovTouchY)>10)_ovTouchMoved=true;},{passive:true});
-    ov.addEventListener('touchend',function(e){
+    _scrollInner.addEventListener('touchstart',function(e){_ovTouchY=e.touches[0].clientY;_ovTouchMoved=false;},{passive:true});
+    _scrollInner.addEventListener('touchmove',function(e){if(Math.abs(e.touches[0].clientY-_ovTouchY)>10)_ovTouchMoved=true;},{passive:true});
+    _scrollInner.addEventListener('touchend',function(e){
       if(_ovTouchMoved) return;
       var card=e.target.closest('.lo-pick-card');
       if(!card) return;
@@ -18256,7 +18279,7 @@ function showRogueLoadoutPicker(slotKey,items){
       };
     });
     // Upgrade button click — also swipe-aware
-    var upgBtns=ov.querySelectorAll('.lo-upgrade-btn');
+    var upgBtns=_scrollInner.querySelectorAll('.lo-upgrade-btn');
     upgBtns.forEach(function(btn){
       btn.onclick=function(e){
         e.stopPropagation();
@@ -18272,7 +18295,7 @@ function showRogueLoadoutPicker(slotKey,items){
       };
     });
     // Token purchase unlock button
-    var buyBtns=ov.querySelectorAll('.lo-token-buy');
+    var buyBtns=_scrollInner.querySelectorAll('.lo-token-buy');
     buyBtns.forEach(function(btn){
       btn.onclick=function(e){
         e.stopPropagation();
@@ -20385,7 +20408,10 @@ function showRogueUnlockCinematic(unlocks){
       setTimeout(function(){ov.firstChild.style.opacity='1';},50);
       ov.onclick=function(){
         ov.style.transition='opacity 0.4s';ov.style.opacity='0';
-        setTimeout(function(){ov.remove();},400);
+        setTimeout(function(){ov.remove();
+          // Re-trigger tooltips now that unlock screen is gone
+          if(typeof _retriggerWoTooltips==='function') _retriggerWoTooltips();
+        },400);
       };
       return;
     }
