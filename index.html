@@ -18315,7 +18315,7 @@ function showRogueLoadoutPicker(slotKey,items){
       var canUpgradeThis=_canUpgrade&&canSelect&&!isMaxed&&(lvl<2||_canL3);
       var upgCost=canUpgradeThis?getRogueUpgradeCost(lvl):0;
       var canAfford=(SAVE.rogueTokens||0)>=upgCost;
-      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;touch-action:pan-y;transition:all 0.2s">';
+      h+='<div class="lo-pick-card" data-id="'+item.id+'" data-can="'+(canSelect?'1':'0')+'" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:'+cardBg+';border:'+cardBorder+';opacity:'+cardOpacity+';cursor:'+cardCursor+';-webkit-tap-highlight-color:transparent;touch-action:pan-y;'+(_isIOS?'':'transition:all 0.2s')+'">';
       h+='<div style="font-size:36px;min-width:44px;text-align:center;'+(canSelect?(_isIOS?'':'filter:drop-shadow(0 0 4px '+rc+'44)'):'opacity:0.4')+'">'+item.icon+'</div>';
       h+='<div style="flex:1;min-width:0">';
       h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:'+(canSelect?'#fff':'#667')+';letter-spacing:1px">'+(canSelect?item.name:'???')+'</span>';
@@ -18457,8 +18457,8 @@ function showRogueLoadoutPicker(slotKey,items){
     modal.style.cssText='position:fixed;inset:0;z-index:9999999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);opacity:0;transition:opacity 0.2s;-webkit-tap-highlight-color:transparent';
     var _upgStars='';for(var _usi=0;_usi<item.maxLevel;_usi++){var _isCur=_usi<curLvl;var _isNext=_usi===curLvl;_upgStars+='<span style="font-size:16px;color:'+(_isCur?'#ffd700':(_isNext?'#00ff88':'#333'))+';'+(!_isIOS?(_isCur?'text-shadow:0 0 4px #ffd700;':(_isNext?'text-shadow:0 0 6px #00ff88;':'')):'')+'">'+(_isCur?'★':(_isNext?'★':'☆'))+'</span>';}
     modal.innerHTML=
-      '<div style="background:linear-gradient(180deg,#151520 0%,#0a0a14 100%);border:2px solid #ffaa0044;border-radius:16px;padding:28px 24px;max-width:360px;width:calc(100% - 40px);text-align:center;box-shadow:0 0 40px rgba(255,170,0,0.1)">'+
-        '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ffaa00;letter-spacing:4px;margin-bottom:16px;text-shadow:0 0 12px #ff880044">⬆ UPGRADE</div>'+
+      '<div style="background:'+(_isIOS?'#151520':'linear-gradient(180deg,#151520 0%,#0a0a14 100%)')+';border:2px solid #ffaa0044;border-radius:16px;padding:28px 24px;max-width:360px;width:calc(100% - 40px);text-align:center;'+(_isIOS?'':'box-shadow:0 0 40px rgba(255,170,0,0.1)')+'">'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ffaa00;letter-spacing:4px;margin-bottom:16px;'+(_isIOS?'':'text-shadow:0 0 12px #ff880044')+'">⬆ UPGRADE</div>'+
         '<div style="font-size:48px;margin-bottom:8px;'+(_isIOS?'':'filter:drop-shadow(0 0 12px '+item.color+'66)')+'">'+item.icon+'</div>'+
         '<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px">'+item.name+'</div>'+
         '<div style="margin-top:4px">'+_upgStars+'</div>'+
@@ -18496,9 +18496,11 @@ function showRogueLoadoutPicker(slotKey,items){
       modal.style.opacity='0';
       setTimeout(function(){
         modal.remove();
-        _refreshPicker();
-        // Also refresh World Overview loadout slot behind the picker
-        try{_updateWoSlot(slotKey);}catch(e){}
+        // Delay picker rebuild on iOS to let GPU recover after modal removal
+        setTimeout(function(){
+          _refreshPicker();
+          try{_updateWoSlot(slotKey);}catch(e){}
+        },_isIOS?100:0);
       },200);
     };
     // Tap outside to close
