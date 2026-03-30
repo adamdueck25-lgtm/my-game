@@ -18609,8 +18609,9 @@ function startCampaignWorld(worldIdx){
     if(menuCanvas)menuCanvas.style.visibility='';
     var _sc2=document.getElementById('splash-canvas');if(_sc2){_sc2.style.visibility='';_sc2.style.display='';}
     var _ui2=document.getElementById('ui');if(_ui2){_ui2.style.visibility='';_ui2.style.display='';}
-    var _rb2=document.getElementById('reset-btn');if(_rb2){_rb2.style.visibility='';_rb2.style.display='';}
-    var _mb2=document.getElementById('music-btn');if(_mb2){_mb2.style.visibility='';_mb2.style.display='';}
+    // Reset/settings button stay hidden during campaign gameplay (menu-only elements)
+    var _rb2=document.getElementById('reset-btn');if(_rb2){_rb2.style.visibility='';_rb2.style.display='none';}
+    var _mb2=document.getElementById('music-btn');if(_mb2){_mb2.style.visibility='';_mb2.style.display='none';}
     document.getElementById('canvas').style.display='block';
     showScreen('__game__');
     gState='playing';
