@@ -1815,12 +1815,20 @@ var _useMenuAlt = false; // toggles after each game session
 var _menuPlayingAlt = false; // tracks which buffer is currently playing
 var _menuStopping = false; // guard against onended firing after manual stop
 
-async function loadAudioFile(url) {
-  try {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    return await AC.decodeAudioData(arrayBuffer);
-  } catch(e) { console.warn('Audio load failed:', url, e); return null; }
+async function loadAudioFile(url, _retries) {
+  var maxRetries = _retries || 3;
+  for(var attempt=0; attempt<maxRetries; attempt++){
+    try {
+      var response = await fetch(url);
+      if(!response.ok) throw new Error('HTTP '+response.status);
+      var arrayBuffer = await response.arrayBuffer();
+      return await AC.decodeAudioData(arrayBuffer);
+    } catch(e) {
+      console.warn('Audio load attempt '+(attempt+1)+'/'+maxRetries+' failed:', url, e);
+      if(attempt < maxRetries-1) await new Promise(function(r){setTimeout(r, 1000*(attempt+1));});
+    }
+  }
+  return null;
 }
 
 loadAudioFile('menu.mp3').then(buf=>{
@@ -17544,11 +17552,9 @@ function showAdventureModeLoading(onDone){
     var s=document.getElementById('aml-sub');if(s)s.style.opacity='1';
   },600);
 
-  // Phase 2b: Screen shake (800ms)
+  // Phase 2b: Intensify glow (800ms) — no screen shake (iOS stability)
   setTimeout(function(){
-    ov.style.animation='amlShake 0.3s ease';
     try{sfx('waveClear');}catch(e){}
-    // Intensify glow
     var t=document.getElementById('aml-title');
     if(t) t.style.textShadow='0 0 40px #ff8800,0 0 80px #ff880066,0 0 120px #ff880033';
   },800);
