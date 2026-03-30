@@ -32,7 +32,7 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
 
 /* HUD */
 #hud{position:absolute;top:0;left:0;right:0;padding:8px 12px 4px;display:flex;justify-content:space-between;align-items:flex-start;background:linear-gradient(to bottom,rgba(0,0,10,0.85) 0%,transparent 100%)}
-.hs{display:flex;flex-direction:column;align-items:center;gap:0}
+.hs{display:flex;flex-direction:column;align-items:center;gap:0;flex:1}.hs:last-child{align-items:flex-end}.hs:first-child{align-items:flex-start}
 .hl{font-size:10px;color:#556;letter-spacing:2px;line-height:1}
 .hv{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;line-height:1.1}
 .hv.c{color:var(--c);text-shadow:0 0 8px var(--c),0 0 20px var(--c)44}
@@ -4107,8 +4107,7 @@ function showUpgradeGlossary(){
   CAMPAIGN_UPGRADES.forEach(function(u){if(disc[u.id])discCount++;});
   var ov=document.createElement('div');
   ov.id='upgrade-glossary-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:rgba(0,0,0,0.94);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);opacity:0;transition:opacity 0.25s';
-  ov.classList.add('screen');
+  ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:rgba(0,0,0,0.94);overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top,0px) + 16px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);opacity:0;transition:opacity 0.25s';
   var rarityOrder=['common','rare','epic','legendary'];
   var rarityLabels={common:'COMMON',rare:'RARE',epic:'EPIC',legendary:'LEGENDARY'};
   var rarityColors={common:'#aaaaaa',rare:'#4488ff',epic:'#aa44ff',legendary:'#ffd700'};
@@ -8747,12 +8746,37 @@ let moveDx = 0;
       _campaignDeathBlossomTimer-=dt;
       if(_campaignDeathBlossomTimer<=0){
         _campaignDeathBlossomTimer=12;
+        // ── Absorb nearby enemy bullets and redirect at enemies ──
+        var _dbRadius=200;
+        var _dbAbsorbed=0;
+        for(var _ei=eBullets.length-1;_ei>=0;_ei--){
+          var eb=eBullets[_ei];
+          var edx=eb.x-player.x,edy=eb.y-player.y;
+          if(edx*edx+edy*edy<_dbRadius*_dbRadius){
+            // Find nearest alive enemy to aim at
+            var _tgt=null,_tDist=Infinity;
+            for(var _ti=0;_ti<enemies.length;_ti++){
+              if(!enemies[_ti].alive)continue;
+              var _tdx=enemies[_ti].x-eb.x,_tdy=enemies[_ti].y-eb.y;
+              var _td=_tdx*_tdx+_tdy*_tdy;
+              if(_td<_tDist){_tDist=_td;_tgt=enemies[_ti];}
+            }
+            var _aimVx=0,_aimVy=-6;
+            if(_tgt){var _ad=Math.sqrt((_tgt.x-eb.x)*(_tgt.x-eb.x)+(_tgt.y-eb.y)*(_tgt.y-eb.y))||1;_aimVx=(_tgt.x-eb.x)/_ad*6;_aimVy=(_tgt.y-eb.y)/_ad*6;}
+            bullets.push({x:eb.x,y:eb.y,spd:6,pierce:9,hit:new Set(),trail:[],blossom:true,life:2.5,blossomVx:_aimVx,blossomVy:_aimVy});
+            eBullets.splice(_ei,1);
+            _dbAbsorbed++;
+          }
+        }
+        // ── Fire 16 homing spread bullets ──
         for(var bi=0;bi<16;bi++){
-          var bAngle=-Math.PI+((bi/16)*Math.PI); // 180° forward arc (upward)
-          bullets.push({x:player.x,y:player.y,spd:stats.bulletSpeed*0.7,pierce:false,hit:new Set(),trail:[],blossom:true,life:3.0,blossomVx:Math.cos(bAngle)*5,blossomVy:Math.sin(bAngle)*5});
+          var bAngle=-Math.PI+((bi/16)*Math.PI);
+          bullets.push({x:player.x,y:player.y,spd:6,pierce:9,hit:new Set(),trail:[],blossom:true,life:2.5,blossomVx:Math.cos(bAngle)*6,blossomVy:Math.sin(bAngle)*6});
         }
         sfx('shoot2');
-        spawnExplosion(player.x,player.y,'#ff88cc',8);
+        spawnExplosion(player.x,player.y,'#ff88cc',8,true);
+        shake(6,0.3);
+        if(_dbAbsorbed>0) floatTexts.push({x:player.x,y:player.y-30,text:'🌸 ABSORBED '+_dbAbsorbed+'!',col:'#ff88cc',life:1.2,vy:-1.5,big:true});
       }
     }
     // Afterburn trails — damage enemies touching trails
@@ -8789,8 +8813,28 @@ let moveDx = 0;
       var _alv=_frameAlive;
       if(_alv.length){var _nr=_alv.reduce(function(a,e){return Math.hypot(e.x-b.x,e.y-b.y)<Math.hypot(a.x-b.x,a.y-b.y)?e:a;});var _dx=_nr.x-b.x,_dy=_nr.y-b.y,_dd=Math.max(1,Math.hypot(_dx,_dy));b.x+=_dx/_dd*10;b.y+=_dy/_dd*10;}
     }
-    // Death Blossom bullets move via blossomVx/Vy instead of spd
-    if(b.blossom){b.x+=b.blossomVx;b.y+=b.blossomVy;b.life=(b.life||1.5)-dt;return b.life>0&&b.x>-20&&b.x<W+20&&b.y>-20&&b.y<H+20;}
+    // Death Blossom bullets — homing toward nearest enemy
+    if(b.blossom){
+      // Steer toward nearest alive enemy
+      var _bTgt=null,_bTd=Infinity;
+      for(var _bti=0;_bti<enemies.length;_bti++){
+        if(!enemies[_bti].alive)continue;
+        var _bdx=enemies[_bti].x-b.x,_bdy=enemies[_bti].y-b.y;
+        var _bd=_bdx*_bdx+_bdy*_bdy;
+        if(_bd<_bTd){_bTd=_bd;_bTgt=enemies[_bti];}
+      }
+      if(_bTgt){
+        var _bdst=Math.sqrt(_bTd)||1;
+        var _steer=0.15; // homing strength
+        b.blossomVx+=((_bTgt.x-b.x)/_bdst)*_steer;
+        b.blossomVy+=((_bTgt.y-b.y)/_bdst)*_steer;
+        // Cap speed
+        var _bspd=Math.sqrt(b.blossomVx*b.blossomVx+b.blossomVy*b.blossomVy);
+        if(_bspd>7){b.blossomVx*=7/_bspd;b.blossomVy*=7/_bspd;}
+      }
+      b.x+=b.blossomVx;b.y+=b.blossomVy;b.life=(b.life||2.5)-dt;
+      return b.life>0&&b.x>-20&&b.x<W+20&&b.y>-20&&b.y<H+20;
+    }
     // Gravity Well — bullets pull nearby enemies toward their path
     if(_campaignMode&&stats._campaignGravity&&!b.missile&&!b.drone){
       enemies.forEach(function(e){if(!e.alive||e.entering)return;var gd=Math.hypot(e.x-b.x,e.y-b.y);if(gd<50&&gd>5){e.x+=(b.x-e.x)/gd*1.5;e.y+=(b.y-e.y)/gd*1.5;if(particles.length<40&&Math.random()<0.12)particles.push({type:'spark',x:e.x,y:e.y,vx:(b.x-e.x)/gd*0.5,vy:(b.y-e.y)/gd*0.5,life:0.3,maxLife:0.3,r:1,col:'#aa44ff'});}});
@@ -18223,8 +18267,7 @@ function showRogueLoadoutPicker(slotKey,items){
   var label=slotKey==='ability'?'ABILITY':slotKey==='weapon'?'WEAPON MOD':'PASSIVE';
   var ov=document.createElement('div');
   ov.id='lo-picker-overlay';
-  ov.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
-  ov.classList.add('screen');
+  ov.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
   var _scrollInner=ov; // alias so all existing refs work without changes
   function _buildPickerHtml(){
     var h='<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ff8800;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px #ff880066">SELECT '+label+'</div>';
@@ -19957,7 +20000,7 @@ function showCampaignUpgradePick(isBossReward){
     var stackStars='';
     if(up.stackable&&stackCount>0){
       for(var _ss=0;_ss<(up.maxStack||3);_ss++) stackStars+=(_ss<stackCount?'★':'☆');
-      stackStars='<div style="font-size:11px;letter-spacing:2px;color:'+rarityBorder+';margin-top:2px;opacity:0.85">'+stackStars+'</div>';
+      stackStars='<div style="font-size:15px;letter-spacing:3px;color:'+rarityBorder+';margin-top:4px;'+(_isIOS?'':'text-shadow:0 0 6px '+rarityBorder+'66;')+'">'+stackStars+'</div>';
     }
     // Cards start way offscreen top with rotation
     var startX=i===0?-160:i===2?160:0;
