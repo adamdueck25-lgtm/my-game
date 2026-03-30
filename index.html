@@ -22,6 +22,7 @@
 *{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 /* Allow vertical scroll on menu screens */
 .screen{touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important}
+html.ios .screen{-webkit-overflow-scrolling:auto!important}
 .screen *{touch-action:pan-y!important}
 /* Re-lock game controls to prevent accidental scroll */
 #controls,#controls *,#joystick-zone,#joystick-zone *,canvas{touch-action:none!important}
@@ -4108,6 +4109,7 @@ function showUpgradeGlossary(){
   var ov=document.createElement('div');
   ov.id='upgrade-glossary-overlay';
   ov.style.cssText='position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:rgba(0,0,0,0.94);overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top,0px) + 16px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);opacity:0;transition:opacity 0.25s';
+  ov.classList.add('screen');
   var rarityOrder=['common','rare','epic','legendary'];
   var rarityLabels={common:'COMMON',rare:'RARE',epic:'EPIC',legendary:'LEGENDARY'};
   var rarityColors={common:'#aaaaaa',rare:'#4488ff',epic:'#aa44ff',legendary:'#ffd700'};
@@ -18268,6 +18270,7 @@ function showRogueLoadoutPicker(slotKey,items){
   var ov=document.createElement('div');
   ov.id='lo-picker-overlay';
   ov.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top,0px) + 16px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);opacity:0;transition:opacity 0.25s';
+  ov.classList.add('screen');
   var _scrollInner=ov; // alias so all existing refs work without changes
   function _buildPickerHtml(){
     var h='<div style="font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#ff8800;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 12px #ff880066">SELECT '+label+'</div>';
