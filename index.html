@@ -14550,8 +14550,8 @@ function showLootBoxAnimation(artifact, rarity, isNew, dupeEchoes, setOwned, set
   // ── PHASE 1: Anticipation (0-1.8s) — energy buildup ──
   requestAnimationFrame(function(){
     overlay.style.background = 'rgba(0,0,0,0.85)';
-    overlay.style.backdropFilter = 'blur(18px)';
-    overlay.style.webkitBackdropFilter = 'blur(18px)';
+    if(!_isIOS){overlay.style.backdropFilter = 'blur(18px)';
+    overlay.style.webkitBackdropFilter = 'blur(18px)';}
     crate.style.transform = 'scale(1)';
     crate.style.opacity = '1';
   });
@@ -20066,22 +20066,24 @@ function showCampaignUpgradePick(isBossReward){
       // Start the wave — ship becomes visible and controllable immediately
       startNextCampaignWave();
 
-      // Get live ship position for the fly target
-      var cr=card.getBoundingClientRect();
-      var fStartX=cr.left+cr.width/2;
-      var fStartY=cr.top+cr.height/2;
-
       // Hide card
       card.style.transition='opacity 0.1s';
       card.style.opacity='0';
 
       // Quickly fade overlay so gameplay is visible behind
-      // Remove blur instantly (animating backdrop-filter crashes iOS GPU)
-      overlay.style.backdropFilter='none';
-      overlay.style.webkitBackdropFilter='none';
+      if(!_isIOS){overlay.style.backdropFilter='none';overlay.style.webkitBackdropFilter='none';}
       overlay.style.transition='opacity 0.3s';
       overlay.style.opacity='0';
       setTimeout(function(){overlay.remove();},350);
+
+      // iOS: skip flying icon + trail canvas animation entirely to prevent GPU crash
+      // (full-screen canvas + particle RAF + gameLoop RAF simultaneously = VRAM exhaustion)
+      if(_isIOS){ sfx('waveClear'); return; }
+
+      // ── Desktop/Android: full flying icon animation ──
+      var cr=card.getBoundingClientRect();
+      var fStartX=cr.left+cr.width/2;
+      var fStartY=cr.top+cr.height/2;
 
       // Create flying icon
       var flyer=document.createElement('div');
@@ -20097,6 +20099,12 @@ function showCampaignUpgradePick(isBossReward){
       document.body.appendChild(trailCanvas);
       var tCtx=trailCanvas.getContext('2d');
       var trailParts=[];
+
+      // Safety timeout — force cleanup if animation gets stuck (3s)
+      var _trailSafety=setTimeout(function(){
+        try{if(flyer.parentNode)flyer.remove();}catch(e){}
+        _releaseCanvas(trailCanvas);
+      },3000);
 
       var t0=performance.now();
       var dur=500;
@@ -20122,7 +20130,7 @@ function showCampaignUpgradePick(isBossReward){
         flyer.style.top=fy+'px';
         flyer.style.transform='translate(-50%,-50%) scale('+sc+') rotate('+rot+'deg)';
 
-        // Trail particles (reduced for iOS)
+        // Trail particles
         var particleCount=Math.ceil(1+et*2);
         for(var p=0;p<particleCount;p++){
           trailParts.push({
@@ -20145,6 +20153,7 @@ function showCampaignUpgradePick(isBossReward){
           requestAnimationFrame(animFlyer);
         } else {
           // ═══ IMPACT on live ship ═══
+          clearTimeout(_trailSafety);
           flyer.remove();
           sfx('waveClear');
           if(navigator.vibrate) navigator.vibrate([40,20,80]);
@@ -20158,7 +20167,7 @@ function showCampaignUpgradePick(isBossReward){
           tCtx.globalAlpha=0.8;tCtx.fillStyle=ig;
           tCtx.beginPath();tCtx.arc(impX,impY,70,0,Math.PI*2);tCtx.fill();
 
-          // Impact sparks (reduced for iOS GPU safety)
+          // Impact sparks
           for(var s=0;s<10;s++){
             var angle=Math.random()*Math.PI*2;var speed=2+Math.random()*6;
             trailParts.push({x:impX,y:impY,r:1.5+Math.random()*3,a:1,life:1,
