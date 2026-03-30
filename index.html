@@ -1212,6 +1212,9 @@ canvas{display:block;position:absolute;top:0;left:0;image-rendering:pixelated}
   animation: pulseGlow .8s ease-in-out infinite;
   margin-top:10px; width:100%; max-width:340px;
 }
+/* iOS lightweight wave particles — CSS-only emoji animation (no canvas) */
+@keyframes iosWaveFloat{0%{transform:translateX(-50px) scale(0.5);opacity:0}12%{opacity:1;transform:translateX(0) scale(1)}80%{opacity:0.8}100%{transform:translateX(calc(100vw + 50px)) scale(0.7);opacity:0}}
+@keyframes iosUpgradeFly{0%{opacity:1;transform:translate(var(--fx0),var(--fy0)) scale(1.2)}50%{transform:translate(var(--fxm),var(--fym)) scale(1)}100%{opacity:0.6;transform:translate(var(--fx1),var(--fy1)) scale(0.5)}}
 /* iOS GPU crash prevention — replace backdrop-filter with solid backgrounds */
 html.ios .ctrl-btn{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(0,10,20,0.85) !important}
 html.ios .relic-badge{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:rgba(255,68,85,0.25) !important}
@@ -18576,7 +18579,7 @@ function startCampaignWorld(worldIdx){
 
   // 7) Themed particles sweep across and blow text away
   setTimeout(function(){
-    if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2500);
+    if(_isIOS)_iosWaveParticles(world.id,2500);else _spawnWaveAnnounceParticles(world.id,2500);
     // Blow all text elements to the right
     var blowEls=['cwl-emoji','cwl-entering','cwl-name','cwl-desc','cwl-waves'];
     blowEls.forEach(function(id,i){
@@ -19287,7 +19290,7 @@ function announceCampaignWave(){
     waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.5)';
     waOuter.style.transition='opacity 0.5s cubic-bezier(.17,.67,.35,1.4),transform 0.6s cubic-bezier(.17,.67,.35,1.4)';
     setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
-    if(!_isIOS)_spawnWaveAnnounceParticles(world.id,3000);
+    if(_isIOS)_iosWaveParticles(world.id,3000);else _spawnWaveAnnounceParticles(world.id,3000);
     setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.05)';
       setTimeout(function(){waOuter.style.display='none';},400);
     },3000);
@@ -19347,6 +19350,36 @@ function _getWorldParticleConfig(worldId){
     }
   };
   return configs[worldId]||configs.asteroid;
+}
+
+// iOS-safe wave particles — pure CSS animated DOM elements (no canvas)
+function _iosWaveParticles(worldId,duration){
+  var cfg=_getWorldParticleConfig(worldId);
+  var container=document.createElement('div');
+  container.style.cssText='position:fixed;inset:0;z-index:99998;pointer-events:none;overflow:hidden';
+  document.body.appendChild(container);
+  var count=Math.min(10,cfg.count||10);
+  var symbols=cfg.symbols;
+  var colors=cfg.colors;
+  for(var i=0;i<count;i++){
+    (function(idx){
+      var delay=Math.random()*duration*0.5;
+      var dur=1.2+Math.random()*1.0;
+      var yPct=10+Math.random()*80;
+      var sym=symbols[Math.floor(Math.random()*symbols.length)];
+      var col=colors[Math.floor(Math.random()*colors.length)];
+      var size=18+Math.random()*16;
+      setTimeout(function(){
+        if(!container.parentNode) return;
+        var el=document.createElement('div');
+        el.textContent=sym;
+        el.style.cssText='position:absolute;top:'+yPct+'%;left:0;font-size:'+size+'px;color:'+col+';pointer-events:none;animation:iosWaveFloat '+dur+'s ease-out forwards;will-change:transform,opacity;text-shadow:0 0 8px '+col+'66';
+        container.appendChild(el);
+        el.addEventListener('animationend',function(){el.remove();});
+      },delay);
+    })(i);
+  }
+  setTimeout(function(){if(container.parentNode)container.remove();},duration+2000);
 }
 
 function _spawnWaveAnnounceParticles(worldId,duration){
@@ -20097,9 +20130,30 @@ function showCampaignUpgradePick(isBossReward){
       overlay.style.opacity='0';
       setTimeout(function(){overlay.remove();},350);
 
-      // iOS: skip flying icon + trail canvas animation entirely to prevent GPU crash
-      // (full-screen canvas + particle RAF + gameLoop RAF simultaneously = VRAM exhaustion)
-      if(_isIOS){ sfx('waveClear'); return; }
+      // iOS: CSS-animated flying icon (no canvas, no RAF) — lightweight GPU-safe alternative
+      if(_isIOS){
+        var cr=card.getBoundingClientRect();
+        var sx=cr.left+cr.width/2, sy=cr.top+cr.height/2;
+        var ex=player?player.x:W/2, ey=player?player.y:H*0.75;
+        var mx=sx+(ex-sx)*0.5+(sx<ex?-1:1)*40, my=Math.min(sy,ey)-60;
+        // Inject one-shot keyframe for this specific flight path
+        var _ufStyle=document.createElement('style');
+        _ufStyle.textContent='@keyframes _iosUpFly{0%{left:'+sx+'px;top:'+sy+'px;transform:translate(-50%,-50%) scale(1.2);opacity:1}50%{left:'+mx+'px;top:'+my+'px;transform:translate(-50%,-50%) scale(1) rotate(180deg)}100%{left:'+ex+'px;top:'+ey+'px;transform:translate(-50%,-50%) scale(0.4) rotate(360deg);opacity:0.5}}';
+        document.head.appendChild(_ufStyle);
+        var _uf=document.createElement('div');
+        _uf.textContent=chosen.icon;
+        _uf.style.cssText='position:fixed;z-index:100001;pointer-events:none;font-size:36px;animation:_iosUpFly 0.5s cubic-bezier(.4,0,.2,1) forwards;will-change:left,top,transform';
+        document.body.appendChild(_uf);
+        _uf.addEventListener('animationend',function(){
+          _uf.remove();_ufStyle.remove();
+          sfx('waveClear');
+          if(navigator.vibrate) navigator.vibrate([40,20,80]);
+          spawnExplosion(ex,ey,chosen.color,8,true);
+          shake(8,0.3);
+          floatTexts.push({x:ex,y:ey-30,text:chosen.icon+' '+chosen.name,col:chosen.color,life:1.5,vy:-1.5,big:true});
+        });
+        return;
+      }
 
       // ── Desktop/Android: full flying icon animation ──
       var cr=card.getBoundingClientRect();
@@ -20456,7 +20510,7 @@ function showWorldCleared(worldIdx){
   setTimeout(function(){var e=document.getElementById('wc-buttons');if(e)e.style.opacity='1';},1600);
   setTimeout(function(){if(!document.getElementById('rogue-unlock-cinematic'))showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},2000);
   // Themed particle burst
-  setTimeout(function(){if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2500);},200);
+  setTimeout(function(){if(_isIOS)_iosWaveParticles(world.id,2500);else _spawnWaveAnnounceParticles(world.id,2500);},200);
   // Continue button → World Overview (with unlock cinematic if applicable)
   document.getElementById('wc-continue-btn').onclick=function(){
     sfx('navTap');
@@ -20568,7 +20622,7 @@ function showCampaignWorldTransition(newWorldIdx,onDone){
   setTimeout(function(){var e=document.getElementById('cwt-name');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},500);
   setTimeout(function(){var e=document.getElementById('cwt-desc');if(e)e.style.opacity='1';},800);
   // Themed particle burst during world transition
-  setTimeout(function(){if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2200);},400);
+  setTimeout(function(){if(_isIOS)_iosWaveParticles(world.id,2200);else _spawnWaveAnnounceParticles(world.id,2200);},400);
   setTimeout(function(){
     overlay.style.transition='opacity 0.5s';overlay.style.opacity='0';
     setTimeout(function(){overlay.remove();if(onDone)onDone();},500);
