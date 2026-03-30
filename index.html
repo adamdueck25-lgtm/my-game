@@ -12218,7 +12218,7 @@ function showScreen(id) {
   const isMenu   = id==='screen-menu' || id==='screen-splash';
   const isShopUI = id==='screen-shop'||id==='screen-packs'||id==='screen-pull'||id==='screen-cards'||id==='screen-waveclear'||id==='screen-gameover'||id==='screen-summary'||id==='screen-trophies'||id==='screen-echoes'||id==='screen-synergies';
   if(isMenu||isShopUI) document.getElementById('music-btn').style.display='block';
-  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; if(_campaignMode){stopCampaignMusic(false);_campaignMode=false;_menuCampaignMode=false;_campaignStarOverride=null;initBg();} document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); var _wantAlt=!!(_useMenuAlt&&menuAltBuffer); if(menuSource&&_menuPlayingAlt===_wantAlt){ /* already playing correct track */ } else { stopMenuMusic(false); setTrack('menu'); }
+  if(id==='screen-menu'){ powerupDrops=[]; activePowerups={}; coinDrops=[]; particles=[]; eBullets=[]; bullets=[]; enemies=[]; if(_campaignMode){stopCampaignMusic(false);_campaignMode=false;_menuCampaignMode=false;_campaignStarOverride=null;initBg();} document.getElementById('music-btn').style.display='block'; document.getElementById('reset-btn').style.display='block'; if(menuCanvas)menuCanvas.style.display=''; var _splc=document.getElementById('splash-canvas');if(_splc)_splc.style.display=''; var _uiel=document.getElementById('ui');if(_uiel)_uiel.style.display=''; updateMenuCoins(); updateMenuVesselInfo(); startMenuAnim(); startGlitch(); startMenuShipPreview(); startMenuTicker(); playMenuEntrance(); var _wantAlt=!!(_useMenuAlt&&menuAltBuffer); if(menuSource&&_menuPlayingAlt===_wantAlt){ /* already playing correct track */ } else { stopMenuMusic(false); setTrack('menu'); }
     if(window._showEchoesIntroAfterGameover){ window._showEchoesIntroAfterGameover=false; setTimeout(function(){ showEchoesIntro(function(){ showSynergiesIntro(); }); },500); }
   }
 else if(id==='screen-splash'){ setTrack('menu'); }
@@ -17663,12 +17663,15 @@ function showWorldOverview(){
   if(!Array.isArray(cd.worldsCleared)) cd.worldsCleared=[];
   if(!cd.worldStats) cd.worldStats={};
 
-  // Hide menu content so it doesn't show through transparent overlay
+  // Hide menu content and stop all menu RAF loops to free GPU resources
+  stopMenuAnim(); stopMenuShipPreview(); stopMenuTicker(); stopShopCanvas(); stopCustomizeAnim();
+  if(_dailySpinIdleRaf){cancelAnimationFrame(_dailySpinIdleRaf);_dailySpinIdleRaf=null;}
+  if(window._lbCardAnimId){cancelAnimationFrame(window._lbCardAnimId);window._lbCardAnimId=null;}
   var menuScreen=document.getElementById('screen-menu');
-  if(menuScreen) menuScreen.style.visibility='hidden';
-  if(menuCanvas) menuCanvas.style.visibility='hidden';
+  if(menuScreen) menuScreen.style.display='none';
+  if(menuCanvas) menuCanvas.style.display='none';
   var _woSplashCvs=document.getElementById('splash-canvas');
-  if(_woSplashCvs) _woSplashCvs.style.visibility='hidden';
+  if(_woSplashCvs) _woSplashCvs.style.display='none';
   var _woUi=document.getElementById('ui');
   if(_woUi) _woUi.style.visibility='hidden';
   var _woResetBtn=document.getElementById('reset-btn');
@@ -18468,13 +18471,14 @@ function startCampaignWorld(worldIdx){
   staleOverlays.forEach(function(oid){var el=document.getElementById(oid);if(el)el.remove();});
   // Clear game arrays to prevent leftover visuals
   powerupDrops=[];coinDrops=[];particles=[];bullets=[];eBullets=[];enemies=[];floatTexts=[];
-  // Hide menu screen + related elements during intro (bg canvas stays visible)
-  var ms=document.getElementById('screen-menu');if(ms){ms.style.visibility='hidden';}
-  if(menuCanvas)menuCanvas.style.visibility='hidden';
-  var _sc=document.getElementById('splash-canvas');if(_sc)_sc.style.visibility='hidden';
-  var _ui=document.getElementById('ui');if(_ui)_ui.style.visibility='hidden';
-  var _rb=document.getElementById('reset-btn');if(_rb)_rb.style.visibility='hidden';
-  var _mb=document.getElementById('music-btn');if(_mb)_mb.style.visibility='hidden';
+  // Hide menu screen + related elements — use display:none to stop CSS animations on iOS
+  // (visibility:hidden keeps CSS animations running, causing invisible GPU load)
+  var ms=document.getElementById('screen-menu');if(ms){ms.style.display='none';}
+  if(menuCanvas)menuCanvas.style.display='none';
+  var _sc=document.getElementById('splash-canvas');if(_sc)_sc.style.display='none';
+  var _ui=document.getElementById('ui');if(_ui)_ui.style.display='none';
+  var _rb=document.getElementById('reset-btn');if(_rb)_rb.style.display='none';
+  var _mb=document.getElementById('music-btn');if(_mb)_mb.style.display='none';
   _woBgInitialized=false;
   var world=CAMPAIGN_WORLDS[worldIdx];
   var startWave=world.waves[0];
@@ -18528,8 +18532,10 @@ function startCampaignWorld(worldIdx){
     setTimeout(function(){if(woEl.parentNode)woEl.remove();},650);
   }
 
-  // 2) Fade out menu music
-  resumeAC(); stopMenuAnim();
+  // 2) Stop all menu RAF loops + fade out menu music
+  resumeAC(); stopMenuAnim(); stopMenuShipPreview(); stopMenuTicker(); stopShopCanvas(); stopCustomizeAnim();
+  if(_dailySpinIdleRaf){cancelAnimationFrame(_dailySpinIdleRaf);_dailySpinIdleRaf=null;}
+  if(window._lbCardAnimId){cancelAnimationFrame(window._lbCardAnimId);window._lbCardAnimId=null;}
   if(glitchTimer)clearTimeout(glitchTimer);
   if(AC&&masterGain){
     try{masterGain.gain.setValueAtTime(masterGain.gain.value,AC.currentTime);
