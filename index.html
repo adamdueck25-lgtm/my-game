@@ -4262,7 +4262,7 @@ var _pendingRogueUnlocks=[];
 function resetChallengeTracking(){
   _campaignRunTimer=0;_campaignDamageTaken=0;_campaignUpgradesTaken=0;
   _campaignBrokerDeclinedAll=true;_campaignSkippedUpgrades=0;_campaignActiveEffects=[];
-  _campaignOverkillDmg=0;_campaignBossKillTimes=[];_campaignPhoenixUsed=false;
+  _campaignOverkillDmg=0;_campaignBossKillTimes=[];_campaignPhoenixUsed=false;_campaignFreeReviveUsed=false;
   _campaignCoinsCollected=0;_campaignEnemiesSpawned=0;_campaignEnemiesKilled=0;
   _ironHeartCounter=0;_chainFireBurstTimer=0;
 }
@@ -6112,6 +6112,7 @@ var _campaignDeathBlossomTimer = 0;
 var _campaignDroneAngle = 0;
 var _campaignDroneFireTimer = 0;
 var _campaignPhoenixUsed = false;
+var _campaignFreeReviveUsed = false;
 var _campaignAfterTrails = [];
 var _campaignMines = [];
 var _campaignMineTimer = 0;
@@ -9597,6 +9598,16 @@ if(player&&Math.hypot(p.x-player.x,p.y-player.y)<36){
           resurrected=true; player.lives=2; player.inv=3;
           showToast('✨ RESURRECTED!');
           sfx('setComplete'); shake(10,0.4);
+        } else if(_campaignMode&&player.lives<=0&&!_campaignFreeReviveUsed&&!((SAVE.campaignData||{}).worldsCleared||[]).includes(0)){
+          // Free revive for players who haven't cleared world 1 — once per run
+          _campaignFreeReviveUsed=true;
+          player.lives=player.maxLives||3;player.inv=3;player.shieldFlash=3;
+          enemies.forEach(function(pe){if(pe.alive){pe.hp=0;pe.alive=false;_campaignKills++;spawnExplosion(pe.x,pe.y,'#ff6600',6,true);}});
+          eBullets=[];
+          floatTexts.push({x:player.x,y:player.y-20,text:'FREE REVIVE!',col:'#ff6600',life:1.5,vy:-2});
+          spawnExplosion(player.x,player.y,'#ff6600',20);
+          sfx('setComplete');shake(12,0.5);
+          updateHUD();
         } else if(_campaignMode&&player.lives<=0&&stats._campaignPhoenix&&!_campaignPhoenixUsed){
           // Phoenix Protocol — revive once
           _campaignPhoenixUsed=true;
@@ -18484,6 +18495,7 @@ function startCampaignWorld(worldIdx){
   _campaignDroneAngle=0;
   _campaignDroneFireTimer=0;
   _campaignPhoenixUsed=false;
+  _campaignFreeReviveUsed=false;
   _campaignAfterTrails=[];_campaignMines=[];_campaignMineTimer=0;
   _loadoutBulletTimeTimer=0;_momentumStacks=0;_momentumTimer=0;_killShieldCounter=0;
   _overdriveTimer=0;_fortressFRTimer=0;_shadowCloneFireTimer=0;_ionCannonTimer=0;
@@ -18558,7 +18570,7 @@ function startCampaignWorld(worldIdx){
 
   // 7) Themed particles sweep across and blow text away
   setTimeout(function(){
-    _spawnWaveAnnounceParticles(world.id,2500);
+    if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2500);
     // Blow all text elements to the right
     var blowEls=['cwl-emoji','cwl-entering','cwl-name','cwl-desc','cwl-waves'];
     blowEls.forEach(function(id,i){
@@ -19269,7 +19281,7 @@ function announceCampaignWave(){
     waOuter.style.display='flex';waOuter.style.opacity='0';waOuter.style.transform='scale(0.5)';
     waOuter.style.transition='opacity 0.5s cubic-bezier(.17,.67,.35,1.4),transform 0.6s cubic-bezier(.17,.67,.35,1.4)';
     setTimeout(function(){waOuter.style.opacity='1';waOuter.style.transform='scale(1)';},50);
-    _spawnWaveAnnounceParticles(world.id,3000);
+    if(!_isIOS)_spawnWaveAnnounceParticles(world.id,3000);
     setTimeout(function(){waOuter.style.opacity='0';waOuter.style.transform='scale(1.05)';
       setTimeout(function(){waOuter.style.display='none';},400);
     },3000);
@@ -19489,7 +19501,10 @@ function campaignWaveCleared(){
 }
 
 function shouldShowChaosJester(){
-  var curWorld=CAMPAIGN_WORLDS[getCampaignWorldIndex(_campaignWave)];
+  var worldIdx=getCampaignWorldIndex(_campaignWave);
+  if(worldIdx<1) return false; // jester starts from world 2
+  if(_chaosJesterShown) return false; // once per world max
+  var curWorld=CAMPAIGN_WORLDS[worldIdx];
   var waveInWorld=_campaignWave-curWorld.waves[0]+1;
   if(waveInWorld<3) return false;
   if(waveInWorld===10||waveInWorld===20) return false; // not after boss — don't steal boss upgrade
@@ -20435,7 +20450,7 @@ function showWorldCleared(worldIdx){
   setTimeout(function(){var e=document.getElementById('wc-buttons');if(e)e.style.opacity='1';},1600);
   setTimeout(function(){if(!document.getElementById('rogue-unlock-cinematic'))showCampaignTip('tip_rogueTokens','Rogue Tokens upgrade your loadout items. Earn more by clearing worlds and challenges!',{position:'bottom',icon:'🪙',color:'#ffaa00'});},2000);
   // Themed particle burst
-  setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2500);},200);
+  setTimeout(function(){if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2500);},200);
   // Continue button → World Overview (with unlock cinematic if applicable)
   document.getElementById('wc-continue-btn').onclick=function(){
     sfx('navTap');
@@ -20547,7 +20562,7 @@ function showCampaignWorldTransition(newWorldIdx,onDone){
   setTimeout(function(){var e=document.getElementById('cwt-name');if(e){e.style.opacity='1';e.style.transform='translateY(0)';}},500);
   setTimeout(function(){var e=document.getElementById('cwt-desc');if(e)e.style.opacity='1';},800);
   // Themed particle burst during world transition
-  setTimeout(function(){_spawnWaveAnnounceParticles(world.id,2200);},400);
+  setTimeout(function(){if(!_isIOS)_spawnWaveAnnounceParticles(world.id,2200);},400);
   setTimeout(function(){
     overlay.style.transition='opacity 0.5s';overlay.style.opacity='0';
     setTimeout(function(){overlay.remove();if(onDone)onDone();},500);
